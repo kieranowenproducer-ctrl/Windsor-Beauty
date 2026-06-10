@@ -18,6 +18,7 @@ const FOOTER_LINKS: { heading: string; links: { label: string; href: string }[] 
       { label: "Serums", href: "/shop?category=Serums" },
       { label: "Moisturisers", href: "/shop?category=Moisturisers" },
       { label: "Cleansers", href: "/shop?category=Cleansers" },
+      { label: "Women's Range", href: "/shop?category=Women%27s" },
       { label: "Men's Skincare", href: "/shop?category=Men%27s" },
       { label: "SPF", href: "/shop?category=SPF" },
       { label: "Extras", href: "/shop?category=Extras" },

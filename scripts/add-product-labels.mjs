@@ -24,8 +24,8 @@ async function shadowPng(w, h, radius) {
 function labelSvg({ w, h, contentH = h, type = "full" }) {
   const radius = 2;
   const gradient = `<linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFEFC" stop-opacity="0.99"/>
-      <stop offset="100%" stop-color="#ECE2CE" stop-opacity="0.97"/>
+      <stop offset="0%" stop-color="#FFFEFC"/>
+      <stop offset="100%" stop-color="#ECE2CE"/>
     </linearGradient>
     <linearGradient id="v" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#000000" stop-opacity="0.16"/>
@@ -67,14 +67,18 @@ const CONFIG = {
   "renew-night-serum": { x: 441, y: 585, w: 148, h: 82 },
   "daily-veil-moisturiser": { x: 446, y: 565, w: 148, h: 82 },
   "pure-cream-cleanser": { x: 436, y: 585, w: 148, h: 82 },
-  "bright-eye-cream": { x: 446, y: 478, w: 168, h: 92 },
+  "bright-eye-cream": { x: 416, y: 580, w: 168, h: 92 },
   "daily-shield-spf30": { x: 438, y: 400, w: 148, h: 82 },
   "active-hydration-serum-men": { x: 438, y: 585, w: 148, h: 82 },
   "calm-repair-cream": { x: 428, y: 478, w: 168, h: 92 },
   "soothing-toning-mist": { x: 443, y: 605, w: 148, h: 82 },
   "velvet-lip-balm": { x: 492, y: 472, w: 56, h: 40, type: "compact" },
   "restore-hand-cream": { x: 446, y: 420, w: 148, h: 82 },
-  "cooling-aftershave-balm": { x: 418, y: 585, w: 168, h: 128, contentH: 92 },
+  "cooling-aftershave-balm": { x: 430, y: 585, w: 160, h: 128, contentH: 92 },
+  "silk-body-oil": { x: 446, y: 560, w: 148, h: 82 },
+  "rose-quartz-sleep-mask": { x: 437, y: 478, w: 150, h: 84 },
+  "velvet-body-lotion": { x: 446, y: 560, w: 148, h: 82 },
+  "gentle-exfoliating-scrub": { x: 450, y: 420, w: 140, h: 78 },
 };
 
 async function run() {

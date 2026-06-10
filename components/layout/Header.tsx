@@ -9,6 +9,7 @@ import { useCart } from "@/lib/cart";
 const NAV_LINKS = [
   { label: "Shop", href: "/shop" },
   { label: "Serums", href: "/shop?category=Serums" },
+  { label: "Women's", href: "/shop?category=Women%27s" },
   { label: "Men's", href: "/shop?category=Men%27s" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

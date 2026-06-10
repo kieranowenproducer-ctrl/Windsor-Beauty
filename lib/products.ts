@@ -1,6 +1,6 @@
-export type Category = "Serums" | "Moisturisers" | "Cleansers" | "Men's" | "SPF" | "Extras";
+export type Category = "Serums" | "Moisturisers" | "Cleansers" | "Men's" | "Women's" | "SPF" | "Extras";
 
-export const CATEGORIES: Category[] = ["Serums", "Moisturisers", "Cleansers", "Men's", "SPF", "Extras"];
+export const CATEGORIES: Category[] = ["Serums", "Moisturisers", "Cleansers", "Men's", "Women's", "SPF", "Extras"];
 
 export type Packaging = "dropper" | "pump" | "jar" | "tube" | "spray";
 
@@ -420,6 +420,120 @@ export const PRODUCTS: Product[] = [
     packaging: "tube",
     visual: { from: "from-cyan-50", to: "to-brand-sand", accent: "charcoal" },
     image: "/products/cooling-aftershave-balm.jpg",
+  },
+  {
+    id: "15",
+    slug: "gentle-exfoliating-scrub",
+    name: "Gentle Exfoliating Scrub",
+    category: "Cleansers",
+    size: "100ml",
+    price: 16.5,
+    shortDescription: "A gentle, fine-grain scrub designed to smooth and refresh skin without over-stripping.",
+    description:
+      "Gentle Exfoliating Scrub uses fine, naturally derived particles in a soft cream base to help lift away dull, flaky skin and everyday build-up. Designed for a couple of uses a week, it leaves skin feeling smoother and more refreshed without that tight, over-scrubbed feeling.",
+    benefits: [
+      "Helps skin feel smoother and more refreshed",
+      "Fine, gentle particles in a soft cream base",
+      "Designed for two to three uses per week",
+      "Suitable for most skin types",
+    ],
+    howToUse: [
+      "Apply to damp skin, avoiding the eye area.",
+      "Massage gently in circular motions for around 30 seconds.",
+      "Rinse thoroughly with warm water.",
+      "Use two to three times a week, followed by moisturiser.",
+      "Patch test before first use.",
+    ],
+    ingredients:
+      "Formulated with fine jojoba esters, glycerin and oat extract. Free from added fragrance.",
+    packaging: "tube",
+    visual: { from: "from-lime-50", to: "to-brand-sand", accent: "sage" },
+    image: "/products/gentle-exfoliating-scrub.jpg",
+  },
+  {
+    id: "16",
+    slug: "silk-body-oil",
+    name: "Silk Body Oil",
+    category: "Women's",
+    size: "100ml",
+    price: 24,
+    shortDescription: "A fast-absorbing dry body oil that leaves skin feeling silky, never greasy.",
+    description:
+      "Silk Body Oil is a lightweight, fast-absorbing dry oil designed to leave skin feeling soft and smooth without a heavy or greasy after-feel. A blend of nourishing plant oils sinks in within moments, making it an easy addition to a morning or evening routine, straight after the shower or before bed.",
+    benefits: [
+      "Leaves skin feeling silky, never greasy",
+      "Fast-absorbing dry oil texture",
+      "Nourishing blend of plant oils",
+      "Suitable for daily use, morning or evening",
+    ],
+    howToUse: [
+      "Apply to clean, slightly damp skin after showering or bathing.",
+      "Smooth a small amount evenly over arms, legs and body.",
+      "Allow a moment to absorb before dressing.",
+      "Patch test before first use.",
+    ],
+    ingredients:
+      "Formulated with sweet almond oil, jojoba oil and vitamin E. Free from added fragrance.",
+    packaging: "pump",
+    visual: { from: "from-amber-50", to: "to-brand-sand", accent: "champagne" },
+    image: "/products/silk-body-oil.jpg",
+  },
+  {
+    id: "17",
+    slug: "rose-quartz-sleep-mask",
+    name: "Rose Quartz Sleep Mask",
+    category: "Women's",
+    size: "50ml",
+    price: 27,
+    badge: "New",
+    shortDescription: "A rich overnight mask designed to leave skin feeling replenished by morning.",
+    description:
+      "Rose Quartz Sleep Mask is a rich, comforting overnight treatment designed to be applied as the last step of your evening routine. While you sleep, it works to support the skin's natural overnight recovery, so skin feels soft, comfortable and replenished come morning. A little goes a long way.",
+    benefits: [
+      "Designed to support overnight skin recovery",
+      "Rich, comforting texture for evening use",
+      "Skin feels soft and replenished by morning",
+      "Suitable for most skin types",
+    ],
+    howToUse: [
+      "Apply as the final step of your evening routine, two to three times a week.",
+      "Smooth a thin, even layer over face and neck.",
+      "Leave on overnight and rinse or massage in any excess in the morning.",
+      "Patch test before first use.",
+    ],
+    ingredients:
+      "Formulated with shea butter, squalane and panthenol. Free from added fragrance.",
+    packaging: "jar",
+    visual: { from: "from-rose-50", to: "to-brand-sand", accent: "champagne-dark" },
+    image: "/products/rose-quartz-sleep-mask.jpg",
+  },
+  {
+    id: "18",
+    slug: "velvet-body-lotion",
+    name: "Velvet Body Lotion",
+    category: "Women's",
+    size: "200ml",
+    price: 21,
+    shortDescription: "A soft, fast-absorbing body lotion for everyday hydration.",
+    description:
+      "Velvet Body Lotion is a soft, fast-absorbing everyday lotion designed to leave skin feeling smooth and comfortable from the moment it's applied. With a light, comforting texture and no heavy residue, it's an easy daily step for hands, arms and body.",
+    benefits: [
+      "Leaves skin feeling smooth and comfortable",
+      "Fast-absorbing, lightweight texture",
+      "No heavy or sticky residue",
+      "Suitable for daily use",
+    ],
+    howToUse: [
+      "Apply to clean skin, ideally after showering or bathing.",
+      "Smooth evenly over arms, legs and body.",
+      "Use daily for best results.",
+      "Patch test before first use.",
+    ],
+    ingredients:
+      "Formulated with shea butter, glycerin and oat extract. Free from added fragrance.",
+    packaging: "pump",
+    visual: { from: "from-pink-50", to: "to-brand-sand", accent: "champagne" },
+    image: "/products/velvet-body-lotion.jpg",
   },
 ];
 
