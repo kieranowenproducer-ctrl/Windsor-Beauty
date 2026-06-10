@@ -4,7 +4,14 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/lib/cart";
-import { calculateShipping, generateOrderNumber, saveOrder } from "@/lib/orders";
+import {
+  calculateShipping,
+  generateOrderNumber,
+  saveOrder,
+  SHIPPING_OPTIONS,
+  FREE_SHIPPING_THRESHOLD,
+  type ShippingMethod,
+} from "@/lib/orders";
 import { formatPrice } from "@/lib/products";
 
 const inputClasses =
@@ -24,9 +31,11 @@ export default function CheckoutPage() {
   const [postcode, setPostcode] = useState("");
   const [notes, setNotes] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Card");
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethod>("standard");
   const [submitting, setSubmitting] = useState(false);
 
-  const shipping = calculateShipping(subtotal);
+  const freeStandardShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const shipping = calculateShipping(subtotal, shippingMethod);
   const total = subtotal + shipping;
 
   function handleSubmit(e: FormEvent) {
@@ -40,6 +49,7 @@ export default function CheckoutPage() {
       items,
       subtotal,
       shipping,
+      shippingMethod,
       total,
       customer: { fullName, email, phone, address, city, postcode, notes },
       paymentMethod,
@@ -168,6 +178,44 @@ export default function CheckoutPage() {
                   placeholder="Delivery instructions, safe place, etc."
                 />
               </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="font-display text-2xl text-brand-charcoal mb-5">Delivery Options</h2>
+            <div className="space-y-3">
+              {SHIPPING_OPTIONS.map((option) => {
+                const cost = calculateShipping(subtotal, option.id);
+                const isFree = option.id === "standard" && freeStandardShipping;
+                return (
+                  <label
+                    key={option.id}
+                    className={`flex items-center justify-between gap-3 border px-4 py-3.5 cursor-pointer transition-colors ${
+                      shippingMethod === option.id
+                        ? "border-brand-champagne bg-brand-sand/40"
+                        : "border-brand-line hover:border-brand-champagne"
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={option.id}
+                        checked={shippingMethod === option.id}
+                        onChange={() => setShippingMethod(option.id)}
+                        className="accent-brand-champagne-dark"
+                      />
+                      <span>
+                        <span className="block text-sm text-brand-charcoal">{option.label}</span>
+                        <span className="block text-xs text-brand-stone mt-0.5">{option.description}</span>
+                      </span>
+                    </span>
+                    <span className="text-sm font-medium text-brand-charcoal shrink-0">
+                      {isFree ? "Free" : formatPrice(cost)}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 

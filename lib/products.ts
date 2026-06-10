@@ -1,6 +1,8 @@
-export type Category = "Serums" | "Moisturisers" | "Cleansers" | "Men's" | "SPF";
+export type Category = "Serums" | "Moisturisers" | "Cleansers" | "Men's" | "SPF" | "Extras";
 
-export const CATEGORIES: Category[] = ["Serums", "Moisturisers", "Cleansers", "Men's", "SPF"];
+export const CATEGORIES: Category[] = ["Serums", "Moisturisers", "Cleansers", "Men's", "SPF", "Extras"];
+
+export type Packaging = "dropper" | "pump" | "jar" | "tube" | "spray";
 
 export interface Product {
   id: string;
@@ -15,11 +17,13 @@ export interface Product {
   benefits: string[];
   howToUse: string[];
   ingredients: string;
-  /** Tailwind gradient classes used for the placeholder product visual */
+  /** Packaging shape used for the product illustration */
+  packaging: Packaging;
+  /** Tailwind classes / accent key used for the product illustration */
   visual: {
     from: string;
     to: string;
-    accent: string;
+    accent: "champagne" | "champagne-dark" | "charcoal" | "sage";
   };
 }
 
@@ -48,7 +52,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with hyaluronic acid, glycerin and panthenol. Free from added fragrance and suitable for most skin types.",
-    visual: { from: "from-amber-50", to: "to-brand-sand", accent: "bg-brand-champagne" },
+    packaging: "dropper",
+    visual: { from: "from-amber-50", to: "to-brand-sand", accent: "champagne" },
   },
   {
     id: "2",
@@ -75,7 +80,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with a stable vitamin C derivative, vitamin E and botanical extracts. Free from added fragrance.",
-    visual: { from: "from-orange-50", to: "to-brand-sand", accent: "bg-brand-champagne" },
+    packaging: "dropper",
+    visual: { from: "from-orange-50", to: "to-brand-sand", accent: "champagne-dark" },
   },
   {
     id: "3",
@@ -101,7 +107,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with niacinamide and zinc PCA. Free from added fragrance and suitable for most skin types.",
-    visual: { from: "from-stone-50", to: "to-brand-sand", accent: "bg-brand-sage" },
+    packaging: "dropper",
+    visual: { from: "from-stone-50", to: "to-brand-sand", accent: "sage" },
   },
   {
     id: "4",
@@ -129,7 +136,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with encapsulated retinol, squalane and soothing botanical extracts. Free from added fragrance.",
-    visual: { from: "from-indigo-50", to: "to-brand-sand", accent: "bg-brand-charcoal" },
+    packaging: "dropper",
+    visual: { from: "from-indigo-50", to: "to-brand-sand", accent: "charcoal" },
   },
   {
     id: "5",
@@ -155,7 +163,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with glycerin, shea butter and ceramides. Free from added fragrance.",
-    visual: { from: "from-rose-50", to: "to-brand-sand", accent: "bg-brand-champagne" },
+    packaging: "pump",
+    visual: { from: "from-rose-50", to: "to-brand-sand", accent: "champagne" },
   },
   {
     id: "6",
@@ -181,7 +190,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with oat extract, glycerin and a gentle plant-derived cleansing base. Free from added fragrance.",
-    visual: { from: "from-sky-50", to: "to-brand-sand", accent: "bg-brand-sage" },
+    packaging: "pump",
+    visual: { from: "from-sky-50", to: "to-brand-sand", accent: "sage" },
   },
   {
     id: "7",
@@ -207,7 +217,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with caffeine extract, peptides and panthenol. Free from added fragrance.",
-    visual: { from: "from-teal-50", to: "to-brand-sand", accent: "bg-brand-champagne" },
+    packaging: "jar",
+    visual: { from: "from-teal-50", to: "to-brand-sand", accent: "champagne-dark" },
   },
   {
     id: "8",
@@ -233,7 +244,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with broad-spectrum SPF30 filters, glycerin and antioxidant plant extracts. Free from added fragrance.",
-    visual: { from: "from-yellow-50", to: "to-brand-sand", accent: "bg-brand-champagne" },
+    packaging: "pump",
+    visual: { from: "from-yellow-50", to: "to-brand-sand", accent: "champagne" },
   },
   {
     id: "9",
@@ -259,7 +271,8 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with hyaluronic acid, panthenol and a light botanical blend. Free from added fragrance.",
-    visual: { from: "from-slate-100", to: "to-brand-sand", accent: "bg-brand-charcoal" },
+    packaging: "dropper",
+    visual: { from: "from-slate-100", to: "to-brand-sand", accent: "charcoal" },
   },
   {
     id: "10",
@@ -285,7 +298,112 @@ export const PRODUCTS: Product[] = [
     ],
     ingredients:
       "Formulated with colloidal oatmeal, ceramides and shea butter. Fragrance-free.",
-    visual: { from: "from-emerald-50", to: "to-brand-sand", accent: "bg-brand-sage" },
+    packaging: "jar",
+    visual: { from: "from-emerald-50", to: "to-brand-sand", accent: "sage" },
+  },
+  {
+    id: "11",
+    slug: "soothing-toning-mist",
+    name: "Soothing Toning Mist",
+    category: "Extras",
+    size: "100ml",
+    price: 18,
+    badge: "New",
+    shortDescription: "A fine facial mist with rosewater and aloe, designed to refresh and prep skin.",
+    description:
+      "Soothing Toning Mist is a light, alcohol-free spray designed to refresh skin throughout the day or prepare it for the next step of your routine. With rosewater and aloe vera, it's intended to leave skin feeling calm and comfortable, whether used in the morning, before serum, or as a midday refresh. Suitable for most skin types, including sensitive skin.",
+    benefits: [
+      "Refreshes and preps skin before serum or moisturiser",
+      "Lightweight, alcohol-free formula",
+      "Can be used throughout the day as needed",
+      "Suitable for sensitive skin",
+    ],
+    howToUse: [
+      "Mist evenly over face with eyes closed, holding the bottle at arm's length.",
+      "Use on clean skin before serum, or anytime to refresh.",
+      "Allow to absorb naturally or pat in gently.",
+      "Patch test before first use.",
+    ],
+    ingredients:
+      "Formulated with rosewater, aloe vera and panthenol. Alcohol-free and free from added fragrance.",
+    packaging: "spray",
+    visual: { from: "from-green-50", to: "to-brand-sand", accent: "sage" },
+  },
+  {
+    id: "12",
+    slug: "velvet-lip-balm",
+    name: "Velvet Lip Balm",
+    category: "Extras",
+    size: "15g",
+    price: 9.5,
+    shortDescription: "A nourishing lip balm with shea butter, designed to soften and protect dry lips.",
+    description:
+      "Velvet Lip Balm is a rich, fast-melting balm designed to soften dry or chapped lips. With shea butter and a light wax base, it leaves a smooth, non-sticky finish and fits easily into a bag or pocket for use throughout the day. Suitable for everyone.",
+    benefits: [
+      "Softens and comforts dry lips",
+      "Light, non-sticky, fast-melting balm",
+      "Compact size for on-the-go use",
+      "Suitable for everyone",
+    ],
+    howToUse: [
+      "Apply directly to lips as needed throughout the day.",
+      "Reapply after eating or drinking.",
+      "Suitable for layering under lipstick or alone.",
+    ],
+    ingredients: "Formulated with shea butter, beeswax and vitamin E. Free from added fragrance.",
+    packaging: "tube",
+    visual: { from: "from-pink-50", to: "to-brand-sand", accent: "champagne-dark" },
+  },
+  {
+    id: "13",
+    slug: "restore-hand-cream",
+    name: "Restore Hand Cream",
+    category: "Extras",
+    size: "50ml",
+    price: 13.5,
+    shortDescription: "A rich, fast-absorbing hand cream for dry or hardworking hands.",
+    description:
+      "Restore Hand Cream is a rich, fast-absorbing formula designed for hands that need a little extra care. With shea butter and glycerin, it helps hands feel soft and comfortable without leaving a greasy residue, making it easy to use throughout the day, including before bed.",
+    benefits: [
+      "Helps dry hands feel soft and comfortable",
+      "Fast-absorbing, non-greasy formula",
+      "Compact tube for desks, bags and bedside tables",
+      "Suitable for everyone",
+    ],
+    howToUse: [
+      "Apply to clean, dry hands as needed.",
+      "Massage in until fully absorbed.",
+      "Use throughout the day or as a final step before bed.",
+    ],
+    ingredients: "Formulated with shea butter, glycerin and oat extract. Free from added fragrance.",
+    packaging: "tube",
+    visual: { from: "from-stone-100", to: "to-brand-sand", accent: "champagne" },
+  },
+  {
+    id: "14",
+    slug: "cooling-aftershave-balm",
+    name: "Cooling Aftershave Balm",
+    category: "Men's",
+    size: "75ml",
+    price: 19.5,
+    shortDescription: "A cooling, fragrance-free balm designed to calm skin after shaving.",
+    description:
+      "Cooling Aftershave Balm is a lightweight, fast-absorbing formula designed to calm and comfort skin straight after shaving. With aloe vera and panthenol, it helps reduce that tight, freshly-shaved feeling, leaving skin feeling cool and comfortable. Fragrance-free and suitable for sensitive skin.",
+    benefits: [
+      "Designed to calm skin after shaving",
+      "Cooling, fragrance-free formula",
+      "Fast-absorbing, non-greasy finish",
+      "Suitable for sensitive skin",
+    ],
+    howToUse: [
+      "Apply a small amount to clean skin immediately after shaving.",
+      "Smooth evenly over face and neck.",
+      "Avoid contact with eyes.",
+      "Patch test before first use.",
+    ],
+    ingredients: "Formulated with aloe vera, panthenol and a light botanical blend. Fragrance-free.",
+    packaging: "tube",
+    visual: { from: "from-cyan-50", to: "to-brand-sand", accent: "charcoal" },
   },
 ];
 
@@ -300,4 +418,9 @@ export function getProductsByCategory(category: Category | "All"): Product[] {
 
 export function formatPrice(price: number): string {
   return `£${price.toFixed(2)}`;
+}
+
+/** Formats whole-pound amounts without trailing decimals, useful for marketing copy. */
+export function formatPriceShort(price: number): string {
+  return Number.isInteger(price) ? `£${price}` : formatPrice(price);
 }

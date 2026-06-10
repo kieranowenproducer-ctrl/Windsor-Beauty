@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Heart, Leaf, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
-import ProductVisual from "@/components/product/ProductVisual";
+import ProductIllustration from "@/components/product/ProductIllustration";
 import Newsletter from "@/components/home/Newsletter";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, formatPriceShort } from "@/lib/products";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/orders";
 
-const FEATURED_SLUGS = ["hydra-veil-serum", "glow-drops-vitamin-c-serum", "daily-veil-moisturiser", "daily-shield-spf30"];
+const FEATURED_SLUGS = ["hydra-veil-serum", "glow-drops-vitamin-c-serum", "renew-night-serum", "soothing-toning-mist"];
 
 const BENEFITS = [
   {
@@ -38,23 +39,28 @@ const ROUTINE_STEPS = [
   },
   {
     step: "02",
+    title: "Tone",
+    description: "Refresh and prep skin with Soothing Toning Mist before your serum.",
+  },
+  {
+    step: "03",
     title: "Treat",
     description: "Apply a serum suited to your skin, such as Hydra Veil or Glow Drops.",
   },
   {
-    step: "03",
+    step: "04",
     title: "Moisturise",
-    description: "Lock everything in with Daily Veil Moisturiser for comfortable, hydrated-looking skin.",
+    description: "Lock everything in with Daily Veil Moisturiser for comfortable, hydrated skin.",
   },
   {
-    step: "04",
+    step: "05",
     title: "Protect",
     description: "Finish your morning routine with Daily Shield SPF30.",
   },
 ];
 
 const TRUST_BADGES = [
-  { icon: Truck, label: "Free UK delivery over £35" },
+  { icon: Truck, label: `Free UK delivery over ${formatPriceShort(FREE_SHIPPING_THRESHOLD)}` },
   { icon: ShieldCheck, label: "Patch tested formulas" },
   { icon: Heart, label: "Cruelty-free" },
   { icon: RotateCcw, label: "30-day returns" },
@@ -97,7 +103,7 @@ export default function HomePage() {
         {/* Visual showcase */}
         <div className="mt-14 grid grid-cols-3 gap-3 sm:gap-5 max-w-2xl mx-auto">
           {featured.slice(0, 3).map((product) => (
-            <ProductVisual key={product.id} product={product} className="aspect-[4/5] rounded-sm" />
+            <ProductIllustration key={product.id} product={product} className="aspect-[4/5] rounded-sm" />
           ))}
         </div>
       </section>
@@ -150,10 +156,10 @@ export default function HomePage() {
           </p>
           <h2 className="font-display text-3xl sm:text-4xl text-brand-charcoal">A Simple Daily Routine</h2>
           <p className="mt-3 text-sm text-brand-stone leading-relaxed">
-            Four easy steps to build a routine that fits into your morning.
+            Five easy steps to build a routine that fits into your morning.
           </p>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
           {ROUTINE_STEPS.map((item) => (
             <div key={item.step} className="border-t border-brand-line pt-5">
               <span className="font-display text-3xl text-brand-champagne-dark">{item.step}</span>

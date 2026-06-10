@@ -14,11 +14,12 @@ export default function ShippingPolicyPage() {
         you as quickly as possible.
       </p>
 
-      <h2>Delivery Costs</h2>
-      <p>
-        Standard UK delivery costs <strong>£3.95</strong>. Orders over <strong>£35</strong> qualify
-        for free standard UK delivery automatically at checkout.
-      </p>
+      <h2>Delivery Options</h2>
+      <ul>
+        <li><strong>Standard Delivery</strong> &mdash; £3.95, 2 to 4 working days via Royal Mail Tracked 48</li>
+        <li><strong>Express Delivery</strong> &mdash; £6.95, 1 to 2 working days via Royal Mail Tracked 24</li>
+        <li>Orders over <strong>£45</strong> qualify for free Standard Delivery automatically at checkout</li>
+      </ul>
 
       <h2>Despatch Times</h2>
       <p>
@@ -29,8 +30,8 @@ export default function ShippingPolicyPage() {
 
       <h2>Delivery Times</h2>
       <ul>
-        <li>Standard UK delivery: 2 to 4 working days from despatch</li>
-        <li>Orders are sent via Royal Mail or a comparable tracked courier</li>
+        <li>Standard Delivery: 2 to 4 working days from despatch via Royal Mail Tracked 48</li>
+        <li>Express Delivery: 1 to 2 working days from despatch via Royal Mail Tracked 24</li>
         <li>A confirmation email with tracking details is sent once your order is despatched</li>
       </ul>
 

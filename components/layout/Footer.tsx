@@ -1,5 +1,15 @@
 import Link from "next/link";
+import { Lock, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import Logo from "@/components/Logo";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/orders";
+import { formatPriceShort } from "@/lib/products";
+
+const TRUST_STRIP = [
+  { icon: Truck, label: `Free standard delivery over ${formatPriceShort(FREE_SHIPPING_THRESHOLD)}` },
+  { icon: ShieldCheck, label: "Patch tested formulas" },
+  { icon: RotateCcw, label: "30-day returns" },
+  { icon: Lock, label: "Secure checkout" },
+];
 
 const FOOTER_LINKS: { heading: string; links: { label: string; href: string }[] }[] = [
   {
@@ -10,6 +20,7 @@ const FOOTER_LINKS: { heading: string; links: { label: string; href: string }[] 
       { label: "Cleansers", href: "/shop?category=Cleansers" },
       { label: "Men's Skincare", href: "/shop?category=Men%27s" },
       { label: "SPF", href: "/shop?category=SPF" },
+      { label: "Extras", href: "/shop?category=Extras" },
     ],
   },
   {
@@ -33,6 +44,18 @@ const FOOTER_LINKS: { heading: string; links: { label: string; href: string }[] 
 export default function Footer() {
   return (
     <footer className="border-t border-brand-line bg-brand-sand/60">
+      <div className="border-b border-brand-line">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10 py-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4">
+            {TRUST_STRIP.map((item) => (
+              <div key={item.label} className="flex items-center gap-3 justify-center text-center sm:text-left sm:justify-start">
+                <item.icon className="h-5 w-5 text-brand-champagne-dark shrink-0" strokeWidth={1.5} />
+                <span className="text-xs text-brand-charcoal">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10 py-14">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
           <div className="col-span-2">

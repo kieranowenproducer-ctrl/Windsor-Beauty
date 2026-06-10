@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
-import { getOrder, type OrderDetails } from "@/lib/orders";
+import { getOrder, SHIPPING_OPTIONS, type OrderDetails } from "@/lib/orders";
 import { formatPrice } from "@/lib/products";
 
 export default function OrderConfirmationPage({ params }: { params: { orderNumber: string } }) {
@@ -78,7 +78,15 @@ export default function OrderConfirmationPage({ params }: { params: { orderNumbe
             <span>{formatPrice(order.subtotal)}</span>
           </div>
           <div className="flex items-center justify-between text-brand-stone">
-            <span>Shipping</span>
+            <span>
+              Shipping
+              {order.shippingMethod && (
+                <span className="text-xs">
+                  {" "}
+                  ({SHIPPING_OPTIONS.find((o) => o.id === order.shippingMethod)?.label ?? "Standard Delivery"})
+                </span>
+              )}
+            </span>
             <span>{order.shipping === 0 ? "Free" : formatPrice(order.shipping)}</span>
           </div>
           <div className="flex items-center justify-between pt-2 border-t border-brand-line">

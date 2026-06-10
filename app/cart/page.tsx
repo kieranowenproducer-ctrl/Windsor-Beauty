@@ -5,7 +5,7 @@ import { Minus, Plus, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { calculateShipping, FREE_SHIPPING_THRESHOLD } from "@/lib/orders";
 import { formatPrice, getProductBySlug } from "@/lib/products";
-import ProductVisual from "@/components/product/ProductVisual";
+import ProductIllustration from "@/components/product/ProductIllustration";
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, subtotal, hydrated } = useCart();
@@ -44,7 +44,7 @@ export default function CartPage() {
             const product = getProductBySlug(item.slug);
             return (
               <div key={item.slug} className="py-6 flex gap-4 sm:gap-6">
-                {product && <ProductVisual product={product} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-sm" />}
+                {product && <ProductIllustration product={product} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-sm" />}
                 <div className="flex-1 flex flex-col">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -103,13 +103,13 @@ export default function CartPage() {
                   />
                 </div>
                 <p className="mt-2 text-xs text-brand-stone">
-                  Add {formatPrice(remaining)} more for free UK delivery.
+                  Add {formatPrice(remaining)} more for free standard UK delivery.
                 </p>
               </div>
             ) : (
               <div className="mb-5">
                 <div className="h-1 w-full bg-brand-champagne" />
-                <p className="mt-2 text-xs text-brand-champagne-dark">You qualify for free UK delivery.</p>
+                <p className="mt-2 text-xs text-brand-champagne-dark">You qualify for free standard UK delivery.</p>
               </div>
             )}
 
@@ -123,6 +123,7 @@ export default function CartPage() {
                 <span>{shipping === 0 ? "Free" : formatPrice(shipping)}</span>
               </div>
             </div>
+            <p className="mt-2 text-xs text-brand-stone">Standard delivery shown. Express delivery available at checkout.</p>
 
             <div className="mt-4 pt-4 border-t border-brand-line flex items-center justify-between">
               <span className="text-sm font-medium text-brand-charcoal">Total</span>

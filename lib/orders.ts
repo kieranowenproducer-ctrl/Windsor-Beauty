@@ -1,10 +1,13 @@
 import type { CartItem } from "./cart";
 
+export type ShippingMethod = "standard" | "express";
+
 export interface OrderDetails {
   orderNumber: string;
   items: CartItem[];
   subtotal: number;
   shipping: number;
+  shippingMethod: ShippingMethod;
   total: number;
   customer: {
     fullName: string;
@@ -47,9 +50,29 @@ export function getOrder(orderNumber: string): OrderDetails | undefined {
   return getAllOrders().find((o) => o.orderNumber === orderNumber);
 }
 
-export const FREE_SHIPPING_THRESHOLD = 35;
+export const FREE_SHIPPING_THRESHOLD = 45;
 export const STANDARD_SHIPPING_COST = 3.95;
+export const EXPRESS_SHIPPING_COST = 6.95;
 
-export function calculateShipping(subtotal: number): number {
-  return subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : STANDARD_SHIPPING_COST;
+export const SHIPPING_OPTIONS: {
+  id: ShippingMethod;
+  label: string;
+  description: string;
+}[] = [
+  {
+    id: "standard",
+    label: "Standard Delivery",
+    description: "2 to 4 working days via Royal Mail Tracked 48",
+  },
+  {
+    id: "express",
+    label: "Express Delivery",
+    description: "1 to 2 working days via Royal Mail Tracked 24",
+  },
+];
+
+export function calculateShipping(subtotal: number, method: ShippingMethod = "standard"): number {
+  if (subtotal === 0) return 0;
+  if (method === "express") return EXPRESS_SHIPPING_COST;
+  return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_COST;
 }
