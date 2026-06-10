@@ -25,6 +25,8 @@ export interface Product {
     to: string;
     accent: "champagne" | "champagne-dark" | "charcoal" | "sage";
   };
+  /** Path to the product photo in /public */
+  image: string;
 }
 
 export const PRODUCTS: Product[] = [
@@ -54,6 +56,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with hyaluronic acid, glycerin and panthenol. Free from added fragrance and suitable for most skin types.",
     packaging: "dropper",
     visual: { from: "from-amber-50", to: "to-brand-sand", accent: "champagne" },
+    image: "/products/hydra-veil-serum.jpg",
   },
   {
     id: "2",
@@ -82,6 +85,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with a stable vitamin C derivative, vitamin E and botanical extracts. Free from added fragrance.",
     packaging: "dropper",
     visual: { from: "from-orange-50", to: "to-brand-sand", accent: "champagne-dark" },
+    image: "/products/glow-drops-vitamin-c-serum.jpg",
   },
   {
     id: "3",
@@ -109,6 +113,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with niacinamide and zinc PCA. Free from added fragrance and suitable for most skin types.",
     packaging: "dropper",
     visual: { from: "from-stone-50", to: "to-brand-sand", accent: "sage" },
+    image: "/products/pore-refine-niacinamide-serum.jpg",
   },
   {
     id: "4",
@@ -138,6 +143,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with encapsulated retinol, squalane and soothing botanical extracts. Free from added fragrance.",
     packaging: "dropper",
     visual: { from: "from-indigo-50", to: "to-brand-sand", accent: "charcoal" },
+    image: "/products/renew-night-serum.jpg",
   },
   {
     id: "5",
@@ -165,6 +171,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with glycerin, shea butter and ceramides. Free from added fragrance.",
     packaging: "pump",
     visual: { from: "from-rose-50", to: "to-brand-sand", accent: "champagne" },
+    image: "/products/daily-veil-moisturiser.jpg",
   },
   {
     id: "6",
@@ -192,6 +199,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with oat extract, glycerin and a gentle plant-derived cleansing base. Free from added fragrance.",
     packaging: "pump",
     visual: { from: "from-sky-50", to: "to-brand-sand", accent: "sage" },
+    image: "/products/pure-cream-cleanser.jpg",
   },
   {
     id: "7",
@@ -219,6 +227,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with caffeine extract, peptides and panthenol. Free from added fragrance.",
     packaging: "jar",
     visual: { from: "from-teal-50", to: "to-brand-sand", accent: "champagne-dark" },
+    image: "/products/bright-eye-cream.jpg",
   },
   {
     id: "8",
@@ -246,6 +255,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with broad-spectrum SPF30 filters, glycerin and antioxidant plant extracts. Free from added fragrance.",
     packaging: "pump",
     visual: { from: "from-yellow-50", to: "to-brand-sand", accent: "champagne" },
+    image: "/products/daily-shield-spf30.jpg",
   },
   {
     id: "9",
@@ -273,6 +283,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with hyaluronic acid, panthenol and a light botanical blend. Free from added fragrance.",
     packaging: "dropper",
     visual: { from: "from-slate-100", to: "to-brand-sand", accent: "charcoal" },
+    image: "/products/active-hydration-serum-men.jpg",
   },
   {
     id: "10",
@@ -300,6 +311,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with colloidal oatmeal, ceramides and shea butter. Fragrance-free.",
     packaging: "jar",
     visual: { from: "from-emerald-50", to: "to-brand-sand", accent: "sage" },
+    image: "/products/calm-repair-cream.jpg",
   },
   {
     id: "11",
@@ -328,6 +340,7 @@ export const PRODUCTS: Product[] = [
       "Formulated with rosewater, aloe vera and panthenol. Alcohol-free and free from added fragrance.",
     packaging: "spray",
     visual: { from: "from-green-50", to: "to-brand-sand", accent: "sage" },
+    image: "/products/soothing-toning-mist.jpg",
   },
   {
     id: "12",
@@ -353,6 +366,7 @@ export const PRODUCTS: Product[] = [
     ingredients: "Formulated with shea butter, beeswax and vitamin E. Free from added fragrance.",
     packaging: "tube",
     visual: { from: "from-pink-50", to: "to-brand-sand", accent: "champagne-dark" },
+    image: "/products/velvet-lip-balm.jpg",
   },
   {
     id: "13",
@@ -378,6 +392,7 @@ export const PRODUCTS: Product[] = [
     ingredients: "Formulated with shea butter, glycerin and oat extract. Free from added fragrance.",
     packaging: "tube",
     visual: { from: "from-stone-100", to: "to-brand-sand", accent: "champagne" },
+    image: "/products/restore-hand-cream.jpg",
   },
   {
     id: "14",
@@ -404,6 +419,7 @@ export const PRODUCTS: Product[] = [
     ingredients: "Formulated with aloe vera, panthenol and a light botanical blend. Fragrance-free.",
     packaging: "tube",
     visual: { from: "from-cyan-50", to: "to-brand-sand", accent: "charcoal" },
+    image: "/products/cooling-aftershave-balm.jpg",
   },
 ];
 

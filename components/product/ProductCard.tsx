@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCart } from "@/lib/cart";
 import { formatPrice, type Product } from "@/lib/products";
-import ProductIllustration from "./ProductIllustration";
+import ProductImage from "./ProductImage";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -12,7 +12,7 @@ export default function ProductCard({ product }: { product: Product }) {
     <div className="group flex flex-col">
       <Link href={`/shop/${product.slug}`} className="block">
         <div className="relative">
-          <ProductIllustration product={product} className="aspect-[4/5] w-full" />
+          <ProductImage product={product} className="aspect-[4/5] w-full" />
           {product.badge && (
             <span className="absolute left-3 top-3 bg-brand-charcoal text-brand-cream text-[9px] tracking-widest uppercase px-2.5 py-1">
               {product.badge}

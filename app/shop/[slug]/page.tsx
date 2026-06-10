@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ProductIllustration from "@/components/product/ProductIllustration";
+import ProductImage from "@/components/product/ProductImage";
 import ProductActions from "@/components/product/ProductActions";
 import ProductCard from "@/components/product/ProductCard";
 import { PRODUCTS, formatPrice, getProductBySlug } from "@/lib/products";
@@ -43,7 +43,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
       <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
         {/* Visual */}
-        <ProductIllustration product={product} className="aspect-[4/5] w-full rounded-sm" />
+        <ProductImage product={product} className="aspect-[4/5] w-full rounded-sm" sizes="(max-width: 1024px) 100vw, 50vw" priority />
 
         {/* Info */}
         <div>

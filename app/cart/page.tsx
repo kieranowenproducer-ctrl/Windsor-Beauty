@@ -5,7 +5,7 @@ import { Minus, Plus, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { calculateShipping, FREE_SHIPPING_THRESHOLD } from "@/lib/orders";
 import { formatPrice, getProductBySlug } from "@/lib/products";
-import ProductIllustration from "@/components/product/ProductIllustration";
+import ProductImage from "@/components/product/ProductImage";
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, subtotal, hydrated } = useCart();
@@ -44,7 +44,7 @@ export default function CartPage() {
             const product = getProductBySlug(item.slug);
             return (
               <div key={item.slug} className="py-6 flex gap-4 sm:gap-6">
-                {product && <ProductIllustration product={product} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-sm" />}
+                {product && <ProductImage product={product} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-sm" sizes="112px" />}
                 <div className="flex-1 flex flex-col">
                   <div className="flex items-start justify-between gap-3">
                     <div>

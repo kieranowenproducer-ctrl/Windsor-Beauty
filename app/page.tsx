@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Heart, Leaf, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
-import ProductIllustration from "@/components/product/ProductIllustration";
+import ProductImage from "@/components/product/ProductImage";
 import Newsletter from "@/components/home/Newsletter";
 import { PRODUCTS, formatPriceShort } from "@/lib/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/orders";
@@ -103,7 +103,7 @@ export default function HomePage() {
         {/* Visual showcase */}
         <div className="mt-14 grid grid-cols-3 gap-3 sm:gap-5 max-w-2xl mx-auto">
           {featured.slice(0, 3).map((product) => (
-            <ProductIllustration key={product.id} product={product} className="aspect-[4/5] rounded-sm" />
+            <ProductImage key={product.id} product={product} className="aspect-[4/5] rounded-sm" sizes="(max-width: 640px) 33vw, 16vw" priority />
           ))}
         </div>
       </section>
