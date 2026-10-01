@@ -288,12 +288,12 @@ export async function POST(request: Request) {
   }
   if (effectiveDiscountCode?.toUpperCase().startsWith('WB-STAMP-')) {
     if (!referralsEnabled() || !(await referralVoucherOwnedBy(effectiveDiscountCode, customer!.id))) {
-      return NextResponse.json({ error: 'That Glow Card reward code is not available for your account.' }, { status: 403 });
+      return NextResponse.json({ error: 'That Beauty Card reward code is not available for your account.' }, { status: 403 });
     }
   }
   if (effectiveDiscountCode?.toUpperCase().startsWith('WB-GLOW-')) {
     if (!glowCardLoyaltyEnabled() || !(await glowCardVoucherOwnedBy(effectiveDiscountCode, customer!.id))) {
-      return NextResponse.json({ error: 'That Glow Card reward code is not available for your account.' }, { status: 403 });
+      return NextResponse.json({ error: 'That Beauty Card reward code is not available for your account.' }, { status: 403 });
     }
   }
   if (effectiveDiscountCode?.toUpperCase().startsWith('RAF-CREDIT-') && !(await affiliateCreditOwnedBy(effectiveDiscountCode, customer!.id).catch(() => false))) {
@@ -374,7 +374,7 @@ export async function POST(request: Request) {
   }
   if (isGlowReward && subtotal < REFERRAL_MIN_FIRST_ORDER) {
     return NextResponse.json({
-      error: `Glow Card rewards can be used when your products total £${REFERRAL_MIN_FIRST_ORDER} or more before delivery. Your reward code has not been used.`,
+      error: `Beauty Card rewards can be used when your products total £${REFERRAL_MIN_FIRST_ORDER} or more before delivery. Your reward code has not been used.`,
     }, { status: 400 });
   }
   const isStandardUkDelivery = resolveServiceFromLabel(shippingLabel) === 'uk-standard';
@@ -499,7 +499,7 @@ export async function POST(request: Request) {
       ? await reserveReferralVoucher(effectiveDiscountCode!, customer!.id).catch(() => false)
       : await reserveGlowCardVoucher(effectiveDiscountCode!, customer!.id).catch(() => false);
     if (!rewardReserved) {
-      return NextResponse.json({ error: 'That Glow Card reward code was already used or is no longer available.' }, { status: 409 });
+      return NextResponse.json({ error: 'That Beauty Card reward code was already used or is no longer available.' }, { status: 409 });
     }
   }
 

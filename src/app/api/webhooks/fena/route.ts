@@ -374,7 +374,7 @@ ${existingNotes}` : notice.note)
       amount: unlocked.milestone === 5 ? 10 : unlocked.milestone === 10 ? 20 : 30,
     }).catch(() => false);
     if (!milestoneSent) {
-      await logAutomationFailure('customer_email', `Glow Card £${unlocked.milestone === 5 ? 10 : unlocked.milestone === 10 ? 20 : 30} reward email was not sent`, {
+      await logAutomationFailure('customer_email', `Beauty Card £${unlocked.milestone === 5 ? 10 : unlocked.milestone === 10 ? 20 : 30} reward email was not sent`, {
         orderNumber: order.order_number,
         detail: 'The reward remains safely available in the member account. Check the email service and resend the order email if needed.',
       });

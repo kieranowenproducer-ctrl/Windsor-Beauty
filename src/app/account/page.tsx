@@ -246,7 +246,7 @@ export default function AccountDashboardPage() {
       {(demoDesign || process.env.NEXT_PUBLIC_WB_MEMBER_REFERRALS_ENABLED === 'true' && customer.emailVerified) && (
         <div className="border border-gold-200 bg-white px-5 py-5 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="font-serif text-xl text-stone-800">Your Glow Card</h2>
+            <h2 className="font-serif text-xl text-stone-800">Your Beauty Card</h2>
             <p className="text-xs text-stone-600 mt-1">{demoDesign ? `Demo design: ${demoDesign}. Test stamps and rewards stay in this account.` : 'Share your member link and collect stamps from genuine first orders.'}</p>
           </div>
           <Link href="/account/glow-card" className="shrink-0 bg-gold-700 text-white px-5 py-3 text-xs text-center hover:bg-gold-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700">

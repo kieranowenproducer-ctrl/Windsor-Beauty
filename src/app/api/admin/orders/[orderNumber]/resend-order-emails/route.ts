@@ -37,7 +37,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
     order.shipping_country,
   ].filter(Boolean).join('\n');
 
-  // A resend must give the member the same useful, live Glow Card position as
+  // A resend must give the member the same useful, live Beauty Card position as
   // the original confirmation. It never awards a second point.
   const glowCardSummary = glowCardLoyaltyEnabled() && order.customer_id
     ? await getGlowCardSummary(order.customer_id).catch(() => null)

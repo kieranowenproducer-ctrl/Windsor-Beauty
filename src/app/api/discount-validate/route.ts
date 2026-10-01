@@ -119,8 +119,8 @@ export async function POST(request: Request) {
           return refuse({
             email: customer.email,
             code,
-            message: 'That Glow Card reward code is not available for your account.',
-            reason: 'A Glow Card reward code that is not theirs.',
+            message: 'That Beauty Card reward code is not available for your account.',
+            reason: 'A Beauty Card reward code that is not theirs.',
           });
         }
       }
@@ -128,8 +128,8 @@ export async function POST(request: Request) {
         if (!glowCardLoyaltyEnabled() || !(await glowCardVoucherOwnedBy(code, customer.id))) {
           return refuse({
             email: customer.email, code,
-            message: 'That Glow Card reward code is not available for your account.',
-            reason: 'A Glow Card order-loyalty reward code that is not theirs.',
+            message: 'That Beauty Card reward code is not available for your account.',
+            reason: 'A Beauty Card order-loyalty reward code that is not theirs.',
           });
         }
       }
