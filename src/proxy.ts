@@ -11,24 +11,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isWallUp } from '@/lib/launchWindow';
 
-// Endpoints that authenticate with the AGENT_TASK_SECRET bearer instead of the
-// admin session cookie. Adding a route here ONLY exempts it from the cookie gate;
-// the route must still enforce the bearer check in its own handler. If you add an
-// agent endpoint and forget this list, it will 401 before your handler runs.
-const AGENT_BEARER_ROUTES = new Set([
-  '/api/admin/tasks/agent-attach',
-  '/api/admin/tasks/agent-catalogue',
-  '/api/admin/tasks/agent-order-lookup',
-  '/api/admin/tasks/agent-cleanup-media',
-  // Stage 5 of the assistant merge: the hosted concierge service's data
-  // endpoints (customer orders and the enquiry handover). The blog search
-  // entry that used to sit here was removed on 26 September 2026: its route
-  // was deleted with the blog, so the entry allowlisted a dead address.
-  '/api/admin/tasks/agent-customer-orders',
-  '/api/admin/tasks/agent-enquiry',
-  '/api/admin/voice-transcribe',
-]);
-
 const ADMIN_COOKIE = 'wg_admin_session';
 const CUSTOMER_COOKIE = 'wg_customer_session';
 const LAUNCH_COOKIE = 'wg_launch_access';
@@ -143,8 +125,8 @@ export function proxy(request: NextRequest) {
      a URL segment may contain a dot.
 
      Measured on the live site, 18 August 2026, with no session at all:
-       /api/admin/pearl-terminology/1        -> 401, refused here
-       /api/admin/pearl-terminology/1.json   -> reached the handler
+       /api/admin/<dynamic-route>/1        -> 401, refused here
+       /api/admin/<dynamic-route>/1.json   -> reached the handler
      Nothing leaked, because each handler rejected the suffixed id on its own
      account. But that is the second line of defence doing the first line's
      job, and it only held because every handler happened to check. The next
@@ -171,13 +153,6 @@ export function proxy(request: NextRequest) {
     return uncached(NextResponse.redirect(new URL('/', request.url)));
   }
 
-  // Local-only visual review for the new PEARL control centre. The page itself
-  // also returns 404 outside development, so this never opens an admin route in
-  // a production or Vercel preview build.
-  if (pathname === '/admin/pearl/preview' && process.env.NODE_ENV === 'development') {
-    return NextResponse.next();
-  }
-
   // Allow login page and the login API through
   if (pathname === '/admin/login' || pathname.startsWith('/api/admin/login')) {
     return NextResponse.next();
@@ -186,21 +161,6 @@ export function proxy(request: NextRequest) {
   // Let the logout handler clear the cookie without the rolling staff-session
   // refresh adding a second Set-Cookie header that signs the browser back in.
   if (pathname === '/api/admin/logout') {
-    return NextResponse.next();
-  }
-
-  // These endpoints authenticate themselves with a bearer secret
-  // (AGENT_TASK_SECRET), not the admin session cookie — the local task-agent has
-  // no cookie. They are let past the admin-cookie gate; each handler enforces the
-  // bearer check itself and rejects anything without the secret.
-  //
-  // Listed explicitly, and deliberately NOT matched by an `agent-*` prefix rule.
-  // A prefix rule fails OPEN: a future agent-* route whose handler forgot its
-  // bearer check would be served to the public behind no gate at all. Forgetting
-  // to add a route here fails CLOSED instead — the route 401s until it is added,
-  // which is noisy and safe rather than quiet and dangerous. (That is exactly what
-  // happened to agent-cleanup-media: it 401'd here, before its handler ever ran.)
-  if (AGENT_BEARER_ROUTES.has(pathname)) {
     return NextResponse.next();
   }
 

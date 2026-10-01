@@ -1,27 +1,21 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { isMemberView, isStaffView } from '@/lib/staffView';
+import { isStaffView } from '@/lib/staffView';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 
 const NAV_LINKS: { label: string; href: string; highlight?: boolean }[] = [
-  // AI Assistance leads the navigation so members can reach either support
-  // mode immediately. The page itself decides what each visitor sees.
-  { label: 'AI Assistance', href: '/concierge', highlight: true },
   { label: 'Shop', href: '/shop' },
   { label: 'Special Offers', href: '/promotion' },
-  { label: 'Verify', href: '/verify' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
   // Reviews now sits in the main nav so it's reachable from every page, not only
   // the homepage.
   { label: 'Reviews', href: '/reviews' },
 ];
-
-const CALCULATOR_LINK: (typeof NAV_LINKS)[number] = { label: 'Calculator', href: '/calculator' };
 
 export default function Header() {
   const pathname = usePathname();
@@ -57,16 +51,12 @@ export default function Header() {
   // "signed out". The middleware sets a non-httpOnly `wg_ui_session=staff`
   // hint cookie for admins, which we can read here.
   const [isStaff, setIsStaff] = useState(false);
-  const [isMember, setIsMember] = useState(false);
   useEffect(() => {
     setIsStaff(isStaffView());
-    setIsMember(isMemberView());
   }, [pathname]);
   const accountHref = isStaff ? '/admin' : '/account';
   const accountLabel = isStaff ? 'Admin panel' : 'My account';
-  const navLinks = isMember
-    ? [...NAV_LINKS.slice(0, 4), CALCULATOR_LINK, ...NAV_LINKS.slice(4)]
-    : NAV_LINKS;
+  const navLinks = NAV_LINKS;
 
   // Mobile nav scroll cues: the strip scrolls sideways, but with a hidden
   // scrollbar nothing says so — links past the fold (Contact, Reviews) looked
@@ -91,7 +81,7 @@ export default function Header() {
       el?.removeEventListener('scroll', updateNavCues);
       window.removeEventListener('resize', updateNavCues);
     };
-  }, [updateNavCues, isMember]);
+  }, [updateNavCues]);
   const nudgeNav = (dir: 1 | -1) => {
     const el = mobileNavRef.current;
     el?.scrollBy({ left: dir * Math.round(el.clientWidth * 0.6), behavior: 'smooth' });

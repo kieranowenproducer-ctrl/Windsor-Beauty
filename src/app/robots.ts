@@ -11,7 +11,7 @@ import type { MetadataRoute } from 'next';
  *
  * Found on 7 August 2026 while checking whether the shop was visible to search at all. The bigger
  * half of that fault, the homepage serving a blank noindex shell to anything without JavaScript,
- * had already been fixed: fetched as Googlebot, /, /shop and /verify now all return real content
+ * had already been fixed: fetched as Googlebot, / and /shop now return real content
  * with no noindex. This was the piece still missing.
  *
  * WHY THIS FILE AND NOT public/robots.txt. The sitemap address has to match the canonical host and
@@ -43,10 +43,8 @@ const OFF_LIMITS = [
   '/pay',                      // one-time payment links from invoice emails
   '/resume-payment',           // secure one-time order payment recovery links
   '/unsubscribe',              // acting on this by accident is the whole problem
-  '/verify',                   // one-time email verification links
   '/r',                        // QR campaign short links, which redirect
   '/coming-soon',              // exists only while the launch wall is up
-  '/concierge-local-preview',  // a development preview of the assistant
 ];
 
 export default function robots(): MetadataRoute.Robots {

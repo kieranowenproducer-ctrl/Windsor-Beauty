@@ -71,19 +71,13 @@ export function cardImage(product: Product): string | undefined {
 // Catalogue categories, in the order they should appear across the shop, header
 // navigation, and admin panel. Products may belong to any combination of these.
 export const ALL_CATEGORIES = [
-  'Fat Loss',
-  'Hormone / Reproductive',
-  'Brain / Mood / Cognitive',
-  'Tanning',
-  'Beauty / Healing / Repair / Recovery',
-  'Muscle / Growth',
-  'Immune System',
-  'Cardiovascular',
-  'Sleep & Relaxation',
-  'Sexual Health & Libido',
-  'Pens',
-  'BAC Water',
-  'Peptides',
+  'Serums',
+  'Moisturisers',
+  'Cleansers',
+  "Men's",
+  "Women's",
+  'SPF',
+  'Extras',
 ] as const;
 // The initial seed list for category_settings — the admin panel can create,
 // rename, reorder, and delete categories at runtime, so this is no longer the
@@ -291,25 +285,23 @@ export const DEFAULT_CERTIFICATE_CAUTION =
 // default has been saved for the first time, or when running without a
 // database configured). Admin-edited content (global or per-product) takes
 // precedence over this.
-export const DEFAULT_STORAGE_INSTRUCTIONS_HTML = `<p>Store unopened products refrigerated at 2-8&deg;C for short and medium-term storage. For long-term storage (beyond 60 days), keep at -20&deg;C or colder.</p><p>Protect from direct light and avoid temperatures above 25&deg;C. Products supplied as lyophilised powder in sealed vials are stable at room temperature for short periods (sufficient for tracked shipping) without compromising integrity. On receipt, transfer to refrigerated storage immediately.</p><p>Pre-mixed pen products should be kept refrigerated at 2-8&deg;C at all times after receipt. Do not freeze pen-format products, as freezing compromises the pre-mixed solution.</p>`;
+export const DEFAULT_STORAGE_INSTRUCTIONS_HTML = `<p>Store in a cool, dry place away from direct sunlight and heat. Keep the lid or cap tightly closed between uses.</p><p>Use within the period shown by the open-jar symbol on the pack once opened. If a product changes colour, texture or scent, stop using it.</p>`;
 
 // Plain-prose, lite-markdown-ready equivalent of the HTML default above —
 // used only to pre-populate the admin's MarkdownLiteEditor textarea before
 // any saved override has loaded (or exists). The public storefront fallback
 // always stays on the HTML constant above; this one never needs to change.
-export const DEFAULT_STORAGE_INSTRUCTIONS_MARKDOWN = `Store unopened products refrigerated at 2-8°C for short and medium-term storage. For long-term storage (beyond 60 days), keep at -20°C or colder.
+export const DEFAULT_STORAGE_INSTRUCTIONS_MARKDOWN = `Store in a cool, dry place away from direct sunlight and heat. Keep the lid or cap tightly closed between uses.
 
-Protect from direct light and avoid temperatures above 25°C. Products supplied as lyophilised powder in sealed vials are stable at room temperature for short periods (sufficient for tracked shipping) without compromising integrity. On receipt, transfer to refrigerated storage immediately.
-
-Pre-mixed pen products should be kept refrigerated at 2-8°C at all times after receipt. Do not freeze pen-format products, as freezing compromises the pre-mixed solution.`;
+Use within the period shown by the open-jar symbol on the pack once opened. If a product changes colour, texture or scent, stop using it.`;
 
 // Fallback text for the product specs block (src/app/shop/[slug]/page.tsx)
 // when a product has no per-product override for that row.
 export const DEFAULT_PRODUCT_SPECS = {
-  form: 'Lyophilised powder',
-  storage: 'Store at -20°C. Protect from light.',
-  usage: 'For research use only. Not for human consumption.',
-  coa: 'Certificate of analysis included with every order.',
+  form: 'Skincare',
+  storage: 'Store in a cool, dry place away from direct sunlight.',
+  usage: 'For external use only. Patch test before first use.',
+  coa: 'Certificate available on request.',
 };
 
 // The "Product specs" rows shown on a product page — purity always comes

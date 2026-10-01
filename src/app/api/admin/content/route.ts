@@ -12,10 +12,6 @@ const VALID_KEYS = [
   'launch-countdown',
   // Editable subscriber announcement email draft (task 04a236c9): JSON { subject, headline, body }.
   'subscriber-announcement',
-  // The standard PEARL reply letter, edited at /admin/pearl-email (task 3a5298f5).
-  // Plain text, not JSON: {{NAME}} is the customer, and the PEARL RESPONSE
-  // START/END lines are where their answer is dropped in.
-  'pearl-email',
 ];
 
 export async function GET() {

@@ -72,9 +72,7 @@ export const DESTINATION_PRESETS = [
   { label: 'Homepage', value: 'https://windsorglow.com/' },
   { label: 'Shop — All Products', value: 'https://windsorglow.com/shop' },
   { label: 'Special Offers', value: 'https://windsorglow.com/promotion' },
-  { label: 'Dosage Guide', value: 'https://windsorglow.com/dosage-guide' },
   { label: 'Customer Reviews', value: 'https://windsorglow.com/reviews' },
-  { label: 'Peptide Calculator', value: 'https://windsorglow.com/calculator' },
   { label: 'Contact', value: 'https://windsorglow.com/contact' },
   { label: 'Custom URL...', value: 'custom' },
 ];

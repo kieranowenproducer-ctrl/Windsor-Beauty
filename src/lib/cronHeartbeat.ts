@@ -3,8 +3,8 @@ import { neon } from '@neondatabase/serverless';
 /**
  * Did the scheduled jobs actually run?
  *
- * Nothing watched this. Four jobs run every day (Royal Mail sync, the site sentinel, verification
- * reminders, concierge retention) and if any of them silently stopped, the website would carry on
+ * Nothing watched this. Jobs run every day (Royal Mail sync, verification reminders) and if any
+ * of them silently stopped, the website would carry on
  * looking perfectly healthy. The only symptom of a dead reminder cron is customers who never get
  * chased, which nobody would connect back to a cron for weeks.
  *
@@ -14,9 +14,7 @@ import { neon } from '@neondatabase/serverless';
 
 export const SCHEDULED_JOBS = [
   { job: 'royal-mail-sync', label: 'Royal Mail tracking sync', schedule: 'Daily at 06:00' },
-  { job: 'sentinel', label: 'Live site health check', schedule: 'Daily at 07:00' },
   { job: 'verification-reminders', label: 'Verification reminders', schedule: 'Daily at 09:00' },
-  { job: 'concierge-retention', label: 'Concierge data retention', schedule: 'Daily at 03:30' },
 ] as const;
 
 /**

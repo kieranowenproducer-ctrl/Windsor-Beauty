@@ -15,7 +15,6 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import { formatMoney, formatWholeNumber } from '@/lib/money';
 
 type GroupKind = 'referral' | 'campaign';
@@ -353,12 +352,6 @@ export default function TopProductsPanel() {
                                   <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">
                                     Who buys it ({formatWholeNumber(buyers.length)})
                                   </p>
-                                  <Link
-                                    href={`/admin/marketing?emails=${encodeURIComponent(buyers.map(b => b.email).join(','))}&about=${encodeURIComponent(product.name)}`}
-                                    className="text-[9px] tracking-[0.18em] uppercase bg-gold-700 text-white px-4 py-2 hover:bg-gold-800 transition-colors"
-                                  >
-                                    Email these customers
-                                  </Link>
                                 </div>
                                 <div className="bg-white border border-stone-200 divide-y divide-stone-50">
                                   {buyers.map(buyer => (

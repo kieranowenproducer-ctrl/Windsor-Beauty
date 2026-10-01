@@ -62,19 +62,9 @@ for (const [name, path, expected] of PLACES) {
   const text = read(path);
   for (const phrase of expected) {
     check(`${name} still says "${phrase}"`, text.includes(phrase),
-      'it has drifted from src/lib/shippingWindows.ts, which is what the concierge quotes');
+      'it has drifted from src/lib/shippingWindows.ts, which holds the one agreed figure');
   }
 }
-
-/* And the concierge actually uses it, rather than having grown its own copy
- * back. Since Stage 5 the assistant lives in the hosted service and asks THIS
- * app for the sentence through the agent-catalogue endpoint, so the thing to
- * prove is that the endpoint serves the shared figure and no route here has a
- * figure of its own. */
-const catalogueRoute = read('src/app/api/admin/tasks/agent-catalogue/route.ts');
-check('the concierge is served the shared figure rather than a copy',
-  /standardDeliverySentence\(\)/.test(catalogueRoute) && !/\d+ to \d+ working days/.test(catalogueRoute),
-  'a hardcoded window in agent-catalogue is the drift this check exists to stop');
 
 /* The dispatch email, the same way: it interpolates the shared figure, so the source is checked
  * for the reference and for the absence of any figure of its own. Until 2026-08-03 it said
@@ -86,49 +76,9 @@ check('the dispatch email quotes the shared figure rather than its own',
     && !/\d+\s*(?:to|-|&ndash;|–)\s*\d+ working days/.test(email),
   'a hardcoded window in shippingEmail.ts is a promise the shipping page does not make');
 
-/* ── The ingested copy the concierge's model path answers from ─────────────
- *
- * Read with the same visibility filter the concierge itself uses (engine.ts `retrieve`), so what
- * is checked is exactly what a customer's question can be answered from. */
-const envFile = (() => {
-  try { return readFileSync(new URL('../.env.local', import.meta.url), 'utf8').replace(/^﻿/, ''); }
-  catch { return ''; }
-})();
-const dbUrl = envFile.match(/^AISUPPORT_DATABASE_URL=(.+)$/m)?.[1]?.trim();
-
-if (!dbUrl) {
-  console.log('\n  COULD NOT SEE THE INGESTED COPY: no AISUPPORT_DATABASE_URL in .env.local, so');
-  console.log('  the knowledge base the concierge answers from was NOT checked this run.');
-} else {
-  const { neon } = await import('@neondatabase/serverless');
-  const sql = neon(dbUrl, { fetchOptions: { cache: 'no-store' } });
-  try {
-    const chunks = await sql`
-      SELECT content FROM knowledge_chunks
-      WHERE tenant_id = 'windsor-glow'
-        AND visibility IN ('public', 'customer')
-        AND status = 'active'
-        AND (effective_date IS NULL OR effective_date <= CURRENT_DATE)
-        AND (expiry_date IS NULL OR expiry_date > CURRENT_DATE)`;
-    const live = chunks.map((c) => c.content).join('\n');
-    check('the ingested knowledge base holds at least one live chunk', chunks.length > 0,
-      'nothing customer-visible is ingested at all, so the concierge is answering from nothing');
-    for (const [label, phrase] of [
-      ['the UK window', uk], ['the international window', intl], ['the dispatch window', dispatch],
-    ]) {
-      check(`the ingested copy still says ${label}, "${phrase}"`, live.includes(phrase),
-        'the knowledge base has drifted from shippingWindows.ts — re-ingest it, because this is '
-        + 'the copy the concierge actually answers from');
-    }
-  } catch (error) {
-    check('the ingested copy could be read', false,
-      `the knowledge database did not answer: ${error?.message ?? error}`);
-  }
-}
-
 console.log(`\n  ${pass} checks passed`);
 if (failures.length) {
   console.log(`  ${failures.length} FAILED:\n${failures.map((f) => `    - ${f}`).join('\n')}\n`);
   process.exit(1);
 }
-console.log('  The concierge, the site and the ingested knowledge promise the same delivery windows.\n');
+console.log('  The site pages and the dispatch email promise the same delivery windows.\n');

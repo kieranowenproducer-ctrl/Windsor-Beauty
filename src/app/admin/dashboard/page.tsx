@@ -951,8 +951,7 @@ export default function AdminDashboard() {
           {/* The Announcement Emails block sat here until 2 August, when Kieran said he no longer
               needed it. It was the only place in the admin panel that could send one, so removing
               the block removes the feature rather than relocating it.
-              The unused screen component was removed in the September dead-code cleanup. The
-              /api/admin/launch/announce route and the send history remain. */}
+              The unused screen component and its send route were removed afterwards. */}
 
           {/* Stats — row 1: orders overview */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">

@@ -15,13 +15,11 @@ const ordersDb = read('src/lib/db/orders.ts');
 const db = read('src/lib/db.ts');
 const marketing = read('src/lib/db/marketing.ts');
 const visits = read('src/lib/db/siteVisits.ts');
-const ads = read('src/lib/ads/store.ts');
 const activityApi = read('src/app/api/admin/activity/route.ts');
 const dashboard = read('src/app/admin/dashboard/page.tsx');
 const ordersPage = read('src/app/admin/orders/page.tsx');
 const accountApi = read('src/app/api/account/me/route.ts');
 const accountPage = read('src/app/account/page.tsx');
-const conciergeApi = read('src/app/api/account/concierge/route.ts');
 
 console.log('\nPayment confirmation is permanent');
 check('the database stores when payment was confirmed',
@@ -54,8 +52,6 @@ check('customer account count and spend start from paid orders',
   accountApi.includes('const paidOrders = orders.filter') && accountApi.includes('orderCount: paidOrders.length'));
 check('customer account calls the figure Paid Orders',
   accountPage.includes('Paid Orders'));
-check('the concierge receives a paid-order count',
-  conciergeApi.includes('countPaidOrdersByCustomerId'));
 
 console.log('\nUnpaid attempts stay visible without pretending to be sales');
 check('dashboard calls the headline Paid Orders',
@@ -70,8 +66,6 @@ check('orders page reports waiting attempts separately',
 console.log('\nConversion reports do not treat checkout attempts as purchases');
 check('visitor reports require confirmed payment',
   (visits.match(/o\.payment_confirmed_at IS NOT NULL/g) ?? []).length >= 3);
-check('landing-page conversions still require a revenue status',
-  /JOIN orders o[\s\S]{0,300}o\.status = ANY\(\$\{REVENUE_STATUSES\}\)/.test(ads));
 check('activity uses the paid time after confirmation',
   activityApi.includes('at: o.payment_confirmed_at ?? o.created_at'));
 

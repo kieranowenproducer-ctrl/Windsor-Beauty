@@ -81,9 +81,4 @@ for (const file of await walk(ROOT)) {
 }
 assert.deepEqual(offenders, [], `these greet somebody without going through emailGreeting:\n  ${offenders.join('\n  ')}`);
 
-/* The chat window is not an email and is allowed its own voice, but it must still not use a
-   full name. Checked rather than assumed, because that is where a full name would look worst. */
-const chat = await readFile(ROOT + 'components/account/ConciergeChat.tsx', 'utf8');
-assert.match(chat, /firstName/, 'the chat greeting still uses a first name only');
-
 console.log('Email greeting checks passed: every email opens "Hi <first name>," and no full names.');

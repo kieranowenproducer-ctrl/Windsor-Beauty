@@ -7,10 +7,6 @@ export const KNOWN_PROMOTION_ROUTES: { value: string; label: string }[] = [
   { value: '/shop?category=Peptides', label: 'Shop — Peptides' },
   { value: '/shop?category=Pens', label: 'Shop — Pens' },
   { value: '/shop?category=Reconstitution', label: 'Shop — Reconstitution Supplies' },
-  { value: '/verify', label: 'Verify a Product' },
-  // Dosage Guide and Peptide Calculator removed as promotion destinations on 23 September 2026:
-  // both are members-only now (task 98b6dcc6), so a banner pointing at either would send the
-  // public straight to a sign-in wall.
   { value: '/reviews', label: 'Reviews' },
   { value: '/about', label: 'About' },
   { value: '/contact', label: 'Contact' },

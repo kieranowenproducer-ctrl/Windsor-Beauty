@@ -6,7 +6,6 @@ import AdminStickyControls from '@/components/admin/AdminStickyControls';
 // personal mailbox happened to open the notification email.
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
-import { buildPearlReplyTemplate, parsePearlReply } from '@/lib/email/pearlReplyTemplate';
 import type { OrderDraftSnapshot } from '@/lib/email/enquiryAutoDraft';
 import type { InboundAttachment } from '@/lib/db/enquiries';
 import { emailGreetingName } from '@/lib/email/greeting';
@@ -51,7 +50,7 @@ interface Enquiry {
   created_at: string;
   replies: Reply[];
   /* Everything below is null or defaulted on a message sent through the contact form. */
-  source: 'website_form' | 'ai_concierge' | 'direct_email' | 'manual_email';
+  source: 'website_form' | 'direct_email' | 'manual_email';
   inbound_attachments?: InboundAttachment[] | null;
   priority: 'normal' | 'high' | 'urgent';
   escalation_reason: string | null;
@@ -62,16 +61,10 @@ interface Enquiry {
   notes: Note[];
 }
 
-interface PearlEmailDraft {
-  title: string;
-  answer: string;
-}
-
 interface AutomatedDraftState {
   status: 'loading' | 'ready' | 'manual' | 'error';
   source?: string;
   note?: string;
-  needsExtraCare?: boolean;
   generatedAt?: string;
 }
 
@@ -104,22 +97,15 @@ const FILTER_LABEL: Record<'all' | EnquiryStatus, string> = {
   closed: 'Done',
 };
 
-/* The badge that answers "did a person write this, or did the assistant pass it on".
- *
- * Kieran's requirement was that the two must be told apart at a glance. It is a different colour
- * and a different word rather than a small icon, because the distinction changes how you read
- * everything underneath it: a form submission is somebody's own words, a handover is a
- * conversation that did not get anywhere. */
+/* Where the message came from, shown as a badge on each enquiry. */
 const SOURCE_LABEL: Record<string, string> = {
   website_form: 'Contact form',
-  ai_concierge: 'AI Concierge handover',
   direct_email: 'Direct email',
   manual_email: 'Added from mailbox',
 };
 
 const SOURCE_STYLES: Record<string, string> = {
   website_form: 'bg-stone-100 text-stone-600 border-stone-200',
-  ai_concierge: 'bg-blue-50 text-blue-700 border-blue-200',
   direct_email: 'bg-amber-50 text-amber-800 border-amber-200',
   manual_email: 'bg-amber-50 text-amber-800 border-amber-200',
 };
@@ -147,25 +133,6 @@ const ATTENTION_LABEL: Record<string, string> = {
   urgent: 'Urgent',
 };
 
-interface PendingAction {
-  id: string;
-  action: string;
-  details: {
-    reason?: string;
-    orderStatus?: string | null;
-    newAddress?: { line1?: string; line2?: string | null; city?: string; postcode?: string; country?: string | null };
-  };
-  order_number: string | null;
-  contact_email: string | null;
-  created_at: string;
-}
-
-const ACTION_LABEL: Record<string, string> = {
-  refund: 'Refund requested',
-  cancellation: 'Cancellation requested',
-  address_change: 'Address change requested',
-};
-
 function when(iso: string): string {
   const seconds = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
   if (seconds < 3600) return `${Math.round(seconds / 60)}m ago`;
@@ -190,11 +157,10 @@ export default function AdminEnquiriesPage() {
   const [manualSaving, setManualSaving] = useState(false);
   const [manualError, setManualError] = useState('');
   const [filter, setFilter] = useState<'all' | EnquiryStatus>('all');
-  const [source, setSource] = useState<'all' | 'ai_concierge' | 'website_form' | 'direct_email'>('all');
+  const [source, setSource] = useState<'all' | 'website_form' | 'direct_email'>('all');
   const [openId, setOpenId] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<Record<number, string>>({});
-  const [draftFormats, setDraftFormats] = useState<Record<number, 'standard' | 'pearl' | 'order'>>({});
-  const [pearlDrafts, setPearlDrafts] = useState<Record<number, PearlEmailDraft>>({});
+  const [draftFormats, setDraftFormats] = useState<Record<number, 'standard' | 'order'>>({});
   const [automatedDrafts, setAutomatedDrafts] = useState<Record<number, AutomatedDraftState>>({});
   const [orderDrafts, setOrderDrafts] = useState<Record<number, OrderDraftContext>>({});
   const [replyFeedbacks, setReplyFeedbacks] = useState<Record<number, ReplyFeedback>>({});
@@ -207,15 +173,6 @@ export default function AdminEnquiriesPage() {
   const [pasteOpenId, setPasteOpenId] = useState<number | null>(null);
   const [pastedReplies, setPastedReplies] = useState<Record<number, string>>({});
   const [pastingId, setPastingId] = useState<number | null>(null);
-  /* Refund, cancellation and address changes the assistant collected and queued for a person.
-   *
-   * They live in a different database from the enquiries and they are a different kind of thing:
-   * a decision to make, not a message to answer. They are on this screen anyway, at the top,
-   * because Kieran asked for one inbox and because "what needs me right now" should not be split
-   * across two pages. `/admin/support` now redirects here. */
-  const [actions, setActions] = useState<PendingAction[]>([]);
-  const [actionBusy, setActionBusy] = useState<string | null>(null);
-
   const load = useCallback(async (quiet = false) => {
     if (!quiet) setLoading(true);
     try {
@@ -265,38 +222,9 @@ export default function AdminEnquiriesPage() {
     }
   }
 
-  /* Loaded separately and allowed to fail quietly. The approvals come from the concierge's own
-   * database, so it being unreachable must not stop the enquiries this page is really about from
-   * showing. An empty approvals section and a working inbox beats an error page. */
-  const loadActions = useCallback(async () => {
-    try {
-      const res = await fetch('/api/admin/support');
-      const data = await res.json().catch(() => null);
-      if (data?.ok && Array.isArray(data.actions)) setActions(data.actions);
-    } catch { /* the inbox below is the point of this page */ }
-  }, []);
+  useEffect(() => { void load(); }, [load]);
 
-  async function decideAction(id: string, decision: 'approve' | 'reject') {
-    setActionBusy(id);
-    try {
-      const res = await fetch('/api/admin/support', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'action', id, decision }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (data?.outcome) setNotice(data.outcome);
-      await loadActions();
-    } catch {
-      setError('That decision could not be saved.');
-    } finally {
-      setActionBusy(null);
-    }
-  }
-
-  useEffect(() => { void load(); void loadActions(); }, [load, loadActions]);
-
-  // Keep the open inbox current as new direct emails and handovers arrive.
+  // Keep the open inbox current as new direct emails arrive.
   // A quiet refresh leaves replies being drafted and the open case untouched.
   useEffect(() => {
     const refresh = () => {
@@ -310,25 +238,8 @@ export default function AdminEnquiriesPage() {
     };
   }, [load]);
 
-  // The standard PEARL letter, as edited on /admin/pearl-email (task 3a5298f5).
-  // Empty means nobody has edited it, and the built-in wording is used, so this
-  // screen keeps working exactly as before if the fetch fails.
-  const [pearlLetter, setPearlLetter] = useState<string>('');
   useEffect(() => {
-    fetch('/api/admin/content')
-      .then(r => r.json())
-      .then(d => {
-        const row = (d.content ?? []).find((c: { key: string }) => c.key === 'pearl-email');
-        if (typeof row?.body === 'string') setPearlLetter(row.body);
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    const hasUnsentReply = Object.values(drafts).some(value => value.trim())
-      || Object.entries(pearlDrafts).some(([id, value]) => (
-        draftFormats[Number(id)] === 'pearl' && Boolean(value.title.trim() || value.answer.trim())
-      ));
+    const hasUnsentReply = Object.values(drafts).some(value => value.trim());
     if (!hasUnsentReply) return;
 
     const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
@@ -337,15 +248,12 @@ export default function AdminEnquiriesPage() {
     };
     window.addEventListener('beforeunload', warnBeforeLeaving);
     return () => window.removeEventListener('beforeunload', warnBeforeLeaving);
-  }, [drafts, pearlDrafts, draftFormats]);
+  }, [drafts]);
 
   async function sendReply(enquiry: Enquiry) {
     const format = draftFormats[enquiry.id] ?? 'standard';
-    const pearlDraft = pearlDrafts[enquiry.id] ?? { title: '', answer: '' };
     const orderDraft = orderDrafts[enquiry.id];
-    const message = format === 'pearl'
-      ? buildPearlReplyTemplate(enquiry.name, pearlDraft.title, pearlDraft.answer, pearlLetter)
-      : (drafts[enquiry.id] ?? '').trim();
+    const message = (drafts[enquiry.id] ?? '').trim();
     if (!message) return;
 
     setSendingId(enquiry.id);
@@ -389,7 +297,6 @@ export default function AdminEnquiriesPage() {
       refreshAdminEnquiryCount();
       setDrafts(prev => ({ ...prev, [enquiry.id]: '' }));
       setDraftFormats(prev => ({ ...prev, [enquiry.id]: 'standard' }));
-      setPearlDrafts(prev => ({ ...prev, [enquiry.id]: { title: '', answer: '' } }));
       setAutomatedDrafts(prev => {
         const next = { ...prev };
         delete next[enquiry.id];
@@ -433,32 +340,14 @@ export default function AdminEnquiriesPage() {
       }
 
       const prepared = data.draft as {
-        format: 'pearl' | 'standard' | 'order' | 'manual';
-        title?: string;
-        answer?: string;
+        format: 'standard' | 'order' | 'manual';
         message?: string;
         source?: string;
         note?: string;
-        needsExtraCare?: boolean;
         orderNumber?: string;
         orderSnapshot?: OrderDraftSnapshot;
         generatedAt?: string;
       };
-      if (prepared.format === 'pearl' && prepared.title && prepared.answer) {
-        setDraftFormats(prev => ({ ...prev, [enquiry.id]: 'pearl' }));
-        setPearlDrafts(prev => ({ ...prev, [enquiry.id]: { title: prepared.title!, answer: prepared.answer! } }));
-        setDrafts(prev => ({ ...prev, [enquiry.id]: '' }));
-        setOrderDrafts(prev => {
-          const next = { ...prev };
-          delete next[enquiry.id];
-          return next;
-        });
-        setPreviewId(enquiry.id);
-        setAutomatedDrafts(prev => ({ ...prev, [enquiry.id]: {
-          status: 'ready', source: prepared.source, note: prepared.note, needsExtraCare: prepared.needsExtraCare,
-        } }));
-        return;
-      }
       if (prepared.format === 'order' && prepared.message && prepared.orderNumber && prepared.orderSnapshot) {
         setDraftFormats(prev => ({ ...prev, [enquiry.id]: 'order' }));
         setDrafts(prev => ({ ...prev, [enquiry.id]: prepared.message! }));
@@ -496,41 +385,6 @@ export default function AdminEnquiriesPage() {
     }
     setOpenId(enquiry.id);
     void prepareAutomatedDraft(enquiry);
-  }
-
-  function insertPearlTemplate(enquiry: Enquiry) {
-    if ((drafts[enquiry.id] ?? '').trim()) {
-      setError('Clear the current reply before adding the PEARL email template. This keeps your writing from being overwritten.');
-      return;
-    }
-    setError('');
-    setNotice('PEARL email opened for a manual answer. Check every word before sending.');
-    setDraftFormats(prev => ({ ...prev, [enquiry.id]: 'pearl' }));
-    setOrderDrafts(prev => {
-      const next = { ...prev };
-      delete next[enquiry.id];
-      return next;
-    });
-    setPearlDrafts(prev => ({ ...prev, [enquiry.id]: { title: '', answer: '' } }));
-    setAutomatedDrafts(prev => ({ ...prev, [enquiry.id]: { status: 'manual', source: 'PEARL', note: 'Add the PEARL answer manually, then check it before sending.' } }));
-  }
-
-  function removePearlTemplate(enquiryId: number) {
-    setDrafts(prev => ({ ...prev, [enquiryId]: '' }));
-    setDraftFormats(prev => ({ ...prev, [enquiryId]: 'standard' }));
-    setPearlDrafts(prev => ({ ...prev, [enquiryId]: { title: '', answer: '' } }));
-    setOrderDrafts(prev => {
-      const next = { ...prev };
-      delete next[enquiryId];
-      return next;
-    });
-    setPreviewId(current => current === enquiryId ? null : current);
-    setAutomatedDrafts(prev => ({ ...prev, [enquiryId]: {
-      status: 'manual',
-      source: 'Human check',
-      note: 'The prepared PEARL answer was removed. Write or check the reply normally.',
-    } }));
-    setNotice('PEARL email template removed.');
   }
 
   /**
@@ -622,7 +476,6 @@ export default function AdminEnquiriesPage() {
       refreshAdminEnquiryCount();
       setDrafts(prev => withoutEnquiry(prev, enquiry.id));
       setDraftFormats(prev => withoutEnquiry(prev, enquiry.id));
-      setPearlDrafts(prev => withoutEnquiry(prev, enquiry.id));
       setAutomatedDrafts(prev => withoutEnquiry(prev, enquiry.id));
       setOrderDrafts(prev => withoutEnquiry(prev, enquiry.id));
       setReplyFeedbacks(prev => withoutEnquiry(prev, enquiry.id));
@@ -645,7 +498,6 @@ export default function AdminEnquiriesPage() {
     ? e.source === 'direct_email' || e.source === 'manual_email'
     : (e.source ?? 'website_form') === source);
   const newCount = enquiries.filter(e => e.status === 'new').length;
-  const handoverCount = enquiries.filter(e => e.source === 'ai_concierge' && e.status !== 'closed').length;
 
   return (
     <div className="h-full bg-stone-50 flex flex-col lg:flex-row overflow-clip">
@@ -659,7 +511,7 @@ export default function AdminEnquiriesPage() {
             </button>
           </div>
           <p className="text-sm text-stone-500 mb-6">
-            Contact form messages and assistant handovers appear here. Add emails received in sales
+            Contact form messages appear here. Add emails received in sales
             or info below until automatic mailbox capture is connected. Replying here sends from
             info@windsorglow.com. Check the sales and info mailboxes for customer replies.
           </p>
@@ -697,72 +549,8 @@ export default function AdminEnquiriesPage() {
             )}
           </section>
 
-          {/* DECISIONS FIRST. These are the only things on this page that a customer is waiting
-              on somebody to say yes or no to, so they sit above the messages rather than below
-              them. The assistant collected each one and verified whose order it is; it has never
-              performed any of them and cannot. */}
-          {actions.length > 0 && (
-            <section className="mb-8">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-stone-600 mb-1">
-                Waiting for your decision ({actions.length})
-              </h2>
-              <p className="text-xs text-stone-500 mb-3">
-                Requests the assistant took from customers. Approving records your decision here;
-                you still carry out the refund or change in the normal admin screens.
-              </p>
-              <div className="space-y-3">
-                {actions.map(a => (
-                  <div key={a.id} className="bg-white border border-gold-200 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="text-[9px] tracking-wider uppercase px-2 py-0.5 border bg-gold-50 text-gold-700 border-gold-200">
-                          {ACTION_LABEL[a.action] ?? a.action.replace(/_/g, ' ')}
-                        </span>
-                        {a.order_number && (
-                          <span className="text-sm font-medium text-stone-800">{a.order_number}</span>
-                        )}
-                        {a.details?.orderStatus && (
-                          <span className="text-xs text-stone-400">order is {a.details.orderStatus}</span>
-                        )}
-                        <span className="text-xs text-stone-400">· {when(a.created_at)}</span>
-                      </div>
-                      {a.action === 'address_change' && a.details?.newAddress ? (
-                        <p className="text-sm text-stone-600">
-                          New address: {[
-                            a.details.newAddress.line1, a.details.newAddress.line2,
-                            a.details.newAddress.city, a.details.newAddress.postcode,
-                            a.details.newAddress.country,
-                          ].filter(Boolean).join(', ')}
-                        </p>
-                      ) : (
-                        <p className="text-sm text-stone-600">{a.details?.reason || 'No reason given.'}</p>
-                      )}
-                      {a.contact_email && <p className="text-xs text-stone-400 mt-0.5">{a.contact_email}</p>}
-                    </div>
-                    <div className="flex gap-2 shrink-0">
-                      <button
-                        type="button" disabled={actionBusy === a.id}
-                        onClick={() => void decideAction(a.id, 'approve')}
-                        className="bg-stone-900 text-white text-xs font-semibold px-4 py-2 disabled:opacity-40"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        type="button" disabled={actionBusy === a.id}
-                        onClick={() => void decideAction(a.id, 'reject')}
-                        className="border border-stone-300 text-stone-600 text-xs font-semibold px-4 py-2 disabled:opacity-40"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
           {/* Where it came from, separate from what state it is in, because they are different
-              questions. "Show me the handovers" and "show me what is unanswered" are both things
+              questions. "Show me the direct emails" and "show me what is unanswered" are both things
               somebody sitting down to this wants, and folding them into one row of buttons would
               make each combination its own button. */}
           {/* Pinned controls stay on screen while the colleague works through the list. */}
@@ -776,14 +564,12 @@ export default function AdminEnquiriesPage() {
             className="mb-2 min-h-11 w-full border border-stone-300 bg-white px-3 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 sm:hidden"
           >
             <option value="all">Everything</option>
-            <option value="ai_concierge">From the assistant{handoverCount > 0 ? ` (${handoverCount})` : ''}</option>
             <option value="website_form">From the contact form</option>
             <option value="direct_email">Direct email</option>
           </select>
           <div className="mb-2 hidden items-center gap-2 sm:flex sm:flex-wrap">
             {([
               ['all', 'Everything'],
-              ['ai_concierge', 'From the assistant'],
               ['website_form', 'From the contact form'],
               ['direct_email', 'Direct email'],
             ] as const).map(([key, label]) => (
@@ -799,7 +585,6 @@ export default function AdminEnquiriesPage() {
                 }`}
               >
                 {label}
-                {key === 'ai_concierge' && handoverCount > 0 ? ` (${handoverCount})` : ''}
               </button>
             ))}
           </div>
@@ -831,7 +616,7 @@ export default function AdminEnquiriesPage() {
           {!loading && visible.length === 0 && (
             <p className="text-sm text-stone-400 bg-white border border-stone-200 px-4 py-8 text-center">
               {filter === 'all'
-                ? 'No enquiries yet. Contact forms, direct emails and assistant handovers will appear here.'
+                ? 'No enquiries yet. Contact forms and direct emails will appear here.'
                 : `No ${filter} enquiries.`}
             </p>
           )}
@@ -840,10 +625,8 @@ export default function AdminEnquiriesPage() {
             {visible.map(enquiry => {
               const open = openId === enquiry.id;
               const draft = drafts[enquiry.id] ?? '';
-              const pearlDraft = pearlDrafts[enquiry.id] ?? { title: '', answer: '' };
               const automatedDraft = automatedDrafts[enquiry.id];
               const replyFeedback = replyFeedbacks[enquiry.id];
-              const pearlTemplateIncomplete = draftFormats[enquiry.id] === 'pearl' && (!pearlDraft.title.trim() || !pearlDraft.answer.trim());
               return (
                 <article key={enquiry.id} className="bg-white border border-stone-200">
                   <button
@@ -892,66 +675,14 @@ export default function AdminEnquiriesPage() {
                         {enquiry.name} &middot; <span className="text-gold-700">{enquiry.email}</span>
                       </p>
 
-                      {/* THE HANDOVER BLOCK.
-                          Ordered by what a colleague picking this up needs first: why the
-                          assistant gave up, then what it thinks the problem is, then the
-                          customer's own words, then the conversation only if they want it.
-                          The transcript is deliberately behind a fold: Kieran's instruction was
-                          not to dump a raw conversation into the page, and a summary somebody
-                          reads beats a transcript they skip. */}
-                      {enquiry.source === 'ai_concierge' && (
-                        <div className="mb-5 border border-blue-200 bg-blue-50/40 px-4 py-3">
-                          {enquiry.escalation_reason && (
-                            <>
-                              <p className="text-[10px] tracking-[0.15em] uppercase text-blue-700 mb-1">
-                                Why the assistant passed this on
-                              </p>
-                              <p className="text-sm text-stone-700 mb-3">{enquiry.escalation_reason}</p>
-                            </>
-                          )}
-                          {enquiry.ai_summary && (
-                            <>
-                              <p className="text-[10px] tracking-[0.15em] uppercase text-blue-700 mb-1">
-                                What it is about
-                              </p>
-                              <p className="text-sm text-stone-700 mb-3">{enquiry.ai_summary}</p>
-                            </>
-                          )}
-                          {enquiry.transcript && enquiry.transcript.length > 0 && (
-                            <details className="mt-1">
-                              <summary className="cursor-pointer text-[10px] tracking-[0.15em] uppercase text-blue-700">
-                                Read the conversation ({enquiry.transcript.length} messages)
-                              </summary>
-                              <div className="mt-3 space-y-2">
-                                {enquiry.transcript.map((turn, i) => (
-                                  <div
-                                    key={i}
-                                    className={`text-xs whitespace-pre-wrap px-3 py-2 ${
-                                      turn.role === 'user'
-                                        ? 'bg-white border-l-2 border-stone-300'
-                                        : 'bg-blue-50 border-l-2 border-blue-200 text-stone-600'
-                                    }`}
-                                  >
-                                    <span className="block text-[9px] uppercase tracking-wider text-stone-400 mb-0.5">
-                                      {turn.role === 'user' ? 'Customer' : 'Assistant'}
-                                    </span>
-                                    {turn.content}
-                                  </div>
-                                ))}
-                              </div>
-                            </details>
-                          )}
-                        </div>
-                      )}
-
                       <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1">
-                        {enquiry.source === 'ai_concierge' ? 'What the customer said' : 'Message'}
+                        Message
                       </p>
                       <p className="text-sm text-stone-700 whitespace-pre-wrap bg-stone-50 px-4 py-3 mb-5">{enquiry.message}</p>
                       <Attachments items={enquiry.inbound_attachments} />
 
-                      {/* Anything the assistant added later in the same conversation. This is what
-                          stops one customer's problem arriving as three separate enquiries. */}
+                      {/* Anything added later in the same conversation, so one customer's problem
+                          does not arrive as three separate enquiries. */}
                       {enquiry.notes?.length > 0 && (
                         <div className="mb-5">
                           <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
@@ -1088,24 +819,14 @@ export default function AdminEnquiriesPage() {
                           </p>
                           <p className="mt-1 text-xs leading-5 text-stone-600">
                             {automatedDraft?.status === 'loading'
-                              ? 'Checking PEARL and the customer’s order information now.'
+                              ? 'Checking the customer’s order information now.'
                               : automatedDraft?.note || 'The system checks the enquiry first. Nothing is sent until you approve it.'}
                           </p>
                           {automatedDraft?.source ? <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-stone-500">Prepared using {automatedDraft.source}</p> : null}
                           {checkedAt(automatedDraft?.generatedAt) ? (
                             <p className="mt-1 text-[10px] text-stone-500">Order details checked at {checkedAt(automatedDraft?.generatedAt)}.</p>
                           ) : null}
-                          {automatedDraft?.needsExtraCare ? <p className="mt-2 text-xs font-semibold text-red-700">PEARL marked this wording for extra care. Check it closely before sending.</p> : null}
                         </div>
-                        {draftFormats[enquiry.id] === 'pearl' ? (
-                          <button
-                            type="button"
-                            onClick={() => removePearlTemplate(enquiry.id)}
-                            className="min-h-10 shrink-0 border border-gold-300 bg-white px-4 text-[10px] font-semibold uppercase tracking-[0.15em] text-gold-800 hover:border-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
-                          >
-                            Use normal reply
-                          </button>
-                        ) : (
                           <div className="flex flex-wrap gap-2">
                             <button
                               type="button"
@@ -1115,115 +836,9 @@ export default function AdminEnquiriesPage() {
                             >
                               Check again
                             </button>
-                            {automatedDraft?.status === 'manual' ? (
-                              <button
-                                type="button"
-                                onClick={() => insertPearlTemplate(enquiry)}
-                                className="min-h-10 shrink-0 bg-gold-700 px-4 text-[10px] font-semibold uppercase tracking-[0.15em] text-white hover:bg-gold-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
-                              >
-                                Add PEARL answer manually
-                              </button>
-                            ) : null}
                           </div>
-                        )}
                       </div>
 
-                      {draftFormats[enquiry.id] === 'pearl' ? (
-                        <div className="mb-4 border border-stone-200 bg-stone-50 p-4">
-                          <div className="mb-5 flex flex-col gap-3 border-b border-stone-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold-800">Review PEARL’s prepared answer</p>
-                              <p className="mt-1 text-xs leading-5 text-stone-600">The customer’s question and available product information have already been checked. Edit anything that needs changing.</p>
-                            </div>
-                            <a
-                              href={`/admin/pearl?ask=${encodeURIComponent(enquiry.message)}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex min-h-10 shrink-0 items-center justify-center border border-gold-300 bg-white px-4 text-[10px] font-semibold uppercase tracking-[0.15em] text-gold-800 hover:border-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
-                            >
-                              Open question in PEARL
-                            </a>
-                          </div>
-
-                          <div className="grid gap-4">
-                            <label htmlFor={`pearl-title-${enquiry.id}`} className="block">
-                              <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold-800">Answer heading</span>
-                              <span className="mt-1 block text-xs text-stone-500">Prepared by PEARL. Change it only if needed.</span>
-                              <input
-                                id={`pearl-title-${enquiry.id}`}
-                                name={`pearl-title-${enquiry.id}`}
-                                autoComplete="off"
-                                value={pearlDraft.title}
-                                onChange={event => setPearlDrafts(prev => ({ ...prev, [enquiry.id]: { ...pearlDraft, title: event.target.value } }))}
-                                placeholder="Add the compound or question title"
-                                className="mt-2 min-h-11 w-full border border-stone-300 bg-white px-3 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
-                              />
-                            </label>
-
-                            <label htmlFor={`pearl-answer-${enquiry.id}`} className="block">
-                              <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold-800">PEARL’s answer</span>
-                              <span className="mt-1 block text-xs text-stone-500">This is already filled in. The compliance wording is also included automatically.</span>
-                              <textarea
-                                id={`pearl-answer-${enquiry.id}`}
-                                name={`pearl-answer-${enquiry.id}`}
-                                value={pearlDraft.answer}
-                                onChange={event => setPearlDrafts(prev => ({ ...prev, [enquiry.id]: { ...pearlDraft, answer: event.target.value } }))}
-                                rows={8}
-                                placeholder="Paste the checked PEARL answer here"
-                                className="mt-2 w-full border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
-                              />
-                            </label>
-                          </div>
-
-                          <div className="mt-4 flex flex-wrap items-center gap-3">
-                            <button
-                              type="button"
-                              onClick={() => setPreviewId(current => current === enquiry.id ? null : enquiry.id)}
-                              disabled={pearlTemplateIncomplete}
-                              className="min-h-10 border border-stone-300 bg-white px-4 text-[10px] font-semibold uppercase tracking-[0.15em] text-stone-700 hover:border-gold-500 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
-                            >
-                              {previewId === enquiry.id ? 'Hide email preview' : 'Preview customer email'}
-                            </button>
-                            <p className="text-xs text-stone-500">Sends from <strong className="font-semibold text-stone-700">info@windsorglow.com</strong></p>
-                          </div>
-
-                          {previewId === enquiry.id && !pearlTemplateIncomplete ? (
-                            <div className="mt-5 overflow-hidden border border-stone-300 bg-white shadow-sm" aria-label="Customer email preview">
-                              <div className="bg-stone-950 px-5 py-5 text-center">
-                                <p className="font-serif text-xl text-gold-400">Windsor Glow</p>
-                                <p className="mt-2 text-[9px] uppercase tracking-[0.26em] text-amber-100">Product information</p>
-                              </div>
-                              {/* Built from the SAME letter the send uses (task 3a5298f5).
-                                  This preview used to have the wording typed into it a second
-                                  time, so the moment the letter became editable it would have
-                                  been showing copy nobody was sending any more. */}
-                              {(() => {
-                                const previewMessage = buildPearlReplyTemplate(enquiry.name, pearlDraft.title, pearlDraft.answer, pearlLetter);
-                                const p = parsePearlReply(previewMessage);
-                                if (!p) return null;
-                                const [pearlTitleLine, ...pearlRest] = p.pearl.split('\n');
-                                return (
-                                  <div className="p-5 text-xs leading-6 text-stone-600">
-                                    {p.before.split(/\n{2,}/).filter(Boolean).map((block, i) => (
-                                      <p key={`pb${i}`} className={i === 0 ? 'whitespace-pre-wrap' : 'mt-3 whitespace-pre-wrap'}>{block}</p>
-                                    ))}
-                                    <div className="mt-4 border border-gold-200 border-t-2 border-t-gold-600 bg-gold-50/60 p-4">
-                                      <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-gold-800">PEARL</p>
-                                      <p className="mt-1 text-[10px] text-stone-500">Peptide Experimental Analysis Research Library</p>
-                                      <p className="mt-3 font-serif text-base text-stone-800">{pearlTitleLine}</p>
-                                      <p className="mt-2 whitespace-pre-wrap">{pearlRest.join('\n').trim()}</p>
-                                    </div>
-                                    {p.after.split(/\n{2,}/).filter(Boolean).map((block, i) => (
-                                      <p key={`pa${i}`} className="mt-3 whitespace-pre-wrap">{block}</p>
-                                    ))}
-                                  </div>
-                                );
-                              })()}
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : (
-                        <>
                           <label htmlFor={`reply-${enquiry.id}`} className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
                             {automatedDraft?.status === 'ready' ? 'Email draft to check' : 'Your reply'}
                           </label>
@@ -1262,8 +877,6 @@ export default function AdminEnquiriesPage() {
                                ) : null}
                              </div>
                            ) : null}
-                         </>
-                       )}
 
                       {replyFeedback ? (
                         <div
@@ -1283,16 +896,14 @@ export default function AdminEnquiriesPage() {
                         <button
                           type="button"
                           onClick={() => void sendReply(enquiry)}
-                          disabled={sendingId === enquiry.id || (draftFormats[enquiry.id] === 'pearl' ? pearlTemplateIncomplete : !draft.trim())}
+                          disabled={sendingId === enquiry.id || !draft.trim()}
                           className="min-h-10 text-[10px] tracking-[0.15em] uppercase px-4 py-2 bg-stone-800 text-white hover:bg-stone-700 disabled:opacity-40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                         >
                           {sendingId === enquiry.id
                             ? 'Sending…'
                             : automatedDraft?.status === 'ready'
                               ? 'Approve and send email'
-                              : draftFormats[enquiry.id] === 'pearl'
-                                ? 'Send PEARL email'
-                                : 'Send reply'}
+                              : 'Send reply'}
                         </button>
                         {enquiry.status !== 'closed' ? (
                           <button

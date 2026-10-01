@@ -7,7 +7,6 @@ import { ensureMarketingAndEnquiries } from './schema-parts/marketing-and-enquir
 import { ensureReviews } from './schema-parts/reviews-and-blog';
 import { ensureQrUpsellsAndInvoices } from './schema-parts/qr-upsells-and-invoices';
 import { ensureOperationsAndLogs } from './schema-parts/operations-and-logs';
-import { ensureAds } from './schema-parts/ads';
 import { ensureReferrals } from './schema-parts/referrals';
 import { ensureGlowCardLoyalty } from './schema-parts/glow-card-loyalty';
 import { ensureAffiliates } from './schema-parts/affiliates';
@@ -29,7 +28,6 @@ export async function ensureSchema() {
   await ensureReviews(db);
   await ensureQrUpsellsAndInvoices(db);
   await ensureOperationsAndLogs(db);
-  await ensureAds(db);
   await ensureReferrals(db);
   await ensureGlowCardLoyalty(db);
   await ensureAffiliates(db);

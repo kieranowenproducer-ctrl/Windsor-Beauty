@@ -43,12 +43,9 @@ const CUSTOMER_EMAILS = [
   'lib/passwordResetEmail.ts',
   'lib/customerMessageEmail.ts',
   'lib/backInStockEmail.ts',
-  'lib/marketingEmail.ts',
-  'lib/announcementEmail.ts',
   'lib/launchEmail.ts',
   'app/api/admin/enquiries/[id]/reply/route.ts',
   'app/api/contact/send/route.ts',
-  'app/api/admin/pearl-emails/[id]/send/route.ts',
 ];
 
 /** Internal post. Listed so nobody has to wonder whether these were forgotten. */
@@ -57,9 +54,6 @@ const INTERNAL_EMAILS = [
   'lib/lowStockAlertEmail.ts',
   'lib/reviewNotificationEmail.ts',
   'lib/automationAlertEmail.ts',
-  'lib/sentinel.ts',
-  'lib/tasks/notify.ts',
-  'app/api/cron/ads/route.ts',
 ];
 
 let passed = 0;
@@ -87,17 +81,15 @@ for (const file of CUSTOMER_EMAILS) {
   if (source === null) { check(`${file} exists`, false, 'file not found, so the list above is stale'); continue; }
 
   const name = file.replace(/^lib\//, '').replace(/^app\/api\//, '');
-  // renderPearlEmail builds a whole email of its own and carries the line in both halves.
-  const viaRenderer = /renderPearlEmail\(/.test(source);
 
   // The HTML half: through the shared document, which always carries the footer, or written here.
   check(`${name}: the HTML half carries it`,
-    viaRenderer || /emailDocument\(/.test(source) || DISCLAIMER.test(source));
+    /emailDocument\(/.test(source) || DISCLAIMER.test(source));
 
   // The plain-text half: appended by the sender, so what would break it is opting out.
   if (/\btext:/.test(source) || /const text =/.test(source)) {
     check(`${name}: the plain-text half carries it`,
-      viaRenderer || DISCLAIMER.test(source) || !/internal:\s*true/.test(source),
+      DISCLAIMER.test(source) || !/internal:\s*true/.test(source),
       'this email opts out of the notice but goes to a customer');
   }
 }

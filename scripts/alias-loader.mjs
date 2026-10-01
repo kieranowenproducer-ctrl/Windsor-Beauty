@@ -1,9 +1,9 @@
 // Lets plain `node` run the app's TypeScript modules directly by resolving the
 // `@/...` path alias the way tsconfig does. Node 24 strips types natively, so
-// with this hook the concierge library is testable end to end without a
+// with this hook the app's library code is testable end to end without a
 // bundler, a test framework, or a running server.
 //
-//   node --import ./scripts/alias-loader.mjs scripts/test-concierge-live.mjs
+//   node --import ./scripts/alias-loader.mjs scripts/test-admin-search.mjs
 
 import { registerHooks } from 'node:module';
 import { statSync } from 'node:fs';

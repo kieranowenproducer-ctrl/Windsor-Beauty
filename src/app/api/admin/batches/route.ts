@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { addBatch, isDbConfigured, listBatches, listVerificationBatchRefs, setBatchActive, updateBatch } from '@/lib/db';
+import { addBatch, isDbConfigured, listBatches, setBatchActive, updateBatch } from '@/lib/db';
 
-// GET  /api/admin/batches            → { batches, suggestions }
+// GET  /api/admin/batches            → { batches }
 // POST /api/admin/batches            → add a batch code   { code, productName?, note? }
 // PATCH /api/admin/batches           → edit fields { id, code, productName?, note? }
 //                                      OR activate/deactivate { id, active }
@@ -13,11 +13,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
   try {
-    const [batches, suggestions] = await Promise.all([
-      listBatches(true),
-      listVerificationBatchRefs(),
-    ]);
-    return NextResponse.json({ batches, suggestions });
+    const batches = await listBatches(true);
+    return NextResponse.json({ batches });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Failed to load batches.' },

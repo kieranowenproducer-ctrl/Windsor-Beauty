@@ -4,12 +4,9 @@ import { listProductBuyers, type GroupKind } from '@/lib/productSales';
 
 export const dynamic = 'force-dynamic';
 
-// Who bought one product (task aa684446) — the list behind "Email these customers".
-//
-// It returns everybody who bought it, including people who have unsubscribed. That is deliberate:
-// this list is also how you see your regulars. Consent is enforced where the email actually goes
-// out (/api/admin/marketing/send drops anyone unsubscribed, whoever put their address in), so
-// nothing here can cause an unwanted email.
+// Who bought one product (task aa684446). It returns everybody who bought it, including people
+// who have unsubscribed. That is deliberate: this list is how you see your regulars. Nothing here
+// sends an email.
 export async function GET(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json({ dbConfigured: false, buyers: [] });

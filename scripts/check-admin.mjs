@@ -55,15 +55,14 @@ function findChromium() {
   return null;
 }
 
-// Every page in the admin menu, plus the two that are reachable by link only.
+// Every page in the admin menu, plus the ones reachable by a pinned button or link only.
 const ALL_ROUTES = [
-  '/admin/dashboard', '/admin/tasks', '/admin/orders', '/admin/invoices', '/admin/dispatch',
-  '/admin/profit', '/admin/products', '/admin/trial', '/admin/certificates', '/admin/certificate-filler',
-  '/admin/categories', '/admin/promotions', '/admin/discount-codes', '/admin/upsells', '/admin/qr-campaigns',
-  '/admin/marketing', '/admin/reviews', '/admin/customers', '/admin/member-logins', '/admin/research-questions',
-  '/admin/pearl-terminology', '/admin/ip-addresses', '/admin/enquiries', '/admin/verification-codes',
-  '/admin/batches', '/admin/verification', '/admin/content', '/admin/system-health',
-  '/admin/bulk-weights', '/admin/nav-links', '/admin/revenue', '/admin/concierge',
+  '/admin/dashboard', '/admin/orders', '/admin/invoices', '/admin/dispatch', '/admin/profit',
+  '/admin/products', '/admin/trial', '/admin/certificates', '/admin/categories',
+  '/admin/promotions', '/admin/discount-codes', '/admin/upsells', '/admin/qr-campaigns', '/admin/reviews',
+  '/admin/customers', '/admin/security-reviews', '/admin/member-logins', '/admin/batches',
+  '/admin/content', '/admin/system-health', '/admin/bulk-weights', '/admin/nav-links',
+  '/admin/ip-addresses', '/admin/enquiries', '/admin/revenue',
 ];
 const requestedRoutes = (process.env.CHECK_ROUTES ?? '')
   .split(',')

@@ -280,11 +280,6 @@ export default function AccountDashboardPage() {
         </div>
       </div>
 
-      {/* The Concierge card lived here until 2026-08-04. It moved to its own page at
-          /concierge, reached from the main navigation, which decides for itself who
-          may see what. Nothing account-related is lost: the concierge still reads the
-          signed-in session, it is simply no longer entered from this page. */}
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Order history */}
         <div className="lg:col-span-2">

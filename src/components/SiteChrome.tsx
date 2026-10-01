@@ -21,18 +21,6 @@ function SkipLink() {
   );
 }
 
-// NO CHAT BUBBLE ON THE PUBLIC SITE. Kieran's written answer to open decision 4,
-// 2026-08-02: "Do not place the AI Concierge chat bubble anywhere on the public
-// shop or website. The AI Concierge is a members-only feature and should only be
-// accessible inside the customer's Account area after they have logged in."
-//
-// The former public support widget has been removed, and the `NEXT_PUBLIC_SUPPORT_WIDGET`
-// flag cannot put it back by being set. That flag still gates the server
-// side (`publicWidgetOpen()` in lib/concierge/availability.ts) and still defaults to
-// closed, so the endpoint refuses too. Two independent reasons the public bubble is
-// off, which is the point: the 2026-08-02 audit found the endpoint answering
-// anonymous requests while the bubble was hidden, because only the drawing was gated.
-//
 interface TermsOverride {
   title: string | null;
   body: string;

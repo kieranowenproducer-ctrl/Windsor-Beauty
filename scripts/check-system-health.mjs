@@ -129,17 +129,6 @@ const schemaSrc = read('src/lib/db/schema-parts/operations-and-logs.ts');
 check('Run DB Setup also adds the resolved column',
   schemaSrc.includes('ADD COLUMN IF NOT EXISTS resolved_at'));
 
-const sendSrc = read('src/app/api/admin/marketing/send/route.ts');
-check('the whole-list send now checks the addresses',
-  sendSrc.includes('partitionSendableAddresses'),
-  'this is the path that emailed "hhh" on every campaign');
-check('skipped addresses are reported back, not swallowed',
-  sendSrc.includes('skippedInvalid'));
-
-const announceSrc = read('src/app/api/admin/launch/announce/route.ts');
-check('the announcement send checks its stored list too',
-  /listLaunchSubscribers\(\)[\s\S]{0,400}EMAIL_RE\.test/.test(announceSrc));
-
 const marketingDb = read('src/lib/db/marketing.ts');
 check('a bad address can no longer be saved as a contact',
   marketingDb.includes('isSendableEmailAddress'));

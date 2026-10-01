@@ -66,27 +66,6 @@ interface OrderSummary {
   payment_confirmed_at: string | null;
 }
 
-type AuditStatus =
-  | 'verified'
-  | 'failed_invalid_code'
-  | 'failed_already_used'
-  | 'failed_no_account'
-  | 'failed_order_not_found'
-  | 'failed_email_mismatch'
-  | 'failed_format'
-  | 'failed_error';
-
-interface VerificationRow {
-  id: number;
-  code: string;
-  product_name: string | null;
-  order_number: string | null;
-  status: AuditStatus;
-  failure_reason: string | null;
-  is_repeat_attempt: boolean;
-  created_at: string;
-}
-
 // What this customer buys, most-bought first (task aa684446). Built from paid orders only, so it
 // answers "what do they actually buy" rather than "what have they put in a basket".
 interface ProductHistoryRow {
@@ -102,7 +81,6 @@ interface ProductHistoryRow {
 interface ProfileData {
   customer: CustomerData;
   orders: OrderSummary[];
-  verificationHistory: VerificationRow[];
   totalSpent: number;
   orderCount: number;
   discountCodesUsed: string[];
@@ -182,17 +160,6 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
   payment_failed:    'Payment Failed',
   payment_cancelled: 'Payment Cancelled',
   cancelled:         'Cancelled',
-};
-
-const AUDIT_STATUS_CONFIG: Record<AuditStatus, { label: string; chip: string }> = {
-  verified:               { label: 'Verified',        chip: 'bg-green-50 text-green-700' },
-  failed_invalid_code:    { label: 'Invalid Code',    chip: 'bg-red-50 text-red-500' },
-  failed_already_used:    { label: 'Already Used',    chip: 'bg-amber-50 text-amber-600' },
-  failed_no_account:      { label: 'No Account',      chip: 'bg-stone-100 text-stone-500' },
-  failed_order_not_found: { label: 'Order Not Found', chip: 'bg-red-50 text-red-500' },
-  failed_email_mismatch:  { label: 'Email Mismatch',  chip: 'bg-amber-50 text-amber-600' },
-  failed_format:          { label: 'Bad Format',      chip: 'bg-stone-100 text-stone-400' },
-  failed_error:           { label: 'Error',           chip: 'bg-stone-100 text-stone-400' },
 };
 
 // ─── Page ────────────────────────────────────────────────────────────────────
@@ -1531,60 +1498,6 @@ export default function CustomerProfilePage() {
                       onChanged={() => { loadEmails(); }}
                     />
                   )}
-
-                  </>)}
-
-                  {profileTab === 'activity' && (<>
-
-                  {/* Verification history */}
-                  <div className="bg-white border border-stone-200">
-                    <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between">
-                      <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400">
-                        Verification History <span className="text-stone-300 ml-1">({profile.verificationHistory.length})</span>
-                      </p>
-                      <Link
-                        href={`/admin/verification?customer=${encodeURIComponent(c.email)}`}
-                        className="text-[9px] tracking-[0.18em] uppercase text-gold-700 hover:text-gold-700 transition-colors"
-                      >
-                        View Full Log
-                      </Link>
-                    </div>
-                    {profile.verificationHistory.length === 0 ? (
-                      <p className="text-[10px] text-stone-300 px-5 py-6">No verification attempts on record.</p>
-                    ) : (
-                      <div className="divide-y divide-stone-50">
-                        {profile.verificationHistory.map(row => {
-                          const cfg = AUDIT_STATUS_CONFIG[row.status] ?? { label: row.status, chip: 'bg-stone-100 text-stone-400' };
-                          return (
-                            <div key={row.id} className="px-5 py-3 flex items-start gap-3">
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-0.5">
-                                  <span className={`text-[8px] tracking-wider uppercase px-1.5 py-0.5 ${cfg.chip}`}>{cfg.label}</span>
-                                  {row.is_repeat_attempt && (
-                                    <span className="text-[8px] tracking-wider uppercase px-1.5 py-0.5 bg-amber-50 text-amber-600">Repeat</span>
-                                  )}
-                                </div>
-                                <p className="font-mono text-[10px] text-stone-600">{row.code}</p>
-                                {row.product_name && <p className="text-[9px] text-stone-400">{row.product_name}</p>}
-                                {row.failure_reason && <p className="text-[9px] text-stone-400">{row.failure_reason}</p>}
-                              </div>
-                              <div className="text-right shrink-0">
-                                <p className="text-[9px] text-stone-400 whitespace-nowrap">{formatDatetime(row.created_at)}</p>
-                                {row.order_number && (
-                                  <Link
-                                    href={`/admin/orders?search=${encodeURIComponent(row.order_number)}`}
-                                    className="font-mono text-[9px] text-gold-700 hover:text-gold-700"
-                                  >
-                                    {row.order_number}
-                                  </Link>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
 
                   </>)}
 

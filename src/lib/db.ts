@@ -18,7 +18,6 @@ import {
 } from './db/orders';
 // The customer CRM profile below still calls into the audit log, so it is
 // imported as well as re-exported. Nothing outside this file is affected.
-import { getVerificationAuditForCustomer, type VerificationAuditRow } from './db/verificationAudit';
 
 // Shared DB client + schema setup were extracted into ./db/ on 2026-07-05 to
 // shrink this file. Re-exported here so every existing '@/lib/db' import keeps
@@ -107,21 +106,19 @@ export { ensureSchema } from './db/schema';
 // ─── Verification codes ──────────────────────────────────────────────────────
 // Moved to ./db/verificationCodes.ts on 2026-08-11. Re-exported here so every existing
 // '@/lib/db' import keeps working unchanged.
-export { findVerificationCode, searchVerificationCode, markVerificationCodeUsed, importVerificationCodes, listVerificationCodes, countVerificationCodes } from './db/verificationCodes';
-export type { VerificationCodeRow } from './db/verificationCodes';
 
 
 // ─── Batches ─────────────────────────────────────────────────────────────────
 // Moved to ./db/batches.ts on 2026-08-11. Re-exported here so every existing
 // '@/lib/db' import keeps working unchanged.
-export { listBatches, addBatch, setBatchActive, updateBatch, listVerificationBatchRefs } from './db/batches';
+export { listBatches, addBatch, setBatchActive, updateBatch } from './db/batches';
 export type { BatchRow } from './db/batches';
 
 
 // ─── Spam protection ─────────────────────────────────────────────────────────
 // Moved to ./db/spamProtection.ts on 2026-08-11. Re-exported here so every existing
 // '@/lib/db' import keeps working unchanged.
-export { isRateLimited, logVerificationAttempt, isAdminLoginRateLimited, isSignupRateLimited, logSignupAttempt, logAdminLoginAttempt } from './db/spamProtection';
+export { isAdminLoginRateLimited, isSignupRateLimited, logSignupAttempt, logAdminLoginAttempt } from './db/spamProtection';
 
 
 // ─── Discount signups ────────────────────────────────────────────────────────
@@ -3036,12 +3033,6 @@ export * from './db/productCosts';
 export { listQrCampaignMembers, listQrCampaignGuestBuyers, listQrCampaigns, getQrCampaignById, getQrCampaignBySlug, createQrCampaign, updateQrCampaign, deleteQrCampaign, resetQrCampaignScans, recordCampaignScan, getQrCampaignStats, getQrScansTimeSeries, getQrOrdersTimeSeries } from './db/qrCampaigns';
 export type { QrCampaignRow, QrCampaignStats, QrCampaignMember, QrCampaignGuestBuyer, QrScanTimePoint, QrOrderTimePoint } from './db/qrCampaigns';
 
-// ─── Verification audit log ──────────────────────────────────────────────────
-// Moved to ./db/verificationAudit.ts on 2026-08-11. Re-exported here so every existing
-// '@/lib/db' import keeps working unchanged.
-export { logVerificationAuditEntry, listVerificationAuditLog, getVerificationAuditForCustomer } from './db/verificationAudit';
-export type { VerificationAuditStatus, VerificationAuditRow } from './db/verificationAudit';
-
 // ─── Customer last login ──────────────────────────────────────────────────────
 
 export async function touchCustomerLastLogin(customerId: number): Promise<void> {
@@ -3075,7 +3066,6 @@ export async function countPaidOrdersByCustomerId(customerId: number): Promise<n
 export interface CustomerProfileData {
   customer: CustomerRow & { last_login_at: string | null };
   orders: CustomerOrderSummary[];
-  verificationHistory: VerificationAuditRow[];
   totalSpent: number;
   orderCount: number;
   discountCodesUsed: string[];
@@ -3116,8 +3106,6 @@ export async function getCustomerProfileData(customerId: number): Promise<Custom
   `;
   const orders = orderRows as CustomerOrderSummary[];
 
-  const verificationHistory = await getVerificationAuditForCustomer(customerId);
-
   const totalSpent = orders
     .filter(o => !['cancelled', 'refunded', 'pending', 'awaiting_payment', 'payment_failed', 'payment_cancelled'].includes(o.status))
     .reduce((sum, o) => sum + Number(o.total), 0);
@@ -3153,7 +3141,6 @@ export async function getCustomerProfileData(customerId: number): Promise<Custom
   return {
     customer,
     orders,
-    verificationHistory,
     totalSpent,
     orderCount,
     discountCodesUsed,

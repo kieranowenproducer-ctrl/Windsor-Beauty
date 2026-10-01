@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ensureSchema, isDbConfigured } from '@/lib/db';
 import { banCustomer, liftCustomerBan } from '@/lib/db/bans';
-import { getMember } from '@/lib/tasks/identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,16 +24,8 @@ async function withSchema<T>(run: () => Promise<T>): Promise<T> {
 // route anywhere that bans somebody automatically: a ban is always a person pressing a button, and
 // this is the only place it can happen.
 
-/**
- * Who pressed it. The admin panel has one shared login, so the honest answer comes from the
- * per-person identity the task module already asks everyone to pick. If that is not set, or the
- * task database cannot be reached, the ban still goes through and is recorded as the admin panel
- * rather than being lost.
- */
-async function whoIsPressing(): Promise<string> {
-  const member = await getMember().catch(() => null);
-  return member?.name?.trim() || 'Admin panel';
-}
+/** Who pressed it. The admin panel has one shared login, so every ban is recorded against it. */
+const ADMIN_ACTOR = 'Admin panel';
 
 function customerId(params: { id: string }): number | null {
   const id = Number(params.id);
@@ -55,8 +46,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
   const reason = typeof body?.reason === 'string' ? body.reason.trim().slice(0, 500) || null : null;
 
   try {
-    const admin = await whoIsPressing();
-    const result = await withSchema(() => banCustomer({ customerId: id, reason, adminName: admin }));
+    const result = await withSchema(() => banCustomer({ customerId: id, reason, adminName: ADMIN_ACTOR }));
     if (!result.ok) {
       return NextResponse.json({ error: 'Customer not found.' }, { status: 404 });
     }
@@ -86,8 +76,7 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
   const reason = typeof body?.reason === 'string' ? body.reason.trim().slice(0, 500) || null : null;
 
   try {
-    const admin = await whoIsPressing();
-    const result = await withSchema(() => liftCustomerBan({ customerId: id, reason, adminName: admin }));
+    const result = await withSchema(() => liftCustomerBan({ customerId: id, reason, adminName: ADMIN_ACTOR }));
     if (!result.ok) {
       return NextResponse.json({ error: 'Customer not found.' }, { status: 404 });
     }

@@ -2,19 +2,12 @@ import { NextResponse } from 'next/server';
 import { findOrderByNumber, isDbConfigured } from '@/lib/db';
 import { findLatestOrderByEmail, type OrderRow } from '@/lib/db/orders';
 import { findEnquiryById, findLatestCustomerReply } from '@/lib/db/enquiries';
-import { listApprovedPearlTerminology } from '@/lib/db/pearlTerminology';
-import { answerQuestion } from '@/lib/concierge/research/chat-engine.mjs';
 import {
-  canPreparePearlDraft,
   enquiryNeedsHumanAction,
   enquiryNeedsPersonalAdvice,
   looksLikeOrderStatusQuestion,
-  looksLikePearlQuestion,
   orderStatusEmailCopy,
   orderDraftSnapshot,
-  pearlAnswerEmailCopy,
-  productNamesForPearl,
-  type PearlDraftAnswer,
 } from '@/lib/email/enquiryAutoDraft';
 
 export const dynamic = 'force-dynamic';
@@ -53,7 +46,6 @@ export async function POST(_request: Request, props: { params: Promise<{ id: str
    * of yesterday's answer and read as though nobody had listened. */
   const latestFromCustomer = await findLatestCustomerReply(enquiry.id).catch(() => null);
   const question = latestFromCustomer?.body?.trim() || enquiry.message;
-  const answeringAFollowUp = Boolean(latestFromCustomer);
 
   const order = await relatedOrder(enquiry);
 
@@ -74,47 +66,6 @@ export async function POST(_request: Request, props: { params: Promise<{ id: str
         format: 'manual',
         source: 'Human check',
         note: 'This customer is asking what is right for them personally. No automatic product reply was prepared.',
-      },
-    });
-  }
-
-  if (looksLikePearlQuestion(enquiry.subject_key, enquiry.subject_label, question)) {
-    const productNames = productNamesForPearl(order?.items ?? []);
-    const overrides = await listApprovedPearlTerminology().catch(() => []);
-    const directAnswer = answerQuestion(question, [], { overrides }) as PearlDraftAnswer;
-    const usedOrderContext = !canPreparePearlDraft(directAnswer) && productNames.length > 0;
-    const answer = usedOrderContext
-      ? answerQuestion(
-          `${question}\n\nProduct context from the customer's latest order: ${productNames.join(', ')}`,
-          productNames,
-          { overrides },
-        ) as PearlDraftAnswer
-      : directAnswer;
-
-    if (canPreparePearlDraft(answer)) {
-      return NextResponse.json({
-        draft: {
-          format: 'pearl',
-          title: answer.title?.trim(),
-          answer: pearlAnswerEmailCopy(answer, question),
-          source: 'PEARL',
-          note: usedOrderContext
-            ? `PEARL used the enquiry and the product on ${order?.order_number}. Please check both before sending.`
-            : answeringAFollowUp
-              ? 'PEARL answered their latest message, not the original enquiry. Please check it before sending.'
-              : 'PEARL used the customer’s enquiry. Please check the answer before sending.',
-          needsExtraCare: Boolean(answer.needsLanguageReview),
-        },
-      });
-    }
-
-    return NextResponse.json({
-      draft: {
-        format: 'manual',
-        source: 'PEARL',
-        note: answer.kind === 'emergency'
-          ? 'This message may need urgent medical handling. PEARL has not prepared a send-ready email.'
-          : 'PEARL needs a clearer product or question before it can prepare an email.',
       },
     });
   }
@@ -140,7 +91,7 @@ export async function POST(_request: Request, props: { params: Promise<{ id: str
     draft: {
       format: 'manual',
       source: 'Human check',
-      note: 'This enquiry does not match a PEARL research answer or a live order-status check. Write the reply normally.',
+      note: 'This enquiry does not match a live order-status check. Write the reply normally.',
     },
   });
 }

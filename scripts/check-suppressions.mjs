@@ -21,16 +21,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 let failures = 0;
 const fail = (msg) => { failures += 1; console.log(`  FAILED   ${msg}`); };
 
-// These three are copied verbatim from the social engine and check:costs fails
-// if a single byte differs, so they cannot be annotated on this side. Both of
-// their suppressions already carry a full explanation in the comment block
-// directly above them, which is why leaving them out costs nothing.
-const SHARED_VERBATIM = ['src/lib/costs/pricing.ts', 'src/lib/costs/ledger.ts', 'src/lib/costs/period.ts'];
-
 const files = execSync('git ls-files src', { cwd: ROOT, encoding: 'utf8' })
   .split('\n')
-  .filter(f => /\.(ts|tsx|js|jsx)$/.test(f))
-  .filter(f => !SHARED_VERBATIM.includes(f));
+  .filter(f => /\.(ts|tsx|js|jsx)$/.test(f));
 
 const DISABLE = /eslint-disable(-next-line|-line)?\s+([@a-z0-9/-]+)(.*)$/;
 let total = 0, explained = 0;

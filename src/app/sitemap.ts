@@ -31,9 +31,6 @@ const PAGES: { path: string; priority: number; changeFrequency: MetadataRoute.Si
   { path: '/about', priority: 0.6, changeFrequency: 'monthly' },
   { path: '/contact', priority: 0.6, changeFrequency: 'monthly' },
   { path: '/reviews', priority: 0.6, changeFrequency: 'weekly' },
-  // /calculator and /dosage-guide are members-only from 23 September 2026 and are no longer
-  // offered to search engines (task 98b6dcc6). Both also send robots: noindex.
-  { path: '/concierge', priority: 0.4, changeFrequency: 'monthly' },
   { path: '/promotion', priority: 0.4, changeFrequency: 'monthly' },
   /* The legal and policy pages. Low priority and genuinely worth including: they are what a
    * careful buyer checks before a first order, and they are the pages that make a research

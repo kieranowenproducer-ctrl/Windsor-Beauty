@@ -772,22 +772,6 @@ export default function CheckoutPage() {
                 Payment
               </h2>
 
-              {isLoggedIn === true && (
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-gold-100 bg-gold-50/40 px-5 py-4 mb-6">
-                  <p className="text-xs text-stone-500 leading-relaxed">
-                    Compare research concentration, liquid volume and equipment markings. Your checkout stays open here.
-                  </p>
-                  <Link
-                    href="/calculator"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0 border border-gold-300 text-gold-700 text-[10px] tracking-[0.2em] uppercase px-6 py-3 hover:border-gold-500 hover:bg-gold-50 transition-colors"
-                  >
-                    Research calculator
-                  </Link>
-                </div>
-              )}
-
               {/* Payment method selector */}
               <div className="mb-6">
                 <p className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold mb-3">Payment Method</p>

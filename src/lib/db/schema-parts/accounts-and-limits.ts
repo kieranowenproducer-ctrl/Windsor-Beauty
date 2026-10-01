@@ -1,28 +1,10 @@
 import type { requireDb } from '../client';
 
-// Verification codes and batches, every brute-force/rate-limit table, and discount codes.
+// Batches, every brute-force/rate-limit table, and discount codes.
 //
 // Moved out of schema.ts unchanged, in the order it already ran. Pure DDL:
 // CREATE TABLE IF NOT EXISTS and idempotent ALTERs, safe to run again.
 export async function ensureAccountsAndLimits(db: ReturnType<typeof requireDb>) {
-
-  await db`
-    CREATE TABLE IF NOT EXISTS verification_codes (
-      id SERIAL PRIMARY KEY,
-      code TEXT UNIQUE NOT NULL,
-      product_name TEXT,
-      batch_ref TEXT,
-      purity TEXT,
-      status TEXT NOT NULL DEFAULT 'unused',
-      used_at TIMESTAMPTZ,
-      used_by_email TEXT,
-      used_by_order_number TEXT,
-      ip_address TEXT,
-      user_agent TEXT,
-      marketing_consent BOOLEAN NOT NULL DEFAULT FALSE,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-    )
-  `;
 
   // Batch identifying codes the admin defines and then allocates to individual
   // products on an invoice (and, later, on a website order before dispatch) so
@@ -40,16 +22,7 @@ export async function ensureAccountsAndLimits(db: ReturnType<typeof requireDb>) 
     )
   `;
 
-  await db`
-    CREATE TABLE IF NOT EXISTS verification_attempts (
-      id SERIAL PRIMARY KEY,
-      ip_address TEXT NOT NULL,
-      attempted_at TIMESTAMPTZ NOT NULL DEFAULT now()
-    )
-  `;
-
-  // Brute-force protection for /api/admin/login — same shape/pattern as
-  // verification_attempts above, logged regardless of success/failure so a
+  // Brute-force protection for /api/admin/login, logged regardless of success/failure so a
   // burst of correct-password-but-still-too-fast attempts is also throttled.
   await db`
     CREATE TABLE IF NOT EXISTS admin_login_attempts (

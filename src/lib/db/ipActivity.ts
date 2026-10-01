@@ -318,86 +318,6 @@ export async function listConcerns(): Promise<IpConcern[]> {
     });
   }
 
-  // A burst of research questions from one address in a single day: the shape of
-  // somebody scraping the AI research tool rather than reading it.
-  //
-  // Read straight from the research log rather than requiring that feature to
-  // call us, so the two are not tied together. If the research log is not there
-  // yet, this signal is simply quiet until it is.
-  try {
-    const burst = await db`
-      SELECT ip_address, COUNT(*)::int AS n,
-             (ARRAY_AGG(customer_name) FILTER (WHERE customer_name IS NOT NULL))[1] AS name
-      FROM research_chat_log
-      WHERE ip_address IS NOT NULL
-      GROUP BY ip_address, date_trunc('day', created_at)
-      HAVING COUNT(*) >= 25
-      ORDER BY COUNT(*) DESC
-      LIMIT 20
-    `;
-    for (const r of burst as Array<{ ip_address: string; n: number; name: string | null }>) {
-      out.push({
-        kind: 'research_burst',
-        headline: `${r.n} research questions from one address in a day`,
-        detail: r.name ? `Signed in as ${r.name}` : 'Not signed in to a member account',
-        subject: r.ip_address,
-        count: r.n,
-      });
-    }
-  } catch {
-    /* The research question log is a separate piece of work. Absent until it
-       ships, and that is not an error. */
-  }
-
-  // Lots of different addresses from ONE internet provider network. A real
-  // customer base is spread across many providers; a run of accounts from a
-  // single network, especially a hosting company's, is the shape of one person
-  // behind a VPN or a script rather than a crowd of people.
-  const network = await db`
-    SELECT network, COUNT(DISTINCT ip_address)::int AS n, COUNT(DISTINCT customer_id)::int AS members
-    FROM ip_activity_log
-    WHERE network IS NOT NULL
-    GROUP BY network
-    HAVING COUNT(DISTINCT ip_address) >= 10
-    ORDER BY COUNT(DISTINCT ip_address) DESC
-    LIMIT 10
-  `;
-  for (const r of network as Array<{ network: string; n: number; members: number }>) {
-    out.push({
-      kind: 'many_addresses_one_network',
-      headline: `${r.n} different addresses from one internet provider`,
-      detail: `${r.members} member account${r.members === 1 ? '' : 's'} involved. Normal for a big provider like BT or Sky, worth a look if it is a hosting company.`,
-      subject: `Network ${r.network}`,
-      count: r.n,
-    });
-  }
-
-  // Repeated failed sign-ins, read from the anti-brute-force table the site
-  // already keeps. Nothing new is recorded for this.
-  try {
-    const failures = await db`
-      SELECT ip_address, COUNT(*)::int AS n
-      FROM admin_login_attempts
-      WHERE attempted_at > now() - interval '30 days'
-      GROUP BY ip_address
-      HAVING COUNT(*) >= 10
-      ORDER BY COUNT(*) DESC
-      LIMIT 20
-    `;
-    for (const r of failures as Array<{ ip_address: string; n: number }>) {
-      out.push({
-        kind: 'repeated_failures',
-        headline: `${r.n} failed admin sign-in attempts from one address`,
-        detail: 'In the last 30 days',
-        subject: r.ip_address,
-        count: r.n,
-      });
-    }
-  } catch {
-    /* The attempts table is pruned and may be empty or absent. Not worth a
-       failed page over. */
-  }
-
   return out.sort((a, b) => b.count - a.count);
 }
 
@@ -405,7 +325,6 @@ export async function listConcerns(): Promise<IpConcern[]> {
  * Seed the log once from the addresses the site was ALREADY recording, so the
  * page opens with real history instead of nothing:
  *   - member_login_log (sign-ins, with the member attached)
- *   - verification_audit_log (batch code checks)
  *   - qr_campaign_scans (poster and card scans)
  *
  * Nothing is invented, and nothing that was never recorded can appear. These
@@ -430,19 +349,6 @@ export async function backfillEarlierIpActivity(): Promise<number> {
     RETURNING id
   `;
   inserted += logins.length;
-
-  try {
-    const verifications = await db`
-      INSERT INTO ip_activity_log
-        (ip_address, event, user_agent, detail, created_at)
-      SELECT ip_address, 'earlier_record', user_agent,
-             'Batch code check recorded before locations were kept', created_at
-      FROM verification_audit_log
-      WHERE ip_address IS NOT NULL
-      RETURNING id
-    `;
-    inserted += verifications.length;
-  } catch { /* table may not exist on a fresh database */ }
 
   try {
     const scans = await db`

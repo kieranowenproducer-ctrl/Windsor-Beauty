@@ -22,7 +22,6 @@ const PRODUCT_OPTIONS = Array.from(
 
 export default function AdminBatchesPage() {
   const [batches, setBatches] = useState<BatchRow[] | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadError, setLoadError] = useState('');
   const [code, setCode] = useState('');
   const [productName, setProductName] = useState('');
@@ -43,7 +42,6 @@ export default function AdminBatchesPage() {
       const data = await res.json();
       if (res.ok) {
         setBatches(data.batches);
-        setSuggestions(data.suggestions ?? []);
         setLoadError('');
       } else {
         setLoadError(data.error || 'Failed to load batches.');
@@ -211,25 +209,6 @@ export default function AdminBatchesPage() {
               </div>
             </form>
 
-            {suggestions.length > 0 && (
-              <div className="mt-5 pt-4 border-t border-stone-100">
-                <p className="text-[9px] tracking-[0.1em] uppercase text-stone-400 mb-2">
-                  From your verification codes — click to fill in
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {suggestions.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setCode(s)}
-                      className="text-[11px] font-mono px-2.5 py-1 border border-stone-200 text-stone-600 hover:border-gold-400 hover:text-gold-700 transition-colors"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Batch list */}

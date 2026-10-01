@@ -13,7 +13,6 @@ interface NavGroup { group: string; items: NavItem[]; }
 const ADMIN_NAV_GROUPS: NavGroup[] = [
   { group: 'Operations', items: [
     { label: 'Dashboard', href: '/admin/dashboard' },
-    { label: 'Tasks', href: '/admin/tasks' },
     { label: 'Orders', href: '/admin/orders' },
     { label: 'Invoices', href: '/admin/invoices' },
     { label: 'Dispatch', href: '/admin/dispatch' },
@@ -23,48 +22,23 @@ const ADMIN_NAV_GROUPS: NavGroup[] = [
     { label: 'Products', href: '/admin/products' },
     { label: 'Trial (Products & Profit)', href: '/admin/trial' },
     { label: 'Certificates', href: '/admin/certificates' },
-    { label: 'Certificate Filler', href: '/admin/certificate-filler' }, // TEMPORARY — remove when certificates are complete
     { label: 'Categories', href: '/admin/categories' },
   ]},
-  { group: 'Marketing', items: [
-    // Read-only Meta advertising results. The retired content-production engine
-    // was a separate system and has deliberately been removed from this menu.
-    { label: 'Ad Results', href: '/admin/ads' },
+  { group: 'Promotions', items: [
     { label: 'Promotions', href: '/admin/promotions' },
     { label: 'Discount Codes', href: '/admin/discount-codes' },
     { label: 'Upsell System', href: '/admin/upsells' },
     { label: 'QR Campaigns', href: '/admin/qr-campaigns' },
-    { label: 'Email Marketing', href: '/admin/marketing' },
     { label: 'Reviews', href: '/admin/reviews' },
   ]},
   { group: 'Customers', items: [
     { label: 'Customers', href: '/admin/customers' },
-    { label: 'Affiliates', href: '/admin/affiliates' },
     { label: 'Security Review', href: '/admin/security-reviews' },
-    ...(process.env.NEXT_PUBLIC_WG_MEMBER_REFERRALS_ENABLED === 'true'
-      ? [{ label: 'Referral Checks', href: '/admin/member-referrals' }]
-      : []),
     { label: 'Member Logins', href: '/admin/member-logins' },
-    /* Concierge Usage was here until 2 August. It is an AI spending report, not a shop screen, so
-     * it belongs with the other AI costs on the Content & Ads dashboard rather than between
-     * customer enquiries and product batches. The page itself still exists at /admin/concierge,
-     * deliberately: taking it off the menu should not take away the numbers. */
-    { label: 'Verification Codes', href: '/admin/verification-codes' },
     { label: 'Batches', href: '/admin/batches' },
-    { label: 'Verification Log', href: '/admin/verification' },
-  ]},
-  { group: 'Content', items: [
-    // One clear door for testing PEARL, reviewing answers, terminology,
-    // sources and linked tasks. The two older specialist routes remain
-    // available from inside this control centre for detailed work.
-    // Moved here from Customers and renamed on Kieran's ask, 18 Aug 2026.
-    { label: 'PEARL Dashboard', href: '/admin/pearl' },
-    // The standard letter that wraps every PEARL reply (task 3a5298f5). Sits
-    // next to the dashboard because it is PEARL's, not a website page.
-    { label: 'PEARL Email', href: '/admin/pearl-email' },
-    { label: 'Site Content', href: '/admin/content' },
   ]},
   { group: 'Settings', items: [
+    { label: 'Site Content', href: '/admin/content' },
     { label: 'System Health', href: '/admin/system-health' },
     { label: 'Shipping Settings', href: '/admin/bulk-weights' },
     { label: 'Nav Links', href: '/admin/nav-links' },
@@ -78,8 +52,6 @@ const SEARCH_ALIASES: Record<string, string> = {
   '/admin/products': 'stock inventory catalogue shop items',
   '/admin/enquiries': 'customer service support messages email questions',
   '/admin/orders': 'sales purchases customers payments',
-  '/admin/pearl': 'ai answers dosage knowledge assistant',
-  '/admin/marketing': 'emails campaigns resend newsletter',
   '/admin/system-health': 'problems errors faults status',
   '/admin/security-reviews': 'security accounts duplicates discount abuse shared network',
 };

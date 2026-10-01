@@ -15,9 +15,7 @@ import type { SegmentCustomer, SegmentFacets } from '@/lib/db/customerSegments';
 // person"; this answers "who shall I write to this week", and they want opposite layouts. It also
 // keeps a long, already-busy page out of the way of a change that touches money.
 //
-// IT SENDS NOTHING ITSELF. Ticking people and pressing Email hands them to the marketing composer
-// that already exists, with the addresses filled in, where the email is written and sent exactly as
-// any other campaign is. One sending path, one unsubscribe link, one record of what went out.
+// IT SENDS NOTHING ITSELF. Ticking people and pressing Export gives a spreadsheet of them.
 
 interface Facets extends SegmentFacets {}
 
@@ -103,15 +101,6 @@ export default function FindCustomersPage() {
       if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
-  }
-
-  /** Hands the ticked addresses to the marketing composer. Nothing is sent from here. */
-  function emailTicked() {
-    const addresses = tickedReachable.map(c => c.email);
-    if (addresses.length === 0) return;
-    const about = describeFilters(filters);
-    window.location.href = `/admin/marketing?emails=${encodeURIComponent(addresses.join(','))}`
-      + (about ? `&about=${encodeURIComponent(about)}` : '');
   }
 
   function exportTicked() {
@@ -270,24 +259,14 @@ export default function FindCustomersPage() {
                 {result.total === 1 ? '1 customer matches' : `${result.total} customers match`}
                 {tickedList.length > 0 && <span className="text-gold-700"> · {tickedList.length} ticked</span>}
               </p>
-              {/* Said before anything is sent, not discovered afterwards. */}
               <p className="text-[11px] text-stone-500 mt-1">
                 {tickedList.length > 0
                   ? `${tickedReachable.length} of the ${tickedList.length} ticked can be emailed. `
                   : `${result.reachable} of them can be emailed. `}
-                The rest have not agreed to marketing, have unsubscribed, or have no marketing record,
-                and would be skipped.
+                The rest have not agreed to marketing, have unsubscribed, or have no marketing record.
               </p>
 
               <div className="flex flex-wrap gap-2 mt-3.5">
-                <button
-                  type="button"
-                  onClick={emailTicked}
-                  disabled={tickedReachable.length === 0}
-                  className="bg-gold-700 text-white text-[10px] tracking-[0.18em] uppercase px-5 py-2.5 hover:bg-gold-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  Write to {tickedReachable.length || 'the'} ticked
-                </button>
                 <button
                   type="button"
                   onClick={exportTicked}
@@ -400,17 +379,4 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
       {hint && <p className="text-[10px] text-stone-400 mt-1 leading-snug">{hint}</p>}
     </div>
   );
-}
-
-/** A short description of what was filtered, so the composer can say what the list is. */
-function describeFilters(f: Filters): string {
-  const parts: string[] = [];
-  if (f.referredByContains) parts.push(f.referredByContains);
-  if (f.referredBy) parts.push(f.referredBy);
-  if (f.campaign) parts.push(f.campaign);
-  if (f.town) parts.push(f.town);
-  if (f.postcodeStart) parts.push(`${f.postcodeStart} postcodes`);
-  if (f.boughtProduct) parts.push(`bought ${f.boughtProduct}`);
-  if (f.joinedFrom) parts.push(`joined since ${f.joinedFrom}`);
-  return parts.join(', ');
 }

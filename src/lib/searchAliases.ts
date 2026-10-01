@@ -8,7 +8,7 @@
  *
  * WHERE THE LIST COMES FROM. Not from a new list somebody has to remember to update. PEARL already
  * keeps a curated, source-tracked record of every compound's abbreviations, aliases, misspellings
- * and blend names, in src/lib/concierge/research/terminology.mjs, and it is reviewed. This reads
+ * and blend names, in src/lib/search/terminology.mjs, and it is reviewed. This reads
  * that. Add a term to PEARL and the admin search learns it on the next deploy, with no second list
  * to fall behind.
  *
@@ -19,7 +19,7 @@
  * search in the database and read this directly. Orders search in the browser, so the Orders API
  * hands the finished groups down with the orders rather than shipping all of PEARL to the browser.
  */
-import { CURATED_TERMINOLOGY, PEARL_BLEND_MAPPINGS } from '@/lib/concierge/research/terminology.mjs';
+import { CURATED_TERMINOLOGY, PEARL_BLEND_MAPPINGS } from '@/lib/search/terminology.mjs';
 
 /** Lower case, accents flattened. Must match fold() in src/lib/adminSearch.ts. */
 function fold(value: string): string {

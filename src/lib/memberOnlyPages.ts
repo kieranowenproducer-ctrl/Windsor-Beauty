@@ -81,8 +81,8 @@ export async function maySeeMemberOnlyTools(): Promise<boolean> {
   return true;
 }
 
-/** The addresses guarded by maySeeMemberOnlyTools. */
-const MEMBER_ONLY_PATHS = new Set(['/calculator', '/dosage-guide']);
+/** The addresses guarded by maySeeMemberOnlyTools. None at present: the calculator and dosage guide were removed from this shop. */
+const MEMBER_ONLY_PATHS = new Set<string>([]);
 
 /** Added to a guarded address in the visit log when the "For members" notice was shown instead. */
 export const MEMBER_NOTICE_SUFFIX = '/members-notice';

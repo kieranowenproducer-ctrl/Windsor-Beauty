@@ -7,7 +7,7 @@
 // address kept underneath in small type so a row is still traceable.
 //
 // Product and article names cannot be worked out from the address alone, so the
-// admin read (src/app/api/admin/ads/route.ts) looks them up and hands them down
+// admin read looks them up and hands them down
 // as a path -> name map. Everything else is decided here, and this file is pure
 // so it can run on the server and in the browser.
 
@@ -39,14 +39,6 @@ const KNOWN: Record<string, Known> = {
   '/account/forgot-password': { title: 'Forgotten password', kind: 'account' },
   '/account/reset-password': { title: 'Choosing a new password', kind: 'account' },
   '/account/create-password': { title: 'Setting their first password', kind: 'account' },
-  '/account/concierge': { title: 'AI assistance, signed in', kind: 'account' },
-  '/concierge': { title: 'AI assistance chat', kind: 'tool' },
-  '/verify': { title: 'Batch checker', kind: 'tool' },
-  '/calculator': { title: 'Dose calculator', kind: 'tool' },
-  '/dosage-guide': { title: 'Dosage guide', kind: 'tool' },
-  // Logged by src/lib/memberOnlyPages.ts visitPathAsSeen when the visitor was not signed in.
-  '/calculator/members-notice': { title: 'Dose calculator, blocked: shown the sign-in notice', kind: 'account' },
-  '/dosage-guide/members-notice': { title: 'Dosage guide, blocked: shown the sign-in notice', kind: 'account' },
   '/promotion': { title: 'Special offers', kind: 'shop' },
   '/reviews': { title: 'Reviews page', kind: 'info' },
   '/about': { title: 'About us', kind: 'info' },

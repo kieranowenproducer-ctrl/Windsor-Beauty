@@ -16,7 +16,6 @@ const POPUP_ID = 'discount-popup';
 // skip it on those pages.
 const SUPPRESSED_PATHS = [
   '/account/forgot-password', '/account/reset-password', '/account/register',
-  '/affiliate-preview', '/affiliate-admin-preview',
 ];
 
 export default function DiscountPopup() {

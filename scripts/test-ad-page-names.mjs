@@ -14,8 +14,6 @@ test('the fixed pages read as a person would say them', () => {
   assert.equal(pageTitle('/account/login'), 'Sign-in page');
   assert.equal(pageTitle('/account/register'), 'Signing up for an account');
   assert.equal(pageTitle('/account/verify-email'), 'Confirming their email address');
-  assert.equal(pageTitle('/verify'), 'Batch checker');
-  assert.equal(pageTitle('/calculator'), 'Dose calculator');
   assert.equal(pageTitle('/cart'), 'Basket');
 });
 
@@ -52,7 +50,7 @@ test('the address is always kept beside the name, for tracing a row', () => {
 test('no page name is ever a bare address', () => {
   const paths = [
     '/', '/shop', '/reviews', '/checkout/success', '/account', '/account/login', '/account/register',
-    '/account/verify-email', '/verify', '/shop/anything', '/shop/category/anything',
+    '/account/verify-email', '/shop/anything', '/shop/category/anything',
     '/orders/WG-1001', '/pay/abc123', '/r/gym-poster', '/something-nobody-planned-for', '/privacy',
   ];
   for (const path of paths) {

@@ -74,7 +74,6 @@ const PAGES = [
   { path: '/account/login', name: 'sign in' },
   { path: '/account/register', name: 'create an account' },
   { path: '/contact', name: 'contact' },
-  { path: '/calculator', name: 'the calculator' },
   { path: '/about', name: 'about' },
   { path: '/terms', name: 'terms' },
 ];

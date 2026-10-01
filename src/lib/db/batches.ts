@@ -64,15 +64,3 @@ export async function updateBatch(id: number, code: string, productName?: string
   `;
   return (rows[0] as BatchRow) ?? null;
 }
-
-// Distinct batch references already entered against verification codes — offered
-// in the admin UI as quick suggestions so the batch pool stays in step with the
-// verification system Kieran already maintains.
-export async function listVerificationBatchRefs(): Promise<string[]> {
-  const db = requireDb();
-  const rows = await db`
-    SELECT DISTINCT batch_ref FROM verification_codes
-    WHERE batch_ref IS NOT NULL AND batch_ref <> '' ORDER BY batch_ref
-  `;
-  return (rows as { batch_ref: string }[]).map((r) => r.batch_ref);
-}

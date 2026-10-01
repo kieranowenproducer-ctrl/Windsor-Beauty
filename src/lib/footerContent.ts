@@ -35,8 +35,6 @@ export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   ],
   navLinks: [
     { label: 'Shop', href: '/shop' },
-    { label: 'Verify Product', href: '/verify' },
-    // Peptide Calculator removed 23 September 2026: members-only (task 98b6dcc6).
     { label: 'Reviews', href: '/reviews' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },

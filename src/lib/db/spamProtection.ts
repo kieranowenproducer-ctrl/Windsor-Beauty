@@ -4,24 +4,6 @@ import { requireDb } from './client';
 
 // ─── Spam protection ─────────────────────────────────────────────────────────
 
-const ATTEMPT_WINDOW_MINUTES = 10;
-const ATTEMPT_LIMIT = 12;
-
-export async function isRateLimited(ip: string): Promise<boolean> {
-  const db = requireDb();
-  const rows = await db`
-    SELECT count(*)::int AS count FROM verification_attempts
-    WHERE ip_address = ${ip} AND attempted_at > now() - (${ATTEMPT_WINDOW_MINUTES} || ' minutes')::interval
-  `;
-  const count = (rows[0]?.count as number) ?? 0;
-  return count >= ATTEMPT_LIMIT;
-}
-
-export async function logVerificationAttempt(ip: string): Promise<void> {
-  const db = requireDb();
-  await db`INSERT INTO verification_attempts (ip_address) VALUES (${ip})`;
-}
-
 // Brute-force protection for /api/admin/login — tighter window/limit than
 // product verification since this guards the entire admin panel, not just a
 // lookup. 8 attempts per 15 minutes per IP.

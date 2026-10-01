@@ -95,7 +95,6 @@ function organizationJsonLd() {
 
 const QUICK_LINKS = [
   { label: 'Shop Peptides', href: '/shop', gold: true },
-  { label: 'Verify Product', href: '/verify', gold: false },
   { label: 'Reviews', href: '/reviews', gold: true },
 ];
 

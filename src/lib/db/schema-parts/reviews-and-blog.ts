@@ -53,8 +53,6 @@ export async function ensureReviews(db: ReturnType<typeof requireDb>) {
 
   await db`CREATE INDEX IF NOT EXISTS idx_marketing_contacts_token ON marketing_contacts (unsubscribe_token)`;
 
-  await db`CREATE INDEX IF NOT EXISTS idx_verification_codes_code ON verification_codes (code)`;
-  await db`CREATE INDEX IF NOT EXISTS idx_verification_attempts_ip ON verification_attempts (ip_address, attempted_at)`;
   await db`CREATE INDEX IF NOT EXISTS idx_admin_login_attempts_ip ON admin_login_attempts (ip_address, attempted_at)`;
   await db`CREATE INDEX IF NOT EXISTS idx_signup_attempts_ip ON signup_attempts (ip_address, attempted_at)`;
   await db`CREATE INDEX IF NOT EXISTS idx_form_attempts_lookup ON form_attempts (form, ip_address, attempted_at)`;

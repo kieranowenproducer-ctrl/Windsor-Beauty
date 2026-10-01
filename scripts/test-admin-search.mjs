@@ -193,7 +193,7 @@ check('quotes turn short names OFF',             find('"retatrutide"'), ['WG-100
 check('a word with no short name is unchanged',  find('Hardy'), ['WG-1005']);
 
 console.log('\n=== The short-name list itself ===\n');
-check('it was built from PEARL and is not empty', SEARCH_ALIAS_GROUPS.length > 15, true);
+check('it was built from the terminology list and is not empty', SEARCH_ALIAS_GROUPS.length > 15, true);
 check('every group has at least two ways to say it', SEARCH_ALIAS_GROUPS.every(g => g.length >= 2), true);
 check('nothing in it is one or two letters', SEARCH_ALIAS_GROUPS.every(g => g.every(w => w.length >= 3)), true);
 check('it is all lower case', SEARCH_ALIAS_GROUPS.every(g => g.every(w => w === w.toLowerCase())), true);

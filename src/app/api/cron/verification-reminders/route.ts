@@ -32,7 +32,7 @@ export const maxDuration = 60;
 //      (so enabling this feature never mass-emails an old backlog).
 //   3. Batch cap — at most 25 sends per daily run.
 //
-// Protected by CRON_SECRET, same pattern as /api/cron/sentinel: Vercel sends
+// Protected by CRON_SECRET, same pattern as the other cron routes: Vercel sends
 // `Authorization: Bearer ${CRON_SECRET}` on scheduled invocations.
 export async function GET(request: Request) {
   const cronSecret = process.env.CRON_SECRET;

@@ -1,4 +1,3 @@
-import { conciergeAvailableToRequest } from '@/lib/concierge/availability';
 import { NextResponse } from 'next/server';
 import { findDiscountSignupByEmail, listOrdersByCustomerId } from '@/lib/db';
 import { resolveCustomerFromRequest } from '@/lib/auth';
@@ -38,13 +37,6 @@ export async function GET(request: Request) {
     exampleOrderHistory: Boolean(exampleOrders),
     affiliateAvailable,
     rafDiscount: rafDiscount ? { code: String(rafDiscount.code), expiresAt: new Date(String(rafDiscount.expires_at)).toISOString(), welcomeCode } : null,
-    /* Whether to show this person the concierge at all.
-     *
-     * Decided on the server from their signed-in email, so the account page does not have to know
-     * the rule and cannot be tricked into showing the entry point by a value from the browser.
-     * It hides the card and turns the page away; the API refuses independently, which is the gate
-     * that actually holds. */
-    conciergeAvailable: conciergeAvailableToRequest(request, customer.email),
     customer: {
       id: customer.id,
       email: customer.email,
