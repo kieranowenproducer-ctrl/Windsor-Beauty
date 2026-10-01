@@ -6,7 +6,7 @@ export default function PaymentPolicyPage() {
     <PolicyPage
       contentKey="payment-policy"
       title="Payment Policy"
-      intro="How payments are taken, processed and protected when you place an order with Windsor Glow."
+      intro="How payments are taken, processed and protected when you place an order with Windsor Beauty."
     >
       <PolicySection heading="Accepted Payment Methods">
         <p>

@@ -184,23 +184,23 @@ for (const product of live) {
   }
 }
 
-/* NOBODY ELSE'S NAME ON A WINDSOR GLOW CERTIFICATE.
+/* NOBODY ELSE'S NAME ON A WINDSOR BEAUTY CERTIFICATE.
  *
  * Task de7e8496, 14 August 2026. Kieran found another peptide company printed on
  * a certificate a member can open. It was the Tesamorelin 10mg certificate,
  * which carried a "Customer: Key Peptides" line in its verification summary —
  * the supplier's own lab paperwork, typed in wholesale, including the line that
  * says who the lab tested it for. A second certificate was numbered KP-GH420
- * instead of WG-, carrying the same supplier's initials.
+ * instead of WB-, carrying the same supplier's initials.
  *
  * Certificates are typed in through the admin panel, so nothing in the code
  * stops it happening again. This does. Two rules:
  *
  *   1. A certificate must not carry a "customer", "client", "supplier" or
- *      "manufacturer" line at all. A Windsor Glow certificate is Windsor Glow's
+ *      "manufacturer" line at all. A Windsor Beauty certificate is Windsor Beauty's
  *      own document; whoever the lab originally tested for is not the customer's
  *      business and naming a rival on it damages the brand.
- *   2. Certificate numbers start WG-. That is what makes them Windsor Glow's.
+ *   2. Certificate numbers start WB-. That is what makes them Windsor Beauty's.
  *
  * NOTE ON WHAT THIS DOES NOT TOUCH: it never looks at a purity, a content
  * figure, a batch or a date. Removing a supplier's name changes no measured
@@ -212,9 +212,9 @@ const WHOSE_DOCUMENT = /^(customer|client|supplier|manufacturer|distributor|prep
 // Someone else's web address written into a certificate value. This is what
 // Kieran actually saw: the Tesamorelin 20mg Content row read
 // "5mg (reference batch, peptide-warehouse.com)" — a rival's domain, printed
-// under the Content heading on a Windsor Glow certificate.
+// under the Content heading on a Windsor Beauty certificate.
 const SOMEONE_ELSES_SITE = /\b([a-z0-9][a-z0-9-]*\.)+(com|co\.uk|net|org|io|shop|store|eu|us)\b/i;
-// Matches both "windsorglow.com" and "Windsor Glow" — the domain check and the
+// Matches both "windsorbeauty.co.uk" and "Windsor Beauty" — the domain check and the
 // "is this our own name" check use the same idea of us.
 const OUR_OWN = /windsor\s*glow/i;
 
@@ -224,7 +224,7 @@ for (const product of live) {
     const cert = certificateForDosage(product, variant.dosage);
     if (!cert?.enabled) continue;
     // Fingerprint on the CONTENT, not the certificate number. Tesamorelin 10mg
-    // and 20mg share the number WG-CB438 but their Content rows differ, and it
+    // and 20mg share the number WB-CB438 but their Content rows differ, and it
     // was the 20mg row that named the rival — deduplicating by number skipped
     // the very row this check exists to catch.
     const fingerprint = JSON.stringify(cert);
@@ -234,15 +234,15 @@ for (const product of live) {
 
     for (const row of cert.verificationSummary ?? []) {
       // A "Customer" line is only a problem when it names SOMEBODY ELSE.
-      // "Customer: Windsor Glow" is true and belongs there. The first version of
+      // "Customer: Windsor Beauty" is true and belongs there. The first version of
       // this rule refused the line itself, so the day the certificates were
-      // corrected to say Windsor Glow it started failing on the right answer —
+      // corrected to say Windsor Beauty it started failing on the right answer —
       // and a check that cries wolf on correct data is one nobody runs twice.
       const value = String(row.value ?? '').trim();
       if (WHOSE_DOCUMENT.test(String(row.label ?? '').trim()) && !OUR_OWN.test(value)) {
         ok(false, `${where}: its certificate has a "${row.label}" line saying "${value}". `
-          + 'That names somebody other than Windsor Glow on a Windsor Glow document. '
-          + 'Remove the row in Admin > Certificates, or correct it to Windsor Glow.');
+          + 'That names somebody other than Windsor Beauty on a Windsor Beauty document. '
+          + 'Remove the row in Admin > Certificates, or correct it to Windsor Beauty.');
       }
     }
 
@@ -258,14 +258,14 @@ for (const product of live) {
       const site = value.match(SOMEONE_ELSES_SITE);
       if (site && !OUR_OWN.test(site[0])) {
         ok(false, `${where}: its certificate says "${value}". That prints another company's `
-          + `website (${site[0]}) on a Windsor Glow certificate. Remove it in Admin > Certificates.`);
+          + `website (${site[0]}) on a Windsor Beauty certificate. Remove it in Admin > Certificates.`);
       }
     }
 
     const id = String(cert.certificateId ?? '').trim();
-    if (id && !/^WG-/i.test(id)) {
-      ok(false, `${where}: its certificate number is "${id}", which is not a Windsor Glow number. `
-        + 'Every certificate number starts WG-. Renumber it in Admin > Certificates.');
+    if (id && !/^WB-/i.test(id)) {
+      ok(false, `${where}: its certificate number is "${id}", which is not a Windsor Beauty number. `
+        + 'Every certificate number starts WB-. Renumber it in Admin > Certificates.');
     }
   }
 }

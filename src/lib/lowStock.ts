@@ -10,7 +10,7 @@ import { mergeProducts, PRODUCTS, type Product } from '@/data/products';
 
 // ─── Low-stock warning (task efc5cb9a) ──────────────────────────────────────
 // Kieran's rule: below 6 units left on any product means highlight it on the
-// admin dashboard and email sales@windsorglow.com so more gets ordered.
+// admin dashboard and email sales@windsorbeauty.co.uk so more gets ordered.
 // "Below 6" — a variant with 5 or fewer is low. Tracked per (slug, dosage)
 // because that is how stock itself is tracked; a variant nobody has ever set
 // a number for is untracked/unlimited and never counts as low.

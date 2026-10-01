@@ -99,7 +99,7 @@ export async function POST(request: Request) {
    * takes to start the counting problem this change exists to fix. */
   if (!isReferralSource(referralChannel(referredBy) ?? '')) {
     return NextResponse.json(
-      { error: 'Please tell us where you heard about Windsor Glow.' },
+      { error: 'Please tell us where you heard about Windsor Beauty.' },
       { status: 400 }
     );
   }
@@ -162,7 +162,7 @@ export async function POST(request: Request) {
     );
   }
 
-  // Read QR campaign attribution from the wg_ref cookie (set when a customer
+  // Read QR campaign attribution from the wb_ref cookie (set when a customer
   // scans a QR code). This mirrors the same lookup pattern used in place-order.
   // Attribution is first-touch at account creation and is never overwritten.
   let qrCampaignId: number | null = null;
@@ -175,8 +175,8 @@ export async function POST(request: Request) {
     const refSlug = request.headers.get('cookie')
       ?.split(';')
       .map(c => c.trim())
-      .find(c => c.startsWith('wg_ref='))
-      ?.slice('wg_ref='.length) ?? null;
+      .find(c => c.startsWith('wb_ref='))
+      ?.slice('wb_ref='.length) ?? null;
 
     if (refSlug) {
       const campaign = await getQrCampaignBySlug(refSlug);
@@ -355,7 +355,7 @@ export async function POST(request: Request) {
       subject: email,
       detail: err,
       alertAdmin: true,
-      whatToDo: 'Try creating an account yourself at windsorglow.com/account/register. If it fails, sign-ups are down for everyone.',
+      whatToDo: 'Try creating an account yourself at windsorbeauty.co.uk/account/register. If it fails, sign-ups are down for everyone.',
     });
     return NextResponse.json({ error: 'Something went wrong while creating your account. Please try again shortly.' }, { status: 500 });
   }

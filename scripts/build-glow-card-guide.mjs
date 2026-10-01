@@ -17,7 +17,7 @@ const serif = (value, x, y, size, start, end, options = '') =>
 const card = (start, end, points) => [
   `drawbox=x=760:y=150:w=370:h=390:color=#19160f:t=fill:enable='between(t,${start},${end})'`,
   `drawbox=x=760:y=150:w=370:h=390:color=#c6a23e:t=3:enable='between(t,${start},${end})'`,
-  text('WINDSOR GLOW', 790, 184, 18, start, end, 'fontcolor=#f7e7b0'),
+  text('WINDSOR BEAUTY', 790, 184, 18, start, end, 'fontcolor=#f7e7b0'),
   text('GLOW CARD', 790, 215, 28, start, end, 'fontcolor=#ffffff'),
   serif(`${points} POINT${points === 1 ? '' : 'S'}`, 790, 285, 64, start, end),
   text('MEMBER REWARDS', 790, 370, 17, start, end, 'fontcolor=#d7c99b'),
@@ -31,7 +31,7 @@ const filter = [
   'drawbox=x=0:y=0:w=1280:h=720:color=#201b11:t=fill',
   'drawbox=x=0:y=0:w=1280:h=8:color=#c6a23e:t=fill',
   `drawbox=x=650:y=0:w=3:h=720:color=#403821:t=fill`,
-  text('WINDSOR GLOW', 92, 74, 18, 0, 42, 'fontcolor=#d7b65b'),
+  text('WINDSOR BEAUTY', 92, 74, 18, 0, 42, 'fontcolor=#d7b65b'),
   text('MEMBER REWARDS', 92, 103, 13, 0, 42, 'fontcolor=#bcb294'),
   serif('YOUR GLOW CARD', 92, 165, 56, 0, 5),
   text('A simple way to earn points and unlock rewards.', 92, 245, 25, 0, 5, 'fontcolor=#e9e1cf'),
@@ -72,7 +72,7 @@ const filter = [
 
   serif('CHECK YOUR PROGRESS', 92, 165, 48, 37, 42),
   text('See your points, rewards and personal referral link', 92, 245, 25, 37, 42, 'fontcolor=#e9e1cf'),
-  text('IN YOUR WINDSOR GLOW ACCOUNT', 92, 310, 17, 37, 42, 'fontcolor=#d7b65b'),
+  text('IN YOUR WINDSOR BEAUTY ACCOUNT', 92, 310, 17, 37, 42, 'fontcolor=#d7b65b'),
   card(37, 42, 5),
 ].join(',');
 

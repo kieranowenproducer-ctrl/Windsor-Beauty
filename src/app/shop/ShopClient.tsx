@@ -229,7 +229,7 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
       {/* Page header */}
       <div className="mb-12 text-center">
         <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">
-          Windsor Glow
+          Windsor Beauty
         </p>
         {/* The category's own name on its own page, and the shop's name on the shop. The name is
             the one the site already shows in the dropdown, never a reworded version of it. */}
@@ -331,7 +331,7 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
       {/* Bottom disclaimer */}
       <div className="mt-16 border-t border-gold-100 pt-10 text-center">
         <p className="text-xs text-stone-500 max-w-xl mx-auto leading-relaxed">
-          All products listed are for research use only and must be handled by qualified personnel in appropriate laboratory conditions. Windsor Glow makes no therapeutic or medical claims.
+          All products listed are for research use only and must be handled by qualified personnel in appropriate laboratory conditions. Windsor Beauty makes no therapeutic or medical claims.
         </p>
       </div>
       </div>

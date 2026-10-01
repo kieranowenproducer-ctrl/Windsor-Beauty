@@ -16,7 +16,7 @@ import type { ReviewCardData } from './ReviewCard';
 // Two things this is NOT:
 //   - It is not a new way in. Every button calls the existing /api/admin/...
 //     endpoints, which the middleware gates on the httpOnly admin session
-//     cookie. The `wg_ui_session=staff` cookie read here only decides whether
+//     cookie. The `wb_ui_session=staff` cookie read here only decides whether
 //     the buttons are DRAWN; it grants nothing on the server.
 //   - It is not visible to customers, and not visible to an admin who is using
 //     "preview as customer", which is what isStaffView() already means
@@ -347,10 +347,10 @@ export default function AdminReviewControls({
         </div>
       )}
 
-      {/* Reply as Windsor Glow */}
+      {/* Reply as Windsor Beauty */}
       {panel === 'reply' && (
         <div className="mt-3 border-l-2 border-gold-200 bg-gold-50/40 px-4 py-3 sm:px-5 sm:py-4">
-          <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold mb-2">Reply as Windsor Glow</p>
+          <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold mb-2">Reply as Windsor Beauty</p>
           <textarea
             value={replyText}
             onChange={e => setReplyText(e.target.value)}

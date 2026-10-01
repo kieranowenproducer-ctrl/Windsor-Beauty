@@ -11,7 +11,7 @@ const paidStates = ['paid', 'awaiting_dispatch', 'processing', 'exported', 'disp
 // reads only order references, amounts, states and confirmation times.
 export async function GET(request: Request) {
   const expected = process.env.ADMIN_SESSION_TOKEN;
-  if (!expected || (await cookies()).get('wg_admin_session')?.value !== expected) {
+  if (!expected || (await cookies()).get('wb_admin_session')?.value !== expected) {
     return NextResponse.json({ error: 'Sign in to download Accounting data.' }, { status: 401, headers: privateHeaders });
   }
   let range;

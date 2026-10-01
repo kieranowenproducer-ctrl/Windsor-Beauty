@@ -8,7 +8,7 @@ import { getProductsBySlug } from '@/lib/shipping';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 
-const FROM_ADDRESS = 'Windsor Glow <orders@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 interface BackInStockEmailParams {
   to: string;
@@ -29,9 +29,9 @@ async function sendBackInStockEmail(params: BackInStockEmailParams): Promise<boo
       to: params.to,
       subject: `${params.productName} is back in stock`,
       text:
-        `Good news — ${params.productName} is back in stock at Windsor Glow.\n\n` +
+        `Good news — ${params.productName} is back in stock at Windsor Beauty.\n\n` +
         `Order now: ${params.productUrl}\n\n` +
-        `Thanks,\nWindsor Glow`,
+        `Thanks,\nWindsor Beauty`,
       html: emailDocument({
         title: `${params.productName} is back in stock`,
         headerLabel: 'Back In Stock',
@@ -39,11 +39,11 @@ async function sendBackInStockEmail(params: BackInStockEmailParams): Promise<boo
         <!-- Body -->
         <tr>
           <td style="padding:40px;font-size:14px;color:#44403c;line-height:1.6">
-            <p style="margin:0 0 16px;">Good news &mdash; <strong>${escapeHtml(params.productName)}</strong> is back in stock at Windsor Glow.</p>
+            <p style="margin:0 0 16px;">Good news &mdash; <strong>${escapeHtml(params.productName)}</strong> is back in stock at Windsor Beauty.</p>
             <p style="margin:0 0 16px;">
               <a href="${params.productUrl}" style="color:#b8902a;">Order now &rarr;</a>
             </p>
-            <p style="margin:0;">Thanks,<br />Windsor Glow</p>
+            <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>
         </tr>`,
       }),
@@ -73,7 +73,7 @@ export async function notifyBackInStock(productSlug: string): Promise<void> {
   const product = productsBySlug.get(productSlug);
   if (!product) return;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
   const productUrl = `${siteUrl}/shop/${productSlug}`;
 
   const sentIds: number[] = [];

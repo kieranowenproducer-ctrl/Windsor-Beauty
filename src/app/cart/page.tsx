@@ -91,7 +91,7 @@ export default function CartPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
       <MemberPriceOfferModal open={memberOfferOpen} items={items} nonMemberTotal={totalPrice} onClose={() => setMemberOfferOpen(false)} onContinue={() => { setMemberOfferOpen(false); window.location.assign('/checkout'); }} />
       <div className="mb-10">
-        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-1">Windsor Glow</p>
+        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-1">Windsor Beauty</p>
         <h1 className="font-serif text-4xl text-stone-800 tracking-wide">
           Basket ({totalItems} item{totalItems !== 1 ? 's' : ''})
         </h1>

@@ -108,7 +108,7 @@ function LaunchCountdown() {
     return (
       <div className="mb-10" role="status" aria-live="polite">
         <p className="font-serif text-2xl text-stone-800 tracking-wide mb-3">
-          Welcome to <span className="text-gold-700">Windsor Glow</span>
+          Welcome to <span className="text-gold-700">Windsor Beauty</span>
         </p>
         <p className="text-sm text-stone-500">
           We are live. Taking you to the shop now.
@@ -149,15 +149,15 @@ function LaunchCountdown() {
       <div className="max-w-md mx-auto mb-8">
         <p className="text-sm text-stone-500 leading-relaxed mb-4">
           Following a successful soft launch with our affiliate partners and researchers,
-          we are proud to officially open <span className="font-semibold text-stone-700">windsorglow.com</span>.
+          we are proud to officially open <span className="font-semibold text-stone-700">windsorbeauty.co.uk</span>.
         </p>
         <p className="text-sm text-stone-500 leading-relaxed mb-5">
-          Windsor Glow thanks everyone who took part in the soft launch campaign that began
+          Windsor Beauty thanks everyone who took part in the soft launch campaign that began
           in May. Your feedback and comments have helped us create a smooth experience for
           all our current and future customers.
         </p>
         <p className="font-serif text-2xl text-stone-800 tracking-wide">
-          Welcome to <span className="text-gold-700">Windsor Glow</span>
+          Welcome to <span className="text-gold-700">Windsor Beauty</span>
         </p>
       </div>
 
@@ -348,7 +348,7 @@ export default function ComingSoonPage() {
         <div className="flex justify-center mb-6">
           <Image
             src="/images/logo-transparent.png"
-            alt="Windsor Glow"
+            alt="Windsor Beauty"
             width={320}
             height={200}
             className="w-48 h-auto object-contain"
@@ -414,7 +414,7 @@ export default function ComingSoonPage() {
               <p className="text-[11px] text-stone-500 leading-relaxed border-t border-gold-100 pt-4">
                 You must verify your email before you can continue. Nothing in your inbox after a
                 few minutes? Check spam first, then email{' '}
-                <a href="mailto:sales@windsorglow.com" className="text-gold-700 underline">sales@windsorglow.com</a>{' '}
+                <a href="mailto:sales@windsorbeauty.co.uk" className="text-gold-700 underline">sales@windsorbeauty.co.uk</a>{' '}
                 and we will help.
               </p>
             </>
@@ -424,7 +424,7 @@ export default function ComingSoonPage() {
                 You&rsquo;re Invited To Something Special
               </p>
               <h2 className="font-serif text-2xl text-stone-800 tracking-wide leading-snug mb-6">
-                Register for Free and Become a Windsor Glow Member
+                Register for Free and Become a Windsor Beauty Member
               </h2>
 
               {/* 10% off — the primary focal point on this page */}
@@ -458,7 +458,7 @@ export default function ComingSoonPage() {
                 onClick={openModal}
                 className="w-full bg-gold-700 text-white text-[11px] font-semibold tracking-[0.2em] uppercase py-4 hover:bg-gold-800 transition-colors"
               >
-                Become a Windsor Glow Member
+                Become a Windsor Beauty Member
               </button>
               <p className="text-[10px] text-stone-500 leading-relaxed mt-5">
                 Verify your email after signing up to unlock your discount code.
@@ -550,7 +550,7 @@ export default function ComingSoonPage() {
                   Member Registration
                 </p>
                 <h2 className="font-serif text-xl text-stone-800 tracking-wide leading-snug">
-                  Create Your Windsor Glow Member Account
+                  Create Your Windsor Beauty Member Account
                 </h2>
               </div>
               <button

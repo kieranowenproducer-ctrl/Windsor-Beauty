@@ -12,7 +12,7 @@ import ProductPageClient from './ProductPageClient';
  * WHY THIS FILE IS A SERVER COMPONENT AND THE PAGE ITSELF IS NEXT DOOR. Until 10 August 2026 the
  * whole page began with `'use client'`, and a client component cannot export `generateMetadata`.
  * So Next fell back to the root layout for every one of the 61 products: /shop/aod-9604 and
- * /shop/bpc-157 were both titled "Windsor Glow | Premium Research Compounds" and both carried the
+ * /shop/bpc-157 were both titled "Windsor Beauty | Premium Research Compounds" and both carried the
  * homepage's description. Nothing on either page said which product it was about. There was no
  * h1, no canonical, no price, no structured data. The shop was discoverable and illegible, which
  * is the worse half of the pair, because it looks fine from inside a browser.
@@ -45,7 +45,7 @@ function describe(product: Product): string {
   const own = (product.shortDescription ?? '').trim()
     || (product.fullDescription ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split('. ')[0];
   const purity = product.purity ? `${product.purity} purity. ` : '';
-  const opening = own ? `${own.replace(/\.?$/, '.')} ` : `${product.name} from Windsor Glow. `;
+  const opening = own ? `${own.replace(/\.?$/, '.')} ` : `${product.name} from Windsor Beauty. `;
   return `${opening}${purity}Supplied for laboratory research use only, not for human consumption, `
     + 'with a certificate of analysis.';
 }
@@ -59,7 +59,7 @@ export async function generateMetadata(props: ProductPageProps): Promise<Metadat
   const params = await props.params;
   const data = await loadShopServerData();
   const product = productForSlug(data, params.slug);
-  if (!product) return { title: 'Product Not Found | Windsor Glow' };
+  if (!product) return { title: 'Product Not Found | Windsor Beauty' };
 
   const description = describe(product);
   /* The PRETTY slug is the canonical address, settled 10 August 2026. next.config.js already
@@ -68,11 +68,11 @@ export async function generateMetadata(props: ProductPageProps): Promise<Metadat
   const canonical = `${SITE_URL}${shopUrl(product.slug)}`;
 
   return {
-    title: `${product.name} | Windsor Glow`,
+    title: `${product.name} | Windsor Beauty`,
     description,
     alternates: { canonical },
     openGraph: {
-      title: `${product.name} | Windsor Glow`,
+      title: `${product.name} | Windsor Beauty`,
       description,
       type: 'website',
       url: canonical,
@@ -105,7 +105,7 @@ function productJsonLd(product: Product, data: Awaited<ReturnType<typeof loadSho
       availability: dosageSoldOut(product, variantStock, variant.dosage)
         ? 'https://schema.org/OutOfStock'
         : 'https://schema.org/InStock',
-      seller: { '@type': 'Organization', name: 'Windsor Glow' },
+      seller: { '@type': 'Organization', name: 'Windsor Beauty' },
     }));
 
   return {
@@ -115,7 +115,7 @@ function productJsonLd(product: Product, data: Awaited<ReturnType<typeof loadSho
     description: describe(product),
     image: [imageUrl(product)],
     sku: product.slug,
-    brand: { '@type': 'Brand', name: product.brand || 'Windsor Glow' },
+    brand: { '@type': 'Brand', name: product.brand || 'Windsor Beauty' },
     ...(offers.length ? { offers } : {}),
     /* Only when there are really reviews, and only the ones the page itself already shows.
      * A rating in structured data that a visitor cannot see on the page is a manual penalty. */

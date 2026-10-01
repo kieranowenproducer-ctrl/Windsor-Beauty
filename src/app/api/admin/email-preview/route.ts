@@ -30,7 +30,7 @@ export const dynamic = 'force-dynamic';
 const SAMPLE = {
   to: 'sample.customer@example.com',
   customerName: 'Sample Customer',
-  orderNumber: 'WG-SAMPLE',
+  orderNumber: 'WB-SAMPLE',
   trackingNumber: 'AB123456789GB',
   carrierName: 'Royal Mail',
 };

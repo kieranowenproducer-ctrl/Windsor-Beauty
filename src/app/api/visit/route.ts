@@ -22,8 +22,8 @@ export const dynamic = 'force-dynamic';
 // do". The existing member session is checked before a customer name can ever
 // be connected to the page view.
 
-const ADMIN_COOKIE = 'wg_admin_session';
-const CUSTOMER_COOKIE = 'wg_customer_session';
+const ADMIN_COOKIE = 'wb_admin_session';
+const CUSTOMER_COOKIE = 'wb_customer_session';
 
 function cookieValue(header: string, name: string): string | null {
   const match = header.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
     utmMedium: cleanText(body?.utm_medium, 100),
     utmCampaign: cleanText(body?.utm_campaign, 200),
     utmContent: cleanText(body?.utm_content, 200),
-    campaignSlug: cookieValue(cookies, 'wg_ref'),
+    campaignSlug: cookieValue(cookies, 'wb_ref'),
     signedIn: Boolean(customerToken),
     visitId,
     customerToken,

@@ -2,7 +2,7 @@
 //
 //   node scripts/test-form-limits-sql.mjs
 //
-// WHY THIS EXISTS IN THIS SHAPE. The Windsor Glow credential on this machine is `agent_ro` and is
+// WHY THIS EXISTS IN THIS SHAPE. The Windsor Beauty credential on this machine is `agent_ro` and is
 // genuinely read only, and the counting itself is time-sensitive: "five in the last fifteen
 // minutes" cannot be proved by reading code, only by inserting rows and counting them back. The
 // alternative to this file is shipping a brake nobody has ever seen stop anything.

@@ -112,7 +112,7 @@ assert.equal(
 );
 assert.equal(
   CHECKOUT_CONFIRMATIONS[1].label,
-  'I confirm I have read the Windsor Glow Terms & Conditions and will adhere to them.',
+  'I confirm I have read the Windsor Beauty Terms & Conditions and will adhere to them.',
 );
 assert.match(CHECKOUT_CONFIRMATIONS[1].label, /adhere to/, 'the Terms box must say adhere, not just agree');
 assert.equal(CHECKOUT_CONFIRMATIONS[1].link?.href, '/terms', 'the Terms have to be openable');

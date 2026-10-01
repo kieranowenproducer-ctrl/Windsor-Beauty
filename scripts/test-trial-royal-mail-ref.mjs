@@ -86,7 +86,7 @@ test('6. a normal non-trial product is completely unchanged', () => {
   assert.equal(contents.length, 1);
   // Its existing generic name, exactly as before this task.
   assert.equal(contents[0].name, 'Sculpt Ampoule');
-  assert.equal(contents[0].sku, 'WG-2808D892');
+  assert.equal(contents[0].sku, 'WB-2808D892');
   assert.ok(!/^Product \d+$/.test(contents[0].name), 'a real product must not be given a trial reference');
 });
 
@@ -140,7 +140,7 @@ test('a database-assigned code on a new Trial line is preserved from invoice to 
 test('the paid-order staff and customer emails show the same code, never the trial name', () => {
   const { orderItems } = royalMailContents([trialLine(8, 'private trial name', { fulfilmentRef: 'Product 207' })]);
   const shared = {
-    customerName: 'Example Customer', orderNumber: 'WG-TEST', items: orderItems,
+    customerName: 'Example Customer', orderNumber: 'WB-TEST', items: orderItems,
     subtotal: 45, shippingLabel: 'UK Delivery', shippingCost: 10,
     total: 55, shippingAddress: 'Example address',
   };
@@ -158,10 +158,10 @@ test('the paid-order staff and customer emails show the same code, never the tri
 test('Fena payment-link items use the identical Product code', () => {
   const { orderItems } = royalMailContents([trialLine(8, 'private trial name', { fulfilmentRef: 'Product 207' })]);
   const payload = buildFenaPayload({
-    order_number: 'WG-TEST', total: '55', email: 'example@example.com',
+    order_number: 'WB-TEST', total: '55', email: 'example@example.com',
     customer_name: 'Example Customer', items: orderItems,
     shipping_line1: 'Example address', shipping_country: 'GB',
-  }, 'https://windsorglow.com', new Map());
+  }, 'https://www.windsorbeauty.co.uk', new Map());
   assert.equal(payload.items[0].name, 'Product 207');
   assert.ok(!JSON.stringify(payload).includes('private trial name'));
 });

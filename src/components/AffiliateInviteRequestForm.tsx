@@ -26,7 +26,7 @@ export default function AffiliateInviteRequestForm({ requestKey, preview }: { re
     <input id="affiliate-request-email" type="email" autoComplete="email" required maxLength={254} value={email} onChange={event => setEmail(event.target.value)} disabled={busy}
       className="mt-3 min-h-12 w-full border border-gold-200 bg-white px-4 text-sm text-stone-800 outline-none focus:border-gold-700 focus:ring-1 focus:ring-gold-700" />
     <button type="submit" disabled={busy} className="mt-4 min-h-12 w-full bg-gold-700 px-5 text-xs font-semibold text-white hover:bg-gold-800 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700">{busy ? 'Requesting invitation' : 'Email me my private invitation'}</button>
-    <p className="mt-3 text-xs leading-5 text-stone-600">By pressing this button, you ask Windsor Glow to send one invitation email. This does not add you to marketing emails.</p>
+    <p className="mt-3 text-xs leading-5 text-stone-600">By pressing this button, you ask Windsor Beauty to send one invitation email. This does not add you to marketing emails.</p>
     {message && <p role="status" className="mt-4 text-xs leading-6 text-stone-700">{message}</p>}
   </form>;
 }

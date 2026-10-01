@@ -4,10 +4,10 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in passwordResetEmail/membershipWelcomeEmail.
-const FROM_ADDRESS = 'Windsor Glow <accounts@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
 // A monitored inbox — a transactional sender with no working reply path is a
 // negative engagement signal to Gmail/Outlook and strands confused customers.
-const REPLY_TO = 'sales@windsorglow.com';
+const REPLY_TO = 'sales@windsorbeauty.co.uk';
 
 export function isVerifyEmailConfigured() {
   return Boolean(process.env.RESEND_API_KEY);
@@ -55,15 +55,15 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
   const isReminder = params.variant === 'reminder';
 
   const subject = isReminder
-    ? 'Reminder: confirm your email to activate your Windsor Glow account'
-    : 'Confirm your email address — Windsor Glow';
+    ? 'Reminder: confirm your email to activate your Windsor Beauty account'
+    : 'Confirm your email address — Windsor Beauty';
   const preheader = isReminder
     ? `Final reminder — your new verification link is valid for ${hours} hours.`
     : `One click to activate your account. Your link is valid for ${hours} hours.`;
 
   const introText = isReminder
-    ? `This is a friendly final reminder from Windsor Glow. You created a member account but have not yet verified your email address, so we have generated a fresh verification link for you.`
-    : `Thanks for creating a Windsor Glow account. Please verify your email address to activate your account and unlock your first-order member discount.`;
+    ? `This is a friendly final reminder from Windsor Beauty. You created a member account but have not yet verified your email address, so we have generated a fresh verification link for you.`
+    : `Thanks for creating a Windsor Beauty account. Please verify your email address to activate your account and unlock your first-order member discount.`;
 
   const code = params.discountCode ?? null;
   const codeIntro = code
@@ -78,7 +78,7 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
   const expiryLine = `This link will expire in ${hours} hours. If you did not create this account, you can safely ignore this email.`;
   const spamLine = `Tip: if our emails are not in your inbox, please check your spam or junk folder and mark us as safe so your discount code arrives correctly.`;
   const reminderClosing = isReminder
-    ? `This is the last automatic reminder we will send. You can also request a new link at any time by logging in at windsorglow.com/account.`
+    ? `This is the last automatic reminder we will send. You can also request a new link at any time by logging in at windsorbeauty.co.uk/account.`
     : '';
 
   try {
@@ -95,7 +95,7 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
         `${expiryLine}\n\n` +
         `${spamLine}\n\n` +
         (reminderClosing ? `${reminderClosing}\n\n` : '') +
-        `Thanks,\nWindsor Glow`,
+        `Thanks,\nWindsor Beauty`,
       html: emailDocument({
         title: isReminder ? 'Reminder: verify your email' : 'Verify your email',
         headerLabel: isReminder ? 'Verification Reminder' : 'Verify Your Email',
@@ -118,7 +118,7 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
             <p style="margin:0 0 16px;"><strong>${escapeHtml(expiryLine)}</strong></p>
             <p style="margin:0 0 16px;font-size:12px;color:#78716c;">${escapeHtml(spamLine)}</p>
             ${reminderClosing ? `<p style="margin:0 0 16px;font-size:12px;color:#78716c;">${escapeHtml(reminderClosing)}</p>` : ''}
-            <p style="margin:0;">Thanks,<br />Windsor Glow</p>
+            <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>
         </tr>`,
       }),

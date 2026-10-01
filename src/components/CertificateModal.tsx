@@ -264,8 +264,8 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
           enough margin below to keep clear air above the header bar. */}
       <div className="mb-8 flex justify-center">
         <Image
-          src="/images/windsor-glow-logo-transparent.png"
-          alt="Windsor Glow"
+          src="/images/windsor-beauty-logo-transparent.png"
+          alt="Windsor Beauty"
           width={220}
           height={70}
           className="h-14 sm:h-16 w-auto object-contain"
@@ -429,7 +429,7 @@ export function ExternalCertificateBody({ images, caution }: { images: string[];
         </div>
       ))}
       {/* Uploaded supplier pages carry their own data, but the disclaimer is
-          Windsor Glow's own legal wording, not the supplier's — every
+          Windsor Beauty's own legal wording, not the supplier's — every
           certificate must show it regardless of mode. */}
       <p className="text-xs font-bold uppercase tracking-wide text-stone-800 leading-relaxed">
         Caution: {caution || DEFAULT_CERTIFICATE_CAUTION}

@@ -146,7 +146,7 @@ export async function GET(request: Request) {
   await markOrdersExported(orders.map(o => o.order_number));
 
   const dateLabel = date ?? londonDateString(new Date());
-  const filename = `windsor-glow-dispatch-${dateLabel}.csv`;
+  const filename = `windsor-beauty-dispatch-${dateLabel}.csv`;
 
   return new NextResponse(csv, {
     status: 200,

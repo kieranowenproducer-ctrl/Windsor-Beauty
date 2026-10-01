@@ -665,7 +665,7 @@ export default function AdminDashboard() {
           <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-1">Dashboard</h1>
-              <p className="text-xs text-stone-400">Windsor Glow Admin Overview</p>
+              <p className="text-xs text-stone-400">Windsor Beauty Admin Overview</p>
             </div>
             {/* Wraps rather than squashing on a phone. */}
             <div className="flex flex-wrap gap-2">

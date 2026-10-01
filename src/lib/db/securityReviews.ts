@@ -293,7 +293,7 @@ export async function decideSecurityReviewCase(params: {
   const db = requireDb();
   const current = (await db`SELECT * FROM security_review_cases WHERE id = ${params.caseId} LIMIT 1`)[0] as SecurityReviewCase | undefined;
   if (!current) return null;
-  const actor = params.actor?.trim() || 'Windsor Glow admin';
+  const actor = params.actor?.trim() || 'Windsor Beauty admin';
   const resolvedAt = params.status === 'pending' ? null : new Date().toISOString();
   const rows = await db`
     UPDATE security_review_cases SET status = ${params.status}, decision_note = ${params.note},

@@ -3,7 +3,7 @@
 // Marketing campaign composer, the Announcement Emails manager, and the
 // Pre-Launch "Send Launch Email" button — resolves its sender through here.
 //
-// Why: marketing was going out from Beautiful@windsorglow.com, the real
+// Why: marketing was going out from Beautiful@windsorbeauty.co.uk, the real
 // customer-support inbox, so a customer replying to a broadcast landed in the
 // inbox the team actually works from. Bulk sends now default to an unmonitored
 // no-reply address, and the email says so in its footer. The brand address is
@@ -19,8 +19,8 @@ export type MarketingSenderKey = 'no-reply' | 'brand';
 
 export const DEFAULT_MARKETING_SENDER: MarketingSenderKey = 'no-reply';
 
-const NO_REPLY_FROM = process.env.MARKETING_NOREPLY_FROM_ADDRESS || 'Windsor Glow <no-reply@windsorglow.com>';
-const BRAND_FROM = process.env.MARKETING_FROM_ADDRESS || 'Windsor Glow <Beautiful@windsorglow.com>';
+const NO_REPLY_FROM = process.env.MARKETING_NOREPLY_FROM_ADDRESS || 'Windsor Beauty <no-reply@windsorbeauty.co.uk>';
+const BRAND_FROM = process.env.MARKETING_FROM_ADDRESS || 'Windsor Beauty <Beautiful@windsorbeauty.co.uk>';
 
 // Pulls the bare address out of a "Display Name <address>" string so the UI and
 // the Reply-To header can use it on its own.
@@ -31,7 +31,7 @@ function bareAddress(from: string): string {
 
 export interface MarketingSender {
   key: MarketingSenderKey;
-  /** Full value for Resend's `from` field, e.g. "Windsor Glow <no-reply@windsorglow.com>". */
+  /** Full value for Resend's `from` field, e.g. "Windsor Beauty <no-reply@windsorbeauty.co.uk>". */
   from: string;
   /** Bare address, for showing the admin exactly what a recipient will see. */
   address: string;
@@ -61,7 +61,7 @@ export const MARKETING_SENDERS: Record<MarketingSenderKey, MarketingSender> = {
     replyTo: bareAddress(NO_REPLY_FROM),
     label: 'No-reply address',
     hint: 'Recommended for marketing. Replies do not reach the support inbox, and the email tells the reader not to reply.',
-    notice: 'This message was sent from an address that is not monitored, so please do not reply to it. To get in touch, visit windsorglow.com/contact.',
+    notice: 'This message was sent from an address that is not monitored, so please do not reply to it. To get in touch, visit windsorbeauty.co.uk/contact.',
   },
   brand: {
     key: 'brand',
@@ -69,7 +69,7 @@ export const MARKETING_SENDERS: Record<MarketingSenderKey, MarketingSender> = {
     address: bareAddress(BRAND_FROM),
     replyTo: bareAddress(BRAND_FROM),
     label: 'Marketing address',
-    hint: 'Replies come back to the real Windsor Glow inbox. Use it only when you want people to answer.',
+    hint: 'Replies come back to the real Windsor Beauty inbox. Use it only when you want people to answer.',
     notice: null,
   },
 };

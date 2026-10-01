@@ -148,7 +148,7 @@ export interface OrderRow {
   // time, separate from the manual discount_amount above.
   rule_discount_amount: string;
   applied_rules: AppliedRuleSummary[];
-  // QR campaign attribution — set at checkout if a wg_ref cookie is present.
+  // QR campaign attribution — set at checkout if a wb_ref cookie is present.
   qr_campaign_id: number | null;
   qr_campaign_slug: string | null;
   qr_campaign_name: string | null;

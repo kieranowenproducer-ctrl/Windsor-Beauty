@@ -5,7 +5,7 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 import { displayOrderItems } from '@/lib/orderTrialDisplay';
 
-const FROM_ADDRESS = 'Windsor Glow <orders@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 export interface OrderConfirmationParams {
   to: string;
@@ -95,7 +95,7 @@ export function buildGlowCardEmailVisual(pointsValue: number): string {
   const status = remaining === 0
     ? `All 5 stamps are filled. Your £${stage.amount} reward is ready.`
     : `${remaining} more point${remaining === 1 ? '' : 's'} until £${stage.amount} off and half-price standard UK delivery.`;
-  const watermarkUrl = 'https://windsorglow.com/images/windsor-glow-mark-clean.png';
+  const watermarkUrl = 'https://www.windsorbeauty.co.uk/images/windsor-beauty-mark.png';
   const stamps = Array.from({ length: 5 }, (_, index) => {
     const filled = index < stage.filled;
     return `<td width="20%" align="center" style="padding:0 3px">
@@ -247,7 +247,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions, just reply to this email.
               For any questions about your order, contact
-              <a href="mailto:sales@windsorglow.com" style="color:#b8902a;text-decoration:none">sales@windsorglow.com</a>
+              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#b8902a;text-decoration:none">sales@windsorbeauty.co.uk</a>
               and include your order reference <strong style="color:#78716c">${escapeHtml(params.orderNumber)}</strong>.
             </p>
           </td>
@@ -262,7 +262,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
   const subject = `Order confirmed — ${params.orderNumber}`;
   const text =
     `${emailGreeting(params.customerName)}\n\n` +
-    `Your Windsor Glow order ${params.orderNumber} has been confirmed and payment received.\n\n` +
+    `Your Windsor Beauty order ${params.orderNumber} has been confirmed and payment received.\n\n` +
     `Items:\n` +
     visibleItems.map(i => `  ${i.name}${i.variant ? ` (${i.variant})` : ''} x${i.quantity} — £${(Number(i.price) * i.quantity).toFixed(2)}`).join('\n') +
     `\n\nTotal paid: £${Number(params.total).toFixed(2)}\n\n` +
@@ -270,7 +270,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
     `Delivery to: ${params.shippingAddress}\n\n` +
     `We will send you a tracking number once your order has been dispatched.\n\n` +
     `Any questions, just reply to this email.\n` +
-    `For any questions about your order, contact sales@windsorglow.com and include your order reference ${params.orderNumber}.`;
+    `For any questions about your order, contact sales@windsorbeauty.co.uk and include your order reference ${params.orderNumber}.`;
 
   return { subject, text, html };
 }

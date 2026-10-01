@@ -33,7 +33,7 @@ assert.match(form, /<SocialProfilePrompt/);
 assert.doesNotMatch(form, /socialProfileLabel/);
 // Samuel, 27 Sep 2026: the tick box names no channels (the terms do), and it sits above the
 // Instagram and Facebook boxes, since those are only used for offers once it is ticked.
-assert.match(form, /Keep me updated about Windsor Glow products and exclusive offers\./);
+assert.match(form, /Keep me updated about Windsor Beauty products and exclusive offers\./);
 assert.ok(form.indexOf('Keep me updated') < form.indexOf('id="instagramProfile"'), 'marketing tick box must come before the social profile boxes');
 // Samuel, 27 Sep 2026: password first, then the marketing tick box, then Instagram and Facebook.
 assert.ok(form.indexOf('id="member-confirmPassword"') < form.indexOf('Keep me updated'), 'the password boxes must come before the marketing tick box');

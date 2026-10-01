@@ -27,7 +27,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ slug:
     const userAgent = request.headers.get('user-agent') ?? null;
 
     // Retrieve or mint the long-lived visitor UUID cookie.
-    const existingVid = request.cookies.get('wg_vid')?.value ?? null;
+    const existingVid = request.cookies.get('wb_vid')?.value ?? null;
     const wgVid = existingVid ?? randomUUID();
     const isNewVisitor = !existingVid;
 
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ slug:
     // campaign gets credit. Long window reflects physical QR campaigns where
     // customers discover the brand once and return to reorder months later.
     if (campaign.status === 'active') {
-      response.cookies.set('wg_ref', slug, {
+      response.cookies.set('wb_ref', slug, {
         maxAge: 365 * 24 * 60 * 60,
         path: '/',
         httpOnly: true,
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ slug:
       // Non-httpOnly session cookie so the client-side EntryGate can detect
       // which campaign this visit came from and show a bespoke landing poster
       // before the terms gate. No maxAge = session cookie, clears on browser close.
-      response.cookies.set('wg_qr_campaign', slug, {
+      response.cookies.set('wb_qr_campaign', slug, {
         path: '/',
         sameSite: 'lax',
       });
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ slug:
 
     // 365-day visitor identity cookie — only set if it didn't already exist.
     if (isNewVisitor) {
-      response.cookies.set('wg_vid', wgVid, {
+      response.cookies.set('wb_vid', wgVid, {
         maxAge: 365 * 24 * 60 * 60,
         path: '/',
         httpOnly: true,

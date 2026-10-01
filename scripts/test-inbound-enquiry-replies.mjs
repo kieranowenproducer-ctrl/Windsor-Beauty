@@ -3,7 +3,7 @@
 //   node scripts/test-inbound-enquiry-replies.mjs
 //
 // WHY THIS EXISTS IN THIS SHAPE. Same reason as test-handover-sql.mjs, and it borrows that file's
-// method. The Windsor Glow credential on this machine is `agent_ro` and genuinely read only: it
+// method. The Windsor Beauty credential on this machine is `agent_ro` and genuinely read only: it
 // refuses both ALTER TABLE and INSERT on the live enquiries tables. So the rules are proved against
 // a throwaway copy of the same schema in the one database this machine can write to, and the copy
 // is dropped at the end. It proves the SQL and the index. It does not prove production has been
@@ -133,7 +133,7 @@ async function run() {
   // An answer we sent, written the old way, with no direction given at all.
   await sql.query(
     `INSERT INTO ${T}_replies (enquiry_id, body, from_address) VALUES ($1,$2,$3)`,
-    [emma.id, 'All pens are pre-mixed.', 'info@windsorglow.com']);
+    [emma.id, 'All pens are pre-mixed.', 'info@windsorbeauty.co.uk']);
   const ours = (await sql.query(`SELECT direction FROM ${T}_replies WHERE enquiry_id = $1`, [emma.id]))[0];
   check('a reply written before the column existed still counts as ours', ours.direction, 'out');
 

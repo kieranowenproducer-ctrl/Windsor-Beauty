@@ -29,7 +29,7 @@ export default async function Footer() {
             <div className="mb-4">
               <Image
                 src="/images/logo-transparent.png"
-                alt="Windsor Glow"
+                alt="Windsor Beauty"
                 width={144}
                 height={90}
                 className="w-36 h-auto object-contain"

@@ -59,7 +59,7 @@ export const APPEARANCE_OPTIONS = [
 ] as const;
 
 /**
- * Purity specifications offered in the dropdown. Windsor Glow advertises above
+ * Purity specifications offered in the dropdown. Windsor Beauty advertises above
  * 99% on every research compound, so 99% is the floor — see MIN_PURITY in
  * src/lib/certificateAudit.ts, which fails any certificate that claims less.
  */

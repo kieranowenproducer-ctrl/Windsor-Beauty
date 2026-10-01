@@ -5,10 +5,10 @@ import { sendEmail } from '@/lib/email/send';
 // the same pair the new-order notification uses, for the same reason: internal mail is
 // never opened by the people whose engagement builds the customer-facing address's
 // reputation. Decided in the 31 July 2026 deliverability audit.
-const FROM_ADDRESS = 'Windsor Glow Ops <alerts@windsorglow.com>';
-const TO_ADDRESS = 'sales@windsorglow.com';
+const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
+const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorglow.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
 
 export interface ReviewNotificationParams {
   reviewId: number;
@@ -38,7 +38,7 @@ export function buildReviewNotificationEmail(params: ReviewNotificationParams): 
     timeStyle: 'short',
   });
   const approveUrl = `${SITE_URL}/admin/reviews`;
-  const about = params.productName ? `${params.productName}` : 'Windsor Glow';
+  const about = params.productName ? `${params.productName}` : 'Windsor Beauty';
 
   const bodyHtml = `
         <!-- Body -->
@@ -132,7 +132,7 @@ export function buildReviewNotificationEmail(params: ReviewNotificationParams): 
       headerLabel: 'Admin Notification',
       bodyHtml,
       preheader: `${params.rating} out of 5 from ${params.customerName}, waiting for your approval.`,
-      footerText: 'Internal notification from the Windsor Glow website.',
+      footerText: 'Internal notification from the Windsor Beauty website.',
     }),
   };
 }

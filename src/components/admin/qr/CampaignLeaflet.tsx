@@ -14,13 +14,13 @@ export interface LeafletFields {
 }
 
 export const DEFAULT_LEAFLET_FIELDS: LeafletFields = {
-  headline: 'Windsor Glow',
+  headline: 'Windsor Beauty',
   subheading: 'Research peptides and specialist products',
-  cta: 'Scan to visit the Windsor Glow website',
+  cta: 'Scan to visit the Windsor Beauty website',
   qrLabel: 'Scan me',
   footer: 'For research purposes only. Not for human consumption.',
   discountText: '',
-  website: 'windsorglow.com',
+  website: 'windsorbeauty.co.uk',
   showLocationName: false,
 };
 
@@ -44,7 +44,7 @@ function bespokeTitleFontSize(text: string, base: number): number {
   return base;
 }
 
-const STORAGE_KEY = (id: number) => `wg_leaflet_${id}`;
+const STORAGE_KEY = (id: number) => `wb_leaflet_${id}`;
 
 function loadFields(id: number, discountCode: string | null): LeafletFields {
   if (typeof window === 'undefined') return { ...DEFAULT_LEAFLET_FIELDS };
@@ -123,7 +123,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
       const url = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = url;
-      link.download = `windsor-glow-leaflet-${slug}.png`;
+      link.download = `windsor-beauty-leaflet-${slug}.png`;
       link.click();
     } catch { /* ignore */ } finally {
       setDownloading(false);
@@ -150,7 +150,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Windsor Glow Leaflet – ${campaignName}</title>
+  <title>Windsor Beauty Leaflet – ${campaignName}</title>
   <style>
     @page { size: A5 portrait; margin: 0; }
     @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }

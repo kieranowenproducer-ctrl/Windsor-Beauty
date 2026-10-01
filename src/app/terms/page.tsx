@@ -6,11 +6,11 @@ export default function TermsPage() {
     <PolicyPage
       contentKey="terms"
       title="Terms and Conditions"
-      intro="These terms set out the basis on which you may access and use the Windsor Glow website and place an order with us. By using this site, you agree to them in full."
+      intro="These terms set out the basis on which you may access and use the Windsor Beauty website and place an order with us. By using this site, you agree to them in full."
     >
       <PolicySection heading="1. Who We Are">
         <p>
-          Windsor Glow is operated by C&amp;S Holdings Group (&ldquo;Windsor Glow&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;).
+          Windsor Beauty is operated by C&amp;S Holdings Group (&ldquo;Windsor Beauty&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;).
           References to &ldquo;you&rdquo; or &ldquo;the customer&rdquo; mean the person browsing this site or placing an order with us.
         </p>
       </PolicySection>
@@ -70,7 +70,7 @@ export default function TermsPage() {
           us solely within a controlled research environment.
         </p>
         <p>
-          <strong>No Endorsement of Other Use.</strong> Windsor Glow does not endorse, encourage, or condone the use
+          <strong>No Endorsement of Other Use.</strong> Windsor Beauty does not endorse, encourage, or condone the use
           of any product sold on this site for purposes other than laboratory research. Any reference material we
           provide, including our Dosage Guide and calculator, exists only to support consistent handling and
           reconstitution of compounds for research purposes, and carries no implication that the product is suitable,
@@ -96,7 +96,7 @@ export default function TermsPage() {
         </p>
         <p>
           Nothing we sell is intended to diagnose, treat, cure or prevent any disease, condition or ailment, and no
-          product should be regarded as a medicine, supplement or therapeutic substance. Windsor Glow does not provide
+          product should be regarded as a medicine, supplement or therapeutic substance. Windsor Beauty does not provide
           medical advice, and nothing on this website — including product descriptions, dosage information, or any
           supporting guides or calculators — should be read or relied upon as such. Where we do publish reference
           material of this kind, it exists solely to support the accurate handling and reconstitution of compounds
@@ -142,7 +142,7 @@ export default function TermsPage() {
       <PolicySection heading="11. Intellectual Property">
         <p>
           All content on this site — including text, graphics, logos, product photography and layout — belongs to
-          Windsor Glow or its licensors and is protected by copyright and other intellectual property laws. You may
+          Windsor Beauty or its licensors and is protected by copyright and other intellectual property laws. You may
           view and print pages for your own personal reference, but may not reproduce, redistribute or otherwise
           commercially exploit any part of this site without our written permission.
         </p>
@@ -154,7 +154,7 @@ export default function TermsPage() {
       <PolicySection heading="12. Customer Reviews">
         <p>
           Reviews published on this site are written by customers and reflect their personal opinions and
-          experiences. They are not statements, claims or endorsements by Windsor Glow, and nothing in a customer
+          experiences. They are not statements, claims or endorsements by Windsor Beauty, and nothing in a customer
           review should be read as a claim by us about what any product does. All products are supplied strictly for
           laboratory and in vitro research purposes only.
         </p>

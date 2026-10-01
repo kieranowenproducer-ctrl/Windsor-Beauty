@@ -153,7 +153,7 @@ export default function OrderDetailPanel({
                         parcel. An order carrying an account is not proof anybody signed in: the
                         shop also attaches an order when the typed email happens to match a
                         member. Those two used to look identical from here, which is why nobody
-                        could answer the question about order WG-63U39T. */}
+                        could answer the question about order WB-63U39T. */}
                     <div>
                       <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">How they ordered</p>
                       <span className={`inline-block text-[9px] leading-relaxed px-2 py-0.5 ${ACCOUNT_LINK_STYLES[selectedOrder.accountLink] ?? 'bg-stone-50 text-stone-400'}`}>

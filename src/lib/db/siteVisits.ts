@@ -56,13 +56,13 @@ export interface VisitSourceInput {
   utmMedium?: string | null;
   referrer?: string | null;
   userAgent?: string | null;
-  /** A QR / tracking-link campaign slug from the wg_ref cookie, if any. */
+  /** A QR / tracking-link campaign slug from the wb_ref cookie, if any. */
   campaignSlug?: string | null;
   /** Our own host names, so a referral from our own pages reads as internal. */
   ownHosts?: string[];
 }
 
-const OWN_HOSTS = ['windsorglow.com', 'www.windsorglow.com', 'localhost'];
+const OWN_HOSTS = ['windsorbeauty.co.uk', 'www.windsorbeauty.co.uk', 'localhost'];
 
 function hostOf(url: string | null | undefined): string | null {
   if (!url) return null;
@@ -164,7 +164,7 @@ export interface RecordSiteVisitParams {
   utmContent?: string | null;
   campaignSlug?: string | null;
   /**
-   * Was the person signed in to a Windsor Glow account when they opened this
+   * Was the person signed in to a Windsor Beauty account when they opened this
    * page? Null means we could not tell, which is what every row written before
    * 5 Sept 2026 says. The ads reports use it to leave existing members out of
    * "how did the ad do", because a member who was already signed in was never

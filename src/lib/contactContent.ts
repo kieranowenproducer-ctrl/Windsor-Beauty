@@ -36,9 +36,9 @@ export const DEFAULT_CONTACT_CONTENT: ContactContent = {
     { value: 'other', label: 'Other' },
   ],
   emails: [
-    { email: 'info@windsorglow.com', label: 'General enquiries' },
-    { email: 'sales@windsorglow.com', label: 'Sales, orders & product enquiries' },
-    { email: 'beautiful@windsorglow.com', label: 'Customer support & brand enquiries' },
+    { email: 'info@windsorbeauty.co.uk', label: 'General enquiries' },
+    { email: 'sales@windsorbeauty.co.uk', label: 'Sales, orders & product enquiries' },
+    { email: 'beautiful@windsorbeauty.co.uk', label: 'Customer support & brand enquiries' },
   ],
 };
 

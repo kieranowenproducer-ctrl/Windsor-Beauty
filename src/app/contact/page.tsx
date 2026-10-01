@@ -45,7 +45,7 @@ export default async function ContactPage() {
               Company
             </h3>
             <p className="text-xs text-stone-500 leading-relaxed">
-              Windsor Glow<br />
+              Windsor Beauty<br />
               Part of the C&S Holdings Group<br />
               United Kingdom
             </p>

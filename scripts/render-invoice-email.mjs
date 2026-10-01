@@ -80,7 +80,7 @@ await sendInvoiceEmail({
   to: 'customer@example.com',
   customerName: 'Test Customer',
   invoiceNumber: 'INV-TRIAL1',
-  orderNumber: 'WG-TRIAL1',
+  orderNumber: 'WB-TRIAL1',
   // Kieran's own example, plus a normal catalogue line to show the difference.
   lineItems: [
     { type: 'trial', slug: 'trial:8', name: '501', description: '501mg', quantity: 1, unitPrice: 45, discount: 3, lineTotal: 42 },
@@ -93,7 +93,7 @@ await sendInvoiceEmail({
   subtotal: 177,
   total: 182,
   fenaPaymentUrl: 'https://payment.fena.co/pay/?p=example',
-  payUrl: 'https://www.windsorglow.com/pay/example',
+  payUrl: 'https://www.windsorbeauty.co.uk/pay/example',
 }, {}).catch(e => { console.error('send threw:', e.message); });
 
 globalThis.fetch = realFetch;

@@ -46,7 +46,7 @@ interface CategoryPageProps {
  * check-seo.mjs enforces it with a length ceiling, so a sentence added here fails the check.
  */
 function describe(name: string, count: number): string {
-  return `${count} research compound${count === 1 ? '' : 's'} in ${name} from Windsor Glow. `
+  return `${count} research compound${count === 1 ? '' : 's'} in ${name} from Windsor Beauty. `
     + 'Supplied for laboratory research use only, not for human consumption, with a certificate '
     + 'of analysis.';
 }
@@ -64,9 +64,9 @@ async function resolve(slug: string) {
 export async function generateMetadata(props: CategoryPageProps): Promise<Metadata> {
   const params = await props.params;
   const found = await resolve(params.slug);
-  if (!found) return { title: 'Category Not Found | Windsor Glow' };
+  if (!found) return { title: 'Category Not Found | Windsor Beauty' };
 
-  const title = `${found.name} Research Compounds | Windsor Glow`;
+  const title = `${found.name} Research Compounds | Windsor Beauty`;
   const description = describe(found.name, found.count);
   const canonical = `${SITE_URL}${categoryUrl(found.name)}`;
 

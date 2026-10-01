@@ -14,7 +14,7 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
   .catch(() => chromium.launch({ channel: 'chrome', headless: true }));
 try {
   const context = await browser.newContext();
-  await context.addCookies([{ name: 'wg_admin_session', value: token, url: base }]);
+  await context.addCookies([{ name: 'wb_admin_session', value: token, url: base }]);
   const page = await context.newPage();
   let alert = { id: 900001, updated_at: '2030-01-01T09:00:00.000Z' };
   const refusedWrites = [];

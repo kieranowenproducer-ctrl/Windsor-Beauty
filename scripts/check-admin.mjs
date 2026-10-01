@@ -86,7 +86,7 @@ const exe = findChromium();
 const browser = await chromium.launch({ executablePath: exe ?? undefined, headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 1200 } });
 await ctx.addCookies([{
-  name: 'wg_admin_session',
+  name: 'wb_admin_session',
   value: TOKEN,
   domain: new URL(BASE).hostname,
   path: '/',

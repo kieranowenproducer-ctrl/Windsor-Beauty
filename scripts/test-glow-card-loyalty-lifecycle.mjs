@@ -1,26 +1,26 @@
 // Proves the paid-order Glow Card lifecycle against a deliberately empty,
 // dedicated database. It will never read DATABASE_URL or a local .env file.
 //
-// Setup (one time): create a separate database named windsor_glow_loyalty_test
+// Setup (one time): create a separate database named windsor_beauty_loyalty_test
 // with no customer or order data. Then run:
-//   $env:WG_GLOW_CARD_TEST_DATABASE_URL = 'postgresql://.../windsor_glow_loyalty_test?...'
-//   $env:WG_GLOW_CARD_TEST_CONFIRM = 'ERASE_TEST_DATABASE'
+//   $env:WB_GLOW_CARD_TEST_DATABASE_URL = 'postgresql://.../windsor_beauty_loyalty_test?...'
+//   $env:WB_GLOW_CARD_TEST_CONFIRM = 'ERASE_TEST_DATABASE'
 //   npm run test:glow-card-lifecycle
 //
 // The test drops and recreates that database's public schema in a finally
 // block. The exact database name and confirmation phrase are intentional
 // safety rails: this script is never a substitute for a production test.
-const REQUIRED_DATABASE = 'windsor_glow_loyalty_test';
-const url = process.env.WG_GLOW_CARD_TEST_DATABASE_URL;
+const REQUIRED_DATABASE = 'windsor_beauty_loyalty_test';
+const url = process.env.WB_GLOW_CARD_TEST_DATABASE_URL;
 
-if (!url || process.env.WG_GLOW_CARD_TEST_CONFIRM !== 'ERASE_TEST_DATABASE') {
-  console.error('\nRefusing to run. Set WG_GLOW_CARD_TEST_DATABASE_URL and WG_GLOW_CARD_TEST_CONFIRM=ERASE_TEST_DATABASE.\n');
+if (!url || process.env.WB_GLOW_CARD_TEST_CONFIRM !== 'ERASE_TEST_DATABASE') {
+  console.error('\nRefusing to run. Set WB_GLOW_CARD_TEST_DATABASE_URL and WB_GLOW_CARD_TEST_CONFIRM=ERASE_TEST_DATABASE.\n');
   process.exit(1);
 }
 
 let parsed;
 try { parsed = new URL(url); } catch {
-  console.error('\nRefusing to run. WG_GLOW_CARD_TEST_DATABASE_URL is not a valid database URL.\n');
+  console.error('\nRefusing to run. WB_GLOW_CARD_TEST_DATABASE_URL is not a valid database URL.\n');
   process.exit(1);
 }
 if (decodeURIComponent(parsed.pathname.replace(/^\//, '')) !== REQUIRED_DATABASE) {
@@ -47,7 +47,7 @@ if (tables.length) {
 
 // The app reads these at module-load time, so they must be set before imports.
 process.env.DATABASE_URL = url;
-process.env.WG_GLOW_CARD_LOYALTY_ENABLED = 'true';
+process.env.WB_GLOW_CARD_LOYALTY_ENABLED = 'true';
 
 const { ensureSchema } = await import('../src/lib/db/schema.ts');
 const {
@@ -90,7 +90,7 @@ async function paidOrder(customerId, sequence, options = {}) {
       shipping_label, shipping_cost, total, status, shipping_address,
       account_link, payment_confirmed_at
     ) VALUES (
-      ${`WG-LOYALTY-${customerId}-${sequence}`}, ${customerId},
+      ${`WB-LOYALTY-${customerId}-${sequence}`}, ${customerId},
       ${`member-${customerId}@example.test`}, 'Test Member',
       ${JSON.stringify([])}::jsonb, ${subtotal}, 'Test delivery', 0, ${subtotal},
       ${status}, '1 Test Street', ${signedIn ? 'signed_in' : 'guest'}, now()
@@ -118,7 +118,7 @@ try {
   let card = await getGlowCardSummary(ordinary);
   check('five points unlock the £10 reward', [card.points, card.cycle, card.rewards.map(r => [r.milestone, r.status])], [5, 1, [[5, 'ready']]]);
 
-  const [sameOrder] = await sql`SELECT * FROM orders WHERE order_number = ${`WG-LOYALTY-${ordinary}-7`}`;
+  const [sameOrder] = await sql`SELECT * FROM orders WHERE order_number = ${`WB-LOYALTY-${ordinary}-7`}`;
   const duplicate = await awardGlowCardOrderPoint(sameOrder);
   check('a retried payment event cannot duplicate an order point', duplicate.earnedPoint, false);
   check('a retried payment event reports already processed', duplicate.reason, 'already_processed');
@@ -185,7 +185,7 @@ try {
 } finally {
   // This is intentionally destructive, but only after the exact-name and
   // explicit-confirmation checks above. It leaves the dedicated test database
-  // empty, ready for the next run, and cannot reach Windsor Glow production.
+  // empty, ready for the next run, and cannot reach Windsor Beauty production.
   await sql`DROP SCHEMA IF EXISTS public CASCADE`;
   await sql`CREATE SCHEMA public`;
 }

@@ -41,21 +41,21 @@ export const dynamic = 'force-dynamic';
  * inherited the layout's. The title and description below are deliberately the layout's own
  * words, unchanged: the fault was three missing tags, not the wording.
  */
-const DESCRIPTION = 'Windsor Glow supplies high-purity research peptides and compounds for '
+const DESCRIPTION = 'Windsor Beauty supplies high-purity research peptides and compounds for '
   + 'scientific and laboratory use only. 99% purity, lab tested, certificate of analysis with '
   + 'every order.';
 
 export const metadata: Metadata = {
-  title: 'Windsor Glow | Premium Research Compounds',
+  title: 'Windsor Beauty | Premium Research Compounds',
   description: DESCRIPTION,
   alternates: { canonical: `${SITE_URL}/` },
   openGraph: {
-    title: 'Windsor Glow | Premium Research Compounds',
+    title: 'Windsor Beauty | Premium Research Compounds',
     description: DESCRIPTION,
     type: 'website',
     url: `${SITE_URL}/`,
-    siteName: 'Windsor Glow',
-    images: [{ url: `${SITE_URL}/images/og-windsor-glow.jpg`, width: 1200, height: 630 }],
+    siteName: 'Windsor Beauty',
+    images: [{ url: `${SITE_URL}/images/og-windsor-beauty.jpg`, width: 1200, height: 630 }],
   },
 };
 
@@ -75,10 +75,10 @@ function organizationJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Windsor Glow',
+    name: 'Windsor Beauty',
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo.png`,
-    image: `${SITE_URL}/images/og-windsor-glow.jpg`,
+    image: `${SITE_URL}/images/og-windsor-beauty.jpg`,
     description: DESCRIPTION,
     email: DEFAULT_FOOTER_CONTENT.emails[0].address,
     // The TikTok, Instagram and Facebook accounts the hero links to, added 24 August 2026. sameAs
@@ -173,7 +173,7 @@ export default async function HomePage() {
         <div className="relative z-10 w-full">
           <div className="max-w-xl mx-auto">
             {/* Visually hidden h1 for SEO and screen readers — the logo serves as the visual heading */}
-            <h1 className="sr-only">Windsor Glow</h1>
+            <h1 className="sr-only">Windsor Beauty</h1>
 
             {/* MOBILE SAFARI FIX (2026-06-18): the three mb-8 gaps below were each
                 trimmed to mb-6 on mobile only (sm:mb-8 restores the original spacing
@@ -187,7 +187,7 @@ export default async function HomePage() {
             <div className="flex justify-center mb-6 sm:mb-8">
               <Image
                 src="/images/logo-transparent.png"
-                alt="Windsor Glow"
+                alt="Windsor Beauty"
                 width={320}
                 height={200}
                 className="w-64 sm:w-80 h-auto object-contain"
@@ -346,7 +346,7 @@ export default async function HomePage() {
               Our Standards
             </p>
             <h2 className="font-serif text-3xl sm:text-4xl text-stone-800 tracking-wide">
-              Why Researchers Choose Windsor Glow
+              Why Researchers Choose Windsor Beauty
             </h2>
           </div>
 
@@ -422,10 +422,10 @@ export default async function HomePage() {
             For Research Use Only
           </h2>
           <p className="text-sm text-stone-500 leading-relaxed mb-4">
-            All compounds sold by Windsor Glow are strictly intended for in vitro scientific research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals.
+            All compounds sold by Windsor Beauty are strictly intended for in vitro scientific research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals.
           </p>
           <p className="text-sm text-stone-500 leading-relaxed">
-            By purchasing from Windsor Glow, customers confirm they are operating within all applicable laws and regulations in their jurisdiction. Windsor Glow assumes no responsibility for misuse.
+            By purchasing from Windsor Beauty, customers confirm they are operating within all applicable laws and regulations in their jurisdiction. Windsor Beauty assumes no responsibility for misuse.
           </p>
         </div>
       </section>

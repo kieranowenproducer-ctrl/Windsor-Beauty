@@ -1,6 +1,6 @@
 'use client';
 
-const QUEUE_KEY = 'wg_tracking_queue_v1';
+const QUEUE_KEY = 'wb_tracking_queue_v1';
 const MAX_QUEUED_EVENTS = 100;
 
 export interface TrackingEvent {

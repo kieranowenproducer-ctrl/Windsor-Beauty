@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
  *
  * Previously this route trusted the client-supplied orderNumber/status and
  * marked the order paid directly — since order numbers are not secret
- * (every customer sees their own, format WG-XXXXXX), anyone who knew or
+ * (every customer sees their own, format WB-XXXXXX), anyone who knew or
  * guessed an order number could POST here and get an order marked paid,
  * dispatched, and emailed with no money ever moving. Fixed 2026-06-30 by
  * making this purely a status lookup; the frontend already has a safe

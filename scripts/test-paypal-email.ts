@@ -1,7 +1,7 @@
 import { sendPaypalInstructionsEmail, buildPaypalLink } from '../src/lib/paypalInstructionsEmail';
 
 async function main() {
-  const orderNumber = 'WG-TEST-0001';
+  const orderNumber = 'WB-TEST-0001';
   const total = 63.47;
 
   console.log('PAYPAL_ME_URL:', process.env.PAYPAL_ME_URL || '(not set)');

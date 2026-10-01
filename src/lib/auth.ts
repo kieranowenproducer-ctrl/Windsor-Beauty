@@ -29,10 +29,10 @@ export function generateOrderNumber(): string {
   for (let i = 0; i < 6; i += 1) {
     suffix += chars[Math.floor(Math.random() * chars.length)];
   }
-  return `WG-${suffix}`;
+  return `WB-${suffix}`;
 }
 
-export const CUSTOMER_SESSION_COOKIE = 'wg_customer_session';
+export const CUSTOMER_SESSION_COOKIE = 'wb_customer_session';
 export const CUSTOMER_SESSION_DURATION_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 export const PASSWORD_RESET_TOKEN_DURATION_MS = 1000 * 60 * 60; // 1 hour

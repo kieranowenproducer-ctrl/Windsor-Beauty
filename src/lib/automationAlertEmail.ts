@@ -6,10 +6,10 @@ import { sendEmail } from '@/lib/email/send';
 // (31 July 2026 deliverability audit). sales@ is the inbox the team already
 // watches for "something needs you", so an alert lands where the others do
 // instead of creating a second place to check.
-const FROM_ADDRESS = 'Windsor Glow Ops <alerts@windsorglow.com>';
-const TO_ADDRESS = 'sales@windsorglow.com';
+const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
+const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorglow.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
 
 // Plain-English titles. The category slug is a database value; nobody reading
 // this on a phone at the weekend should have to decode it.
@@ -57,11 +57,11 @@ export function buildAutomationAlertEmail(params: AutomationAlertParams): { subj
     '',
     params.detail ? `Technical detail:\n${params.detail}` : null,
     '',
-    'Windsor Glow',
+    'Windsor Beauty',
   ].filter(l => l !== null);
 
   return {
-    subject: `Windsor Glow: ${title}`,
+    subject: `Windsor Beauty: ${title}`,
     text: lines.join('\n'),
     html: emailDocument({
       title,
@@ -78,7 +78,7 @@ export function buildAutomationAlertEmail(params: AutomationAlertParams): { subj
               <a href="${healthUrl}" style="display:inline-block;background:#b8902a;color:#ffffff;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:12px 28px;text-decoration:none;">Open System Health</a>
             </p>
             ${params.detail ? `<p style="margin:0 0 8px;font-size:11px;color:#78716c;">Technical detail</p><pre style="margin:0 0 16px;padding:12px;background:#fafaf9;border:1px solid #e7e5e4;font-size:11px;color:#57534e;white-space:pre-wrap;">${escapeHtml(params.detail)}</pre>` : ''}
-            <p style="margin:0;">Windsor Glow</p>
+            <p style="margin:0;">Windsor Beauty</p>
           </td>
         </tr>`,
     }),

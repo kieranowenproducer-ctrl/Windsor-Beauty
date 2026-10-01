@@ -15,7 +15,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
   if (!order.payment_access_token) return NextResponse.json({ error: 'This older order has no secure recovery link. Check the payment account before contacting the customer.' }, { status: 409 });
   if (order.reservation_expires_at && new Date(order.reservation_expires_at).getTime() <= Date.now()) return NextResponse.json({ error: 'This reservation has expired.' }, { status: 409 });
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
   const resumeUrl = `${siteUrl}/resume-payment/${order.payment_access_token}`;
   const sent = order.payment_method === 'paypal'
     ? await sendPaypalInstructionsEmail({ to: order.email, customerName: order.customer_name, orderNumber: order.order_number,

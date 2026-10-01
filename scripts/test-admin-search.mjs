@@ -26,7 +26,7 @@ function check(name, got, expected) {
 
 // One order per customer, written the way the real list holds them.
 const order = (over = {}) => ({
-  orderNumber: 'WG-1001',
+  orderNumber: 'WB-1001',
   customerName: 'Amber Whitfield',
   email: 'amber@example.com',
   phone: '07700 900123',
@@ -49,7 +49,7 @@ const order = (over = {}) => ({
 
 const amber = order();
 const anne = order({
-  orderNumber: 'WG-1002',
+  orderNumber: 'WB-1002',
   customerName: 'Anne Doherty',
   email: 'anne@example.com',
   items: [{ name: 'MOTS-C', variant: '10mg vial', price: 60, quantity: 2 }],
@@ -58,14 +58,14 @@ const anne = order({
   trackingNumber: null,
 });
 const amberSecond = order({
-  orderNumber: 'WG-1003',
+  orderNumber: 'WB-1003',
   customerName: 'Amber Whitfield',
   items: [{ name: 'MOTS-C', variant: '10mg vial', price: 60, quantity: 1 }],
   createdAt: '2026-09-10T09:00:00Z',
   total: 60,
 });
 const jose = order({
-  orderNumber: 'WG-1004',
+  orderNumber: 'WB-1004',
   customerName: 'José Márquez',
   email: 'jose@example.com',
   createdAt: '2026-07-01T09:00:00Z',
@@ -74,7 +74,7 @@ const jose = order({
 
 // The two products that came back empty on 25 September, written down the way the real orders are.
 const hghOrder = order({
-  orderNumber: 'WG-1005',
+  orderNumber: 'WB-1005',
   customerName: 'Bev Hardy',
   email: 'bev@example.com',
   items: [{ name: 'HGH (191 AA )- Human Growth Hormone', variant: '100IU', price: 300, quantity: 1 }],
@@ -82,7 +82,7 @@ const hghOrder = order({
   total: 300,
 });
 const aodOrder = order({
-  orderNumber: 'WG-1006',
+  orderNumber: 'WB-1006',
   customerName: 'Carl Innes',
   email: 'carl@example.com',
   items: [{ name: 'AOD-9604', variant: '5mg', price: 80, quantity: 1 }],
@@ -91,7 +91,7 @@ const aodOrder = order({
 });
 // An order written down in shorthand, which is what breaks searching for the full product name.
 const shorthandOrder = order({
-  orderNumber: 'WG-1007',
+  orderNumber: 'WB-1007',
   customerName: 'Dina Patel',
   email: 'dina@example.com',
   items: [{ name: 'Reta 30mg / Tirez 30mg', variant: '30mg', price: 200, quantity: 1 }],
@@ -117,43 +117,43 @@ check('an empty box means nothing', parseSearchTerms('   '),              []);
 check('the same word twice is one', parseSearchTerms('reta reta'),        ['reta']);
 
 console.log('\n=== The complaint itself ===\n');
-check('Amber Reta finds Amber\'s Reta order',   find('Amber Reta'),   ['WG-1001']);
-check('Amber- Reta does the same',              find('Amber- Reta'),  ['WG-1001']);
-check('Anne + Mots finds Anne\'s MOTS-C',       find('Anne + Mots'),  ['WG-1002']);
-check('Amber Mots finds her OTHER order',       find('Amber Mots'),   ['WG-1003']);
-check('Amber on its own finds both of hers',    find('Amber'),        ['WG-1001', 'WG-1003']);
-check('Mots on its own finds both MOTS-C',      find('Mots'),         ['WG-1002', 'WG-1003']);
+check('Amber Reta finds Amber\'s Reta order',   find('Amber Reta'),   ['WB-1001']);
+check('Amber- Reta does the same',              find('Amber- Reta'),  ['WB-1001']);
+check('Anne + Mots finds Anne\'s MOTS-C',       find('Anne + Mots'),  ['WB-1002']);
+check('Amber Mots finds her OTHER order',       find('Amber Mots'),   ['WB-1003']);
+check('Amber on its own finds both of hers',    find('Amber'),        ['WB-1001', 'WB-1003']);
+check('Mots on its own finds both MOTS-C',      find('Mots'),         ['WB-1002', 'WB-1003']);
 check('a word nobody has finds nothing',        find('Amber Tirz'),   []);
 check('an empty box hides nobody',              find('').length,      all.length);
 
 console.log('\n=== Forgiving how it was typed ===\n');
-check('case does not matter',            find('AMBER reta'),         ['WG-1001']);
-check('motsc finds MOTS-C',              find('anne motsc'),         ['WG-1002']);
-check('mots c finds MOTS-C',             find('anne mots c'),        ['WG-1002']);
-check('jose finds José',            find('jose'),               ['WG-1004']);
-check('an accent typed finds it too',    find('Márquez'),       ['WG-1004']);
-check('a stray plus on its own is fine', find('+ amber'),            ['WG-1001', 'WG-1003']);
+check('case does not matter',            find('AMBER reta'),         ['WB-1001']);
+check('motsc finds MOTS-C',              find('anne motsc'),         ['WB-1002']);
+check('mots c finds MOTS-C',             find('anne mots c'),        ['WB-1002']);
+check('jose finds José',            find('jose'),               ['WB-1004']);
+check('an accent typed finds it too',    find('Márquez'),       ['WB-1004']);
+check('a stray plus on its own is fine', find('+ amber'),            ['WB-1001', 'WB-1003']);
 
 console.log('\n=== Searching the rest of the order, not just the name ===\n');
-check('by order number',      find('WG-1002'),                  ['WG-1002']);
-check('by email',             find('anne@example.com'),         ['WG-1002']);
-check('by postcode',          find('SL4 1DU amber'),            ['WG-1001', 'WG-1003']);
+check('by order number',      find('WB-1002'),                  ['WB-1002']);
+check('by email',             find('anne@example.com'),         ['WB-1002']);
+check('by postcode',          find('SL4 1DU amber'),            ['WB-1001', 'WB-1003']);
 check('by tracking number',   find('AB123456789GB').length,     6);
-check('by status word',       find('anne delivered'),           ['WG-1002']);
+check('by status word',       find('anne delivered'),           ['WB-1002']);
 check('the money is NOT searched (240 is a total, not text)', find('240'), []);
 
 console.log('\n=== Putting the list in an order ===\n');
 const four = [amber, anne, amberSecond, jose];
 const numbers = (sort) => sortOrders(four, sort).map(o => o.orderNumber);
-check('newest first',         numbers('newest'),      ['WG-1003', 'WG-1002', 'WG-1001', 'WG-1004']);
-check('oldest first',         numbers('oldest'),      ['WG-1004', 'WG-1001', 'WG-1002', 'WG-1003']);
-check('name A to Z',          numbers('name_az'),     ['WG-1003', 'WG-1001', 'WG-1002', 'WG-1004']);
-check('name Z to A',          numbers('name_za'),     ['WG-1004', 'WG-1002', 'WG-1003', 'WG-1001']);
-check('biggest total first',  numbers('total_high'),  ['WG-1004', 'WG-1001', 'WG-1003', 'WG-1002']);
-check('smallest total first', numbers('total_low'),   ['WG-1003', 'WG-1002', 'WG-1001', 'WG-1004']);
-check('sorting never changes the list it was handed', four.map(o => o.orderNumber), ['WG-1001', 'WG-1002', 'WG-1003', 'WG-1004']);
+check('newest first',         numbers('newest'),      ['WB-1003', 'WB-1002', 'WB-1001', 'WB-1004']);
+check('oldest first',         numbers('oldest'),      ['WB-1004', 'WB-1001', 'WB-1002', 'WB-1003']);
+check('name A to Z',          numbers('name_az'),     ['WB-1003', 'WB-1001', 'WB-1002', 'WB-1004']);
+check('name Z to A',          numbers('name_za'),     ['WB-1004', 'WB-1002', 'WB-1003', 'WB-1001']);
+check('biggest total first',  numbers('total_high'),  ['WB-1004', 'WB-1001', 'WB-1003', 'WB-1002']);
+check('smallest total first', numbers('total_low'),   ['WB-1003', 'WB-1002', 'WB-1001', 'WB-1004']);
+check('sorting never changes the list it was handed', four.map(o => o.orderNumber), ['WB-1001', 'WB-1002', 'WB-1003', 'WB-1004']);
 // Two orders from the same customer must not swap places at random on a name sort.
-check('a tie falls back to newest first', sortOrders([amber, amberSecond], 'name_az').map(o => o.orderNumber), ['WG-1003', 'WG-1001']);
+check('a tie falls back to newest first', sortOrders([amber, amberSecond], 'name_az').map(o => o.orderNumber), ['WB-1003', 'WB-1001']);
 
 console.log('\n=== Between one day and another ===\n');
 const between = (from, to) => four.filter(o => {
@@ -162,35 +162,35 @@ const between = (from, to) => four.filter(o => {
   if (to && day > to) return false;
   return true;
 }).map(o => o.orderNumber);
-check('a full range',              between('2026-08-01', '2026-09-05'), ['WG-1001', 'WG-1002']);
-check('from only',                 between('2026-09-01', ''),           ['WG-1002', 'WG-1003']);
-check('to only',                   between('', '2026-07-31'),           ['WG-1004']);
-check('both ends are included',    between('2026-08-14', '2026-08-14'), ['WG-1001']);
+check('a full range',              between('2026-08-01', '2026-09-05'), ['WB-1001', 'WB-1002']);
+check('from only',                 between('2026-09-01', ''),           ['WB-1002', 'WB-1003']);
+check('to only',                   between('', '2026-07-31'),           ['WB-1004']);
+check('both ends are included',    between('2026-08-14', '2026-08-14'), ['WB-1001']);
 check('a day is read in UK time',  orderDayInUk(amber),                 '2026-08-14');
 
 console.log('\n=== The 25 September complaint: hgh and aod ===\n');
-check('hgh finds the HGH order',            find('hgh'),          ['WG-1005']);
-check('aod finds the AOD order',            find('aod'),          ['WG-1006']);
-check('aod-9604 typed in full works too',   find('AOD-9604'),     ['WG-1006']);
+check('hgh finds the HGH order',            find('hgh'),          ['WB-1005']);
+check('aod finds the AOD order',            find('aod'),          ['WB-1006']);
+check('aod-9604 typed in full works too',   find('AOD-9604'),     ['WB-1006']);
 // "and" is how a person joins two words out loud. It must never be searched for as a word.
 check('"hgh and aod" means "hgh aod"',      find('hgh and aod'),  find('hgh aod'));
 check('...and neither order has both',      find('hgh and aod'),  []);
 // Which is why "or" exists: it is what he actually meant.
-check('"hgh or aod" finds both',            find('hgh or aod'),   ['WG-1005', 'WG-1006']);
+check('"hgh or aod" finds both',            find('hgh or aod'),   ['WB-1005', 'WB-1006']);
 check('"and" on its own is still searched', parseSearchTerms('and'), ['and']);
-check('a stray "or" at the end is ignored', find('hgh or'),       ['WG-1005']);
+check('a stray "or" at the end is ignored', find('hgh or'),       ['WB-1005']);
 
 console.log('\n=== Short names, both directions ===\n');
-check('reta finds Retatrutide',                  find('reta').includes('WG-1001'), true);
-check('retatrutide finds an order saying Reta',  find('retatrutide').includes('WG-1007'), true);
-check('...and still finds the full name',        find('retatrutide').includes('WG-1001'), true);
-check('tirez is understood as Tirzepatide',      find('tirzepatide'), ['WG-1007']);
-check('hgh finds it written as Growth Hormone',  find('somatropin'), ['WG-1005']);
-check('a customer AND a short name together',    find('Dina reta'), ['WG-1007']);
+check('reta finds Retatrutide',                  find('reta').includes('WB-1001'), true);
+check('retatrutide finds an order saying Reta',  find('retatrutide').includes('WB-1007'), true);
+check('...and still finds the full name',        find('retatrutide').includes('WB-1001'), true);
+check('tirez is understood as Tirzepatide',      find('tirzepatide'), ['WB-1007']);
+check('hgh finds it written as Growth Hormone',  find('somatropin'), ['WB-1005']);
+check('a customer AND a short name together',    find('Dina reta'), ['WB-1007']);
 // Jose's order carries Retatrutide too, so the quoted search rightly finds both. What it must NOT
-// find is WG-1007, the one written down only as "Reta 30mg".
-check('quotes turn short names OFF',             find('"retatrutide"'), ['WG-1001', 'WG-1004']);
-check('a word with no short name is unchanged',  find('Hardy'), ['WG-1005']);
+// find is WB-1007, the one written down only as "Reta 30mg".
+check('quotes turn short names OFF',             find('"retatrutide"'), ['WB-1001', 'WB-1004']);
+check('a word with no short name is unchanged',  find('Hardy'), ['WB-1005']);
 
 console.log('\n=== The short-name list itself ===\n');
 check('it was built from the terminology list and is not empty', SEARCH_ALIAS_GROUPS.length > 15, true);

@@ -237,7 +237,7 @@ const rowResult = (cert: Product['certificate'], re: RegExp): string =>
 const infoValue = (cert: Product['certificate'], re: RegExp): string =>
   (cert?.verificationSummary ?? []).find((r) => re.test(r.label))?.value?.trim() ?? '';
 
-// The minimum purity Windsor Glow advertises on every research compound.
+// The minimum purity Windsor Beauty advertises on every research compound.
 const MIN_PURITY = 99;
 
 /**
@@ -281,7 +281,7 @@ export function certificateIssuesFor(
     const need = (key: CertificateFieldKey, field: string, example: string, value: string) => {
       if (!value) issues.push({ dosage, key, field, example, kind: 'missing' });
     };
-    need('certificateId', 'Certificate number', 'WG-BPC157-10MG', cert.certificateId?.trim() ?? '');
+    need('certificateId', 'Certificate number', 'WB-BPC157-10MG', cert.certificateId?.trim() ?? '');
     need('casNumber', 'CAS number', '137525-51-0', cert.casNumber?.trim() ?? '');
     need('molecularFormula', 'Molecular formula', 'C62H98N16O22', cert.molecularFormula?.trim() ?? '');
     need('molecularWeight', 'Molecular weight', '1419.55 g/mol', cert.molecularWeight?.trim() ?? '');

@@ -36,7 +36,7 @@ export default function ProductDisclaimerPage() {
 
       <PolicySection heading="Your Responsibility">
         <p>
-          By purchasing from Windsor Glow, you confirm that you understand the research-only nature of our products,
+          By purchasing from Windsor Beauty, you confirm that you understand the research-only nature of our products,
           that you are qualified and equipped to handle them appropriately, and that you take full responsibility for
           how they are stored, handled, and used. You should always follow the safety guidance applicable to your own
           research setting and any relevant local regulations.
@@ -46,7 +46,7 @@ export default function ProductDisclaimerPage() {
       <PolicySection heading="Related Policies">
         <p>
           This disclaimer should be read alongside our Research Use Disclaimer, Age Restriction Policy, and Terms and
-          Conditions, all of which form part of the agreement between you and Windsor Glow.
+          Conditions, all of which form part of the agreement between you and Windsor Beauty.
         </p>
       </PolicySection>
     </PolicyPage>

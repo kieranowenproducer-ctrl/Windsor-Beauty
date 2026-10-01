@@ -10,10 +10,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isWallUp } from '@/lib/launchWindow';
+import { isHoldingScreenOn, holdingResponse } from '@/lib/holdingScreen';
 
-const ADMIN_COOKIE = 'wg_admin_session';
-const CUSTOMER_COOKIE = 'wg_customer_session';
-const LAUNCH_COOKIE = 'wg_launch_access';
+const ADMIN_COOKIE = 'wb_admin_session';
+const CUSTOMER_COOKIE = 'wb_customer_session';
+const LAUNCH_COOKIE = 'wb_launch_access';
 
 // Temporary pre-launch wall — set while the site is being finished. See
 // /coming-soon and /api/launch/* for the rest of this system. The decision of
@@ -88,6 +89,9 @@ function isWallExempt(pathname: string): boolean {
 // Anything that looks like a static asset bypasses every gate below — the
 // coming-soon page itself needs its logo/fonts/etc to load, and these were
 // never meant to be routed through page-level auth/wall logic anyway.
+// The only files served to the public while the holding screen is up.
+const HOLDING_SAFE_ASSET_PATTERN = /\.(png|jpg|jpeg|svg|webp|ico|woff2?)$/i;
+
 const STATIC_FILE_PATTERN = /\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|map|txt|xml|woff2?|ttf|otf|json)$/i;
 
 // Non-httpOnly hint cookie for client components (entry gate, discount
@@ -96,7 +100,7 @@ const STATIC_FILE_PATTERN = /\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|map|txt|xml
 // popup stay out of the way. It carries NO security value — real auth is
 // still the httpOnly session cookies — and it is kept in sync here in
 // middleware, the one place that sees every request AND the httpOnly cookies.
-const UI_HINT_COOKIE = 'wg_ui_session';
+const UI_HINT_COOKIE = 'wb_ui_session';
 
 function withUiHint(request: NextRequest, response: NextResponse): NextResponse {
   const expectedToken = process.env.ADMIN_SESSION_TOKEN;
@@ -138,6 +142,20 @@ export function proxy(request: NextRequest) {
      begin with /admin, so holding admin addresses back from this shortcut
      costs nothing and closes the hole for every admin route at once. */
   const isAdminPath = pathname.startsWith('/admin') || pathname.startsWith('/api/admin');
+
+  /* THE HOLDING SCREEN comes before everything else. While it is on, the only
+     people who get past this point are staff: the admin area (which has its own
+     sign-in gate below) and anyone already signed in as admin, who then sees the
+     real shop. Everyone else, on every page and every /api address, gets the
+     holding screen. Pictures and fonts are let through so the admin sign-in page
+     can draw itself; they reveal nothing about the shop. See lib/holdingScreen. */
+  if (isHoldingScreenOn() && !isAdminPath) {
+    const adminToken = process.env.ADMIN_SESSION_TOKEN;
+    const isStaff = Boolean(adminToken && request.cookies.get(ADMIN_COOKIE)?.value === adminToken);
+    if (!isStaff && (pathname.startsWith('/api/') || !HOLDING_SAFE_ASSET_PATTERN.test(pathname))) {
+      return holdingResponse(pathname);
+    }
+  }
 
   if (!isAdminPath && STATIC_FILE_PATTERN.test(pathname)) {
     return NextResponse.next();

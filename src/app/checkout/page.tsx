@@ -491,19 +491,19 @@ export default function CheckoutPage() {
 
         if (ppRes.ok && ppData?.success && (directPaymentUrl || recovery)) {
           if (recovery) {
-            try { localStorage.setItem('wg_payment_recovery', recovery); } catch { /* ignore */ }
+            try { localStorage.setItem('wb_payment_recovery', recovery); } catch { /* ignore */ }
           }
           clearCart();
           window.location.href = directPaymentUrl || recovery!;
           return;
         }
         if (recovery) {
-          try { localStorage.setItem('wg_payment_recovery', recovery); } catch { /* ignore */ }
+          try { localStorage.setItem('wb_payment_recovery', recovery); } catch { /* ignore */ }
           clearCart();
           setPaymentRecovery({ orderNumber, url: recovery, message: ppData?.error || 'The email could not be sent.' });
           return;
         }
-        setOrderError(ppData?.error || 'Could not send your payment link. Please contact us at orders@windsorglow.com.');
+        setOrderError(ppData?.error || 'Could not send your payment link. Please contact us at orders@windsorbeauty.co.uk.');
       } catch {
         setOrderError('Could not send your payment link. Please check your connection and try again.');
       } finally {
@@ -514,8 +514,8 @@ export default function CheckoutPage() {
 
     // Step 2b: Fena — persist order ref, create payment, redirect to bank.
     try {
-      localStorage.setItem('wg_pending_order', orderNumber);
-      if (resumeUrl) localStorage.setItem('wg_payment_recovery', resumeUrl);
+      localStorage.setItem('wb_pending_order', orderNumber);
+      if (resumeUrl) localStorage.setItem('wb_payment_recovery', resumeUrl);
     } catch {
       // localStorage may be unavailable in some contexts — safe to ignore.
     }
@@ -536,7 +536,7 @@ export default function CheckoutPage() {
 
       setOrderError(
         fenaData?.error ||
-        'Could not connect to the payment provider. Please try again or contact us at orders@windsorglow.com.'
+        'Could not connect to the payment provider. Please try again or contact us at orders@windsorbeauty.co.uk.'
       );
       if (resumeUrl) setPaymentRecovery({ orderNumber, url: resumeUrl, message: 'Your order is reserved, but the bank payment page could not be opened.' });
     } catch {
@@ -577,7 +577,7 @@ export default function CheckoutPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
       <div className="mb-10">
-        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-1">Windsor Glow</p>
+        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-1">Windsor Beauty</p>
         <h1 className="font-serif text-4xl text-stone-800 tracking-wide">Checkout</h1>
       </div>
 
@@ -689,7 +689,7 @@ export default function CheckoutPage() {
                     className="mt-0.5 w-4 h-4 accent-gold-500 shrink-0"
                   />
                   <span className="text-[11px] text-stone-500 leading-relaxed">
-                    Keep me updated with special offers, new products and promotions from Windsor Glow.
+                    Keep me updated with special offers, new products and promotions from Windsor Beauty.
                     This is entirely optional.
                   </span>
                 </label>}

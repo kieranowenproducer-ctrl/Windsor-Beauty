@@ -13,7 +13,7 @@ import { emailGreeting } from './email/greeting';
 // bug, flagged but not fixed here) and has a different single-button layout
 // anyway. buildPaypalLink() itself is a pure, brand-agnostic function, reused
 // as-is.
-const FROM_ADDRESS = 'Windsor Glow <orders@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 export interface SendInvoiceEmailParams {
   to: string;
@@ -46,7 +46,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
 
   // Permanent URL — works pre-launch too (wall-exempt in proxy.ts) and
   // is unchanged at launch, so the emailed terms link never goes stale.
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
   const termsUrl = `${siteUrl}/terms`;
 
   // Trial lines lose their name before anything is drawn (task ae168547).
@@ -102,7 +102,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
           <tr>
             <td style="padding:4px 24px 0;text-align:center;font-size:10px;color:#a8a29e;line-height:1.6">
               By completing this payment, you confirm that you have read and agree to the
-              Windsor Glow Terms &amp; Conditions.<br />
+              Windsor Beauty Terms &amp; Conditions.<br />
               <a href="${escapeHtml(termsUrl)}" style="color:#b8902a;text-decoration:underline">Read Terms &amp; Conditions</a>
             </td>
           </tr>
@@ -183,7 +183,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions about this invoice, just reply to this email, or contact
-              <a href="mailto:sales@windsorglow.com" style="color:#b8902a;text-decoration:none">sales@windsorglow.com</a>
+              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#b8902a;text-decoration:none">sales@windsorbeauty.co.uk</a>
               quoting your invoice reference <strong style="color:#78716c">${escapeHtml(params.invoiceNumber)}</strong>.
             </p>
           </td>
@@ -210,7 +210,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
       // spam filters associate with phishing.
       replyTo: SUPPORT_REPLY_TO,
       to: params.to,
-      subject: `Invoice ${params.invoiceNumber} from Windsor Glow`,
+      subject: `Invoice ${params.invoiceNumber} from Windsor Beauty`,
       text:
         `${emailGreeting(params.customerName)}\n\n` +
         (params.message ? `${params.message}\n\n` : '') +
@@ -220,9 +220,9 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
         `\n\n` +
         `Review and pay securely here: ${params.payUrl}\n` +
         `(Bank transfer has no fee; PayPal adds a ${INVOICE_PAYPAL_FEE_PERCENT}% processing fee.)\n\n` +
-        `By completing this payment, you confirm that you have read and agree to the Windsor Glow Terms & Conditions: ${termsUrl}\n` +
+        `By completing this payment, you confirm that you have read and agree to the Windsor Beauty Terms & Conditions: ${termsUrl}\n` +
         `\nAny questions about this invoice, just reply to this email, or contact ` +
-        `sales@windsorglow.com quoting your invoice reference ${params.invoiceNumber}.`,
+        `sales@windsorbeauty.co.uk quoting your invoice reference ${params.invoiceNumber}.`,
       html,
     });
 

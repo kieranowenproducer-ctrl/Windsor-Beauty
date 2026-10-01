@@ -56,13 +56,13 @@ console.log('\n=== Our own post is not somebody\'s correspondence ===\n');
 
 // The bigger guard is `internal`, set on every staff alert. This catches the rest: a customer-facing
 // sender that happens to be writing to us.
-for (const ours of ['sales@windsorglow.com', 'alerts@windsorglow.com', 'INFO@WindsorGlow.com']) {
+for (const ours of ['sales@windsorbeauty.co.uk', 'alerts@windsorbeauty.co.uk', 'INFO@WindsorBeauty.com']) {
   check(`"${ours}" is recognised as ours, not a customer`, isOurOwnAddress(ours.toLowerCase()));
 }
 check('a real customer address is not treated as ours',
   isOurOwnAddress('jane@example.com') === false);
 check('a lookalike domain is not treated as ours',
-  isOurOwnAddress('jane@windsorglow.com.example.net') === false,
+  isOurOwnAddress('jane@windsorbeauty.co.uk.example.net') === false,
   'Matching anywhere in the string rather than at the end would swallow a real customer.');
 
 console.log('\n=== One enormous email cannot fill the table ===\n');
@@ -90,7 +90,7 @@ try {
   // No database is configured in this test run, so the import inside will fail. That is the point.
   await fileEmailUnderCustomer({
     to: 'jane@example.com',
-    from: 'Windsor Glow <sales@windsorglow.com>',
+    from: 'Windsor Beauty <sales@windsorbeauty.co.uk>',
     subject: 'Test',
     text: 'Test',
     providerId: 'test-id',

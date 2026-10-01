@@ -71,7 +71,7 @@ export async function GET() {
       fulfilmentType: o.fulfilment_type,
       // How the order reached the account it is attached to (task e0858a61). A customer_id on
       // its own never proved anybody was signed in, and that is what could not be answered
-      // about order WG-63U39T.
+      // about order WB-63U39T.
       accountLink: o.account_link,
       checkoutConfirmations: o.checkout_confirmations ?? null,
       // Invoice notes carried through for admin transparency (task e6e75b32):

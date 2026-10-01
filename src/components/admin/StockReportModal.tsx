@@ -32,7 +32,7 @@ function csvField(value: string): string {
 function buildCsv(rows: StockReportRow[], generatedAt: string): string {
   const header = ['Product Name', 'SKU / ID', 'Size / Dosage', 'Category', 'Price', 'Stock Quantity', 'Status', 'Last Updated'];
   const lines: string[] = [];
-  lines.push(csvField(`Windsor Glow Stock Check — generated ${new Date(generatedAt).toLocaleString('en-GB')}`));
+  lines.push(csvField(`Windsor Beauty Stock Check — generated ${new Date(generatedAt).toLocaleString('en-GB')}`));
   lines.push('');
 
   for (const status of ['enabled', 'disabled'] as const) {
@@ -59,7 +59,7 @@ function downloadCsv(rows: StockReportRow[], generatedAt: string) {
   const a = document.createElement('a');
   const dateStamp = new Date().toISOString().slice(0, 10);
   a.href = url;
-  a.download = `windsor-glow-stock-check-${dateStamp}.csv`;
+  a.download = `windsor-beauty-stock-check-${dateStamp}.csv`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -191,7 +191,7 @@ export default function StockReportModal({ open, onClose }: Props) {
       <div className="relative bg-white w-full max-w-5xl max-h-full flex flex-col overflow-hidden shadow-2xl">
         <div className="shrink-0 bg-white border-b border-gold-100 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 z-10">
           <div>
-            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-400">Windsor Glow Admin</p>
+            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-400">Windsor Beauty Admin</p>
             <p className="font-serif text-sm sm:text-base text-stone-700">Stock Check Report</p>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">

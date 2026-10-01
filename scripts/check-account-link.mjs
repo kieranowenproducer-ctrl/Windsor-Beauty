@@ -5,14 +5,14 @@
 // The Orders screen tells whoever is reading it whether the person was signed in when they
 // ordered, or whether the order was simply matched to a member because the email they typed
 // happened to belong to one. Those two are not the same fact, and the difference is the whole
-// reason this exists (task e0858a61, order WG-63U39T).
+// reason this exists (task e0858a61, order WB-63U39T).
 //
 // If this decision were ever inverted, the screen would state the opposite of the truth with
 // complete confidence, and nothing else in the codebase would notice. So it is one pure function
 // in one file with no imports, and this runs it.
 //
 // A live order proves the value is stored, read back and displayed (done on a preview on
-// 2026-08-20, order WG-8ZSTLV, which correctly read "Guest order"). This proves the other two
+// 2026-08-20, order WB-8ZSTLV, which correctly read "Guest order"). This proves the other two
 // branches, which cannot be exercised without creating a member account.
 import { resolveAccountLink, ACCOUNT_LINK_LABELS } from '../src/lib/orderAccountLink.ts';
 

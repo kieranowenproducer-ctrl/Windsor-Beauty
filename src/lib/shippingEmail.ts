@@ -4,7 +4,7 @@ import { UK_DELIVERY } from './shippingWindows';
 import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
-const FROM_ADDRESS = 'Windsor Glow <orders@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 export function isShippingEmailConfigured() {
   return Boolean(process.env.RESEND_API_KEY);
@@ -44,7 +44,7 @@ export function buildShippingConfirmationEmail(
             <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#b8902a">On Its Way</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">Your order is on its way, ${firstName}.</h1>
             <p style="margin:0 0 24px;font-size:13px;color:#57534e;line-height:1.6">
-              Your Windsor Glow order has been dispatched with ${escapeHtml(params.carrierName)} and is on its way to you.
+              Your Windsor Beauty order has been dispatched with ${escapeHtml(params.carrierName)} and is on its way to you.
             </p>
 
             <!-- Order number badge -->
@@ -87,8 +87,8 @@ export function buildShippingConfirmationEmail(
             <p style="margin:0 0 24px;font-size:12px;color:#57534e;line-height:1.6">Express Tracked 24: typically next working day.</p>
 
             <p style="margin:0;font-size:13px;color:#57534e;line-height:1.6">
-              You can also view this order any time from your <a href="https://windsorglow.com/account" style="color:#b8902a;text-decoration:none">Windsor Glow account</a>.
-              Questions? Contact us at <a href="mailto:sales@windsorglow.com" style="color:#b8902a;text-decoration:none">sales@windsorglow.com</a>.
+              You can also view this order any time from your <a href="https://www.windsorbeauty.co.uk/account" style="color:#b8902a;text-decoration:none">Windsor Beauty account</a>.
+              Questions? Contact us at <a href="mailto:sales@windsorbeauty.co.uk" style="color:#b8902a;text-decoration:none">sales@windsorbeauty.co.uk</a>.
             </p>
           </td>
         </tr>`;
@@ -100,14 +100,14 @@ export function buildShippingConfirmationEmail(
   });
 
   return {
-    subject: `Your Windsor Glow order ${params.orderNumber} has been dispatched`,
+    subject: `Your Windsor Beauty order ${params.orderNumber} has been dispatched`,
     text:
       `${emailGreeting(params.customerName)}\n\n` +
       `Your order ${params.orderNumber} is on its way with ${params.carrierName}.\n\n` +
       `Tracking number: ${params.trackingNumber}\n` +
       `Track your parcel: ${url}\n\n` +
-      `You can also view this order any time from your Windsor Glow account at windsorglow.com/account.\n\n` +
-      `Questions? sales@windsorglow.com`,
+      `You can also view this order any time from your Windsor Beauty account at windsorbeauty.co.uk/account.\n\n` +
+      `Questions? sales@windsorbeauty.co.uk`,
     html,
   };
 }

@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7; // 30 days or 7 days
 
   const response = NextResponse.json({ success: true });
-  response.cookies.set('wg_admin_session', SESSION_TOKEN, {
+  response.cookies.set('wb_admin_session', SESSION_TOKEN, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

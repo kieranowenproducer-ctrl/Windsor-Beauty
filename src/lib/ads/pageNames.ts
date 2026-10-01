@@ -72,7 +72,7 @@ const SHOUTED = new Set([
   'mt', 'pt', 'hgh', 'gh', 'epo', 'bac', 'spf', 'gdf', 'ss', 'ipa', 'coa', 'ai', 'uk', 'usa', 'qc',
 ]);
 
-/** "recovery-pen-windsor-glow-bpc-157" -> "Recovery Pen Windsor Glow BPC 157". */
+/** "recovery-pen-windsor-beauty-bpc-157" -> "Recovery Pen Windsor Beauty BPC 157". */
 export function prettifySlug(slug: string): string {
   const words = slug.split(/[-_]/).filter(Boolean);
   if (words.length === 0) return slug;

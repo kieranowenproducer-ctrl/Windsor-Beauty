@@ -31,7 +31,7 @@ export default function VisitBeacon() {
     let landing = false;
     let visitId = '';
     try {
-      landing = !sessionStorage.getItem('wg_visit_id');
+      landing = !sessionStorage.getItem('wb_visit_id');
       visitId = getVisitId();
     } catch {
       landing = false;

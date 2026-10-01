@@ -1,10 +1,10 @@
-const DEFAULT_ARCHIVE_ADDRESS = 'info@windsorglow.com';
+const DEFAULT_ARCHIVE_ADDRESS = 'info@windsorbeauty.co.uk';
 
 /**
  * Where the hidden copy of an outgoing email goes (task b8fc05c1).
  *
  * Kieran, 9 September 2026: "Ensure all email including ones that Pearl sends
- * are BCC to info@windsorglow.com. Ensure that automatically done from now
+ * are BCC to info@windsorbeauty.co.uk. Ensure that automatically done from now
  * onwards." Resend cannot write into the IONOS mailbox's Sent Items, so a
  * blind copy is how the team gets a readable record of everything that left.
  *

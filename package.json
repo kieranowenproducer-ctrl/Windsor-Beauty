@@ -1,9 +1,9 @@
 {
-  "name": "windsor-glow-website",
+  "name": "windsor-beauty-website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -71,7 +71,8 @@
     "test:blog-retirement": "node scripts/test-blog-retirement.mjs",
     "test:admin-search": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-admin-search.mjs",
     "check:search": "node scripts/check-admin-search-ui.mjs",
-    "test:member-savings": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-member-savings.mjs"
+    "test:member-savings": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-member-savings.mjs",
+    "db:local": "node scripts/local-db.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
@@ -83,7 +84,8 @@
     "react-dom": "^19.2.8",
     "recharts": "^3.8.1",
     "resend": "^6.12.4",
-    "sanitize-html": "^2.17.5"
+    "sanitize-html": "^2.17.5",
+    "pg": "^8.23.1"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -96,7 +98,6 @@
     "embedded-postgres": "^18.4.0-beta.17",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.0",
-    "pg": "^8.23.1",
     "playwright-core": "^1.62.1",
     "postcss": "^8",
     "puppeteer-core": "^25.3.0",

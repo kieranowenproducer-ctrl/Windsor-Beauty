@@ -74,6 +74,6 @@ test('health checks judge registrations from the repaired system onward', () => 
 
 test('staff activity is excluded from the customer journey health comparison', () => {
   const activity = readFileSync(new URL('../src/lib/db/ipActivity.ts', import.meta.url), 'utf8');
-  assert.match(activity, /wg_admin_session=/);
-  assert.match(activity, /if \(\/\(\?:\^\|;\\s\*\)wg_admin_session=\/\.test\(cookies\)\) return/);
+  assert.match(activity, /wb_admin_session=/);
+  assert.match(activity, /if \(\/\(\?:\^\|;\\s\*\)wb_admin_session=\/\.test\(cookies\)\) return/);
 });

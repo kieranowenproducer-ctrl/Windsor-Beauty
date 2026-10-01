@@ -3,14 +3,14 @@ import { emailDocument, escapeHtml } from './email/shared';
 import { sendEmail } from './email/send';
 import { emailGreeting } from './email/greeting';
 
-const FROM_ADDRESS = 'Windsor Glow <orders@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 export async function sendPaymentResumeEmail(params: {
   to: string; customerName: string; orderNumber: string; total: number; resumeUrl: string;
 }): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false;
-  const subject = `Complete your Windsor Glow payment — ${params.orderNumber}`;
-  const text = `${emailGreeting(params.customerName)}\n\nYour order ${params.orderNumber} is reserved but payment has not been confirmed.\n\nComplete payment securely: ${params.resumeUrl}\n\nTotal due: £${params.total.toFixed(2)}\n\nThe reservation expires 48 hours after the order was placed. If you have already paid, do not pay again; reply to this email and we will check it.\n\nWindsor Glow`;
+  const subject = `Complete your Windsor Beauty payment — ${params.orderNumber}`;
+  const text = `${emailGreeting(params.customerName)}\n\nYour order ${params.orderNumber} is reserved but payment has not been confirmed.\n\nComplete payment securely: ${params.resumeUrl}\n\nTotal due: £${params.total.toFixed(2)}\n\nThe reservation expires 48 hours after the order was placed. If you have already paid, do not pay again; reply to this email and we will check it.\n\nWindsor Beauty`;
 
   /* This email used to write its own bare markup, which made it the one email to a customer with
    * no research-use footer on it anywhere. It goes through the shared document now, so the footer

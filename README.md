@@ -1,6 +1,6 @@
-# Windsor Glow
+# Windsor Beauty
 
-The online shop at **[windsorglow.com](https://www.windsorglow.com)**. It sells research
+The online shop at **[windsorbeauty.co.uk](https://www.windsorbeauty.co.uk)**. It sells research
 peptides, takes orders and payments, emails customers, and has a large admin area the
 business runs day to day from.
 
@@ -24,7 +24,7 @@ Health show a red warning when this check fails. Treat any new visitor-tracking 
 repair test were checked and marked as dealt with.
 
 The full incident record and proof are in
-`05_Database-and-Knowledge-Store/change-logs/2026-09-10-windsor-glow-tracking-reliability.md`.
+`05_Database-and-Knowledge-Store/change-logs/2026-09-10-windsor-beauty-tracking-reliability.md`.
 
 ---
 
@@ -234,7 +234,7 @@ has been updated. That happens on deploy.
 | Styling | Tailwind CSS — the one brand colour scale is `gold`, defined in `tailwind.config.js` |
 | Database | Postgres, hosted by Neon |
 | File storage | Vercel Blob (product photos, admin uploads) |
-| Email | Resend, sending from windsorglow.com |
+| Email | Resend, sending from windsorbeauty.co.uk |
 | Payment | Fena (Pay by Bank) and a manual PayPal payment-link flow. No card processor yet. |
 | Delivery | Royal Mail Click & Drop (CSV export, plus an optional live label API) |
 | AI assistant | A separate hosted service, `ai-concierge-service`. This site only proxies to it. |
@@ -244,7 +244,7 @@ has been updated. That happens on deploy.
 
 ## How it goes live
 
-**This repo has its own GitHub remote** (`kieranowenproducer-ctrl/Windsor-Glow`), separate
+**This repo has its own GitHub remote** (`kieranowenproducer-ctrl/Windsor-Beauty`), separate
 from the workspace it sits inside. Deploying means pushing from **inside this folder**.
 
 1. Commit your work on `main`.

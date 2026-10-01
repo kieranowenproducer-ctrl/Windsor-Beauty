@@ -16,7 +16,7 @@ export const DEFAULT_ANNOUNCEMENT_TEXT =
 
 const TERMS_BODY = `1. Who We Are
 
-Windsor Glow is operated by C&S Holdings Group ("Windsor Glow", "we", "us", "our"). References to "you" or "the customer" mean the person browsing this site or placing an order with us.
+Windsor Beauty is operated by C&S Holdings Group ("Windsor Beauty", "we", "us", "our"). References to "you" or "the customer" mean the person browsing this site or placing an order with us.
 
 2. Acceptance of These Terms
 
@@ -42,7 +42,7 @@ Not for Human or Animal Consumption. All products listed on this website are sol
 
 Sold to Qualified Researchers. By placing an order, you confirm that you are purchasing as a qualified individual or organisation conducting legitimate laboratory research, that you understand the handling and storage requirements of research compounds, and that you will use any product purchased from us solely within a controlled research environment.
 
-No Endorsement of Other Use. Windsor Glow does not endorse, encourage, or condone the use of any product sold on this site for purposes other than laboratory research. Any reference material we provide, including our Dosage Guide and calculator, exists only to support consistent handling and reconstitution of compounds for research purposes, and carries no implication that the product is suitable, safe, or approved for any other use.
+No Endorsement of Other Use. Windsor Beauty does not endorse, encourage, or condone the use of any product sold on this site for purposes other than laboratory research. Any reference material we provide, including our Dosage Guide and calculator, exists only to support consistent handling and reconstitution of compounds for research purposes, and carries no implication that the product is suitable, safe, or approved for any other use.
 
 Compliance With Local Law. It is your responsibility to ensure that purchasing, possessing, and using any product from this site is lawful in your jurisdiction, and that you comply with any licensing, storage, or handling requirements that apply to research compounds where you are located.
 
@@ -52,7 +52,7 @@ Acceptance of This Disclaimer. By using this website and placing an order, you c
 
 Every product listed on this website is supplied strictly for laboratory and scientific research purposes. None of our products are intended for human consumption, and they must not be ingested, injected, inhaled, applied to the body, or otherwise introduced into a human or animal under any circumstances.
 
-Nothing we sell is intended to diagnose, treat, cure or prevent any disease, condition or ailment, and no product should be regarded as a medicine, supplement or therapeutic substance. Windsor Glow does not provide medical advice, and nothing on this website, including product descriptions, dosage information, or any supporting guides or calculators, should be read or relied upon as such. Where we do publish reference material of this kind, it exists solely to support the accurate handling and reconstitution of compounds within a controlled research environment, for informational purposes only.
+Nothing we sell is intended to diagnose, treat, cure or prevent any disease, condition or ailment, and no product should be regarded as a medicine, supplement or therapeutic substance. Windsor Beauty does not provide medical advice, and nothing on this website, including product descriptions, dosage information, or any supporting guides or calculators, should be read or relied upon as such. Where we do publish reference material of this kind, it exists solely to support the accurate handling and reconstitution of compounds within a controlled research environment, for informational purposes only.
 
 You are responsible for satisfying yourself that purchasing, possessing and using any product from this site is lawful and appropriate in your circumstances and jurisdiction, and for ensuring it is handled only by suitably qualified persons in a proper research setting. If you have a medical question or concern, please seek guidance from a qualified healthcare professional rather than relying on anything published here. By entering this website, creating an account, or placing an order, you confirm that you understand and accept this disclaimer in full, in addition to our dedicated Research Use Disclaimer and Product Disclaimer.
 
@@ -70,7 +70,7 @@ If you create an account with us, you are responsible for keeping your login det
 
 11. Intellectual Property
 
-All content on this site, including text, graphics, logos, product photography and layout, belongs to Windsor Glow or its licensors and is protected by copyright and other intellectual property laws. You may view and print pages for your own personal reference, but may not reproduce, redistribute or otherwise commercially exploit any part of this site without our written permission.
+All content on this site, including text, graphics, logos, product photography and layout, belongs to Windsor Beauty or its licensors and is protected by copyright and other intellectual property laws. You may view and print pages for your own personal reference, but may not reproduce, redistribute or otherwise commercially exploit any part of this site without our written permission.
 
 12. Limitation of Liability
 
@@ -86,7 +86,7 @@ These terms are governed by the laws of England and Wales, and any disputes rela
 
 const PRIVACY_BODY = `Who We Are
 
-Windsor Glow, operated by C&S Holdings Group, is the data controller responsible for the personal information described in this policy. Any questions about this policy or how your data is handled can be directed to our support team via the Contact page.
+Windsor Beauty, operated by C&S Holdings Group, is the data controller responsible for the personal information described in this policy. Any questions about this policy or how your data is handled can be directed to our support team via the Contact page.
 
 Information We Collect
 
@@ -176,7 +176,7 @@ If your order has not arrived within the expected timeframe, or arrives damaged,
 
 const RETURNS_BODY = `The Nature of Our Products
 
-Windsor Glow supplies research compounds that are sealed, batch-referenced and supplied with supporting documentation such as a certificate of analysis. For reasons of safety, integrity and regulatory compliance, we are unable to accept returns of any product once its packaging or seal has been opened or tampered with.
+Windsor Beauty supplies research compounds that are sealed, batch-referenced and supplied with supporting documentation such as a certificate of analysis. For reasons of safety, integrity and regulatory compliance, we are unable to accept returns of any product once its packaging or seal has been opened or tampered with.
 
 Faulty or Incorrect Items
 

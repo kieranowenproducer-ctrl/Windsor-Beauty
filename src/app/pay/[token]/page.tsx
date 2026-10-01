@@ -67,7 +67,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
         if (!r.ok || !data?.invoice) {
           setLoadError(
             r.status === 404
-              ? 'We could not find this invoice. Please use the link from your email, or contact us at sales@windsorglow.com.'
+              ? 'We could not find this invoice. Please use the link from your email, or contact us at sales@windsorbeauty.co.uk.'
               : 'Something went wrong loading your invoice. Please try again shortly.'
           );
           return;
@@ -98,7 +98,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
     <div className="min-h-screen bg-stone-100 py-10 px-4">
       <div className="max-w-xl mx-auto">
         <div className="text-center mb-8">
-          <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Glow</p>
+          <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Beauty</p>
           <h1 className="font-serif text-3xl text-stone-800 tracking-wide">
             {paid ? 'Invoice Paid' : 'Review & Pay'}
           </h1>
@@ -207,7 +207,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
               <div className="px-6 sm:px-8 py-8 text-center">
                 <p className="text-sm text-stone-500 leading-relaxed">
                   This invoice has been cancelled and no payment is due. If you believe this is a
-                  mistake, please contact us at sales@windsorglow.com.
+                  mistake, please contact us at sales@windsorbeauty.co.uk.
                 </p>
               </div>
             ) : (
@@ -223,7 +223,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
                     />
                     <span className="text-xs text-stone-600 leading-relaxed">
                       By completing this payment, I confirm that I have read and agree to the
-                      Windsor Glow <span className="font-semibold">Terms &amp; Conditions</span>.
+                      Windsor Beauty <span className="font-semibold">Terms &amp; Conditions</span>.
                     </span>
                   </label>
                   <a
@@ -269,7 +269,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
                   {!payment?.fenaUrl && !payment?.paypalUrl && (
                     <p className="text-sm text-stone-500 text-center leading-relaxed">
                       Online payment is not available for this invoice. Please reply to your invoice
-                      email or contact sales@windsorglow.com to arrange payment.
+                      email or contact sales@windsorbeauty.co.uk to arrange payment.
                     </p>
                   )}
                 </div>
@@ -285,7 +285,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
         )}
 
         <p className="text-[10px] text-stone-500 text-center leading-relaxed mt-6">
-          Windsor Glow &mdash; windsorglow.com
+          Windsor Beauty &mdash; windsorbeauty.co.uk
           <br />
           All products are supplied strictly for research purposes only. Not for human use.
         </p>

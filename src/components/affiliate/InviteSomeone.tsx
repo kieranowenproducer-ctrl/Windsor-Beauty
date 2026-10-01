@@ -32,8 +32,8 @@ const shortDate = (value: string) => new Date(value).toLocaleDateString('en-GB',
 const longDate = (value: string) => new Date(value).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 
 /**
- * Raf's invitation panel. He types the person's email and presses Send: Windsor Glow emails them
- * from info@windsorglow.com. Whatever happens to that email, the same link comes straight back with
+ * Raf's invitation panel. He types the person's email and presses Send: Windsor Beauty emails them
+ * from info@windsorbeauty.co.uk. Whatever happens to that email, the same link comes straight back with
  * WhatsApp, text-message and copy buttons, so he can always send it from his own phone.
  */
 export default function InviteSomeone({ preview, invitations, onChanged }: {
@@ -100,7 +100,7 @@ export default function InviteSomeone({ preview, invitations, onChanged }: {
         <p className={EYEBROW}>Invite someone</p>
         <h2 id="invite-heading" className="mt-1 font-serif text-2xl text-stone-800">Send a private invitation</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">
-          Type their email address and press Send. Windsor Glow emails them everything they need to join, with 10% off their first order.
+          Type their email address and press Send. Windsor Beauty emails them everything they need to join, with 10% off their first order.
         </p>
 
         <form onSubmit={event => { event.preventDefault(); invite(email, true); }} className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">

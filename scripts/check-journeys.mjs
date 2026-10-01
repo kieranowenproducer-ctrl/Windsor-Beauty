@@ -55,9 +55,9 @@ function findChromium() {
   return null;
 }
 
-const GATE_LOCAL_KEY = 'wg_entry_confirmed_v2';
-const GATE_SESSION_KEY = 'wg_entry_confirmed';
-const POPUP_SESSION_KEY = 'wg_discount_popup_seen';
+const GATE_LOCAL_KEY = 'wb_entry_confirmed_v2';
+const GATE_SESSION_KEY = 'wb_entry_confirmed';
+const POPUP_SESSION_KEY = 'wb_discount_popup_seen';
 const POPUP_DELAY_MS = 5000;
 const WAIT_FOR_POPUP = POPUP_DELAY_MS + 1500;
 

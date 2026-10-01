@@ -205,11 +205,11 @@ export default function CustomerEmailComposer(props: Props) {
               else's mail from the wrong person's record. */}
           {setEmail && (
             <div>
-              <label htmlFor="wg-msg-to" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
+              <label htmlFor="wb-msg-to" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
                 Send it to
               </label>
               <input
-                id="wg-msg-to"
+                id="wb-msg-to"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -224,11 +224,11 @@ export default function CustomerEmailComposer(props: Props) {
           )}
 
           <div>
-            <label htmlFor="wg-msg-sender" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
+            <label htmlFor="wb-msg-sender" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
               Send it from
             </label>
             <select
-              id="wg-msg-sender"
+              id="wb-msg-sender"
               value={sender}
               onChange={(e) => setSender(e.target.value as AdminSenderKey)}
               className="w-full border border-stone-300 px-3 py-2 text-sm text-stone-700 focus:border-gold-700 outline-none bg-white"
@@ -243,11 +243,11 @@ export default function CustomerEmailComposer(props: Props) {
           </div>
 
           <div>
-            <label htmlFor="wg-msg-subject" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
+            <label htmlFor="wb-msg-subject" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
               Subject
             </label>
             <input
-              id="wg-msg-subject"
+              id="wb-msg-subject"
               ref={subjectRef}
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
@@ -258,11 +258,11 @@ export default function CustomerEmailComposer(props: Props) {
           </div>
 
           <div>
-            <label htmlFor="wg-msg-body" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
+            <label htmlFor="wb-msg-body" className="block text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-1">
               Message
             </label>
             <textarea
-              id="wg-msg-body"
+              id="wb-msg-body"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={8}
@@ -272,7 +272,7 @@ export default function CustomerEmailComposer(props: Props) {
             />
             <p className="text-[11px] text-stone-500 mt-1">
               Type it as you would say it. Your line breaks are kept, and it goes out in the
-              usual Windsor Glow email design.
+              usual Windsor Beauty email design.
             </p>
           </div>
 

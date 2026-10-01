@@ -4,8 +4,8 @@ import { enquiryAlertRecipients, isUrgentCustomerEmail } from '../src/lib/email/
 
 test('one staff notice reaches sales and info without repeating an address', () => {
   assert.deepEqual(
-    enquiryAlertRecipients('Sales@WindsorGlow.com; colleague@example.com, colleague@example.com'),
-    ['sales@windsorglow.com', 'info@windsorglow.com', 'colleague@example.com'],
+    enquiryAlertRecipients('Sales@WindsorBeauty.com; colleague@example.com, colleague@example.com'),
+    ['sales@windsorbeauty.co.uk', 'info@windsorbeauty.co.uk', 'colleague@example.com'],
   );
 });
 

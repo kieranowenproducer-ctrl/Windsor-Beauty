@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { isCapturedThreadReply, isIgnoredInboundSender } from '../src/lib/email/inboundRouting.ts';
 
-const captureAddress = 'reply@inbound.windsorglow.com';
+const captureAddress = 'reply@inbound.windsorbeauty.co.uk';
 
 test('a captured customer reply can return to its open enquiry', () => {
   assert.equal(isCapturedThreadReply({
@@ -15,7 +15,7 @@ test('a captured customer reply can return to its open enquiry', () => {
 test('a public-mailbox forward becomes a new case even for an existing customer', () => {
   assert.equal(isCapturedThreadReply({
     captureAddress, receivedFor: captureAddress,
-    originalRecipients: ['sales@windsorglow.com'],
+    originalRecipients: ['sales@windsorbeauty.co.uk'],
     headers: { 'In-Reply-To': '<unrelated-message@example.com>' },
   }), false);
   assert.equal(isCapturedThreadReply({

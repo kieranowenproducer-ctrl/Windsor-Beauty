@@ -22,7 +22,7 @@ interface Props {
   reviewStats?: { average: number; count: number };
   /** Active automatic sale config, if any — see Discount Codes > Automatic Sale Discounts. */
   saleConfig?: SiteSaleConfig;
-  /** True for signed-in admins (wg_ui_session=staff). Shows the inline stock editor. */
+  /** True for signed-in admins (wb_ui_session=staff). Shows the inline stock editor. */
   isStaff?: boolean;
   /**
    * Per-dosage stock for this product (dosage -> quantity; a dosage with no

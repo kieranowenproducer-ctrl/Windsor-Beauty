@@ -10,7 +10,7 @@ export const GLOW_CARD_REWARDS = [
   { milestone: 15, amount: 30, deliveryDiscountPercent: 50 },
 ] as const;
 
-export const glowCardLoyaltyEnabled = () => process.env.WG_GLOW_CARD_LOYALTY_ENABLED === 'true';
+export const glowCardLoyaltyEnabled = () => process.env.WB_GLOW_CARD_LOYALTY_ENABLED === 'true';
 
 export type GlowCardOrderResult = {
   enabled: boolean;
@@ -324,7 +324,7 @@ export async function reverseGlowCardOrderPoints(order: OrderRow): Promise<Rever
 function voucherCode() {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const bytes = randomBytes(9);
-  return `WG-GLOW-${Array.from(bytes, byte => alphabet[byte % alphabet.length]).join('')}`;
+  return `WB-GLOW-${Array.from(bytes, byte => alphabet[byte % alphabet.length]).join('')}`;
 }
 
 /** Claiming £10/£20 keeps the same card. Claiming the £30 reward completes
@@ -359,7 +359,7 @@ export async function claimGlowCardReward(customerId: number, milestone: 5 | 10 
 }
 
 export async function glowCardVoucherOwnedBy(code: string, customerId: number) {
-  if (!code.toUpperCase().startsWith('WG-GLOW-')) return null;
+  if (!code.toUpperCase().startsWith('WB-GLOW-')) return null;
   const db = await ready();
   const rows = await db`
     SELECT 1 FROM glow_card_rewards r
@@ -373,7 +373,7 @@ export async function glowCardVoucherOwnedBy(code: string, customerId: number) {
 }
 
 export async function glowCardVoucherDeliveryDiscountPercent(code: string, customerId: number) {
-  if (!code.toUpperCase().startsWith('WG-GLOW-')) return 0;
+  if (!code.toUpperCase().startsWith('WB-GLOW-')) return 0;
   const db = await ready();
   const rows = await db`
     SELECT r.delivery_discount_percent FROM glow_card_rewards r
@@ -388,7 +388,7 @@ export async function glowCardVoucherDeliveryDiscountPercent(code: string, custo
 /** Reserve a claimed order-loyalty reward while its checkout order is being
  * created. The guarded counter prevents two tabs spending one code. */
 export async function reserveGlowCardVoucher(code: string, customerId: number): Promise<boolean> {
-  if (!code.toUpperCase().startsWith('WG-GLOW-')) return false;
+  if (!code.toUpperCase().startsWith('WB-GLOW-')) return false;
   const db = await ready();
   const rows = await db`
     UPDATE discount_codes d SET times_redeemed = times_redeemed + 1
@@ -406,7 +406,7 @@ export async function reserveGlowCardVoucher(code: string, customerId: number): 
 
 /** Undo a reservation when the checkout order was not saved. */
 export async function releaseGlowCardVoucherReservation(code: string, customerId: number) {
-  if (!code.toUpperCase().startsWith('WG-GLOW-')) return false;
+  if (!code.toUpperCase().startsWith('WB-GLOW-')) return false;
   const db = await ready();
   const rows = await db`
     UPDATE discount_codes d SET times_redeemed = 0

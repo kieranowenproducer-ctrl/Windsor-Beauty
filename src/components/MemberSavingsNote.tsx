@@ -45,7 +45,7 @@ export default function MemberSavingsNote({ context = 'basket', showGuest = fals
           <span className="text-sm font-semibold text-stone-800">saved on this {where}</span>
         </p>
         <p className="mt-2 text-xs leading-relaxed text-stone-700">
-          Because you are a Windsor Glow member. It is already taken off your prices.
+          Because you are a Windsor Beauty member. It is already taken off your prices.
         </p>
       </div>
     );

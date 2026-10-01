@@ -62,7 +62,7 @@ function openCount(rows) {
 
 console.log('\nEmail addresses that can actually be sent to');
 check('a normal address passes', isSendableEmailAddress('cpink999@hotmail.com'));
-check('an address with a plus tag passes', isSendableEmailAddress('sam+news@windsorglow.com'));
+check('an address with a plus tag passes', isSendableEmailAddress('sam+news@windsorbeauty.co.uk'));
 check('a subdomain address passes', isSendableEmailAddress('a@mail.co.uk'));
 check('surrounding spaces are ignored', isSendableEmailAddress('  joe@example.com  '));
 check('the literal "hhh" is refused', !isSendableEmailAddress('hhh'), 'this is the contact that failed every campaign');

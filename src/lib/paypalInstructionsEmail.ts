@@ -5,7 +5,7 @@ import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { emailGreeting } from './email/greeting';
 
 // FROM_ADDRESS/footer below say "Windsor Beauty" despite this living in the
-// Windsor Glow codebase and being sent to real Windsor Glow PayPal customers
+// Windsor Beauty codebase and being sent to real Windsor Beauty PayPal customers
 // (see src/app/api/payment/paypal/instructions/route.ts) — a pre-existing
 // brand mismatch noted in invoiceEmail.ts, flagged again in the 2026-06-28
 // email audit but deliberately not changed here, since the sending domain
@@ -36,7 +36,7 @@ export interface PaypalInstructionsParams {
  * Builds the PayPal payment URL for this order.
  *
  * Priority:
- *   1. PAYPAL_ME_URL env var (e.g. https://paypal.me/windsorglow) → appends /{amount}GBP
+ *   1. PAYPAL_ME_URL env var (e.g. https://paypal.me/yourname) → appends /{amount}GBP
  *   2. PAYPAL_RECEIVING_EMAIL env var → classic PayPal send-money link (pre-fills amount + reference)
  *   3. Fallback text with no clickable link (tells customer to send manually)
  */
@@ -63,7 +63,7 @@ export function buildPaypalLink(orderNumber: string, total: number): string {
 }
 
 // This email is sent from the windsorbeauty.co.uk domain (a separate Resend
-// account/domain from windsorglow.com), so it uses its own API key.
+// account/domain from windsorbeauty.co.uk), so it uses its own API key.
 const RESEND_API_KEY = process.env.RESEND_API_KEY_PAYPAL || process.env.RESEND_API_KEY;
 
 export async function sendPaypalInstructionsEmail(params: PaypalInstructionsParams): Promise<boolean> {

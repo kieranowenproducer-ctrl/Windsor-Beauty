@@ -1,25 +1,10 @@
 /**
- * Where Windsor Glow lives on social media.
+ * Where Windsor Beauty lives on social media.
  *
- * ADDED 24 AUGUST 2026, when Kieran asked for the TikTok, Instagram and Facebook accounts on the
- * homepage. One file, so the homepage buttons, the structured data a search engine reads, and
+ * One file, so the homepage buttons, the structured data a search engine reads, and
  * anything added later all point at the same addresses and cannot drift apart.
- *
- * The addresses are the clean profile addresses. The links Kieran copied out of the apps carried
- * share-tracking parameters on the end (`?_r=1&_t=...` from TikTok, `?igsi=...&utm_source=qr`
- * from Instagram, `?mibextid=...` from Facebook); they identify the share, not the account, and a
- * public site should not stamp one person's share token on every visitor.
- *
- * INSTAGRAM PAUSED 22 SEPTEMBER 2026 after Meta banned @windsorglowofficial, and RESTORED 26
- * SEPTEMBER 2026 on Kieran's word: the account is back (now private) and he is happy for visitors
- * to click through and follow. Same address as before the pause, taken from commit 7e2c89ad rather
- * than worked out from the display name. If it is banned again, set url back to null: the icon
- * then stays as an idle placeholder and drops out of the search-engine data.
- *
- * FACEBOOK: Kieran supplied a share link (facebook.com/share/18pPaZmALs/). Followed in a real
- * browser on 24 August 2026 it lands on the page below, which is the address Facebook itself
- * declares as canonical. The page has no custom username yet; if one is ever set, put the short
- * address here and the old one keeps working.
+ * Use the clean profile address, never a share link with tracking on the end.
+ * A null url keeps the icon as an idle placeholder and out of the search-engine data.
  */
 export interface SocialLink {
   /** Stable key, also the icon it draws. */
@@ -33,9 +18,11 @@ export interface SocialLink {
 }
 
 export const SOCIAL_LINKS: readonly SocialLink[] = [
-  { id: 'tiktok', name: 'TikTok', account: '@windsorglow', url: 'https://www.tiktok.com/@windsorglow' },
-  { id: 'instagram', name: 'Instagram', account: '@windsorglowofficial', url: 'https://www.instagram.com/windsorglowofficial/' },
-  { id: 'facebook', name: 'Facebook', account: 'Windsor Glow', url: 'https://www.facebook.com/people/Windsor-Glow/61592503357309/' },
+  // Windsor Beauty has no confirmed social accounts yet. Each icon shows but is
+  // inactive until its real address is put here; never point these at another brand.
+  { id: 'tiktok', name: 'TikTok', account: 'Windsor Beauty', url: null },
+  { id: 'instagram', name: 'Instagram', account: 'Windsor Beauty', url: null },
+  { id: 'facebook', name: 'Facebook', account: 'Windsor Beauty', url: null },
 ];
 
 /** Every public profile, for the `sameAs` field of the Organization structured data. */

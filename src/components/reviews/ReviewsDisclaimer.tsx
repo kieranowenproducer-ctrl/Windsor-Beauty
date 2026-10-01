@@ -12,7 +12,7 @@ export const REVIEWS_DISCLAIMER_HEADING = 'Reviews Disclaimer';
 
 export const REVIEWS_DISCLAIMER_TEXT =
   'Customer reviews reflect the personal opinions of individual reviewers and do not represent ' +
-  'the views or claims of Windsor Glow. All products are supplied strictly for laboratory and ' +
+  'the views or claims of Windsor Beauty. All products are supplied strictly for laboratory and ' +
   'in vitro research purposes only.';
 
 /**

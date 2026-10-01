@@ -51,7 +51,7 @@ export default function VerifyEmailPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Glow</p>
+          <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Beauty</p>
           <h1 className="font-serif text-3xl text-stone-800 tracking-wide">Verify Your Email</h1>
         </div>
 

@@ -374,7 +374,7 @@ export default function AdminRevenuePage() {
 
           {/* Page title */}
           <h1 className="text-lg font-semibold text-stone-800 mb-0.5">Revenue</h1>
-          <p className="text-xs text-stone-400 mb-1">Windsor Glow - Confirmed Payments</p>
+          <p className="text-xs text-stone-400 mb-1">Windsor Beauty - Confirmed Payments</p>
           {/* Spelled out, so a figure read off this screen or sent as a photograph is never
               ambiguous about the period it covers. */}
           <p className="text-[11px] text-gold-700 mb-7">{describeRange(range)}</p>

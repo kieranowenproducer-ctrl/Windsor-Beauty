@@ -51,15 +51,15 @@ export function renderCustomerMessageHtml(params: {
     : '';
 
   const bodyHtml = `<tr>
-  <td class="wg-body-pad" style="padding:32px 40px 8px">
+  <td class="wb-body-pad" style="padding:32px 40px 8px">
     <h1 style="margin:0 0 20px;font-size:20px;line-height:1.4;font-weight:normal;color:${EMAIL_COLORS.headingDark}">${escapeHtml(params.subject)}</h1>
     ${greeting}
     ${messageBodyHtml(params.message)}
   </td>
 </tr>
 <tr>
-  <td class="wg-body-pad" style="padding:0 40px 32px">
-    <p style="margin:0;font-size:13px;line-height:1.7;color:${EMAIL_COLORS.muted}">Windsor Glow</p>
+  <td class="wb-body-pad" style="padding:0 40px 32px">
+    <p style="margin:0;font-size:13px;line-height:1.7;color:${EMAIL_COLORS.muted}">Windsor Beauty</p>
   </td>
 </tr>`;
 
@@ -75,7 +75,7 @@ export function renderCustomerMessageHtml(params: {
     preheader: params.subject,
     extraHeadHtml: `<style>
   @media only screen and (max-width: 480px) {
-    .wg-body-pad { padding-left: 22px !important; padding-right: 22px !important; }
+    .wb-body-pad { padding-left: 22px !important; padding-right: 22px !important; }
   }
 </style>`,
   });
@@ -84,7 +84,7 @@ export function renderCustomerMessageHtml(params: {
 /** The same message as plain text, for clients that will not render HTML. */
 function messagePlainText(params: { subject: string; message: string; customerName?: string | null }): string {
   const greeting = params.customerName?.trim() ? `${emailGreeting(params.customerName)}\n\n` : '';
-  return `${params.subject}\n\n${greeting}${params.message.replace(/\r\n/g, '\n').trim()}\n\nWindsor Glow\nwindsorglow.com`;
+  return `${params.subject}\n\n${greeting}${params.message.replace(/\r\n/g, '\n').trim()}\n\nWindsor Beauty\nwindsorbeauty.co.uk`;
 }
 
 export interface SendCustomerMessageResult {

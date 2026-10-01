@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
     >
       <PolicySection heading="Who We Are">
         <p>
-          Windsor Glow, operated by C&amp;S Holdings Group, is the data controller responsible for the personal
+          Windsor Beauty, operated by C&amp;S Holdings Group, is the data controller responsible for the personal
           information described in this policy. Any questions about this policy or how your data is handled can be
           directed to our support team via the Contact page.
         </p>

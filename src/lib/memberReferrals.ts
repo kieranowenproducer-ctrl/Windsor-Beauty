@@ -6,8 +6,8 @@ import { createSecurityReviewCase } from '@/lib/db/securityReviews';
 // The original referral-stamp scheme and the order-loyalty Glow Card are
 // mutually exclusive. Keeping the old routes dark when the replacement is on
 // prevents one real order from earning two different kinds of reward.
-export const referralsEnabled = () => process.env.WG_MEMBER_REFERRALS_ENABLED === 'true'
-  && process.env.WG_GLOW_CARD_LOYALTY_ENABLED !== 'true';
+export const referralsEnabled = () => process.env.WB_MEMBER_REFERRALS_ENABLED === 'true'
+  && process.env.WB_GLOW_CARD_LOYALTY_ENABLED !== 'true';
 
 export const REFERRAL_MIN_FIRST_ORDER = 30;
 export const REFERRAL_HOLD_DAYS = 0;
@@ -51,7 +51,7 @@ function normaliseAddress(line1: unknown, postcode: unknown): string {
 export function normaliseReferralCode(code: unknown): string | null {
   if (typeof code !== 'string') return null;
   const clean = code.trim().toUpperCase();
-  return /^WG-R-[A-HJ-NP-Z2-9]{10}$/.test(clean) ? clean : null;
+  return /^WB-R-[A-HJ-NP-Z2-9]{10}$/.test(clean) ? clean : null;
 }
 
 export async function findReferrerByCode(code: string): Promise<number | null> {
@@ -76,7 +76,7 @@ export async function getOrCreateReferralCode(customerId: number): Promise<strin
   const existing = await db`SELECT code FROM member_referral_codes WHERE customer_id = ${customerId}`;
   if (existing.length) return String(existing[0].code);
   for (let attempt = 0; attempt < 5; attempt++) {
-    const code = randomCode('WG-R-');
+    const code = randomCode('WB-R-');
     const created = await db`
       INSERT INTO member_referral_codes (customer_id, code)
       VALUES (${customerId}, ${code})
@@ -535,7 +535,7 @@ async function auditReferralStage(customerId: number, milestone: number): Promis
 export async function claimReferralReward(customerId: number, milestone: number) {
   const reward = REFERRAL_REWARDS.find(r => r.stamps === milestone);
   if (!reward) return null;
-  const code = randomCode('WG-STAMP-');
+  const code = randomCode('WB-STAMP-');
   const db = requireDb();
   if (await isGlowCardFrozen(customerId)) return null;
   if (!(await auditReferralStage(customerId, milestone))) throw new Error('REFERRAL_STAGE_REVIEW');
@@ -597,7 +597,7 @@ export async function claimReferralReward(customerId: number, milestone: number)
 }
 
 export async function referralVoucherDeliveryDiscountPercent(code: string, customerId: number): Promise<number> {
-  if (!code.toUpperCase().startsWith('WG-STAMP-')) return 0;
+  if (!code.toUpperCase().startsWith('WB-STAMP-')) return 0;
   const rows = await requireDb()`
     SELECT w.delivery_discount_percent
     FROM member_referral_rewards w
@@ -612,7 +612,7 @@ export async function referralVoucherDeliveryDiscountPercent(code: string, custo
 }
 
 export async function referralVoucherOwnedBy(code: string, customerId: number): Promise<boolean | null> {
-  if (!code.toUpperCase().startsWith('WG-STAMP-')) return null;
+  if (!code.toUpperCase().startsWith('WB-STAMP-')) return null;
   const rows = await requireDb()`
     SELECT 1 FROM member_referral_rewards w
     JOIN discount_codes d ON upper(d.code) = upper(w.code)
@@ -661,13 +661,13 @@ export async function setGlowCardFreeze(params: {
       UPDATE customers SET
         glow_card_frozen_at = CASE WHEN ${params.frozen}::boolean THEN now() ELSE NULL END,
         glow_card_frozen_reason = CASE WHEN ${params.frozen}::boolean THEN ${params.note} ELSE NULL END,
-        glow_card_frozen_by = CASE WHEN ${params.frozen}::boolean THEN ${params.staffName ?? 'Windsor Glow staff'} ELSE NULL END
+        glow_card_frozen_by = CASE WHEN ${params.frozen}::boolean THEN ${params.staffName ?? 'Windsor Beauty staff'} ELSE NULL END
       WHERE id = ${params.customerId}
       RETURNING id, email, glow_card_frozen_at
     ), logged AS (
       INSERT INTO member_referral_freeze_log (customer_id, action, note, staff_name)
       SELECT id, CASE WHEN ${params.frozen}::boolean THEN 'freeze' ELSE 'restore' END,
-        ${params.note}, ${params.staffName ?? 'Windsor Glow staff'} FROM changed
+        ${params.note}, ${params.staffName ?? 'Windsor Beauty staff'} FROM changed
       RETURNING id
     ), held AS (
       UPDATE member_referrals SET status = 'review',

@@ -2,7 +2,7 @@
 //
 //   node scripts/test-bans-sql.mjs
 //
-// WHY THIS EXISTS IN THIS SHAPE. The Windsor Glow credential on this machine is `agent_ro` and is
+// WHY THIS EXISTS IN THIS SHAPE. The Windsor Beauty credential on this machine is `agent_ro` and is
 // genuinely read only, so a ban cannot be pressed against the live shop from here, and it must not
 // be: banning is something that happens to a real person. The alternative to this file is shipping
 // the trickiest query in the feature untested.

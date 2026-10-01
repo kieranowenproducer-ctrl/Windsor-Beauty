@@ -3,7 +3,7 @@ import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
-const FROM_ADDRESS = 'Windsor Glow <orders@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 // Sends a customer their bank payment link again (task d0d5effb).
 //
@@ -32,13 +32,13 @@ export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Prom
 
   const text =
     `${emailGreeting(params.customerName)}\n\n` +
-    `Here is the payment link for your Windsor Glow order ${params.orderNumber}, for ${amount}.\n\n` +
+    `Here is the payment link for your Windsor Beauty order ${params.orderNumber}, for ${amount}.\n\n` +
     `${params.paymentUrl}\n\n` +
     `The link opens your own banking app or website to approve the payment. ` +
     `Nothing is taken until you approve it.\n\n` +
     `If the link has stopped working, or anything else goes wrong, just reply to this email ` +
     `and we will send you a new one.\n\n` +
-    `Thanks,\nWindsor Glow`;
+    `Thanks,\nWindsor Beauty`;
 
   try {
     const { id, error } = await sendEmail({
@@ -80,7 +80,7 @@ export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Prom
               If the link has stopped working, or anything else goes wrong, just reply to this
               email and we will send you a new one.
             </p>
-            <p style="margin:0;">Thanks,<br />Windsor Glow</p>
+            <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>
         </tr>`,
       }),

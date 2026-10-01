@@ -2,7 +2,7 @@
 
 import { queueTrackingEvent } from './trackingQueue';
 
-export const VISIT_ID_KEY = 'wg_visit_id';
+export const VISIT_ID_KEY = 'wb_visit_id';
 
 export function getVisitId(): string {
   try {

@@ -41,7 +41,7 @@ for (const file of files) {
 const problems = [];
 if (offenders.length) {
   problems.push(
-    `These files talk to Resend directly, so their email would go out with no copy to info@windsorglow.com:\n` +
+    `These files talk to Resend directly, so their email would go out with no copy to info@windsorbeauty.co.uk:\n` +
     offenders.map(o => `    ${o}`).join('\n') +
     `\n  Send through sendEmail() from '@/lib/email/send' instead.`
   );

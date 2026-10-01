@@ -117,7 +117,7 @@ export default function VideoTestimonials({ layout = 'spotlight', heading = true
             Customer Testimonials
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-stone-500">
-            Hear directly from Windsor Glow customers.
+            Hear directly from Windsor Beauty customers.
           </p>
         </div>
       )}

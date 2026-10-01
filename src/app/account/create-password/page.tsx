@@ -64,7 +64,7 @@ function CreatePasswordForm() {
   return (
     <div className="max-w-md mx-auto px-4 py-16">
       <div className="text-center mb-8">
-        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Glow</p>
+        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Beauty</p>
         <h1 className="font-serif text-3xl text-stone-800 tracking-wide">Activate Your Account</h1>
         <p className="text-xs text-stone-500 mt-2 leading-relaxed">
           You are already on our list. Set a password to finish setting up your member account.

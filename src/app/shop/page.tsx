@@ -25,16 +25,16 @@ import ShopClient from './ShopClient';
  */
 export const dynamic = 'force-dynamic';
 
-const DESCRIPTION = 'Browse Windsor Glow research compounds: high-purity peptides, pre-dosed pens '
+const DESCRIPTION = 'Browse Windsor Beauty research compounds: high-purity peptides, pre-dosed pens '
   + 'and reconstitution supplies, each supplied with a certificate of analysis. For laboratory '
   + 'research use only, not for human consumption.';
 
 export const metadata: Metadata = {
-  title: 'Research Compounds | Windsor Glow',
+  title: 'Research Compounds | Windsor Beauty',
   description: DESCRIPTION,
   alternates: { canonical: `${SITE_URL}/shop` },
   openGraph: {
-    title: 'Research Compounds | Windsor Glow',
+    title: 'Research Compounds | Windsor Beauty',
     description: DESCRIPTION,
     type: 'website',
     url: `${SITE_URL}/shop`,

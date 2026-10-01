@@ -291,12 +291,12 @@ export async function POST(request: Request) {
       serious: true,
     });
   }
-  if (effectiveDiscountCode?.toUpperCase().startsWith('WG-STAMP-')) {
+  if (effectiveDiscountCode?.toUpperCase().startsWith('WB-STAMP-')) {
     if (!referralsEnabled() || !(await referralVoucherOwnedBy(effectiveDiscountCode, customer!.id))) {
       return NextResponse.json({ error: 'That Glow Card reward code is not available for your account.' }, { status: 403 });
     }
   }
-  if (effectiveDiscountCode?.toUpperCase().startsWith('WG-GLOW-')) {
+  if (effectiveDiscountCode?.toUpperCase().startsWith('WB-GLOW-')) {
     if (!glowCardLoyaltyEnabled() || !(await glowCardVoucherOwnedBy(effectiveDiscountCode, customer!.id))) {
       return NextResponse.json({ error: 'That Glow Card reward code is not available for your account.' }, { status: 403 });
     }
@@ -304,8 +304,8 @@ export async function POST(request: Request) {
   if (effectiveDiscountCode?.toUpperCase().startsWith('RAF-CREDIT-') && !(await affiliateCreditOwnedBy(effectiveDiscountCode, customer!.id).catch(() => false))) {
     return NextResponse.json({ error: 'That RAF shop credit belongs to a different account.' }, { status: 403 });
   }
-  const isLegacyGlowReward = Boolean(effectiveDiscountCode?.toUpperCase().startsWith('WG-STAMP-'));
-  const isOrderGlowReward = Boolean(effectiveDiscountCode?.toUpperCase().startsWith('WG-GLOW-'));
+  const isLegacyGlowReward = Boolean(effectiveDiscountCode?.toUpperCase().startsWith('WB-STAMP-'));
+  const isOrderGlowReward = Boolean(effectiveDiscountCode?.toUpperCase().startsWith('WB-GLOW-'));
   const isGlowReward = isLegacyGlowReward || isOrderGlowReward;
   const glowDeliveryDiscountPercent = isLegacyGlowReward
     ? await referralVoucherDeliveryDiscountPercent(effectiveDiscountCode!, customer!.id).catch(() => 0)
@@ -444,7 +444,7 @@ export async function POST(request: Request) {
     }
   }
 
-  // Resolve QR campaign attribution from the 30-day wg_ref cookie (last-touch).
+  // Resolve QR campaign attribution from the 30-day wb_ref cookie (last-touch).
   // Independent of any discount code — a scan without a code still gets credit.
   let qrCampaignId: number | null = null;
   let qrCampaignSlug: string | null = null;
@@ -456,8 +456,8 @@ export async function POST(request: Request) {
     const refSlug = request.headers.get('cookie')
       ?.split(';')
       .map(c => c.trim())
-      .find(c => c.startsWith('wg_ref='))
-      ?.slice('wg_ref='.length) ?? null;
+      .find(c => c.startsWith('wb_ref='))
+      ?.slice('wb_ref='.length) ?? null;
     if (refSlug) {
       const campaign = await getQrCampaignBySlug(refSlug);
       if (campaign) {

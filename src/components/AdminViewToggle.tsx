@@ -8,7 +8,7 @@ import { hasStaffSession, getPreviewMode, setPreviewMode, type PreviewMode } fro
 //   Member — a logged-in member (member pricing).
 //   Guest  — a not-logged-in visitor (non-member pricing + signup pitch + popup).
 // "Back to admin" restores the full admin view. The real admin session is never
-// touched; only a wg_view_as cookie is set.
+// touched; only a wb_view_as cookie is set.
 //
 // Placement rules (so it never obstructs the site — task 19b00d4f):
 //   - It rests as a COMPACT collapsed pill and only expands on tap, so its

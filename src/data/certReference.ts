@@ -111,7 +111,7 @@ export const CERT_REFERENCE: Record<string, CertReference> = {
 
   // ── blends: multi-component, compose a component sheet (no single molecule) ──
   'glow-70mg': { kind: 'blend', note: 'Blend — list each component with its own purity. Do not use a single molecular formula.' },
-  'peptide-complex': { kind: 'blend', note: 'Windsor Glow signature blend — list each component with its own purity. No single molecular formula.' },
+  'peptide-complex': { kind: 'blend', note: 'Windsor Beauty signature blend — list each component with its own purity. No single molecular formula.' },
   'wolverine-blend': { kind: 'blend', note: 'BPC-157 + TB-500 blend. BPC-157: CAS 137525-51-0 / C62H98N16O22 / 1419.55. TB-500: confirm the form. Give each dose its own number.' },
   'omnimorph-retatrutide-pen': { kind: 'blend', note: 'Retatrutide + Cagrilintide pen blend. Retatrutide: CAS 2381089-83-2 / C221H342N46O68 / 4731.33. Cagrilintide: CAS 1415456-99-3 / C194H312N54O59S2 / 4409.01. Give each dose its own number.' },
 
@@ -131,7 +131,7 @@ export function referenceFor(slug: string): CertReference | undefined {
 }
 
 // Suggests a per-dose-unique certificate number. Prefers an existing recognisable
-// base (e.g. "WG-EP307") and appends a dose token so 10mg and 50mg differ; falls
+// base (e.g. "WB-EP307") and appends a dose token so 10mg and 50mg differ; falls
 // back to a slug-derived code when there is no base yet. Purely a suggestion — the
 // admin can overwrite it, and uniqueness is validated live in the tool.
 export function doseToken(dose: string): string {
@@ -147,5 +147,5 @@ export function suggestCertNumber(base: string | undefined, slug: string, dose: 
     // don't double-append if the base already ends with this dose token
     return b.toUpperCase().endsWith(token) ? b : `${b}-${token}`;
   }
-  return `WG-${slugCode(slug)}-${token}`;
+  return `WB-${slugCode(slug)}-${token}`;
 }

@@ -40,21 +40,21 @@ test('cancelling an invoice takes an unpaid order with it, never a paid one', ()
 
 test('the paid-after-cancel notice names who, how much, which order and what to decide', () => {
   const notice = paidAfterCancelNotice(
-    { order_number: 'WG-TEST01', status: 'cancelled', customer_name: 'Harry Hardwick ', total: '240.00' },
+    { order_number: 'WB-TEST01', status: 'cancelled', customer_name: 'Harry Hardwick ', total: '240.00' },
     240,
     new Date('2026-08-29T06:02:00Z'),
   );
   assert.equal(notice.category, 'fena_paid_after_cancel');
-  assert.match(notice.message, /Harry Hardwick paid £240\.00 for order WG-TEST01 after it was cancelled/);
+  assert.match(notice.message, /Harry Hardwick paid £240\.00 for order WB-TEST01 after it was cancelled/);
   assert.match(notice.message, /reinstate the order or refund the payment/);
   assert.match(notice.note, /29 Aug 2026, 07:02: £240\.00 arrived by bank transfer/);
 });
 
 test('a missing reported amount falls back to the order total, and refunded reads as refunded', () => {
   const notice = paidAfterCancelNotice(
-    { order_number: 'WG-TEST02', status: 'refunded', customer_name: '', total: '35' },
+    { order_number: 'WB-TEST02', status: 'refunded', customer_name: '', total: '35' },
     null,
   );
-  assert.match(notice.message, /The customer paid £35\.00 for order WG-TEST02 after it was refunded/);
+  assert.match(notice.message, /The customer paid £35\.00 for order WB-TEST02 after it was refunded/);
   assert.match(notice.note, /after this order was refunded/);
 });

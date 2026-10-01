@@ -114,7 +114,7 @@ export async function POST(request: Request) {
       if (code.toUpperCase().startsWith('RAF-CREDIT-') && !(await affiliateCreditOwnedBy(code, customer.id))) {
         return refuse({ email: customer.email, code, message: 'That RAF shop credit belongs to a different account.', reason: 'Affiliate shop credit that is not theirs.' });
       }
-      if (code.toUpperCase().startsWith('WG-STAMP-')) {
+      if (code.toUpperCase().startsWith('WB-STAMP-')) {
         if (!referralsEnabled() || !(await referralVoucherOwnedBy(code, customer.id))) {
           return refuse({
             email: customer.email,
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
           });
         }
       }
-      if (code.toUpperCase().startsWith('WG-GLOW-')) {
+      if (code.toUpperCase().startsWith('WB-GLOW-')) {
         if (!glowCardLoyaltyEnabled() || !(await glowCardVoucherOwnedBy(code, customer.id))) {
           return refuse({
             email: customer.email, code,
@@ -147,7 +147,7 @@ export async function POST(request: Request) {
       }
       if (adminCode.min_order_value !== null) {
         const minOrder = Number(adminCode.min_order_value);
-        const qualifyingSubtotal = code.toUpperCase().startsWith('WG-STAMP-') || isRafPersonalDiscountCode(code) ? originalSubtotal : subtotal;
+        const qualifyingSubtotal = code.toUpperCase().startsWith('WB-STAMP-') || isRafPersonalDiscountCode(code) ? originalSubtotal : subtotal;
         if (qualifyingSubtotal < minOrder) {
           return refuse({
             email: customer.email,
@@ -159,9 +159,9 @@ export async function POST(request: Request) {
       }
 
       const info = discountCodeInfoFromRow(adminCode);
-      const deliveryDiscountPercent = code.toUpperCase().startsWith('WG-STAMP-')
+      const deliveryDiscountPercent = code.toUpperCase().startsWith('WB-STAMP-')
         ? await referralVoucherDeliveryDiscountPercent(code, customer.id)
-        : code.toUpperCase().startsWith('WG-GLOW-')
+        : code.toUpperCase().startsWith('WB-GLOW-')
           ? await glowCardVoucherDeliveryDiscountPercent(code, customer.id)
           : 0;
       const productsBySlug: Map<string, Product> = await getProductsBySlug().catch(() => new Map());

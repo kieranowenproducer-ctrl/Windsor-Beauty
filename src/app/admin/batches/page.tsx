@@ -149,7 +149,7 @@ export default function AdminBatchesPage() {
           </p>
 
           {/* Shared product suggestions for the add-form and inline-edit inputs. */}
-          <datalist id="wg-batch-products">
+          <datalist id="wb-batch-products">
             {PRODUCT_OPTIONS.map((opt) => <option key={opt} value={opt} />)}
           </datalist>
 
@@ -182,7 +182,7 @@ export default function AdminBatchesPage() {
                   type="text"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
-                  list="wg-batch-products"
+                  list="wb-batch-products"
                   placeholder="Pick a product or type your own"
                   className="border border-stone-200 px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors"
                 />
@@ -262,7 +262,7 @@ export default function AdminBatchesPage() {
                               className="w-full border border-stone-200 px-2 py-1.5 text-xs font-mono focus:outline-none focus:border-gold-400" />
                           </td>
                           <td className="px-6 py-3">
-                            <input value={editProduct} onChange={(e) => setEditProduct(e.target.value)} list="wg-batch-products" placeholder="Product (optional)"
+                            <input value={editProduct} onChange={(e) => setEditProduct(e.target.value)} list="wb-batch-products" placeholder="Product (optional)"
                               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:outline-none focus:border-gold-400" />
                           </td>
                           <td className="px-6 py-3">

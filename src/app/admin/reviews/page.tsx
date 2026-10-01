@@ -707,7 +707,7 @@ export default function AdminReviewsPage() {
                   {replyDraftId === row.id ? (
                     <div className="mt-3 ml-4 border-l-2 border-gold-200 bg-gold-50/40 px-4 py-3 sm:px-5 sm:py-4">
                       <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold mb-2">
-                        Reply as Windsor Glow
+                        Reply as Windsor Beauty
                       </p>
                       <textarea
                         value={replyText}

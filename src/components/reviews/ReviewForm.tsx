@@ -101,7 +101,7 @@ export default function ReviewForm({
       <div className="border-l-2 border-gold-300 bg-gold-50/40 pl-4 pr-3 py-3">
         <p className="text-xs font-semibold text-stone-800 mb-1">Before submitting your review</p>
         <p className="text-xs leading-relaxed text-stone-600">
-          Please review your experience with Windsor Glow&rsquo;s products and service. Do not
+          Please review your experience with Windsor Beauty&rsquo;s products and service. Do not
           include descriptions of human or animal use, dosing, administration methods or medical
           claims. Reviews may be moderated to ensure compliance with our Research Use Only policy.
         </p>

@@ -204,7 +204,7 @@ export async function listQrCampaignStatsAll(): Promise<QrCampaignStats[]> {
         campaign_id,
         COUNT(*) FILTER (WHERE NOT is_bot)::int AS total_scans,
         COUNT(*) FILTER (WHERE is_bot)::int AS bot_scans,
-        COUNT(DISTINCT wg_vid) FILTER (WHERE wg_vid IS NOT NULL AND NOT is_bot)::int AS unique_visitors
+        COUNT(DISTINCT wb_vid) FILTER (WHERE wb_vid IS NOT NULL AND NOT is_bot)::int AS unique_visitors
       FROM qr_campaign_scans
       GROUP BY campaign_id
     `,

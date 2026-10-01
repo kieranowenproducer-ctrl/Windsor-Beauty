@@ -10,7 +10,7 @@ const sql = neon(adminUrl.replace(/\/[^/?]+(\?|$)/, '/neondb$1'));
 
 const [customer] = await sql`SELECT id, email_verified FROM customers WHERE email = ${email}`;
 const [used] = await sql`SELECT token FROM email_verification_tokens WHERE customer_id = ${customer.id} AND used_at IS NOT NULL ORDER BY id DESC LIMIT 1`;
-const res = await fetch('https://www.windsorglow.com/api/account/verify-email', {
+const res = await fetch('https://www.windsorbeauty.co.uk/api/account/verify-email', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ token: used.token }),

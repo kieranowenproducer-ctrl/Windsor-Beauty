@@ -3,7 +3,7 @@
  *
  *   npm run check:seo                  the source checks only, no server needed
  *   npm run check:seo:served           also fetch a local build (next start on :3000)
- *   npm run check:seo:live             also fetch www.windsorglow.com, as Googlebot
+ *   npm run check:seo:live             also fetch www.windsorbeauty.co.uk, as Googlebot
  *
  * WHAT THIS EXISTS TO STOP HAPPENING AGAIN. On 10 August 2026 every one of the 61 product pages
  * served the homepage's title and the homepage's description. /shop/aod-9604 and /shop/bpc-157
@@ -49,7 +49,7 @@ const args = process.argv.slice(2);
 const LIVE = args.includes('--live');
 const SERVED = LIVE || args.includes('--served');
 const baseArg = args.find((a) => a.startsWith('--base='));
-const BASE = (baseArg ? baseArg.slice('--base='.length) : LIVE ? 'https://www.windsorglow.com' : 'http://localhost:3000')
+const BASE = (baseArg ? baseArg.slice('--base='.length) : LIVE ? 'https://www.windsorbeauty.co.uk' : 'http://localhost:3000')
   .replace(/\/$/, '');
 
 /* The title and description every shop page wrongly wore. Read from the layout rather than
@@ -425,7 +425,7 @@ async function checkFrontDoorPages() {
     ok(/property="og:image"/.test(home.html), 'The homepage serves no og:image, so a pasted link shows no picture.');
     const org = jsonLdBlocks(home.html).find((b) => b?.['@type'] === 'Organization');
     if (ok(org, 'The homepage carries no Organization structured data.')) {
-      ok(org.name === 'Windsor Glow', `The homepage Organization is named "${org.name}".`);
+      ok(org.name === 'Windsor Beauty', `The homepage Organization is named "${org.name}".`);
       ok(org.url === SITE_URL, `The homepage Organization gives its url as "${org.url}".`);
       /* INVENTED FACTS ARE THE ONE FAILURE MODE THAT MATTERS HERE. Structured data is read as a
        * factual claim about the business, so this block may only repeat what the site already

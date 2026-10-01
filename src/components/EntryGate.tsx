@@ -10,14 +10,14 @@ import { COMPLIANCE_CHECK_LABELS } from '@/lib/complianceConfirmations';
 // (Kieran, 7 Sept). The wording below came from here, unchanged.
 const CHECKS = COMPLIANCE_CHECK_LABELS;
 
-const SESSION_KEY = 'wg_entry_confirmed';
-const TERMS_SESSION_KEY = 'wg_terms_accepted';
+const SESSION_KEY = 'wb_entry_confirmed';
+const TERMS_SESSION_KEY = 'wb_terms_accepted';
 
 // The gate acceptance now persists in localStorage for 90 days, so opening a
 // new tab (every email link does this) no longer re-asks someone who already
 // confirmed. sessionStorage is still read as a fallback for visitors who
 // accepted under the old scheme mid-session.
-const PERSIST_KEY = 'wg_entry_confirmed_v2';
+const PERSIST_KEY = 'wb_entry_confirmed_v2';
 const PERSIST_DAYS = 90;
 
 function hasPersistedEntry(): boolean {
@@ -39,7 +39,7 @@ function persistEntry() {
 function hasSessionHint(): boolean {
   return document.cookie.split('; ').some(row => {
     const [k, v] = row.split('=');
-    return k === 'wg_ui_session' && (v === 'member' || v === 'staff');
+    return k === 'wb_ui_session' && (v === 'member' || v === 'staff');
   });
 }
 
@@ -175,7 +175,7 @@ export default function EntryGate({
         <div className="flex justify-center mb-8">
           <Image
             src="/images/logo-transparent.png"
-            alt="Windsor Glow"
+            alt="Windsor Beauty"
             width={320}
             height={200}
             className="w-72 h-auto object-contain"

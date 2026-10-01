@@ -73,7 +73,7 @@ export async function convertInvoiceToOrder(invoiceId: number): Promise<ConvertI
     invoice.shipping_country ?? invoice.billing_country,
   ]);
 
-  // Reuses checkout's own WG-XXXXXX generator (rather than an INV-ORD-prefixed
+  // Reuses checkout's own WB-XXXXXX generator (rather than an INV-ORD-prefixed
   // scheme) for two reasons: it keeps invoice-spawned orders indistinguishable
   // from checkout orders in the order number itself (the "Invoice Order" badge
   // already carries that distinction via orders.invoice_id), and — found via

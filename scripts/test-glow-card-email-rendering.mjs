@@ -22,7 +22,7 @@ for (const testCase of cases) {
   assert.match(html, new RegExp(`STAGE ${testCase.stage} &middot;`));
   assert.match(html, new RegExp(`&pound;${testCase.amount} off`));
   assert.match(html, /Plus half-price standard UK delivery/);
-  assert.match(html, /windsor-glow-mark-clean\.png/);
+  assert.match(html, /windsor-beauty-mark-clean\.png/);
   assert.doesNotMatch(html, /header-glow\.png|FIRST CARD|CARD 2|CARD 3/);
   assert.equal((html.match(/bgcolor="#9b7417"/g) || []).length, testCase.filled);
   for (const number of testCase.numbers) {
@@ -49,7 +49,7 @@ assert.match(buildGlowCardEmailVisual(99), /5 of 5 stamps/);
 const sample = buildOrderConfirmationEmail({
   to: 'sample@example.test',
   customerName: 'Sample Customer',
-  orderNumber: 'WG-EMAIL-TEST',
+  orderNumber: 'WB-EMAIL-TEST',
   items: [{ name: 'Sample product', variant: '30mg', quantity: 1, price: 35, slug: 'sample' }],
   subtotal: 35,
   shippingLabel: 'Standard UK delivery',

@@ -26,7 +26,7 @@ export interface EmailFilingHints {
   skip?: boolean;
   /** When the sender already knows the customer, saving a lookup. */
   customerId?: number | null;
-  /** The order this email is about, e.g. "WG-1042". Lets the orders screen find it. */
+  /** The order this email is about, e.g. "WB-1042". Lets the orders screen find it. */
   orderRef?: string | null;
   /** What kind of email it is: 'dispatch', 'order_confirmation', 'verification'... */
   emailType?: string | null;
@@ -44,7 +44,7 @@ export function capBody(body: string | undefined | null): string | null {
   if (body === undefined || body === null) return null;
   if (body.length <= MAX_STORED_BODY) return body;
   return body.slice(0, MAX_STORED_BODY)
-    + '\n<!-- Windsor Glow: the rest of this email was too large to keep a copy of. -->';
+    + '\n<!-- Windsor Beauty: the rest of this email was too large to keep a copy of. -->';
 }
 
 /** Only ever the first recipient: one row per person, and the customer is the first name on it. */
@@ -61,11 +61,11 @@ export function primaryRecipient(to: string | string[]): string | null {
  * Is this address one of ours rather than a customer's?
  *
  * A customer-facing email that happens to be addressed to sales@ is our own post, and filing it
- * under a "customer" called sales@windsorglow.com would invent a person. `internal` already catches
+ * under a "customer" called sales@windsorbeauty.co.uk would invent a person. `internal` already catches
  * most of it; this catches the rest, like the contact form's copy to ourselves.
  */
 export function isOurOwnAddress(address: string): boolean {
-  return /@windsorglow\.com$/i.test(address);
+  return /@windsorbeauty\.co\.uk$/i.test(address);
 }
 
 /**

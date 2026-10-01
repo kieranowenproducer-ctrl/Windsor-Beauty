@@ -15,15 +15,15 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-// The reply goes out as Windsor Glow, never as whoever happens to be logged
+// The reply goes out as Windsor Beauty, never as whoever happens to be logged
 // into the admin panel — that is the whole point of answering from the site.
 // Reply-To points at the enquiries inbox so a customer who does hit reply lands
 // back in the same place the conversation started, next to the thread it belongs
 // to, rather than in sales. Changed from sales@ on task #96 (2026-07-29).
 // Both are overridable from the environment: set ENQUIRY_REPLY_TO to a genuine
 // no-reply address if replies should be refused outright.
-const FROM_ADDRESS = process.env.ENQUIRY_REPLY_FROM || 'Windsor Glow <info@windsorglow.com>';
-const REPLY_TO_ADDRESS = process.env.ENQUIRY_REPLY_TO || 'info@windsorglow.com';
+const FROM_ADDRESS = process.env.ENQUIRY_REPLY_FROM || 'Windsor Beauty <info@windsorbeauty.co.uk>';
+const REPLY_TO_ADDRESS = process.env.ENQUIRY_REPLY_TO || 'info@windsorbeauty.co.uk';
 
 export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -79,7 +79,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
     }
   }
 
-  const subject = `Re: ${enquiry.subject_label} — Windsor Glow`;
+  const subject = `Re: ${enquiry.subject_label} — Windsor Beauty`;
   const sentMessage = message;
   const automaticGreeting = emailGreeting(enquiry.name);
   const addAutomaticGreeting = !messageStartsWithGreeting(sentMessage);
@@ -112,18 +112,18 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
       replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
       subject,
       text: `${standardText}\n\n` +
-          `— Windsor Glow\nwindsorglow.com\n\n` +
+          `— Windsor Beauty\nwindsorbeauty.co.uk\n\n` +
           `All products are supplied strictly for research purposes only. Not for human use.\n\n` +
           `--- Your original message ---\n${enquiry.message}\n`,
       html: emailDocument({
         title: subject,
-        headerLabel: 'Windsor Glow',
+        headerLabel: 'Windsor Beauty',
         // No footerText override, deliberately. This goes to a CUSTOMER, and
         // the override replaced the research-use disclaimer with a bare address
         // line — so the one kind of email most likely to be ABOUT a product was
         // the one kind carrying no disclaimer (task 8a498491). The shared
         // default carries the disclaimer, and the brand line it prints above it
-        // is already "Windsor Glow — windsorglow.com", which is all the override
+        // is already "Windsor Beauty — windsorbeauty.co.uk", which is all the override
         // was adding.
         bodyHtml: `
         <tr>

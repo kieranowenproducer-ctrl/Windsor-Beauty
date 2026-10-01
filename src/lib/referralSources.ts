@@ -1,5 +1,5 @@
 /**
- * Where a new member says they heard about Windsor Glow.
+ * Where a new member says they heard about Windsor Beauty.
  *
  * WHY THIS IS A LIST AND NOT A TYPING BOX (task 38962e15, 7 August 2026).
  *

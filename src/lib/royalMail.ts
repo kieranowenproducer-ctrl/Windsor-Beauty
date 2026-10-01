@@ -164,7 +164,7 @@ interface ExistingOrderLookup {
 // in Click & Drop — GET /orders/{orderIdentifiers} accepts an order
 // reference in place of a numeric identifier (quoted, per Royal Mail's
 // documented syntax). Used by createShipmentOrder to avoid ever creating a
-// second Royal Mail order for the same Windsor Glow order: Royal Mail does
+// second Royal Mail order for the same Windsor Beauty order: Royal Mail does
 // NOT enforce orderReference uniqueness on its side, so without this check
 // a retried "Create Label" click after a failed attempt silently creates a
 // brand new duplicate shipment every time. Returns null on a clean "not
@@ -390,7 +390,7 @@ export async function fetchShipmentLabel(
  * and takes minutes.
  */
 export interface RoyalMailParcelState {
-  /** The Windsor Glow order number. Royal Mail stores it as the order reference. */
+  /** The Windsor Beauty order number. Royal Mail stores it as the order reference. */
   orderReference: string;
   trackingNumber: string | null;
   /** When Royal Mail printed the label. Null means it has not. */

@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 const LAUNCH_ACCESS_CODE = process.env.LAUNCH_ACCESS_CODE;
-const LAUNCH_COOKIE = 'wg_launch_access';
+const LAUNCH_COOKIE = 'wb_launch_access';
 
 export async function POST(request: Request) {
   if (!LAUNCH_ACCESS_CODE) {

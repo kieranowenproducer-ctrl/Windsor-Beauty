@@ -3,7 +3,7 @@ import { sendEmail } from '@/lib/email/send';
 import { SUPPORT_REPLY_TO } from '@/lib/email/supportAddress';
 import { buildGlowCardEmailVisual } from '@/lib/orderConfirmationEmail';
 
-const FROM_ADDRESS = 'Windsor Glow <orders@windsorglow.com>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 export async function sendGlowCardMilestoneEmail(params: {
   to: string; customerName: string; milestone: 5 | 10 | 15; amount: number;
@@ -23,10 +23,10 @@ export async function sendGlowCardMilestoneEmail(params: {
       <p style="margin:0 0 18px;font-size:13px;color:#57534e;line-height:1.6">Congratulations ${escapeHtml(params.customerName.split(' ')[0])}, you reached ${params.milestone} points on your Glow Card.</p>
       <div style="margin:0 0 18px">${buildGlowCardEmailVisual(params.milestone)}</div>
       <p style="margin:0 0 18px;font-size:13px;color:#57534e;line-height:1.6">${next}</p>
-      <p style="margin:0"><a href="https://windsorglow.com/account/glow-card" style="display:inline-block;background:#b8902a;color:#fff;padding:12px 18px;text-decoration:none;font-size:12px">View your Glow Card</a></p>
+      <p style="margin:0"><a href="https://www.windsorbeauty.co.uk/account/glow-card" style="display:inline-block;background:#b8902a;color:#fff;padding:12px 18px;text-decoration:none;font-size:12px">View your Glow Card</a></p>
     </td></tr>`,
   });
-  const text = `Congratulations ${params.customerName.split(' ')[0]}, you reached ${params.milestone} Glow Points. Your £${params.amount} reward is ready and includes half-price standard UK delivery. ${next}\n\nView your Glow Card: https://windsorglow.com/account/glow-card`;
+  const text = `Congratulations ${params.customerName.split(' ')[0]}, you reached ${params.milestone} Glow Points. Your £${params.amount} reward is ready and includes half-price standard UK delivery. ${next}\n\nView your Glow Card: https://www.windsorbeauty.co.uk/account/glow-card`;
   const { error } = await sendEmail({ from: FROM_ADDRESS, replyTo: SUPPORT_REPLY_TO, to: params.to, subject, text, html });
   return !error;
 }

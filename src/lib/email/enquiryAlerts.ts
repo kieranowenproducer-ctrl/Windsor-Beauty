@@ -1,5 +1,5 @@
-const SALES_INBOX = 'sales@windsorglow.com';
-const INFO_INBOX = 'info@windsorglow.com';
+const SALES_INBOX = 'sales@windsorbeauty.co.uk';
+const INFO_INBOX = 'info@windsorbeauty.co.uk';
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** One email submission alerts both team inboxes and any named colleagues. */

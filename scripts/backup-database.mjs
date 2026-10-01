@@ -1,4 +1,4 @@
-// Take a copy of the whole Windsor Glow database, into one file you can keep anywhere.
+// Take a copy of the whole Windsor Beauty database, into one file you can keep anywhere.
 //
 //   npm run backup                      -> writes into ./backups/
 //   npm run backup -- --out D:/somewhere
@@ -178,13 +178,13 @@ try {
     }
   }
 
-  const file = join(outDir, `windsor-glow-${stamp}.json`);
+  const file = join(outDir, `windsor-beauty-${stamp}.json`);
   writeFileSync(
     file,
     JSON.stringify(
       {
         takenAt: new Date().toISOString(),
-        note: 'Windsor Glow database copy. Structure and contents. Read-only export.',
+        note: 'Windsor Beauty database copy. Structure and contents. Read-only export.',
         tableCount: Object.keys(data).length,
         rowCount: totalRows,
         unreadable,

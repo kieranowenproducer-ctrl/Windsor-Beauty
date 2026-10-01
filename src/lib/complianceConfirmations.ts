@@ -114,7 +114,7 @@ export const CHECKOUT_CONFIRMATIONS: readonly CheckoutConfirmation[] = [
   },
   {
     id: 'terms',
-    label: 'I confirm I have read the Windsor Glow Terms & Conditions and will adhere to them.',
+    label: 'I confirm I have read the Windsor Beauty Terms & Conditions and will adhere to them.',
     link: { text: 'Terms & Conditions', href: '/terms' },
   },
 ] as const;

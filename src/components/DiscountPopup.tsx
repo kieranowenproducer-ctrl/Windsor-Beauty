@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { isMemberView } from '@/lib/staffView';
 
-const SESSION_KEY = 'wg_discount_popup_seen';
+const SESSION_KEY = 'wb_discount_popup_seen';
 const SHOW_DELAY_MS = 5000;
 const POPUP_ID = 'discount-popup';
 
@@ -119,7 +119,7 @@ export default function DiscountPopup() {
             Become a member, get 10% off
           </h2>
           <p className="text-xs text-stone-500 leading-relaxed mb-5">
-            Register as a Windsor Glow member and we will issue you a one-time code for 10% off your first order,
+            Register as a Windsor Beauty member and we will issue you a one-time code for 10% off your first order,
             ready to use at checkout.
           </p>
 

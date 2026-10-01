@@ -120,7 +120,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({
       success: false, emailSent, orderNumber: order.order_number, resumeUrl,
-      error: 'Your order is reserved, but the PayPal page could not be opened. Please contact sales@windsorglow.com.',
+      error: 'Your order is reserved, but the PayPal page could not be opened. Please contact sales@windsorbeauty.co.uk.',
     }, { status: 503 });
   }
 

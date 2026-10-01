@@ -422,7 +422,7 @@ export async function attachEarlierSentMessages(params: {
     const db = requireDb();
     const rows = await db`
       INSERT INTO enquiry_replies (enquiry_id, body, from_address, provider_message_id, direction, created_at)
-      SELECT ${params.enquiryId}, ce.body_text, COALESCE(ce.our_address, 'Windsor Glow'),
+      SELECT ${params.enquiryId}, ce.body_text, COALESCE(ce.our_address, 'Windsor Beauty'),
              'history-' || ce.id::text, 'out', ce.created_at
       FROM customer_emails ce
       WHERE lower(ce.email) = lower(${params.email})

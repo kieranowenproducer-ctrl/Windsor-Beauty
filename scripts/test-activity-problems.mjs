@@ -5,7 +5,7 @@
 // WHY THIS EXISTS IN THIS SHAPE. The dashboard's Latest Activity feed grew a tick and a bin on
 // every red row (task f95367d6): the tick files one away under "Already Dealt With" on System
 // Health, the bin destroys it. The feed itself now leaves out anything already ticked off. The
-// Windsor Glow credential available locally is `agent_ro`, which genuinely refuses to write
+// Windsor Beauty credential available locally is `agent_ro`, which genuinely refuses to write
 // anything, so none of that can be exercised against the live table from here. The choice is
 // between shipping a delete that has never been seen to delete, and exercising it against an
 // identical table in a database this machine CAN write to. This does the second, the same way
@@ -21,7 +21,7 @@
 // exactly one row, leaves its neighbours alone, and reports false the second time, which is what
 // lets the API tell "removed" from "was not there"; and that clearing an order hides its line
 // while the Orders screen goes on showing every order. It does not prove anything about the live
-// Windsor Glow database, and nothing here should be read that way.
+// Windsor Beauty database, and nothing here should be read that way.
 import { neon } from '@neondatabase/serverless';
 import { readFileSync } from 'node:fs';
 
@@ -160,29 +160,29 @@ try {
   `;
   await sql`
     INSERT INTO orders (order_number, status) VALUES
-      ('WG-CANCEL1', 'cancelled'),
-      ('WG-FAILED1', 'payment_failed'),
-      ('WG-TOPOST1', 'awaiting_dispatch')
+      ('WB-CANCEL1', 'cancelled'),
+      ('WB-FAILED1', 'payment_failed'),
+      ('WB-TOPOST1', 'awaiting_dispatch')
   `;
 
   check('all three orders show to start with', (await listOrdersForActivity(50)).length, 3);
-  check('a cancelled order can be cleared', await setOrderActivityCleared('WG-CANCEL1', true), true);
-  check('it leaves the dashboard', (await listOrdersForActivity(50)).map(o => o.order_number).sort(), ['WG-FAILED1', 'WG-TOPOST1']);
+  check('a cancelled order can be cleared', await setOrderActivityCleared('WB-CANCEL1', true), true);
+  check('it leaves the dashboard', (await listOrdersForActivity(50)).map(o => o.order_number).sort(), ['WB-FAILED1', 'WB-TOPOST1']);
   check('but the Orders screen still has all three', (await listAllOrders(50)).length, 3);
 
   // The one that matters most. An order waiting to be packed must never be hideable, or a parcel
   // gets forgotten and a customer is left waiting with no trace of why.
-  check('an order still to be posted CANNOT be cleared', await setOrderActivityCleared('WG-TOPOST1', true), false);
-  check('it is still on the dashboard', (await listOrdersForActivity(50)).some(o => o.order_number === 'WG-TOPOST1'), true);
-  check('a failed payment can be cleared', await setOrderActivityCleared('WG-FAILED1', true), true);
-  check('an order that does not exist reports nothing done', await setOrderActivityCleared('WG-NOPE99', true), false);
+  check('an order still to be posted CANNOT be cleared', await setOrderActivityCleared('WB-TOPOST1', true), false);
+  check('it is still on the dashboard', (await listOrdersForActivity(50)).some(o => o.order_number === 'WB-TOPOST1'), true);
+  check('a failed payment can be cleared', await setOrderActivityCleared('WB-FAILED1', true), true);
+  check('an order that does not exist reports nothing done', await setOrderActivityCleared('WB-NOPE99', true), false);
 
   // Undo. A mis-tap has to be reversible, and it must work even if the order's status has moved
   // on since, or a cleared order could be stuck off the list for good.
-  check('undo puts it back', await setOrderActivityCleared('WG-CANCEL1', false), true);
-  check('and it is on the dashboard again', (await listOrdersForActivity(50)).some(o => o.order_number === 'WG-CANCEL1'), true);
-  await sql`UPDATE orders SET status = 'refunded' WHERE order_number = 'WG-FAILED1'`;
-  check('undo works even after the status changed', await setOrderActivityCleared('WG-FAILED1', false), true);
+  check('undo puts it back', await setOrderActivityCleared('WB-CANCEL1', false), true);
+  check('and it is on the dashboard again', (await listOrdersForActivity(50)).some(o => o.order_number === 'WB-CANCEL1'), true);
+  await sql`UPDATE orders SET status = 'refunded' WHERE order_number = 'WB-FAILED1'`;
+  check('undo works even after the status changed', await setOrderActivityCleared('WB-FAILED1', false), true);
 } finally {
   await sql`DROP TABLE IF EXISTS automation_failures`;
   await sql`DROP TABLE IF EXISTS orders`;

@@ -16,7 +16,7 @@ import { outboundItemName, logGenericNameAudit, type GenericNameAudit } from './
 // Required env vars:
 //   FENA_API_KEY    — Integration ID (Terminal ID in Fena dashboard)
 //   FENA_API_SECRET — Secret Key (Terminal Secret in Fena dashboard)
-//   NEXT_PUBLIC_SITE_URL — e.g. https://windsorglow.com
+//   NEXT_PUBLIC_SITE_URL — e.g. https://www.windsorbeauty.co.uk
 export type CreateFenaPaymentLinkResult =
   | { ok: true; paymentUrl: string; fenaPaymentId: string | null }
   // `error` is always safe to show a customer (generic). `detail` is the
@@ -77,7 +77,7 @@ export function buildFenaPayload(order: OrderRow, siteUrl: string, productsBySlu
 export async function createFenaPaymentLink(orderNumber: string): Promise<CreateFenaPaymentLinkResult> {
   const integrationId = process.env.FENA_API_KEY;
   const secretKey      = process.env.FENA_API_SECRET;
-  const siteUrl         = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+  const siteUrl         = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
 
   if (!integrationId || !secretKey) {
     // Name the exact missing var(s) so the admin sees "Missing FENA_API_KEY in

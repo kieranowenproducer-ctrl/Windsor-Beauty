@@ -27,7 +27,7 @@ export default function UnsubscribePage() {
         const data = await res.json().catch(() => null);
         if (res.ok) {
           setStatus('done');
-          setMessage(data?.email ? `${data.email} has been unsubscribed from Windsor Glow marketing emails.` : 'You have been unsubscribed from Windsor Glow marketing emails.');
+          setMessage(data?.email ? `${data.email} has been unsubscribed from Windsor Beauty marketing emails.` : 'You have been unsubscribed from Windsor Beauty marketing emails.');
         } else {
           setStatus('error');
           setMessage(data?.error || 'Something went wrong. Please try again.');
@@ -42,7 +42,7 @@ export default function UnsubscribePage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm text-center">
-        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Glow</p>
+        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Beauty</p>
         <h1 className="font-serif text-3xl text-stone-800 tracking-wide mb-6">Unsubscribe</h1>
 
         <div className="bg-white border border-gold-100 p-8">
@@ -59,7 +59,7 @@ export default function UnsubscribePage() {
 
         <p className="text-center text-xs text-stone-500 mt-6">
           <Link href="/" className="text-gold-700 hover:text-gold-800 font-medium">
-            Return to Windsor Glow
+            Return to Windsor Beauty
           </Link>
         </p>
       </div>

@@ -54,7 +54,7 @@ export async function getGlowCardDemo(customerId: number, design: GlowCardDesign
   return {
     demo: true,
     design,
-    code: `WG-DEMO-${design.toUpperCase()}`,
+    code: `WB-DEMO-${design.toUpperCase()}`,
     availableStamps: Number(state.available_stamps),
     rewards: REFERRAL_REWARDS,
     referrals: state.referrals,

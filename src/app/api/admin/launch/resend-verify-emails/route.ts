@@ -31,7 +31,7 @@ export async function POST(_request: Request) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
 
   // Target UNVERIFIED accounts, not "no code": codes are now generated and
   // stored at sign-up (and by the backfill button), so a missing code no

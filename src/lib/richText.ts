@@ -1,6 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 
-// The Windsor Glow brand gold (Tailwind `gold-500`, tailwind.config.js) — the
+// The Windsor Beauty brand gold (Tailwind `gold-500`, tailwind.config.js) — the
 // only colour the rich text editor is allowed to apply to text, per the
 // "no colour picker, no random colours" requirement.
 export const RICH_TEXT_GOLD = '#B8902A';
@@ -13,7 +13,7 @@ const GOLD_STYLE_PATTERN = [/^#b8902a$/i, /^rgb\(\s*184\s*,\s*144\s*,\s*42\s*\)$
 // Strict allowlist sanitizer for admin-authored rich text. Only the formatting
 // exposed by RichTextEditor is permitted to survive: bold/italic/underline,
 // h2/h3, bullet/numbered lists, paragraphs/line breaks, and a `span` whose only
-// allowed style is the exact Windsor Glow gold text colour. Everything else
+// allowed style is the exact Windsor Beauty gold text colour. Everything else
 // (scripts, event handlers, arbitrary styles/classes, other tags) is stripped.
 export function sanitizeRichTextHtml(html: string): string {
   return sanitizeHtml(html, {

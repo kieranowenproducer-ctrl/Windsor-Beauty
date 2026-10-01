@@ -41,5 +41,5 @@ export function accountingExportRange(params: URLSearchParams) {
       new Date(value + 'T00:00:00Z').toISOString().slice(0, 10) !== value)) throw new Error('Choose valid dates for the export.');
   }
   if (from && to && from > to) throw new Error('The To date is before the From date. Swap them over.');
-  return { from, to, filename: `windsor-glow-accounting-${from || 'all'}-${to || 'latest'}.csv` };
+  return { from, to, filename: `windsor-beauty-accounting-${from || 'all'}-${to || 'latest'}.csv` };
 }

@@ -8,14 +8,14 @@ import {
   orderDraftSnapshot,
 } from '../src/lib/email/enquiryAutoDraft.ts';
 
-assert.equal(looksLikeOrderStatusQuestion('order', 'Where is my order?', 'WG-ABCD12'), true);
-assert.equal(looksLikeOrderStatusQuestion('order', 'Please cancel my order', 'WG-ABCD12'), false);
+assert.equal(looksLikeOrderStatusQuestion('order', 'Where is my order?', 'WB-ABCD12'), true);
+assert.equal(looksLikeOrderStatusQuestion('order', 'Please cancel my order', 'WB-ABCD12'), false);
 assert.equal(enquiryNeedsHumanAction('The item arrived damaged and I need help'), true);
 assert.equal(enquiryNeedsHumanAction('Can you clear my second order? I only need one.'), true);
 assert.equal(enquiryNeedsPersonalAdvice('Should I swap to this to manage my weight?'), true);
 assert.equal(enquiryNeedsPersonalAdvice('What is the weekly dosage listed by your sources?'), false);
 const orderReply = orderStatusEmailCopy({
-  order_number: 'WG-ABCD12',
+  order_number: 'WB-ABCD12',
   status: 'dispatched',
   tracking_number: 'RM123456789GB',
   tracking_url: 'https://www.royalmail.com/track-your-item#/tracking-results/RM123456789GB',

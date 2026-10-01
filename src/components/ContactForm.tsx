@@ -156,7 +156,7 @@ export default function ContactForm({ subjects }: { subjects: ContactSubject[] }
             value={form.orderNumber}
             onChange={update('orderNumber')}
             required={orderNumberRequired}
-            placeholder="e.g. WG-XGRXZ9"
+            placeholder="e.g. WB-XGRXZ9"
             className={inputClass + ' tracking-widest uppercase placeholder-stone-500'}
           />
           <p className="text-[9px] text-stone-500 mt-1.5 leading-relaxed">

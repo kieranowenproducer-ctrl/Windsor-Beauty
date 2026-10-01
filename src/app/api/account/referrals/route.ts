@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   }
   if (!referralsEnabled()) return NextResponse.json({ error: 'Member referrals are not available yet.' }, { status: 404 });
   if (customer.banned_at) return NextResponse.json({ error: 'Member rewards are not available for this account.' }, { status: 403 });
-  if (await isGlowCardFrozen(customer.id)) return NextResponse.json({ error: 'Your Glow Card is temporarily paused. Please contact Windsor Glow if you think this is a mistake.' }, { status: 403 });
+  if (await isGlowCardFrozen(customer.id)) return NextResponse.json({ error: 'Your Glow Card is temporarily paused. Please contact Windsor Beauty if you think this is a mistake.' }, { status: 403 });
   if (!customer.email_verified) return NextResponse.json({ error: 'Please verify your email before sharing your referral link.' }, { status: 403 });
   try {
     return NextResponse.json(await memberReferralCard(customer.id));
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   }
   if (!referralsEnabled()) return NextResponse.json({ error: 'Member referrals are not available yet.' }, { status: 404 });
   if (customer.banned_at) return NextResponse.json({ error: 'Member rewards are not available for this account.' }, { status: 403 });
-  if (await isGlowCardFrozen(customer.id)) return NextResponse.json({ error: 'Your Glow Card is temporarily paused. Please contact Windsor Glow if you think this is a mistake.' }, { status: 403 });
+  if (await isGlowCardFrozen(customer.id)) return NextResponse.json({ error: 'Your Glow Card is temporarily paused. Please contact Windsor Beauty if you think this is a mistake.' }, { status: 403 });
   if (!customer.email_verified) return NextResponse.json({ error: 'Please verify your email before claiming a reward.' }, { status: 403 });
   const body = await request.json().catch(() => null);
   const stamps = Number(body?.stamps);

@@ -17,7 +17,7 @@ const date = (value: unknown) => new Date(String(value)).toLocaleDateString('en-
 
 // The page follows the rest of the account area: white background, the site's own
 // header and footer, brand gold from the Tailwind scale. It used to carry a beige
-// slab, a second "Windsor Glow" wordmark directly under the real one, and its own
+// slab, a second "Windsor Beauty" wordmark directly under the real one, and its own
 // <main> nested inside the site's <main>. All three are gone; nothing about how
 // commission is worked out, requested or paid changed with them.
 const CARD = 'border border-gold-100 bg-white';

@@ -4,7 +4,7 @@
 //   node scripts/test-customer-emails-sql.mjs
 //
 // Same shape as test-handover-sql.mjs and for the same reason: the local
-// Windsor Glow credential is agent_ro (read only), so the insert/dedupe/
+// Windsor Beauty credential is agent_ro (read only), so the insert/dedupe/
 // match rules cannot be exercised against the live table from here. This
 // builds a throwaway copy of the table in the one database this machine can
 // write to, runs the real rules over it, and drops it. It proves the SQL,
@@ -94,7 +94,7 @@ try {
   // A sent message, typed to an address before that person registered.
   await sql.query(
     `INSERT INTO ${T} (direction, customer_id, email, our_address, subject, body_text) VALUES ($1,$2,$3,$4,$5,$6)`,
-    ['sent', null, 'callum@example.com', 'sales@windsorglow.com', 'A message for you', 'About your order.']
+    ['sent', null, 'callum@example.com', 'sales@windsorbeauty.co.uk', 'A message for you', 'About your order.']
   );
   // A captured reply, matched to customer 42, delivered twice by a webhook retry.
   const insertReply = async () => {
@@ -102,7 +102,7 @@ try {
     if (existing.length) return false;
     await sql.query(
       `INSERT INTO ${T} (direction, customer_id, email, our_address, subject, body_text, provider_id, order_ref) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
-      ['received', 42, 'Callum@Example.com'.toLowerCase(), 'reply@inbound.windsorglow.com', 'Re: A message for you', 'PAG Gym would be perfect.', 're_abc', 'WG-GCZBKK']
+      ['received', 42, 'Callum@Example.com'.toLowerCase(), 'reply@inbound.windsorbeauty.co.uk', 'Re: A message for you', 'PAG Gym would be perfect.', 're_abc', 'WB-GCZBKK']
     );
     return true;
   };
@@ -120,7 +120,7 @@ try {
   check('the customer page sees both directions', forCustomer.length === 2 && forCustomer[0].direction === 'sent' && forCustomer[1].direction === 'received');
 
   const ref = await sql.query(`SELECT order_ref FROM ${T} WHERE provider_id = 're_abc'`);
-  check('the order reference travelled with the reply', ref[0].order_ref === 'WG-GCZBKK');
+  check('the order reference travelled with the reply', ref[0].order_ref === 'WB-GCZBKK');
 } finally {
   await sql.query(`DROP TABLE IF EXISTS ${T}`).catch(() => {});
 }

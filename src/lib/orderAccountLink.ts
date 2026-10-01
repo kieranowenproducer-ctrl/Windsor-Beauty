@@ -4,7 +4,7 @@
  * An order carrying a customer_id has never proved the person was signed in. Checkout attaches an
  * order to an account in TWO different ways — from a live session, or by matching the email the
  * person typed to an existing customer — and once the order was saved those two looked identical.
- * That is exactly the question nobody could answer about order WG-63U39T.
+ * That is exactly the question nobody could answer about order WB-63U39T.
  *
  * Deliberately its own file with no imports at all. It is one decision, it is the difference
  * between "this member ordered" and "somebody typed this member's email address", and it is worth

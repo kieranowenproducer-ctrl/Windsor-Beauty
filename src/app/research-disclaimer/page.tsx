@@ -28,7 +28,7 @@ export default function ResearchDisclaimerPage() {
 
       <PolicySection heading="No Endorsement of Other Use">
         <p>
-          Windsor Glow does not endorse, encourage, or condone the use of any product sold on this site for purposes
+          Windsor Beauty does not endorse, encourage, or condone the use of any product sold on this site for purposes
           other than laboratory research. Any reference material we provide — including our Dosage Guide and
           calculator — exists only to support consistent handling and reconstitution of compounds for research
           purposes, and carries no implication that the product is suitable, safe, or approved for any other use.

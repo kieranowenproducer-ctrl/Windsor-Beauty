@@ -55,7 +55,7 @@ const browser = await playwright.chromium.launch({ channel: 'msedge', timeout: 1
 let failed = 0;
 for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
   const context = await browser.newContext({ viewport });
-  await context.addCookies([{ name: 'wg_admin_session', value: token, domain: 'localhost', path: '/' }]);
+  await context.addCookies([{ name: 'wb_admin_session', value: token, domain: 'localhost', path: '/' }]);
   const page = await context.newPage();
   page.setDefaultTimeout(15_000);
   await page.route('**/api/admin/ip-addresses?*', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(response) }));

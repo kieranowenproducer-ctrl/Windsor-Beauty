@@ -130,7 +130,7 @@ export default function ReviewsPage() {
           <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Feedback</p>
           <h1 className="font-serif text-4xl sm:text-5xl text-stone-800 tracking-wide mb-4">Reviews</h1>
           <p className="text-sm text-stone-500 leading-relaxed max-w-md mx-auto">
-            What customers are saying about their experience with Windsor Glow.
+            What customers are saying about their experience with Windsor Beauty.
           </p>
         </div>
 

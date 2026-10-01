@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     const email = affiliateInvitationEmail({
       email: 'their.name@example.com',
       affiliateName: 'Raf',
-      link: 'https://windsorglow.com/account/register?affiliateInvite=example',
+      link: 'https://www.windsorbeauty.co.uk/account/register?affiliateInvite=example',
       expiresAt: new Date(Date.now() + 7 * 86_400_000).toISOString(),
       requested: new URL(request.url).searchParams.get('requested') === '1',
     });
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       const key = await getOrCreateAffiliateRequestKey(customerId);
       const requestUrl = new URL(request.url);
       const localPreview = process.env.NODE_ENV !== 'production' && ['localhost', '127.0.0.1'].includes(requestUrl.hostname);
-      return NextResponse.json({ link: `${localPreview ? requestUrl.origin : 'https://windsorglow.com'}/raf-invite/${key}` }, { headers: { 'Cache-Control': 'no-store' } });
+      return NextResponse.json({ link: `${localPreview ? requestUrl.origin : 'https://www.windsorbeauty.co.uk'}/raf-invite/${key}` }, { headers: { 'Cache-Control': 'no-store' } });
     }
     if (body?.action === 'create_invitation') {
       if (!affiliatesEnabled()) return NextResponse.json({ error: 'Affiliate customer access is not open yet.' }, { status: 404 });

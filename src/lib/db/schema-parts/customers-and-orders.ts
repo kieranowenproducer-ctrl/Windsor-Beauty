@@ -18,7 +18,7 @@ export async function ensureCustomersAndOrders(db: ReturnType<typeof requireDb>)
     )
   `;
 
-  // Free-text "where did you hear about Windsor Glow?" field, shown in admin
+  // Free-text "where did you hear about Windsor Beauty?" field, shown in admin
   // and on the customer's own profile. Mandatory at registration since 2026 —
   // membership signup and the 10% discount are now the same single process.
   await db`ALTER TABLE customers ADD COLUMN IF NOT EXISTS referred_by TEXT`;
@@ -292,7 +292,7 @@ export async function ensureCustomersAndOrders(db: ReturnType<typeof requireDb>)
   // An order carrying a customer_id does NOT prove the person was signed in. Checkout links an
   // order to an account either from a live session OR by matching the typed email to an existing
   // customer, and until now those two were indistinguishable once the order was saved. That is
-  // the exact question that could not be answered about order WG-63U39T.
+  // the exact question that could not be answered about order WB-63U39T.
   //
   //   signed_in    — a valid session existed at checkout; the account is proven
   //   email_match  — no session; the typed email matched an existing account, so it was linked

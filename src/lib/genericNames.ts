@@ -357,7 +357,7 @@ export function outboundSku(slug: string | undefined): string | undefined {
   // not a security boundary, and it must run identically everywhere with no deps.
   let h = 5381;
   for (let i = 0; i < slug.length; i++) h = ((h << 5) + h + slug.charCodeAt(i)) >>> 0;
-  return `WG-${h.toString(16).toUpperCase().padStart(8, '0')}`;
+  return `WB-${h.toString(16).toUpperCase().padStart(8, '0')}`;
 }
 
 /**

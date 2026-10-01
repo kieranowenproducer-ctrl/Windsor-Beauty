@@ -29,8 +29,8 @@ test('a product page uses the real product name when it is supplied', () => {
 
 test('a product page with no supplied name still reads as words', () => {
   assert.equal(
-    pageTitle('/shop/recovery-pen-windsor-glow-bpc-157-tb500-kpv'),
-    'Product page: Recovery Pen Windsor Glow BPC 157 TB500 KPV',
+    pageTitle('/shop/recovery-pen-windsor-beauty-bpc-157-tb500-kpv'),
+    'Product page: Recovery Pen Windsor Beauty BPC 157 TB500 KPV',
   );
   assert.equal(pageTitle('/shop/wolverine-blend'), 'Product page: Wolverine Blend');
 });
@@ -51,7 +51,7 @@ test('no page name is ever a bare address', () => {
   const paths = [
     '/', '/shop', '/reviews', '/checkout/success', '/account', '/account/login', '/account/register',
     '/account/verify-email', '/shop/anything', '/shop/category/anything',
-    '/orders/WG-1001', '/pay/abc123', '/r/gym-poster', '/something-nobody-planned-for', '/privacy',
+    '/orders/WB-1001', '/pay/abc123', '/r/gym-poster', '/something-nobody-planned-for', '/privacy',
   ];
   for (const path of paths) {
     const title = describePage(path).title;

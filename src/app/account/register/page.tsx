@@ -64,10 +64,10 @@ export default function AccountRegisterPage() {
 
         <div className="bg-white border border-gold-100 p-8 text-center">
           {referralWarning && <p role="alert" className="text-sm text-amber-900 bg-amber-50 border border-amber-300 p-3 mb-5">
-            Your account was created, but the referral was not recorded. Please contact Windsor Glow before ordering so our team can check it.
+            Your account was created, but the referral was not recorded. Please contact Windsor Beauty before ordering so our team can check it.
           </p>}
           {!createdEmailVerified && <p className="text-sm text-stone-600 leading-relaxed mb-5">
-            Your Windsor Glow account has been created. We have sent a verification link to your
+            Your Windsor Beauty account has been created. We have sent a verification link to your
             email address &mdash; click it to confirm your account and unlock your 10% first-order
             discount code, which we will email to you straight away.
           </p>}
@@ -89,10 +89,10 @@ export default function AccountRegisterPage() {
   return (
     <div className="max-w-md mx-auto px-4 py-16">
       <div className="text-center mb-8">
-        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Glow</p>
+        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Beauty</p>
         <h1 className="font-serif text-3xl text-stone-800 tracking-wide">Become a Member</h1>
         <p className="text-xs text-stone-500 mt-2 leading-relaxed">
-          Register as a Windsor Glow member to track your orders, check out faster, and unlock
+          Register as a Windsor Beauty member to track your orders, check out faster, and unlock
           10% off your first order once you verify your email.
         </p>
       </div>

@@ -8,7 +8,7 @@ import { findOrderByNumber, isDbConfigured } from '@/lib/db';
  * Admin opens this in a new tab and uses the browser's Print function.
  *
  * Includes:
- *   - Windsor Glow header
+ *   - Windsor Beauty header
  *   - Order reference and date
  *   - Customer details (name, address, email, phone)
  *   - Ordered items with quantities and prices
@@ -104,7 +104,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
 
   <div class="header">
     <div>
-      <div class="brand">Windsor Glow</div>
+      <div class="brand">Windsor Beauty</div>
       <div class="brand-sub">Research Peptides &amp; Compounds</div>
     </div>
     <div class="order-ref">
@@ -172,7 +172,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   ${order.admin_notes ? `<div style="margin-top:16px;padding:10px;background:#fffbe6;border:1px solid #e8d44d;border-radius:4px;font-size:11px;color:#555"><strong>Admin notes:</strong><br>${order.admin_notes.replace(/\n/g, '<br>')}</div>` : ''}
 
   <div class="footer">
-    <p>Windsor Glow — windsorglow.com — orders@windsorglow.com</p>
+    <p>Windsor Beauty — windsorbeauty.co.uk — orders@windsorbeauty.co.uk</p>
     <p style="margin-top:6px">All products are supplied strictly for research purposes only. Not for human use.</p>
   </div>
 

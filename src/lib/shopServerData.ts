@@ -97,7 +97,7 @@ function parseStorageDefaults(body: string | null | undefined): ShopServerData['
 /**
  * The two cookie reads, done server-side.
  *
- * The middleware sets a NON-httpOnly `wg_ui_session` hint precisely so the storefront can read
+ * The middleware sets a NON-httpOnly `wb_ui_session` hint precisely so the storefront can read
  * it, and this reads the same one from the same request. It is a hint and nothing more: it opens
  * no door on its own, every admin write is still checked against the real httpOnly session, and
  * getting it wrong shows the wrong price, not the wrong data.
@@ -107,8 +107,8 @@ function parseStorageDefaults(body: string | null | undefined): ShopServerData['
  */
 async function viewerFromCookies(): Promise<{ isStaff: boolean; isMember: boolean }> {
   const jar = await cookies();
-  const session = jar.get('wg_ui_session')?.value;
-  const previewRaw = jar.get('wg_view_as')?.value;
+  const session = jar.get('wb_ui_session')?.value;
+  const previewRaw = jar.get('wb_view_as')?.value;
   const preview = previewRaw === 'member' || previewRaw === 'guest' ? previewRaw : 'admin';
   const hasStaffSession = session === 'staff';
   return {

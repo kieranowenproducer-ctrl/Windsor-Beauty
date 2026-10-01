@@ -45,7 +45,7 @@ export default function ResumePaymentPage() {
               </a>
             </>
           ) : (
-            <p className="bg-gold-50 border border-gold-200 p-4 text-sm text-gold-700">The original payment page is unavailable. Please contact sales@windsorglow.com and quote {payment.orderNumber}.</p>
+            <p className="bg-gold-50 border border-gold-200 p-4 text-sm text-gold-700">The original payment page is unavailable. Please contact sales@windsorbeauty.co.uk and quote {payment.orderNumber}.</p>
           )}
         </div>
       )}

@@ -105,8 +105,8 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | null>(null);
 
-const STORAGE_KEY = 'wg_cart_v2';
-const LEGACY_STORAGE_KEY = 'wg_cart';
+const STORAGE_KEY = 'wb_cart_v2';
+const LEGACY_STORAGE_KEY = 'wb_cart';
 
 type StoredCart = { owner: string; items: CartItem[] };
 

@@ -86,7 +86,7 @@ export default function TrackingStep({
                           <p className="text-xs text-stone-500 mb-1">
                             Drop your Click &amp; Drop CSV here, or <span className="text-gold-700 underline">click to choose a file</span>
                           </p>
-                          <p className="text-[10px] text-stone-400">Accepts .csv or .txt — any format containing WG-order references</p>
+                          <p className="text-[10px] text-stone-400">Accepts .csv or .txt — any format containing WB-order references</p>
                           <input
                             ref={fileInputRef}
                             type="file"
@@ -138,7 +138,7 @@ export default function TrackingStep({
                                 )}
                               </>
                             ) : (
-                              'No matching order numbers found in the imported content. Make sure the file contains WG-order references and Royal Mail tracking numbers.'
+                              'No matching order numbers found in the imported content. Make sure the file contains WB-order references and Royal Mail tracking numbers.'
                             )}
                           </div>
                         )}

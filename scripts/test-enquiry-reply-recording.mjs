@@ -6,11 +6,11 @@ import { isSimpleAcknowledgement, visibleInboundEmailText } from '../src/lib/ema
 const previous = process.env.ENQUIRY_REPLY_ARCHIVE_TO;
 
 delete process.env.ENQUIRY_REPLY_ARCHIVE_TO;
-assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'info@windsorglow.com');
+assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'info@windsorbeauty.co.uk');
 assert.equal(getEnquiryReplyArchiveAddress('INFO@WINDSORGLOW.COM'), null);
 
-process.env.ENQUIRY_REPLY_ARCHIVE_TO = ' archive@windsorglow.com ';
-assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'archive@windsorglow.com');
+process.env.ENQUIRY_REPLY_ARCHIVE_TO = ' archive@windsorbeauty.co.uk ';
+assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'archive@windsorbeauty.co.uk');
 
 process.env.ENQUIRY_REPLY_ARCHIVE_TO = 'off';
 assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), null);
@@ -25,7 +25,7 @@ assert.match(route, /Do not send it again/);
 assert.match(route, /messageStartsWithGreeting/);
 assert.match(route, /addAutomaticGreeting/);
 
-const iphoneReply = `Thank you\nSent from my iPhone\n\n> On 18 Sep 2026, at 10:11, Windsor Glow wrote:\n> Hi Pauline,\n> Earlier answer`;
+const iphoneReply = `Thank you\nSent from my iPhone\n\n> On 18 Sep 2026, at 10:11, Windsor Beauty wrote:\n> Hi Pauline,\n> Earlier answer`;
 assert.equal(visibleInboundEmailText(iphoneReply), 'Thank you');
 assert.equal(isSimpleAcknowledgement(iphoneReply), true);
 assert.equal(isSimpleAcknowledgement('Thank you, but can you check my order?'), false);

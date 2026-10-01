@@ -23,7 +23,7 @@ import type { MetadataRoute } from 'next';
  * gate. Nothing there needed changing, which was worth checking before assuming.
  */
 
-export const SITE_URL = 'https://www.windsorglow.com';
+export const SITE_URL = 'https://www.windsorbeauty.co.uk';
 
 /**
  * What a crawler is asked to stay out of, and why each one is here.

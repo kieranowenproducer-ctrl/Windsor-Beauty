@@ -3,7 +3,7 @@
 //   npm run db:local        keeps running; Ctrl+C stops it
 //
 // This is a real PostgreSQL that lives entirely inside this project (.local-db/, never
-// committed). It shares nothing with Windsor Glow or any live system: no orders, customers
+// committed). It shares nothing with any other shop or any live system: no orders, customers
 // or emails from anywhere else can reach it, and nothing in it can reach them.
 //
 // The matching line for .env.local is printed when it starts.

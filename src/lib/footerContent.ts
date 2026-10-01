@@ -27,11 +27,11 @@ export interface FooterContent {
 
 export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   description:
-    'Premium research compounds supplied by Windsor Glow, part of the C&S Holdings Group. All products are independently lab-tested and supplied strictly for scientific research use only.',
+    'Premium research compounds supplied by Windsor Beauty, part of the C&S Holdings Group. All products are independently lab-tested and supplied strictly for scientific research use only.',
   emails: [
-    { address: 'info@windsorglow.com', label: 'general enquiries' },
-    { address: 'sales@windsorglow.com', label: 'sales & orders' },
-    { address: 'beautiful@windsorglow.com', label: 'customer support' },
+    { address: 'info@windsorbeauty.co.uk', label: 'general enquiries' },
+    { address: 'sales@windsorbeauty.co.uk', label: 'sales & orders' },
+    { address: 'beautiful@windsorbeauty.co.uk', label: 'customer support' },
   ],
   navLinks: [
     { label: 'Shop', href: '/shop' },
@@ -53,8 +53,8 @@ export const DEFAULT_FOOTER_CONTENT: FooterContent = {
     { label: 'Age Restriction Policy', href: '/age-restriction' },
   ],
   disclaimer:
-    'All products sold by Windsor Glow are intended strictly for in vitro research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals. Windsor Glow assumes no liability for any misuse of these compounds.',
-  copyrightSuffix: 'Windsor Glow. Part of the C&S Holdings Group. All rights reserved.',
+    'All products sold by Windsor Beauty are intended strictly for in vitro research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals. Windsor Beauty assumes no liability for any misuse of these compounds.',
+  copyrightSuffix: 'Windsor Beauty. Part of the C&S Holdings Group. All rights reserved.',
   bottomRightText: 'Not for human consumption. Research use only.',
 };
 

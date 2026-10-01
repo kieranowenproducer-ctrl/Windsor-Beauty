@@ -4,7 +4,7 @@
 // same on-certificate editor the Certificate Filler uses, for the dosage the
 // customer view is showing, and auto-saves through the same admin catalogue
 // endpoint. The button only renders for staff (the page passes it down based
-// on the wg_ui_session=staff cookie); real security stays on the API, which
+// on the wb_ui_session=staff cookie); real security stays on the API, which
 // rejects non-admin sessions.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';

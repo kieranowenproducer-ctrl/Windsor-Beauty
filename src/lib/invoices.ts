@@ -22,7 +22,7 @@ export function calculateInvoicePaypalFee(total: number): number {
 }
 
 // Same approach as generateOrderNumber() in src/lib/auth.ts — no 0/O/1/I so
-// it's easy to read and type back in, prefixed INV- instead of WG- so an
+// it's easy to read and type back in, prefixed INV- instead of WB- so an
 // invoice number is never visually confused with an order number.
 export function generateInvoiceNumber(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

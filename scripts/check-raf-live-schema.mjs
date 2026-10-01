@@ -1,8 +1,8 @@
-// Read-only launch check. Pass the live connection through WG_RAF_READONLY_DATABASE_URL.
+// Read-only launch check. Pass the live connection through WB_RAF_READONLY_DATABASE_URL.
 // This script never calls ensureSchema or changes database data.
-const url = process.env.WG_RAF_READONLY_DATABASE_URL;
+const url = process.env.WB_RAF_READONLY_DATABASE_URL;
 if (!url) {
-  console.error('Set WG_RAF_READONLY_DATABASE_URL to run the read-only schema check.');
+  console.error('Set WB_RAF_READONLY_DATABASE_URL to run the read-only schema check.');
   process.exit(1);
 }
 
@@ -11,7 +11,7 @@ try { parsed = new URL(url); } catch {
   console.error('The database URL is invalid.');
   process.exit(1);
 }
-if (decodeURIComponent(parsed.pathname.slice(1)) === 'windsor_glow_affiliate_test' || parsed.hostname.startsWith('ep-round-cloud-')) {
+if (decodeURIComponent(parsed.pathname.slice(1)) === 'windsor_beauty_affiliate_test' || parsed.hostname.startsWith('ep-round-cloud-')) {
   console.error('This check is for the live branch, not the isolated test branch.');
   process.exit(1);
 }

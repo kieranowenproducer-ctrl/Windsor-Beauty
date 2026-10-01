@@ -1,16 +1,16 @@
 // Destructive only inside the exact, dedicated database named below. The script
 // never reads DATABASE_URL or a local env file and clears the test schema when done.
-const REQUIRED_DATABASE = 'windsor_glow_affiliate_test';
-const url = process.env.WG_AFFILIATE_TEST_DATABASE_URL;
+const REQUIRED_DATABASE = 'windsor_beauty_affiliate_test';
+const url = process.env.WB_AFFILIATE_TEST_DATABASE_URL;
 
-if (!url || process.env.WG_AFFILIATE_TEST_CONFIRM !== 'ERASE_TEST_DATABASE') {
-  console.error('\nRefusing to run. Set WG_AFFILIATE_TEST_DATABASE_URL and WG_AFFILIATE_TEST_CONFIRM=ERASE_TEST_DATABASE.\n');
+if (!url || process.env.WB_AFFILIATE_TEST_CONFIRM !== 'ERASE_TEST_DATABASE') {
+  console.error('\nRefusing to run. Set WB_AFFILIATE_TEST_DATABASE_URL and WB_AFFILIATE_TEST_CONFIRM=ERASE_TEST_DATABASE.\n');
   process.exit(1);
 }
 
 let parsed;
 try { parsed = new URL(url); } catch {
-  console.error('\nRefusing to run. WG_AFFILIATE_TEST_DATABASE_URL is not a valid database URL.\n');
+  console.error('\nRefusing to run. WB_AFFILIATE_TEST_DATABASE_URL is not a valid database URL.\n');
   process.exit(1);
 }
 if (decodeURIComponent(parsed.pathname.replace(/^\//, '')) !== REQUIRED_DATABASE) {
@@ -36,7 +36,7 @@ if (existingTables.length) {
 }
 
 process.env.DATABASE_URL = url;
-process.env.WG_AFFILIATES_ENABLED = 'true';
+process.env.WB_AFFILIATES_ENABLED = 'true';
 
 const { ensureSchema } = await import('../src/lib/db/schema.ts');
 const {
@@ -84,7 +84,7 @@ async function order(customerId, sequence) {
       order_number, customer_id, email, customer_name, items, subtotal,
       shipping_label, shipping_cost, total, status, shipping_address, account_link
     ) VALUES (
-      ${`WG-AFFILIATE-${sequence}`}, ${customerId}, ${`member-${customerId}@example.test`},
+      ${`WB-AFFILIATE-${sequence}`}, ${customerId}, ${`member-${customerId}@example.test`},
       'Test Member', '[]'::jsonb, 40, 'Test delivery', 2, 40,
       'pending', '1 Test Street', 'signed_in'
     ) RETURNING *

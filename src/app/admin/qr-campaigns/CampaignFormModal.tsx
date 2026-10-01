@@ -95,7 +95,7 @@ export default function CampaignFormModal({
                     className="w-full border border-stone-200 px-3 py-2 text-xs text-stone-700 focus:border-gold-400 outline-none"
                   />
                   <p className="text-[8px] text-stone-400 mt-1">
-                    Shown on the leaflet only, between &ldquo;Windsor Glow&rdquo; and the subheading. Doesn&rsquo;t affect tracking, URLs, or reporting.
+                    Shown on the leaflet only, between &ldquo;Windsor Beauty&rdquo; and the subheading. Doesn&rsquo;t affect tracking, URLs, or reporting.
                   </p>
                 </div>
 
@@ -151,7 +151,7 @@ export default function CampaignFormModal({
                     <input
                       value={form.destination_url}
                       onChange={e => setForm(f => ({ ...f, destination_url: e.target.value }))}
-                      placeholder="https://windsorglow.com/..."
+                      placeholder="https://www.windsorbeauty.co.uk/..."
                       className="w-full border border-stone-200 border-t-0 px-3 py-2 text-xs text-stone-700 focus:border-gold-400 outline-none"
                     />
                   )}

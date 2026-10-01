@@ -1,4 +1,4 @@
-// Single source of truth for Windsor Glow email branding: colours, the
+// Single source of truth for Windsor Beauty email branding: colours, the
 // dark-mode-safe <head> boilerplate, and the shared dark-glow hero header /
 // footer markup every transactional and marketing email renders identically.
 //
@@ -35,7 +35,7 @@ export const EMAIL_COLORS = {
   cardBorder: '#e7dcc8',
 } as const;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
 export const EMAIL_ICON_BASE = `${SITE_URL}/images/email`;
 // Brighter, higher-contrast logo variant used only in email headers — the
 // site's main flat-gold logo elsewhere is untouched.
@@ -58,22 +58,22 @@ export function emailHeadTags(title: string): string {
 <title>${escapeHtml(title)}</title>
 <style>
   body, table, td, p, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-  [data-ogsc] .wg-hero-bg, [data-ogsb] .wg-hero-bg { background-color: ${EMAIL_COLORS.heroBg} !important; }
-  [data-ogsc] .wg-hero-label { color: ${EMAIL_COLORS.cream} !important; }
-  [data-ogsc] .wg-gold-bg, [data-ogsb] .wg-gold-bg { background-color: ${EMAIL_COLORS.gold} !important; }
-  [data-ogsc] .wg-gold-text { color: ${EMAIL_COLORS.gold} !important; }
-  [data-ogsc] .wg-white-text { color: ${EMAIL_COLORS.white} !important; }
+  [data-ogsc] .wb-hero-bg, [data-ogsb] .wb-hero-bg { background-color: ${EMAIL_COLORS.heroBg} !important; }
+  [data-ogsc] .wb-hero-label { color: ${EMAIL_COLORS.cream} !important; }
+  [data-ogsc] .wb-gold-bg, [data-ogsb] .wb-gold-bg { background-color: ${EMAIL_COLORS.gold} !important; }
+  [data-ogsc] .wb-gold-text { color: ${EMAIL_COLORS.gold} !important; }
+  [data-ogsc] .wb-white-text { color: ${EMAIL_COLORS.white} !important; }
   @media (prefers-color-scheme: dark) {
-    .wg-hero-bg { background-color: ${EMAIL_COLORS.heroBg} !important; }
-    .wg-hero-label { color: ${EMAIL_COLORS.cream} !important; }
-    .wg-gold-bg { background-color: ${EMAIL_COLORS.gold} !important; }
-    .wg-gold-text { color: ${EMAIL_COLORS.gold} !important; }
-    .wg-white-text { color: ${EMAIL_COLORS.white} !important; }
+    .wb-hero-bg { background-color: ${EMAIL_COLORS.heroBg} !important; }
+    .wb-hero-label { color: ${EMAIL_COLORS.cream} !important; }
+    .wb-gold-bg { background-color: ${EMAIL_COLORS.gold} !important; }
+    .wb-gold-text { color: ${EMAIL_COLORS.gold} !important; }
+    .wb-white-text { color: ${EMAIL_COLORS.white} !important; }
   }
 </style>`;
 }
 
-// The premium dark-glow hero header every Windsor Glow email shares — logo,
+// The premium dark-glow hero header every Windsor Beauty email shares — logo,
 // an uppercase label between two hairlines, and a short gold underline, over
 // the same background-glow image at the same dark overlay opacity. `label`
 // is the only thing that changes between templates (Invoice / Order
@@ -86,17 +86,17 @@ export function emailHeadTags(title: string): string {
 // one line exactly as before — wrapping only happens when it cannot fit.
 export function emailHeaderHtml(label: string): string {
   return `<tr>
-  <td class="wg-hero-bg" bgcolor="${EMAIL_COLORS.heroBg}" background="${EMAIL_ICON_BASE}/header-glow.png" style="background-color:${EMAIL_COLORS.heroBg}; background-image:linear-gradient(to bottom, rgba(22,20,15,0.97) 0%, rgba(22,20,15,0.93) 38%, rgba(22,20,15,0.7) 60%, rgba(22,20,15,0.5) 75%, rgba(22,20,15,0.45) 100%), url('${EMAIL_ICON_BASE}/header-glow.png'); background-size:100% 100%, cover; background-position:center top, center top; background-repeat:no-repeat, no-repeat; padding:34px 40px 28px; text-align:center;">
-    <img src="${EMAIL_LOGO_URL}" alt="Windsor Glow" width="170" height="61" style="display:block;margin:0 auto 18px;border:0;outline:none;width:170px;height:61px" />
+  <td class="wb-hero-bg" bgcolor="${EMAIL_COLORS.heroBg}" background="${EMAIL_ICON_BASE}/header-glow.png" style="background-color:${EMAIL_COLORS.heroBg}; background-image:linear-gradient(to bottom, rgba(22,20,15,0.97) 0%, rgba(22,20,15,0.93) 38%, rgba(22,20,15,0.7) 60%, rgba(22,20,15,0.5) 75%, rgba(22,20,15,0.45) 100%), url('${EMAIL_ICON_BASE}/header-glow.png'); background-size:100% 100%, cover; background-position:center top, center top; background-repeat:no-repeat, no-repeat; padding:34px 40px 28px; text-align:center;">
+    <img src="${EMAIL_LOGO_URL}" alt="Windsor Beauty" width="170" height="61" style="display:block;margin:0 auto 18px;border:0;outline:none;width:170px;height:61px" />
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
       <tr>
         <td style="border-top:1px solid #57503f; width:40px; line-height:0; font-size:0;">&nbsp;</td>
-        <td class="wg-hero-label" style="padding:0 12px; text-align:center; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:${EMAIL_COLORS.cream};">${escapeHtml(label)}</td>
+        <td class="wb-hero-label" style="padding:0 12px; text-align:center; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:${EMAIL_COLORS.cream};">${escapeHtml(label)}</td>
         <td style="border-top:1px solid #57503f; width:40px; line-height:0; font-size:0;">&nbsp;</td>
       </tr>
     </table>
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:10px auto 0;">
-      <tr><td class="wg-gold-bg" bgcolor="${EMAIL_COLORS.gold}" style="width:56px; height:2px; background:${EMAIL_COLORS.gold}; line-height:0; font-size:0;">&nbsp;</td></tr>
+      <tr><td class="wb-gold-bg" bgcolor="${EMAIL_COLORS.gold}" style="width:56px; height:2px; background:${EMAIL_COLORS.gold}; line-height:0; font-size:0;">&nbsp;</td></tr>
     </table>
   </td>
 </tr>`;
@@ -104,7 +104,7 @@ export function emailHeaderHtml(label: string): string {
 
 // Shared footer band — `footerText` overrides the default research-use
 // disclaimer (e.g. the internal admin notification email has no need for
-// it). `brandLine` overrides the "Windsor Glow — windsorglow.com" line —
+// it). `brandLine` overrides the "Windsor Beauty — windsorbeauty.co.uk" line —
 // only used by paypalInstructionsEmail.ts, which sends under the
 // still-unresolved "Windsor Beauty" brand mismatch (see that file) and would
 // otherwise show a self-contradictory footer. `senderNotice` is the
@@ -119,7 +119,7 @@ export function emailFooterHtml(
   return `<tr>
   <td bgcolor="${EMAIL_COLORS.pageBg}" style="background:${EMAIL_COLORS.pageBg};padding:20px 40px;text-align:center;border-top:1px solid ${EMAIL_COLORS.border}">
     ${senderNotice ? `<p style="margin:0 0 8px;font-size:10px;line-height:1.6;color:${EMAIL_COLORS.muted}">${escapeHtml(senderNotice)}</p>` : ''}
-    <p style="margin:0 0 4px;font-size:10px;color:${EMAIL_COLORS.muted}">${brandLine || 'Windsor Glow &mdash; windsorglow.com'}</p>
+    <p style="margin:0 0 4px;font-size:10px;color:${EMAIL_COLORS.muted}">${brandLine || 'Windsor Beauty &mdash; windsorbeauty.co.uk'}</p>
     <p style="margin:0;font-size:10px;color:#d4cfc9">${escapeHtml(footerText || 'All products are supplied strictly for research purposes only. Not for human use.')}</p>
   </td>
 </tr>`;

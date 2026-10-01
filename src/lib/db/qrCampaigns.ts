@@ -201,7 +201,7 @@ export async function recordCampaignScan(params: {
   // Recorded either way, counted only if it was a person. See botDetection.ts for why.
   const isBot = isBotUserAgent(params.userAgent);
   await db`
-    INSERT INTO qr_campaign_scans (campaign_id, ip_address, user_agent, wg_vid, is_new_visitor, is_bot)
+    INSERT INTO qr_campaign_scans (campaign_id, ip_address, user_agent, wb_vid, is_new_visitor, is_bot)
     VALUES (${params.campaignId}, ${params.ipAddress ?? null}, ${params.userAgent ?? null}, ${params.wgVid ?? null}, ${params.isNewVisitor ?? false}, ${isBot})
   `;
 }
@@ -213,7 +213,7 @@ export async function getQrCampaignStats(campaignId: number): Promise<QrCampaign
       ${campaignId}::int AS campaign_id,
       COUNT(*) FILTER (WHERE NOT is_bot)::int AS total_scans,
       COUNT(*) FILTER (WHERE is_bot)::int AS bot_scans,
-      COUNT(DISTINCT wg_vid) FILTER (WHERE wg_vid IS NOT NULL AND NOT is_bot)::int AS unique_visitors
+      COUNT(DISTINCT wb_vid) FILTER (WHERE wb_vid IS NOT NULL AND NOT is_bot)::int AS unique_visitors
     FROM qr_campaign_scans
     WHERE campaign_id = ${campaignId}
   `;

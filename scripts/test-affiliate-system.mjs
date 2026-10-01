@@ -32,7 +32,7 @@ assert.doesNotMatch(registration, /findAffiliateByReferralCode/, 'a public affil
 assert.match(registration, /if \(suppliedReferralCode && suppliedAffiliateInvite\)/, 'member and affiliate invitations must not combine');
 
 const affiliates = await readFile(new URL('../src/lib/affiliates.ts', import.meta.url), 'utf8');
-assert.match(affiliates, /WG_AFFILIATE_CUSTOMER_ACCESS_ENABLED/, 'production customer access must require a separate launch switch');
+assert.match(affiliates, /WB_AFFILIATE_CUSTOMER_ACCESS_ENABLED/, 'production customer access must require a separate launch switch');
 assert.match(affiliates, /randomBytes\(32\)\.toString\('hex'\)/, 'invitation tokens must be unpredictable');
 assert.match(affiliates, /createHash\('sha256'\)/, 'the database must store an invitation hash, not its secret link');
 assert.match(affiliates, /i\.recipient_email = \$\{email\}/, 'invitation redemption must require the named email');
@@ -105,7 +105,7 @@ const staffApi = await readFile(new URL('../src/app/api/admin/affiliates/route.t
 assert.match(staffApi, /body\?\.action === 'request_link'/, 'staff must be able to retrieve the page');
 assert.match(staffApi, /body\?\.action === 'create_invitation'/, 'staff must be able to create a one-person fallback link');
 const requestEmail = await readFile(new URL('../src/lib/affiliateEmail.ts', import.meta.url), 'utf8');
-assert.match(requestEmail, /Windsor Glow <info@windsorglow.com>/, 'requested invitations must come from the verified information address');
+assert.match(requestEmail, /Windsor Beauty <info@windsorbeauty.co.uk>/, 'requested invitations must come from the verified information address');
 assert.match(requestEmail, /You have not been added to our marketing list/, 'the email must distinguish the request from marketing consent');
 assert.match(requestEmail, /idempotencyKey: `affiliate-invitation-\$\{params\.invitationId\}`/, 'a retried invitation must never arrive twice');
 assert.match(affiliates, /AFFILIATE_DAILY_INVITATIONS = 20/, 'Raf-sent invitations must have a daily limit');
@@ -126,9 +126,9 @@ assert.equal(affiliateInvitationState({ expires_at: future, delivery_status: 'se
 assert.equal(affiliateInvitationState({ expires_at: future, delivery_status: 'not_requested' }), 'link_only');
 
 const { affiliateInvitationEmail } = await import('../src/lib/affiliateEmail.ts');
-const sample = affiliateInvitationEmail({ email: 'a@b.com', affiliateName: 'Raf', link: 'https://windsorglow.com/account/register?affiliateInvite=x', expiresAt: future, requested: false });
-assert.match(sample.subject, /Raf has invited you to Windsor Glow/);
-assert.match(sample.html, /Welcome to Windsor Glow/);
+const sample = affiliateInvitationEmail({ email: 'a@b.com', affiliateName: 'Raf', link: 'https://www.windsorbeauty.co.uk/account/register?affiliateInvite=x', expiresAt: future, requested: false });
+assert.match(sample.subject, /Raf has invited you to Windsor Beauty/);
+assert.match(sample.html, /Welcome to Windsor Beauty/);
 assert.match(sample.html, /Courtesy of Raf/);
 assert.match(sample.html, /10% off your first order/);
 assert.match(sample.text, /Join with this email address: a@b\.com/);

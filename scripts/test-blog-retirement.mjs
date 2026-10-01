@@ -1,4 +1,4 @@
-// Proves retired Windsor Glow blog material cannot be served or consulted by the live app.
+// Proves retired Windsor Beauty blog material cannot be served or consulted by the live app.
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 

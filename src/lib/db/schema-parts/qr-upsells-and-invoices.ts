@@ -41,7 +41,7 @@ export async function ensureQrUpsellsAndInvoices(db: ReturnType<typeof requireDb
   // PAG Gym Members"), never used for tracking, URLs, or reporting.
   await db`ALTER TABLE qr_campaigns ADD COLUMN IF NOT EXISTS bespoke_title TEXT`;
 
-  // One row per scan of a campaign tracking link. wg_vid is the 365-day UUID
+  // One row per scan of a campaign tracking link. wb_vid is the 365-day UUID
   // cookie used to distinguish unique visitors from repeat scans.
   await db`
     CREATE TABLE IF NOT EXISTS qr_campaign_scans (
@@ -50,7 +50,7 @@ export async function ensureQrUpsellsAndInvoices(db: ReturnType<typeof requireDb
       scanned_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       ip_address TEXT,
       user_agent TEXT,
-      wg_vid TEXT,
+      wb_vid TEXT,
       is_new_visitor BOOLEAN NOT NULL DEFAULT false
     )
   `;
@@ -67,7 +67,7 @@ export async function ensureQrUpsellsAndInvoices(db: ReturnType<typeof requireDb
   await db`ALTER TABLE qr_campaign_scans ADD COLUMN IF NOT EXISTS is_bot BOOLEAN NOT NULL DEFAULT false`;
 
   await db`CREATE INDEX IF NOT EXISTS idx_qr_campaign_scans_campaign ON qr_campaign_scans (campaign_id)`;
-  await db`CREATE INDEX IF NOT EXISTS idx_qr_campaign_scans_vid ON qr_campaign_scans (wg_vid)`;
+  await db`CREATE INDEX IF NOT EXISTS idx_qr_campaign_scans_vid ON qr_campaign_scans (wb_vid)`;
   // Every visit query filters on is_bot, so it belongs in the campaign index rather than beside it.
   await db`CREATE INDEX IF NOT EXISTS idx_qr_campaign_scans_campaign_human ON qr_campaign_scans (campaign_id) WHERE NOT is_bot`;
   await db`CREATE INDEX IF NOT EXISTS idx_qr_campaigns_slug ON qr_campaigns (slug)`;

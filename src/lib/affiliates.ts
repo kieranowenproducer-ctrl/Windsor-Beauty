@@ -6,10 +6,9 @@ export type AffiliatePayoutMethod = 'cash' | 'store_credit';
 export type AffiliatePayoutAction = 'approve' | 'refuse' | 'cancel' | 'mark_paid';
 
 export function affiliatesEnabled(): boolean {
-  // The old release switches were enabled before RAF had reviewed the scheme.
-  // Customer access now requires a separate, deliberate launch switch.
-  return process.env.NODE_ENV !== 'production'
-    || process.env.WG_AFFILIATE_CUSTOMER_ACCESS_ENABLED === 'true';
+  // Off unless deliberately switched on. Windsor Beauty has not launched an
+  // affiliate scheme; the code is kept so one can be turned on later.
+  return process.env.WB_AFFILIATE_CUSTOMER_ACCESS_ENABLED === 'true';
 }
 
 export function normaliseAffiliateCode(value: string): string {
@@ -67,7 +66,7 @@ export async function createAffiliateInvitation(
   `;
   if (!rows[0]) {
     throw new Error(source === 'affiliate'
-      ? `This invitation could not be made. The person may already have a Windsor Glow account, or you may have reached today’s limit of ${AFFILIATE_DAILY_INVITATIONS} invitations.`
+      ? `This invitation could not be made. The person may already have a Windsor Beauty account, or you may have reached today’s limit of ${AFFILIATE_DAILY_INVITATIONS} invitations.`
       : 'This invitation could not be created. Check that the account is active, the email is new, and there are fewer than 50 open invitations.');
   }
   const id = Number(rows[0].id);
@@ -84,7 +83,7 @@ export async function createAffiliateInvitation(
 export function affiliateInvitationLink(request: Request, token: string): string {
   const requestUrl = new URL(request.url);
   const local = process.env.NODE_ENV !== 'production' && ['localhost', '127.0.0.1'].includes(requestUrl.hostname);
-  const link = new URL('/account/register', local ? requestUrl.origin : 'https://windsorglow.com');
+  const link = new URL('/account/register', local ? requestUrl.origin : 'https://www.windsorbeauty.co.uk');
   link.searchParams.set('affiliateInvite', token);
   return link.toString();
 }
@@ -92,7 +91,7 @@ export function affiliateInvitationLink(request: Request, token: string): string
 /** The ready-made message Raf sends from his own phone when he shares a link himself. */
 export function affiliateShareMessage(affiliateName: string, recipientEmail: string, link: string): string {
   const name = affiliateName.trim() || 'Raf';
-  return `Hi, it's ${name}. Here is your private invitation to Windsor Glow. Join with this email address: ${recipientEmail}. You get 10% off your first order. The link works once and lasts 7 days: ${link}`;
+  return `Hi, it's ${name}. Here is your private invitation to Windsor Beauty. Join with this email address: ${recipientEmail}. You get 10% off your first order. The link works once and lasts 7 days: ${link}`;
 }
 
 export type AffiliateInvitationState = 'joined' | 'replaced' | 'expired' | 'email_failed' | 'delivered' | 'sent' | 'sending' | 'link_only';
@@ -455,7 +454,7 @@ export async function getAffiliateDashboard(customerId: number) {
   const payouts = await db`SELECT * FROM affiliate_payout_requests WHERE affiliate_customer_id = ${customerId} ORDER BY requested_at DESC`;
   const ledger = await db`SELECT * FROM affiliate_ledger WHERE affiliate_customer_id = ${customerId} ORDER BY created_at DESC LIMIT 100`;
   // Raf sees the addresses he typed himself. Someone who asked on his request page typed their own
-  // address to Windsor Glow, not to Raf, so he sees only a masked version of it.
+  // address to Windsor Beauty, not to Raf, so he sees only a masked version of it.
   const invitations = (await listInvitations(customerId, 30)).map(row => ({
     id: row.id, created_source: row.created_source, created_at: row.created_at, expires_at: row.expires_at, state: row.state,
     recipient_email: row.created_source === 'recipient' ? maskEmail(String(row.recipient_email)) : row.recipient_email,

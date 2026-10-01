@@ -4,7 +4,7 @@ import { findEnquiryById, recordExistingEnquiryReply } from '@/lib/db/enquiries'
 
 export const dynamic = 'force-dynamic';
 
-const FROM_ADDRESS = process.env.ENQUIRY_REPLY_FROM || 'Windsor Glow <info@windsorglow.com>';
+const FROM_ADDRESS = process.env.ENQUIRY_REPLY_FROM || 'Windsor Beauty <info@windsorbeauty.co.uk>';
 const PROVIDER_MESSAGE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**

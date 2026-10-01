@@ -2,7 +2,7 @@
 import AdminStickyControls from '@/components/admin/AdminStickyControls';
 
 // Website Enquiries. Every message sent through the contact form, answerable
-// from here so the reply goes out as Windsor Glow rather than from whichever
+// from here so the reply goes out as Windsor Beauty rather than from whichever
 // personal mailbox happened to open the notification email.
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
@@ -513,7 +513,7 @@ export default function AdminEnquiriesPage() {
           <p className="text-sm text-stone-500 mb-6">
             Contact form messages appear here. Add emails received in sales
             or info below until automatic mailbox capture is connected. Replying here sends from
-            info@windsorglow.com. Check the sales and info mailboxes for customer replies.
+            info@windsorbeauty.co.uk. Check the sales and info mailboxes for customer replies.
           </p>
 
           <section className="mb-6 border border-stone-200 bg-white p-4">
@@ -725,7 +725,7 @@ export default function AdminEnquiriesPage() {
                                     : 'border-gold-300 bg-gold-50/40'}`}
                                 >
                                   <p className={`text-[10px] tracking-[0.15em] uppercase mb-1.5 ${fromCustomer ? 'text-stone-700' : 'text-gold-800'}`}>
-                                    {fromCustomer ? 'Customer replied' : 'Windsor Glow replied'}
+                                    {fromCustomer ? 'Customer replied' : 'Windsor Beauty replied'}
                                   </p>
                                   <p className="text-sm text-stone-700 whitespace-pre-wrap">{visibleBody}</p>
                                   {hasHiddenHistory ? (
@@ -852,7 +852,7 @@ export default function AdminEnquiriesPage() {
                              className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                            />
                           <p className="text-[10px] text-stone-400 mt-1.5 mb-3">
-                             Goes to {enquiry.email} from info@windsorglow.com. Their original message is quoted underneath so it makes sense on its own.
+                             Goes to {enquiry.email} from info@windsorbeauty.co.uk. Their original message is quoted underneath so it makes sense on its own.
                            </p>
                            {draftFormats[enquiry.id] === 'order' && draft.trim() ? (
                              <div className="mb-4">
@@ -866,7 +866,7 @@ export default function AdminEnquiriesPage() {
                                {previewId === enquiry.id ? (
                                  <div className="mt-4 overflow-hidden border border-stone-300 bg-white shadow-sm" aria-label="Customer email preview">
                                    <div className="bg-stone-950 px-5 py-5 text-center">
-                                     <p className="font-serif text-xl text-gold-400">Windsor Glow</p>
+                                     <p className="font-serif text-xl text-gold-400">Windsor Beauty</p>
                                      <p className="mt-2 text-[9px] uppercase tracking-[0.26em] text-amber-100">Order update</p>
                                    </div>
                                    <div className="p-5 text-xs leading-6 text-stone-600">

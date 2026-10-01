@@ -5,14 +5,14 @@ import { displayOrderItems } from '@/lib/orderTrialDisplay';
 
 // INTERNAL mail, so it uses the ops identity rather than the customer-facing one.
 //
-// This goes to the Windsor Glow team, never to a customer. Sending it from orders@, the
+// This goes to the Windsor Beauty team, never to a customer. Sending it from orders@, the
 // address customers receive invoices and dispatch notes from, mixes two different jobs on one
 // identity: internal mail is never opened by the people whose engagement builds that
 // address's reputation, and if the team ever files one of these in junk it teaches the
 // provider something about the address customers depend on. Decided in the 31 July 2026
 // deliverability audit.
-const FROM_ADDRESS = 'Windsor Glow Ops <alerts@windsorglow.com>';
-const TO_ADDRESS = 'sales@windsorglow.com';
+const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
+const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   fena: 'Pay by Bank (Fena)',
@@ -84,7 +84,7 @@ export interface AdminOrderNotificationParams {
   amountMismatchNote?: string | null;
 }
 
-// Internal "new order" notification sent to sales@windsorglow.com once payment
+// Internal "new order" notification sent to sales@windsorbeauty.co.uk once payment
 // is confirmed — mirrors sendOrderConfirmationEmail's layout but adds the
 // operational details staff need (phone, payment method, full order value
 // breakdown, timestamp) that the customer-facing email omits.

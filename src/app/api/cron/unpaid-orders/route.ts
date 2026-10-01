@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     const reminders = await claimDuePaymentReminders();
     let reminderSentCount = 0;
     let reminderFailedCount = 0;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
     for (const order of reminders) {
       const resumeUrl = `${siteUrl}/resume-payment/${order.payment_access_token}`;
       const sent = order.payment_method === 'paypal'

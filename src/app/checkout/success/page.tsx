@@ -4,10 +4,10 @@
  * /checkout/success
  *
  * Redirect URL entered in Fena dashboard:
- *   https://windsorglow.com/checkout/success
+ *   https://www.windsorbeauty.co.uk/checkout/success
  *
  * Fena appends these params on return:
- *   ?order=WG-XXXX&order_id=WG-XXXX&status=paid&payment_id=<fena_id>
+ *   ?order=WB-XXXX&order_id=WB-XXXX&status=paid&payment_id=<fena_id>
  *
  * When status=paid arrives in the URL we call /api/payment/fena/confirm, which
  * is a READ-ONLY status lookup (it cannot mark anything paid — see that
@@ -81,7 +81,7 @@ function SuccessContent() {
       searchParams.get('order_reference');
 
     const fromStorage =
-      typeof window !== 'undefined' ? localStorage.getItem('wg_pending_order') : null;
+      typeof window !== 'undefined' ? localStorage.getItem('wb_pending_order') : null;
 
     const ref = fromUrl ?? fromStorage;
 
@@ -93,7 +93,7 @@ function SuccessContent() {
     setOrderNumber(ref);
 
     // Clear localStorage now that we have the reference
-    try { localStorage.removeItem('wg_pending_order'); } catch { /* ignore */ }
+    try { localStorage.removeItem('wb_pending_order'); } catch { /* ignore */ }
 
     // Shared polling loop — waits for the authenticated Fena webhook to
     // actually confirm payment in the DB. Used both when Fena redirects
@@ -252,8 +252,8 @@ function SuccessContent() {
 
         <p className="mt-6 text-[9px] text-stone-500">
           Questions?{' '}
-          <a href="mailto:sales@windsorglow.com" className="text-gold-700 hover:underline">
-            sales@windsorglow.com
+          <a href="mailto:sales@windsorbeauty.co.uk" className="text-gold-700 hover:underline">
+            sales@windsorbeauty.co.uk
           </a>
         </p>
       </div>
@@ -282,8 +282,8 @@ function SuccessContent() {
         </div>
         <p className="mt-8 text-[9px] text-stone-500">
           {orderNumber && `Quote order ${orderNumber} `}
-          <a href="mailto:sales@windsorglow.com" className="text-gold-700 hover:underline">
-            sales@windsorglow.com
+          <a href="mailto:sales@windsorbeauty.co.uk" className="text-gold-700 hover:underline">
+            sales@windsorbeauty.co.uk
           </a>
         </p>
       </div>
@@ -340,8 +340,8 @@ function SuccessContent() {
         </div>
         <p className="mt-8 text-[9px] text-stone-500">
           Email:{' '}
-          <a href="mailto:sales@windsorglow.com" className="text-gold-700 hover:underline">
-            sales@windsorglow.com
+          <a href="mailto:sales@windsorbeauty.co.uk" className="text-gold-700 hover:underline">
+            sales@windsorbeauty.co.uk
           </a>
         </p>
       </div>

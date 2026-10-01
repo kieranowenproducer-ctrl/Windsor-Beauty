@@ -1,6 +1,6 @@
 // Compliance guard for blog content (task 66e4a15d).
 //
-// Windsor Glow must not publish content that discusses checking a Certificate of
+// Windsor Beauty must not publish content that discusses checking a Certificate of
 // Analysis (COA). Any post whose title or body mentions a COA is flagged in the
 // admin dashboard (red) and can NEVER be set to published or scheduled — the API
 // forces it back to draft. This is a hard, permanent rule, not a per-post toggle.

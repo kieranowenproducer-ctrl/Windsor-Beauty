@@ -1,4 +1,4 @@
-// Which Windsor Glow address a one-to-one message from the dashboard goes out from.
+// Which Windsor Beauty address a one-to-one message from the dashboard goes out from.
 //
 // Task bc9b6309: Kieran wanted to click a customer's email address anywhere in the dashboard,
 // type a message and choose the sender ("whether it's sales at, whether it's no reply at").
@@ -8,7 +8,7 @@
 // It also carries a `notice` line telling the reader not to reply, which is exactly wrong on a
 // message a person typed to one customer about their order.
 //
-// Every address here is on windsorglow.com, which is verified with Resend. The site already
+// Every address here is on windsorbeauty.co.uk, which is verified with Resend. The site already
 // sends live mail from no-reply@, Beautiful@, alerts@ and tasks@, so nothing new needs setting
 // up to add another name on the same domain. Adding a fifth option is one entry below.
 
@@ -18,7 +18,7 @@ export const DEFAULT_ADMIN_SENDER: AdminSenderKey = 'sales';
 
 export interface AdminSender {
   key: AdminSenderKey;
-  /** Full value for Resend's `from` field, e.g. "Windsor Glow <sales@windsorglow.com>". */
+  /** Full value for Resend's `from` field, e.g. "Windsor Beauty <sales@windsorbeauty.co.uk>". */
   from: string;
   /** Bare address, so the dashboard can show exactly what the customer will see. */
   address: string;
@@ -33,10 +33,10 @@ export interface AdminSender {
 // Env overrides exist so a display name or an address can be corrected in hosting without a
 // deploy, which is how MARKETING_FROM_ADDRESS already works. Each option gets its own variable:
 // sharing one would mean changing the sales address silently moved the no-reply address too.
-const SALES_FROM = process.env.ADMIN_SALES_FROM_ADDRESS || 'Windsor Glow <sales@windsorglow.com>';
-const INFO_FROM = process.env.ADMIN_INFO_FROM_ADDRESS || 'Windsor Glow <info@windsorglow.com>';
-const SUPPORT_FROM = process.env.ADMIN_SUPPORT_FROM_ADDRESS || 'Windsor Glow <Beautiful@windsorglow.com>';
-const NO_REPLY_FROM = process.env.ADMIN_NOREPLY_FROM_ADDRESS || 'Windsor Glow <no-reply@windsorglow.com>';
+const SALES_FROM = process.env.ADMIN_SALES_FROM_ADDRESS || 'Windsor Beauty <sales@windsorbeauty.co.uk>';
+const INFO_FROM = process.env.ADMIN_INFO_FROM_ADDRESS || 'Windsor Beauty <info@windsorbeauty.co.uk>';
+const SUPPORT_FROM = process.env.ADMIN_SUPPORT_FROM_ADDRESS || 'Windsor Beauty <Beautiful@windsorbeauty.co.uk>';
+const NO_REPLY_FROM = process.env.ADMIN_NOREPLY_FROM_ADDRESS || 'Windsor Beauty <no-reply@windsorbeauty.co.uk>';
 
 /** Pulls the bare address out of a "Display Name <address>" string. */
 function bareAddress(from: string): string {
@@ -59,7 +59,7 @@ export const ADMIN_SENDERS: Record<AdminSenderKey, AdminSender> = {
     address: bareAddress(INFO_FROM),
     replyTo: bareAddress(INFO_FROM),
     label: 'Info',
-    hint: 'A general Windsor Glow message. Their reply comes back to info.',
+    hint: 'A general Windsor Beauty message. Their reply comes back to info.',
   },
   support: {
     key: 'support',

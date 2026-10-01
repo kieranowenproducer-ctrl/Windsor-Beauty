@@ -89,7 +89,7 @@ export default function ReviewPhoto({
             aria-hidden="true"
             className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-45 pointer-events-none"
           />
-          {/* Warm veil over the wash so it stays a Windsor Glow surface rather
+          {/* Warm veil over the wash so it stays a Windsor Beauty surface rather
               than a muddy smear of whatever the customer's carpet looked like. */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/55 via-white/35 to-gold-50/55 pointer-events-none" />
         </>

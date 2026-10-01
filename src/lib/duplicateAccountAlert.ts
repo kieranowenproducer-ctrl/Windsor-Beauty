@@ -6,7 +6,7 @@ import { sendAutomationAlertEmail } from '@/lib/automationAlertEmail';
 //
 // Kieran, 16 September 2026: "it should be automatically generated when a new sign is done by a new
 // customers. Only if there is an issue of someone suspected of this activity, this must be showing
-// in red on dashboard and email to sales@windsorglow.com."
+// in red on dashboard and email to sales@windsorbeauty.co.uk."
 //
 // So: a red row on the dashboard, and one email. Both use what the shop already has rather than a
 // new warning system nobody has learned yet. The red row is an ordinary Problem row in Latest

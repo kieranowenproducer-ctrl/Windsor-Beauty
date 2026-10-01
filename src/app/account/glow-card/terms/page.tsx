@@ -5,7 +5,7 @@ import { resolveCustomerFromRequest } from '@/lib/auth';
 import { glowCardDemoDesign } from '@/lib/glowCardDemo';
 
 export default async function DemoGlowCardTerms() {
-  const request = new Request('https://windsorglow.com/account/glow-card/terms', { headers: await headers() });
+  const request = new Request('https://www.windsorbeauty.co.uk/account/glow-card/terms', { headers: await headers() });
   const customer = await resolveCustomerFromRequest(request);
   if (!customer || !glowCardDemoDesign(customer.email)) notFound();
   return <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
@@ -18,7 +18,7 @@ export default async function DemoGlowCardTerms() {
       <p>Payment must be confirmed and the first order dispatched. The stamp is added after the automatic checks pass. Cancelled or refunded orders do not earn a stamp. Splitting purchases into several orders does not create extra stamps.</p>
       <p>One qualifying new member can earn one stamp for themselves and one for the member who invited them. A member's own repeat orders do not add stamps. A welcome code used on the qualifying first order does not stop the stamp. Shared phone, delivery or internet details may need staff review.</p>
       <p>Stamps 1 to 5 unlock £10 off and half-price standard UK delivery. Stamps 6 to 10 unlock £20 off and half-price standard UK delivery. Stamps 11 to 15 unlock £30 off and half-price standard UK delivery. Each stage can be claimed once and stays complete after it is claimed.</p>
-      <p>Before a code is created, Windsor Glow checks the five supporting invitations again. We may pause, refuse or revoke a stamp or unused reward where an order is refunded, details are duplicated, accounts appear connected or the scheme appears to be manipulated.</p>
+      <p>Before a code is created, Windsor Beauty checks the five supporting invitations again. We may pause, refuse or revoke a stamp or unused reward where an order is refunded, details are duplicated, accounts appear connected or the scheme appears to be manipulated.</p>
       <p>Each reward belongs to the signed-in member, works once on a product order of at least £30 before delivery, and cannot be combined with another discount code. Free delivery is not reduced below £0.</p>
     </div>
   </main>;

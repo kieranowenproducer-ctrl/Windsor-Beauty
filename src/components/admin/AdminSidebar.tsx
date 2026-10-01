@@ -46,7 +46,7 @@ const ADMIN_NAV_GROUPS: NavGroup[] = [
 ];
 
 interface CustomNavLink { id: number; label: string; href: string; }
-const ENQUIRY_SEEN_KEY = 'wg-admin-enquiry-alert-seen-v1';
+const ENQUIRY_SEEN_KEY = 'wb-admin-enquiry-alert-seen-v1';
 const SEARCH_ALIASES: Record<string, string> = {
   '/admin/dispatch': 'postage post royal mail labels shipping parcels',
   '/admin/products': 'stock inventory catalogue shop items',
@@ -282,7 +282,7 @@ export default function AdminSidebar({ previewMode = false }: { previewMode?: bo
           </svg>
         </button>
         <div className="flex items-center gap-2">
-          <span className="font-serif text-sm text-gold-700 font-bold">Windsor Glow</span>
+          <span className="font-serif text-sm text-gold-700 font-bold">Windsor Beauty</span>
           <span className="inline-flex items-center gap-1 bg-red-50 border border-red-200 text-red-700 text-[7px] tracking-[0.2em] uppercase px-1.5 py-0.5 font-semibold">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
             Admin
@@ -340,7 +340,7 @@ export default function AdminSidebar({ previewMode = false }: { previewMode?: bo
         <div className="px-5 py-5 border-b border-stone-100 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <div className="font-serif text-base text-gold-700 font-bold">Windsor Glow</div>
+              <div className="font-serif text-base text-gold-700 font-bold">Windsor Beauty</div>
               <span className="inline-flex items-center gap-1 bg-red-50 border border-red-200 text-red-700 text-[7px] tracking-[0.2em] uppercase px-1.5 py-0.5 font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
                 Admin

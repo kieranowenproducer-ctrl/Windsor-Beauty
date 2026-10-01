@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
         {/* Brand */}
         <div className="text-center mb-8">
           <div className="font-serif text-2xl tracking-[0.08em] text-gold-700 font-bold">
-            Windsor Glow
+            Windsor Beauty
           </div>
           <div className="text-[8px] tracking-[0.3em] text-stone-400 uppercase mt-1">
             Staff Portal

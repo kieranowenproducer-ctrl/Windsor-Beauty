@@ -132,7 +132,7 @@ export async function recordIpActivity(params: {
   // one side but dropping the other made the health check report a stopped
   // visitor feed even while real public visits were saving normally.
   const cookies = params.request?.headers.get('cookie') || '';
-  if (/(?:^|;\s*)wg_admin_session=/.test(cookies)) return;
+  if (/(?:^|;\s*)wb_admin_session=/.test(cookies)) return;
   const geo = params.geo ?? ipContextFromRequest(params.request);
 
   const insert = async () => {

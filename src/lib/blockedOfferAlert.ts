@@ -5,12 +5,12 @@ import { stillHeldAfterRecheck } from '@/lib/db/openingOfferProtection';
 // When a paused welcome offer actually stops somebody buying something (task 22d79f3b).
 //
 // Kieran, 18 September 2026: "these need fixing". The second of the two was that nobody was told.
-// Haydee Rivera had £160 in her basket, was shown "please contact Windsor Glow", and had to write
+// Haydee Rivera had £160 in her basket, was shown "please contact Windsor Beauty", and had to write
 // in to find out why her code would not work. She is the one who bothered. The ones who do not
 // bother simply leave, and a stopped sale leaves no trace at all.
 //
 // So the moment a pause refuses a code, it becomes a red row on the dashboard and an email to
-// sales@windsorglow.com, using the same two routes everything else here uses: the row can be ticked
+// sales@windsorbeauty.co.uk, using the same two routes everything else here uses: the row can be ticked
 // off or binned like any other, and the alert carries the existing mute so a customer pressing
 // Apply four times cannot send four emails.
 
@@ -23,7 +23,7 @@ export const BLOCKED_OFFER_CATEGORY = 'welcome_offer_blocked';
  */
 export const BLOCKED_OFFER_CUSTOMER_MESSAGE =
   'We need to check this code before it can be used. We have been told and will be in touch by email, '
-  + 'so there is nothing you need to do. If you would rather not wait, email sales@windsorglow.com.';
+  + 'so there is nothing you need to do. If you would rather not wait, email sales@windsorbeauty.co.uk.';
 
 /** How long one customer's blocked code counts as already reported. */
 const REPEAT_WINDOW_HOURS = 6;

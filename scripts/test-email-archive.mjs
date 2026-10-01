@@ -1,7 +1,7 @@
 // Proves the hidden copy is actually ON THE WIRE (task b8fc05c1).
 //
 // check:email-archive proves no email bypasses the shared sender. This proves
-// the shared sender really attaches info@windsorglow.com, by compiling the real
+// the shared sender really attaches info@windsorbeauty.co.uk, by compiling the real
 // source, standing in for the network, and reading the request body that would
 // have gone to Resend. No API key and no mailbox needed.
 //
@@ -99,9 +99,9 @@ const { sendEmail } = await import(pathToFileURL(SEND).href);
 
 console.log('\nWhere the copy goes');
 delete process.env.EMAIL_ARCHIVE_TO;
-check('defaults to info@windsorglow.com', getArchiveAddress('someone@example.com') === 'info@windsorglow.com');
-check('an email already going to info@ does not copy itself', getArchiveAddress('info@windsorglow.com') === null);
-check('is case insensitive about that', getArchiveAddress('INFO@WindsorGlow.com') === null);
+check('defaults to info@windsorbeauty.co.uk', getArchiveAddress('someone@example.com') === 'info@windsorbeauty.co.uk');
+check('an email already going to info@ does not copy itself', getArchiveAddress('info@windsorbeauty.co.uk') === null);
+check('is case insensitive about that', getArchiveAddress('INFO@WindsorBeauty.com') === null);
 process.env.EMAIL_ARCHIVE_TO = 'off';
 check('EMAIL_ARCHIVE_TO=off turns it off', getArchiveAddress('someone@example.com') === null);
 process.env.EMAIL_ARCHIVE_TO = 'archive@elsewhere.com';
@@ -111,10 +111,10 @@ delete process.env.EMAIL_ARCHIVE_TO;
 console.log('\nMerging with a blind copy a caller already set');
 const merged = withArchiveBcc('customer@example.com', 'someone.else@example.com');
 check('keeps the existing one', merged.includes('someone.else@example.com'), JSON.stringify(merged));
-check('and adds ours', merged.includes('info@windsorglow.com'), JSON.stringify(merged));
-check('never adds it twice', withArchiveBcc('a@b.com', 'info@windsorglow.com').length === 1);
+check('and adds ours', merged.includes('info@windsorbeauty.co.uk'), JSON.stringify(merged));
+check('never adds it twice', withArchiveBcc('a@b.com', 'info@windsorbeauty.co.uk').length === 1);
 check('a list of recipients still gets the copy',
-  (withArchiveBcc(['a@b.com', 'c@d.com'], undefined) || []).includes('info@windsorglow.com'));
+  (withArchiveBcc(['a@b.com', 'c@d.com'], undefined) || []).includes('info@windsorbeauty.co.uk'));
 
 console.log('\nWhat actually leaves the building');
 const realFetch = globalThis.fetch;
@@ -127,7 +127,7 @@ globalThis.fetch = async (url, init) => {
 };
 
 const result = await sendEmail({
-  from: 'Windsor Glow <orders@windsorglow.com>',
+  from: 'Windsor Beauty <orders@windsorbeauty.co.uk>',
   to: 'customer@example.com',
   subject: 'Wire check',
   text: 'Wire check',

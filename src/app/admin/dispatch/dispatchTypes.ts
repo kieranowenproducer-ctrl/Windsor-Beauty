@@ -106,14 +106,14 @@ export function dateLabel(iso: string): string {
 
 // ── Smart tracking parser ──────────────────────────────────────────────────────
 // Accepts any text content (Click & Drop CSV export, or plain copied text).
-// Returns a map of { WG-ORDERNUM → TRACKING_NUMBER }.
+// Returns a map of { WB-ORDERNUM → TRACKING_NUMBER }.
 //
 // Strategy 1 — header-based CSV: looks for a column matching "order ref / id"
 //   and another matching "tracking / barcode", then pairs them row-by-row.
 // Strategy 2 — pattern scan: regardless of format, finds any line that contains
-//   both a WG-XXXXX pattern and a Royal Mail tracking pattern.
+//   both a WB-XXXXX pattern and a Royal Mail tracking pattern.
 
-export const WG_PATTERN = /\b(WG-[A-Z0-9]{4,})\b/i;
+export const WB_PATTERN = /\b(WB-[A-Z0-9]{4,})\b/i;
 // Royal Mail Tracked 24/48: e.g. TT123456789GB (2 letters + 8-9 digits + 2 letters)
 // International: e.g. RD123456789GB
 export const RM_TRACKING_PATTERN = /\b([A-Z]{2}\d{7,9}[A-Z]{2})\b/i;
@@ -157,7 +157,7 @@ export function parseTrackingContent(content: string): { matches: Record<string,
       const cells = parseCSVRow(lines[i]);
       const orderNum = cells[orderCol]?.trim().toUpperCase();
       const tracking = cells[trackingCol]?.trim().toUpperCase();
-      if (orderNum?.match(WG_PATTERN) && tracking?.match(RM_TRACKING_PATTERN)) {
+      if (orderNum?.match(WB_PATTERN) && tracking?.match(RM_TRACKING_PATTERN)) {
         matches[orderNum] = tracking;
       }
     }
@@ -169,7 +169,7 @@ export function parseTrackingContent(content: string): { matches: Record<string,
   // Strategy 2: pattern scan — works on any format including plain copied text
   const matches: Record<string, string> = {};
   for (const line of lines) {
-    const wgMatch = line.match(WG_PATTERN);
+    const wgMatch = line.match(WB_PATTERN);
     const trackMatch = line.match(RM_TRACKING_PATTERN);
     if (wgMatch && trackMatch) {
       matches[wgMatch[1].toUpperCase()] = trackMatch[1].toUpperCase();

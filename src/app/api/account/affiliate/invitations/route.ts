@@ -15,8 +15,8 @@ export const dynamic = 'force-dynamic';
 const headers = { 'Cache-Control': 'no-store' };
 
 /**
- * Raf types the person's email address and presses Send. Windsor Glow emails the invitation from
- * info@windsorglow.com, and the same link always comes back with a ready-made message, so Raf can
+ * Raf types the person's email address and presses Send. Windsor Beauty emails the invitation from
+ * info@windsorbeauty.co.uk, and the same link always comes back with a ready-made message, so Raf can
  * send it from his own phone whether or not the email goes through.
  */
 export async function POST(request: Request) {
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   if (sendByEmail) {
     email = 'not_sent';
     try {
-      // Someone who unsubscribed from Windsor Glow email is not emailed again. Raf can still send
+      // Someone who unsubscribed from Windsor Beauty email is not emailed again. Raf can still send
       // the link himself; the answer he sees is the same as any other failed send.
       const contact = await findMarketingContactByEmail(invitation.recipientEmail);
       if (!contact?.unsubscribed_at) {

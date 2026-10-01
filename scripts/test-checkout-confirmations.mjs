@@ -94,7 +94,7 @@ function env(name) {
   return undefined;
 }
 
-// The Windsor Glow credential here is read only, so the column behaviour is proved on a throwaway
+// The Windsor Beauty credential here is read only, so the column behaviour is proved on a throwaway
 // copy in the one database this machine can write to, the same way the handover SQL is.
 const url = env('AI_COSTS_DATABASE_URL');
 if (!url) {
@@ -110,18 +110,18 @@ try {
   await sql.query(`ALTER TABLE ${T} ADD COLUMN IF NOT EXISTS checkout_confirmations JSONB`);
 
   await sql.query(`INSERT INTO ${T} (order_number, checkout_confirmations) VALUES ($1, $2)`,
-    ['WG-CONFIRMED', JSON.stringify(record)]);
+    ['WB-CONFIRMED', JSON.stringify(record)]);
   // An order made by the invoice system, where nobody ticked anything.
-  await sql.query(`INSERT INTO ${T} (order_number) VALUES ($1)`, ['WG-INVOICE']);
+  await sql.query(`INSERT INTO ${T} (order_number) VALUES ($1)`, ['WB-INVOICE']);
 
-  const saved = (await sql.query(`SELECT checkout_confirmations FROM ${T} WHERE order_number = 'WG-CONFIRMED'`))[0];
+  const saved = (await sql.query(`SELECT checkout_confirmations FROM ${T} WHERE order_number = 'WB-CONFIRMED'`))[0];
   assert.deepEqual(saved.checkout_confirmations.statements, record.statements,
     'the sentences did not survive the round trip through the database');
   assert.equal(saved.checkout_confirmations.researchUse, true);
   assert.equal(saved.checkout_confirmations.terms, true);
   assert.equal(isConfirmedAtCheckout(saved.checkout_confirmations), true);
 
-  const invoice = (await sql.query(`SELECT checkout_confirmations FROM ${T} WHERE order_number = 'WG-INVOICE'`))[0];
+  const invoice = (await sql.query(`SELECT checkout_confirmations FROM ${T} WHERE order_number = 'WB-INVOICE'`))[0];
   assert.equal(invoice.checkout_confirmations, null,
     'an order nobody ticked anything for must read as not captured');
   assert.equal(isConfirmedAtCheckout(invoice.checkout_confirmations), false);
@@ -129,7 +129,7 @@ try {
   // The question this whole thing exists to answer, asked the way it would really be asked.
   const answered = await sql.query(
     `SELECT order_number FROM ${T} WHERE checkout_confirmations->>'researchUse' = 'true' ORDER BY order_number`);
-  assert.deepEqual(answered.map(r => r.order_number), ['WG-CONFIRMED'],
+  assert.deepEqual(answered.map(r => r.order_number), ['WB-CONFIRMED'],
     'could not ask the database which orders carry a confirmation');
 } finally {
   await sql.query(`DROP TABLE IF EXISTS ${T}`);

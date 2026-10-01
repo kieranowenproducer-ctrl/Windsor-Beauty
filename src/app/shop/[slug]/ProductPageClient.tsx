@@ -58,7 +58,7 @@ export default function ProductPage({ params, initial }: {
   const [variantStockMap, setVariantStockMap] = useState<Record<string, Record<string, number>>>(
     initial?.variantStock ?? {});
   // Admin-only stock readout. The middleware sets a non-httpOnly
-  // `wg_ui_session=staff` cookie for signed-in admins (same signal Header uses),
+  // `wb_ui_session=staff` cookie for signed-in admins (same signal Header uses),
   // so the numbers only ever show for staff, never for customers.
   const [isStaff, setIsStaff] = useState(initial?.isStaff ?? false);
   const [overrides, setOverrides] = useState<Record<string, Product>>(initial?.overrides ?? {});
@@ -77,7 +77,7 @@ export default function ProductPage({ params, initial }: {
   const [saleConfig, setSaleConfig] = useState<SiteSaleConfig>(initial?.saleConfig ?? DEFAULT_SITE_SALE);
 
   // Members-only pricing test: logged-in customers carry the presentational
-  // `wg_ui_session=member` hint cookie (set by middleware alongside the real
+  // `wb_ui_session=member` hint cookie (set by middleware alongside the real
   // httpOnly session). Staff count as members so admins see the member view.
   const [isMember, setIsMember] = useState(initial?.isMember ?? false);
 

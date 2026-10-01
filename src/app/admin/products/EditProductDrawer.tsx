@@ -542,7 +542,7 @@ export default function EditProductDrawer({
                   <input
                     value={editCertificate.certificateId}
                     onChange={e => setEditCertificate(p => ({ ...p, certificateId: e.target.value }))}
-                    placeholder="e.g. WG-AM191"
+                    placeholder="e.g. WB-AM191"
                     className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                   />
                 </div>

@@ -4,8 +4,8 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in passwordResetEmail — same verified
-// windsorglow.com sending domain, distinct display name for account mail.
-const FROM_ADDRESS = 'Windsor Glow <accounts@windsorglow.com>';
+// windsorbeauty.co.uk sending domain, distinct display name for account mail.
+const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
 
 interface MembershipWelcomeEmailParams {
   to: string;
@@ -29,29 +29,29 @@ export async function sendMembershipWelcomeEmail(params: MembershipWelcomeEmailP
       // filters associate with phishing (invoice junk-folder diagnosis, 31 July 2026).
       replyTo: SUPPORT_REPLY_TO,
       to: params.to,
-      subject: 'Your 10% Windsor Glow member code',
+      subject: 'Your 10% Windsor Beauty member code',
       text:
         `${emailGreeting(params.customerName)}\n\n` +
-        `Welcome to Windsor Glow. Your account is set up and your 10% first-order discount code is ready:\n\n` +
+        `Welcome to Windsor Beauty. Your account is set up and your 10% first-order discount code is ready:\n\n` +
         `${params.discountCode}\n\n` +
         `Use it at checkout on your first order. This code is unique to your account.\n\n` +
-        (params.rafCode ? `Raf also invited you to Windsor Glow. Your personal 5% Raf code for later product orders of £30 or more is ${params.rafCode}. It belongs only to your account. Use one code per order; the 10% welcome offer and 5% Raf offer cannot be combined.\n\n` : '') +
-        `Thanks,\nWindsor Glow`,
+        (params.rafCode ? `Raf also invited you to Windsor Beauty. Your personal 5% Raf code for later product orders of £30 or more is ${params.rafCode}. It belongs only to your account. Use one code per order; the 10% welcome offer and 5% Raf offer cannot be combined.\n\n` : '') +
+        `Thanks,\nWindsor Beauty`,
       html: emailDocument({
-        title: 'Welcome to Windsor Glow',
+        title: 'Welcome to Windsor Beauty',
         headerLabel: 'Welcome',
         bodyHtml: `
         <!-- Body -->
         <tr>
           <td style="padding:40px;font-size:14px;color:#44403c;line-height:1.6">
             <p style="margin:0 0 16px;">${escapeHtml(emailGreeting(params.customerName))}</p>
-            <p style="margin:0 0 16px;">Welcome to Windsor Glow. Your account is set up and your 10% first-order discount code is ready:</p>
+            <p style="margin:0 0 16px;">Welcome to Windsor Beauty. Your account is set up and your 10% first-order discount code is ready:</p>
             <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#b8902a;">${escapeHtml(params.discountCode)}</p>
             <p style="margin:0 0 16px;">Use it at checkout on your first order. This code is unique to your account.</p>
-            ${params.rafCode ? `<p style="margin:0 0 16px;">Raf also invited you to Windsor Glow. Your personal 5% Raf code for later product orders of £30 or more is:</p>
+            ${params.rafCode ? `<p style="margin:0 0 16px;">Raf also invited you to Windsor Beauty. Your personal 5% Raf code for later product orders of £30 or more is:</p>
             <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#b8902a;">${escapeHtml(params.rafCode)}</p>
             <p style="margin:0 0 16px;">This code belongs only to your account. Use one code per order; the 10% welcome offer and 5% Raf offer cannot be combined.</p>` : ''}
-            <p style="margin:0;">Thanks,<br />Windsor Glow</p>
+            <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>
         </tr>`,
       }),

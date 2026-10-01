@@ -13,14 +13,14 @@ const page = await browser.newPage();
 // Pre-pass the site EntryGate (session-scoped) so we photograph the pay page
 // itself; the gate has its own screenshot from the earlier pass.
 await page.evaluateOnNewDocument(() => {
-  sessionStorage.setItem('wg_entry_confirmed', 'true');
-  sessionStorage.setItem('wg_terms_accepted', 'true');
+  sessionStorage.setItem('wb_entry_confirmed', 'true');
+  sessionStorage.setItem('wb_terms_accepted', 'true');
 });
 
 // 1. Pay page — locked state (checkbox unticked)
-await page.goto(`https://www.windsorglow.com/pay/${payToken}`, { waitUntil: 'networkidle0', timeout: 60000 });
+await page.goto(`https://www.windsorbeauty.co.uk/pay/${payToken}`, { waitUntil: 'networkidle0', timeout: 60000 });
 await new Promise(r => setTimeout(r, 1200));
-await page.screenshot({ path: `${outDir}/wg-pay-locked.png` });
+await page.screenshot({ path: `${outDir}/wb-pay-locked.png` });
 
 // 2. Tick the T&C box -> buttons unlock
 const ticked = await page.evaluate(() => {
@@ -29,18 +29,18 @@ const ticked = await page.evaluate(() => {
   return !!box;
 });
 await new Promise(r => setTimeout(r, 700));
-await page.screenshot({ path: `${outDir}/wg-pay-unlocked.png` });
+await page.screenshot({ path: `${outDir}/wb-pay-unlocked.png` });
 console.log('pay page checkbox found:', ticked);
 
 // 3. Coming-soon modal with the new expectations panel
-await page.goto('https://www.windsorglow.com/coming-soon', { waitUntil: 'networkidle0', timeout: 60000 });
+await page.goto('https://www.windsorbeauty.co.uk/coming-soon', { waitUntil: 'networkidle0', timeout: 60000 });
 await new Promise(r => setTimeout(r, 800));
 await page.evaluate(() => {
-  const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes('Become a Windsor Glow Member'));
+  const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes('Become a Windsor Beauty Member'));
   btn?.click();
 });
 await new Promise(r => setTimeout(r, 800));
-await page.screenshot({ path: `${outDir}/wg-modal.png` });
+await page.screenshot({ path: `${outDir}/wb-modal.png` });
 
 await browser.close();
 console.log('done');

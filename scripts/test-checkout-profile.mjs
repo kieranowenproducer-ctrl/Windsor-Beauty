@@ -24,10 +24,10 @@ const customer = {
 async function openCheckout(account) {
   const context = await browser.newContext();
   await context.addInitScript(({ owner }) => {
-    localStorage.setItem('wg_entry_confirmed_v2', String(Date.now()));
-    sessionStorage.setItem('wg_entry_confirmed', 'true');
-    sessionStorage.setItem('wg_discount_popup_seen', 'true');
-    localStorage.setItem('wg_cart_v2', JSON.stringify({
+    localStorage.setItem('wb_entry_confirmed_v2', String(Date.now()));
+    sessionStorage.setItem('wb_entry_confirmed', 'true');
+    sessionStorage.setItem('wb_discount_popup_seen', 'true');
+    localStorage.setItem('wb_cart_v2', JSON.stringify({
       owner,
       items: [{
         productId: '055', name: '5-Amino-1MQ 100mg', slug: '5-amino-1mq-100mg',

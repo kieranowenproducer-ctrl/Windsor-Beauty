@@ -5,10 +5,10 @@ import { glowCardDemoDesign } from '@/lib/glowCardDemo';
 import GlowCardClient from './GlowCardClient';
 
 export default async function GlowCardDemoPage() {
-  const request = new Request('https://windsorglow.com/account/glow-card', { headers: await headers() });
+  const request = new Request('https://www.windsorbeauty.co.uk/account/glow-card', { headers: await headers() });
   const customer = await resolveCustomerFromRequest(request);
   const demoDesign = customer ? glowCardDemoDesign(customer.email) : null;
-  const liveMemberCard = (process.env.WG_MEMBER_REFERRALS_ENABLED === 'true' || process.env.WG_GLOW_CARD_LOYALTY_ENABLED === 'true') && customer?.email_verified;
+  const liveMemberCard = (process.env.WB_MEMBER_REFERRALS_ENABLED === 'true' || process.env.WB_GLOW_CARD_LOYALTY_ENABLED === 'true') && customer?.email_verified;
   if (!customer || customer.banned_at || (!demoDesign && !liveMemberCard)) notFound();
   return <GlowCardClient />;
 }

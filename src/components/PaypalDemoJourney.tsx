@@ -73,7 +73,7 @@ export default function PaypalDemoJourney({ paymentUrl, initiallyConfirmed = fal
               <span className="text-sm font-semibold text-stone-700">Total</span>
               <span className="font-serif text-3xl text-[#8b6a2d]">£{DEMO_TOTAL.toFixed(2)}</span>
             </div>
-            <p className="mt-6 border-t border-stone-100 pt-5 text-[10px] leading-relaxed text-stone-400">PayPal receives the total and order reference WG-DEMO. It does not receive any product name.</p>
+            <p className="mt-6 border-t border-stone-100 pt-5 text-[10px] leading-relaxed text-stone-400">PayPal receives the total and order reference WB-DEMO. It does not receive any product name.</p>
           </aside>
         </div>
       </div>

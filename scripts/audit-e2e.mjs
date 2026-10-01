@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 
-const BASE = 'https://www.windsorglow.com';
+const BASE = 'https://www.windsorbeauty.co.uk';
 const TEST_EMAIL = process.argv[2];
 if (!TEST_EMAIL || !TEST_EMAIL.includes('@')) throw new Error('pass a test email');
 
@@ -76,14 +76,14 @@ if (candidates.length === 1) {
     method: 'POST',
     headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: 'Windsor Glow <accounts@windsorglow.com>',
+      from: 'Windsor Beauty <accounts@windsorbeauty.co.uk>',
       to: TEST_EMAIL,
-      reply_to: 'sales@windsorglow.com',
-      subject: 'Reminder: confirm your email to activate your Windsor Glow account',
+      reply_to: 'sales@windsorbeauty.co.uk',
+      subject: 'Reminder: confirm your email to activate your Windsor Beauty account',
       text:
-        `Hi Audit,\n\nThis is a friendly final reminder from Windsor Glow. You created a member account but have not yet verified your email address, so we have generated a fresh verification link for you.\n\n` +
+        `Hi Audit,\n\nThis is a friendly final reminder from Windsor Beauty. You created a member account but have not yet verified your email address, so we have generated a fresh verification link for you.\n\n` +
         `Verify your email: ${BASE}/account/verify-email?token=${token}\n\n` +
-        `This link will expire in 48 hours. If you did not create this account, you can safely ignore this email.\n\nThanks,\nWindsor Glow`,
+        `This link will expire in 48 hours. If you did not create this account, you can safely ignore this email.\n\nThanks,\nWindsor Beauty`,
     }),
   });
   reminderSent = resendRes.ok;

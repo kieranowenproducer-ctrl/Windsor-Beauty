@@ -12,7 +12,7 @@ import Link from 'next/link';
  * Same-site paths only. It must start with a single slash: `//evil.com` and
  * `https://evil.com` are both valid destinations for a browser, so an
  * unchecked value here would turn the login page into an open redirect that
- * hands Windsor Glow's name to somebody else's page.
+ * hands Windsor Beauty's name to somebody else's page.
  */
 function safeNextPath(): string | null {
   if (typeof window === 'undefined') return null;
@@ -75,7 +75,7 @@ export default function AccountLoginPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Glow</p>
+          <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Beauty</p>
           <h1 className="font-serif text-3xl text-stone-800 tracking-wide">Sign In</h1>
           <p className="text-xs text-stone-500 mt-2 leading-relaxed">
             Access your account to track orders, view your order history, and manage your details.
@@ -131,7 +131,7 @@ export default function AccountLoginPage() {
         </div>
 
         <p className="text-center text-xs text-stone-500 mt-6">
-          New to Windsor Glow?{' '}
+          New to Windsor Beauty?{' '}
           <Link href="/account/register" className="text-gold-700 hover:text-gold-800 font-medium">
             Create an account
           </Link>

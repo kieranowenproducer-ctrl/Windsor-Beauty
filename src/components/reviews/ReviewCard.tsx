@@ -72,7 +72,7 @@ export default function ReviewCard({
               W
             </span>
             <span className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold">
-              Reply from Windsor Glow
+              Reply from Windsor Beauty
             </span>
           </div>
           <p className="text-xs text-stone-500 leading-relaxed whitespace-pre-wrap">{review.admin_reply}</p>

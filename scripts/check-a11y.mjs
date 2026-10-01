@@ -103,8 +103,8 @@ const RULES = [
 // The gate's own storage keys (EntryGate.tsx). Seeding them is how the browser
 // gets to see the shop itself; the gate is then tested separately, on purpose,
 // in a second browser that has NOT been let through.
-const GATE_LOCAL_KEY = 'wg_entry_confirmed_v2';
-const GATE_SESSION_KEY = 'wg_entry_confirmed';
+const GATE_LOCAL_KEY = 'wb_entry_confirmed_v2';
+const GATE_SESSION_KEY = 'wb_entry_confirmed';
 
 let passed = 0;
 const failures = [];
@@ -146,7 +146,7 @@ if (!hasDb && process.env.ALLOW_NO_DB !== '1') {
 
 // Wait for the page to be built, then give the network a short chance to go
 // quiet — but never insist on it. `waitUntil: 'networkidle'` alone works fine
-// against a local build and CANNOT be used against windsorglow.com: the real
+// against a local build and CANNOT be used against windsorbeauty.co.uk: the real
 // site keeps a connection open and never goes idle, so every single page timed
 // out at 45 seconds and the check reported the live shop as broken. That was
 // the check failing, not the shop.
@@ -217,7 +217,7 @@ for (const size of SIZES) {
   const page = await context.newPage();
   // `networkidle` on purpose is NOT used here. It is fine against a local build,
   // but the real site keeps a connection open, never goes quiet, and the whole
-  // check died on it the first time it was pointed at windsorglow.com. Waiting
+  // check died on it the first time it was pointed at windsorbeauty.co.uk. Waiting
   // for the page to be built and then settling for a moment is enough: what
   // follows is keyboard work, and the keyboard does not care about a pending
   // analytics request.
@@ -283,7 +283,7 @@ for (const size of SIZES) {
   const page = await context.newPage();
   // `networkidle` on purpose is NOT used here. It is fine against a local build,
   // but the real site keeps a connection open, never goes quiet, and the whole
-  // check died on it the first time it was pointed at windsorglow.com. Waiting
+  // check died on it the first time it was pointed at windsorbeauty.co.uk. Waiting
   // for the page to be built and then settling for a moment is enough: what
   // follows is keyboard work, and the keyboard does not care about a pending
   // analytics request.

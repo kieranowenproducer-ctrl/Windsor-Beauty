@@ -4,8 +4,8 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in shippingEmail — same verified
-// windsorglow.com sending domain, distinct display name for account mail.
-const FROM_ADDRESS = 'Windsor Glow <accounts@windsorglow.com>';
+// windsorbeauty.co.uk sending domain, distinct display name for account mail.
+const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
 
 export function isPasswordResetEmailConfigured() {
   return Boolean(process.env.RESEND_API_KEY);
@@ -31,27 +31,27 @@ export async function sendPasswordResetEmail(params: PasswordResetEmailParams): 
       // filters associate with phishing (invoice junk-folder diagnosis, 31 July 2026).
       replyTo: SUPPORT_REPLY_TO,
       to: params.to,
-      subject: 'Reset your Windsor Glow password',
+      subject: 'Reset your Windsor Beauty password',
       text:
         `${emailGreeting(params.customerName)}\n\n` +
-        `We received a request to reset the password for your Windsor Glow account.\n\n` +
+        `We received a request to reset the password for your Windsor Beauty account.\n\n` +
         `Reset your password: ${params.resetUrl}\n\n` +
         `This link will expire in one hour. If you did not request a password reset, you can safely ignore this email. Your password will not be changed.\n\n` +
-        `Thanks,\nWindsor Glow`,
+        `Thanks,\nWindsor Beauty`,
       html: emailDocument({
-        title: 'Reset your Windsor Glow password',
+        title: 'Reset your Windsor Beauty password',
         headerLabel: 'Password Reset',
         bodyHtml: `
         <!-- Body -->
         <tr>
           <td style="padding:40px;font-size:14px;color:#44403c;line-height:1.6">
             <p style="margin:0 0 16px;">${escapeHtml(emailGreeting(params.customerName))}</p>
-            <p style="margin:0 0 16px;">We received a request to reset the password for your Windsor Glow account.</p>
+            <p style="margin:0 0 16px;">We received a request to reset the password for your Windsor Beauty account.</p>
             <p style="margin:0 0 16px;">
               <a href="${params.resetUrl}" style="color:#b8902a;">Reset your password &rarr;</a>
             </p>
             <p style="margin:0 0 16px;">This link will expire in one hour. If you did not request a password reset, you can safely ignore this email. Your password will not be changed.</p>
-            <p style="margin:0;">Thanks,<br />Windsor Glow</p>
+            <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>
         </tr>`,
       }),

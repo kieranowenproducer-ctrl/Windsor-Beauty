@@ -1,22 +1,22 @@
 // Staff view + "preview as customer" (two flavours).
 //
-// The middleware sets a non-httpOnly `wg_ui_session=staff` cookie for signed-in
+// The middleware sets a non-httpOnly `wb_ui_session=staff` cookie for signed-in
 // admins; the storefront uses it to show admin-only chrome (stock editors, price
 // editors, the Admin nav link). That same cookie also reads as "a logged-in
 // member" for pricing, so a plain preview shows the member price.
 //
 // An admin can preview the storefront in one of two customer modes without
-// logging out, chosen via the `wg_view_as` cookie:
+// logging out, chosen via the `wb_view_as` cookie:
 //   'member' — a logged-in member (member pricing, no signup pitch)
 //   'guest'  — a not-logged-in visitor (non-member pricing, signup pitch,
 //              discount popup) — a full "logged out" simulation
 // Absent/anything else = normal admin view. The real admin session (httpOnly
-// wg_admin_session) is never touched, so nothing about the login changes.
+// wb_admin_session) is never touched, so nothing about the login changes.
 
 export type PreviewMode = 'admin' | 'member' | 'guest';
 
-const PREVIEW_COOKIE = 'wg_view_as';
-const LEGACY_COOKIE = 'wg_view_as_customer'; // superseded by wg_view_as
+const PREVIEW_COOKIE = 'wb_view_as';
+const LEGACY_COOKIE = 'wb_view_as_customer'; // superseded by wb_view_as
 
 function has(name: string, value: string): boolean {
   if (typeof document === 'undefined') return false;
@@ -30,7 +30,7 @@ function cookieValue(name: string): string {
 
 /** Signed-in admin, regardless of preview mode (used to show the toggle itself). */
 export function hasStaffSession(): boolean {
-  return has('wg_ui_session', 'staff');
+  return has('wb_ui_session', 'staff');
 }
 
 /** The admin's chosen customer-preview mode (only meaningful for admins). */
@@ -52,7 +52,7 @@ export function isStaffView(): boolean {
  *  - Admin previewing: 'admin' and 'member' modes are members; 'guest' is not.
  */
 export function isMemberView(): boolean {
-  const memberCookie = has('wg_ui_session', 'member') || has('wg_ui_session', 'staff');
+  const memberCookie = has('wb_ui_session', 'member') || has('wb_ui_session', 'staff');
   if (hasStaffSession()) return getPreviewMode() !== 'guest';
   return memberCookie;
 }

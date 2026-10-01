@@ -9,12 +9,12 @@ import { readFileSync } from 'node:fs';
 import { neon } from '@neondatabase/serverless';
 
 // NEON_ADMIN_URL (in .env.local, gitignored) is the direct admin connection
-// to the Windsor Glow Neon database — production env vars are Sensitive-type
+// to the Windsor Beauty Neon database — production env vars are Sensitive-type
 // in Vercel and cannot be pulled, so this is the local access path.
 const env = readFileSync('.env.local', 'utf8');
 const adminUrl = env.match(/^NEON_ADMIN_URL=["']?([^"'\r\n]+)/m)?.[1];
 if (!adminUrl) throw new Error('NEON_ADMIN_URL not found in .env.local');
-// NEON_ADMIN_URL's default database is kj-guitar; Windsor Glow lives in
+// NEON_ADMIN_URL's default database is kj-guitar; Windsor Beauty lives in
 // `neondb` on the same Neon host (verified via pg_tables, 2026-07-07).
 const url = adminUrl.replace(/\/[^/?]+(\?|$)/, '/neondb$1');
 const sql = neon(url, { fetchOptions: { cache: 'no-store' } });

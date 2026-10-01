@@ -24,13 +24,13 @@ import { CUSTOMER_SESSION_COOKIE } from '@/lib/auth';
 const PEN_SLUGS = PRODUCTS.filter((p) => p.categories.includes('Pens')).map((p) => p.slug);
 
 export const metadata: Metadata = {
-  title: 'Windsor Glow | Premium Research Compounds',
+  title: 'Windsor Beauty | Premium Research Compounds',
   description:
-    'Windsor Glow supplies high-purity research peptides and compounds for scientific and laboratory use only. 99% purity, lab tested, certificate of analysis with every order.',
+    'Windsor Beauty supplies high-purity research peptides and compounds for scientific and laboratory use only. 99% purity, lab tested, certificate of analysis with every order.',
   // Short label shown under the icon when added to an iPhone home screen —
   // without this, iOS falls back to the full <title> above and truncates it.
   appleWebApp: {
-    title: 'Windsor Glow',
+    title: 'Windsor Beauty',
   },
 };
 

@@ -584,7 +584,7 @@ export default function AdminCustomersPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'windsor-glow-marketing-list.csv';
+    link.download = 'windsor-beauty-marketing-list.csv';
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -603,7 +603,7 @@ export default function AdminCustomersPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'windsor-glow-referral-attribution.csv';
+    link.download = 'windsor-beauty-referral-attribution.csv';
     link.click();
     URL.revokeObjectURL(url);
   }

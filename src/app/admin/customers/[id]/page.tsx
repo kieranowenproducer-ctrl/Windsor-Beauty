@@ -377,11 +377,11 @@ export default function CustomerProfilePage() {
             ? 'They will be signed out and will not be able to sign in or place an order. Nothing is deleted, and you can lift it again here at any time.'
             : 'They will be able to sign in and order again.'}
         </p>
-        <label htmlFor="wg-ban-reason" className="block text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">
+        <label htmlFor="wb-ban-reason" className="block text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">
           {shouldBan ? 'Why are you banning them?' : 'Why are you lifting it?'}
         </label>
         <input
-          id="wg-ban-reason"
+          id="wb-ban-reason"
           value={banReason}
           onChange={e => setBanReason(e.target.value)}
           placeholder="Staff only ever see this"

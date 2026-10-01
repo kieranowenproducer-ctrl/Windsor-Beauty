@@ -10,7 +10,7 @@ export default function ReturnsPolicyPage() {
     >
       <PolicySection heading="The Nature of Our Products">
         <p>
-          Windsor Glow supplies research compounds that are sealed, batch-referenced and supplied with supporting
+          Windsor Beauty supplies research compounds that are sealed, batch-referenced and supplied with supporting
           documentation such as a certificate of analysis. For reasons of safety, integrity and regulatory
           compliance, we are unable to accept returns of any product once its packaging or seal has been opened or
           tampered with.

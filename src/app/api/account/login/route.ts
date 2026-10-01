@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   // to the staff panel, customers sign in with their email and reach their account.
   if (ADMIN_USERNAME && ADMIN_PASSWORD && ADMIN_SESSION_TOKEN && identifier === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     const response = NextResponse.json({ success: true, redirect: '/admin/dashboard' });
-    response.cookies.set('wg_admin_session', ADMIN_SESSION_TOKEN, {
+    response.cookies.set('wb_admin_session', ADMIN_SESSION_TOKEN, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

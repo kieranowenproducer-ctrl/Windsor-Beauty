@@ -20,7 +20,7 @@ test('a QR or tracking-link campaign cookie counts as a tracking link', () => {
 });
 
 test('the referring site is read when there is no tag', () => {
-  assert.equal(visitSourceFrom({ referrer: 'https://l.instagram.com/?u=https://windsorglow.com', userAgent: SAFARI }).source, 'instagram');
+  assert.equal(visitSourceFrom({ referrer: 'https://l.instagram.com/?u=https://www.windsorbeauty.co.uk', userAgent: SAFARI }).source, 'instagram');
   assert.equal(visitSourceFrom({ referrer: 'https://m.facebook.com/', userAgent: SAFARI }).source, 'facebook');
   assert.equal(visitSourceFrom({ referrer: 'https://www.tiktok.com/@someone', userAgent: SAFARI }).source, 'tiktok');
   assert.equal(visitSourceFrom({ referrer: 'https://www.google.co.uk/', userAgent: SAFARI }).source, 'google');
@@ -29,7 +29,7 @@ test('the referring site is read when there is no tag', () => {
 });
 
 test('moving around our own site is internal, not a new arrival', () => {
-  assert.equal(visitSourceFrom({ referrer: 'https://www.windsorglow.com/shop', userAgent: SAFARI }).source, 'internal');
+  assert.equal(visitSourceFrom({ referrer: 'https://www.windsorbeauty.co.uk/shop', userAgent: SAFARI }).source, 'internal');
   assert.equal(visitSourceFrom({ referrer: 'http://localhost:3000/', userAgent: SAFARI }).source, 'internal');
 });
 
@@ -43,7 +43,7 @@ test('the app the visitor is browsing inside is the last resort before direct', 
 test('a later page in the same session reads as moving around the site, unless a link was tagged', () => {
   assert.equal(sourceForVisit({ landing: false, userAgent: IG_APP }).source, 'internal');
   assert.equal(sourceForVisit({ landing: false, userAgent: SAFARI }).source, 'internal');
-  assert.equal(sourceForVisit({ landing: false, referrer: 'https://www.windsorglow.com/shop', userAgent: SAFARI }).source, 'internal');
+  assert.equal(sourceForVisit({ landing: false, referrer: 'https://www.windsorbeauty.co.uk/shop', userAgent: SAFARI }).source, 'internal');
   assert.equal(sourceForVisit({ landing: false, utmSource: 'instagram', userAgent: SAFARI }).source, 'instagram');
   assert.equal(sourceForVisit({ landing: true, userAgent: IG_APP }).source, 'instagram');
   assert.equal(sourceForVisit({ landing: true, userAgent: SAFARI }).source, 'direct');

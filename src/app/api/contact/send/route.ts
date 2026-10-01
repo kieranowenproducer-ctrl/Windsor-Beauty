@@ -7,8 +7,8 @@ import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { emailGreeting, emailGreetingName } from '@/lib/email/greeting';
 import { enquiryAlertRecipients } from '@/lib/email/enquiryAlerts';
 
-const FROM_ADDRESS = 'Windsor Glow Website <enquiries@windsorglow.com>';
-const TO_ADDRESS = 'sales@windsorglow.com';
+const FROM_ADDRESS = 'Windsor Beauty Website <enquiries@windsorbeauty.co.uk>';
+const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
 
 const SUBJECT_LABELS: Record<string, string> = {
   order:   'Order Enquiry',
@@ -20,7 +20,7 @@ const SUBJECT_LABELS: Record<string, string> = {
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const ORDER_PATTERN  = /^WG-[A-Z0-9]{4,}$/i;
+const ORDER_PATTERN  = /^WB-[A-Z0-9]{4,}$/i;
 
 function formatDate(value: string) {
   try {
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
   if (orderNumber && ORDER_PATTERN.test(orderNumber) && isDbConfigured()) {
     const order = await findOrderByNumber(orderNumber).catch(() => null);
     if (order) {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
       orderSummary = {
         orderNumber:  order.order_number,
         customerName: order.customer_name,
@@ -201,7 +201,7 @@ Admin:        ${orderSummary.adminUrl}
       replyTo: email,
       subject: subjectLine,
       text:
-        `New enquiry from the Windsor Glow contact form.\n\n` +
+        `New enquiry from the Windsor Beauty contact form.\n\n` +
         `Name:    ${name}\n` +
         `Email:   ${email}\n` +
         `Subject: ${subjectLabel}\n` +
@@ -260,7 +260,7 @@ Admin:        ${orderSummary.adminUrl}
           `${emailGreeting(name)}
 
 ` +
-          `Thank you for getting in touch with Windsor Glow. This is just to confirm we have received your message.
+          `Thank you for getting in touch with Windsor Beauty. This is just to confirm we have received your message.
 
 ` +
           `You asked about: ${subjectLabel}
@@ -275,8 +275,8 @@ ${message}
           `We aim to respond within one business day. You do not need to send it again.
 
 ` +
-          `Windsor Glow
-windsorglow.com
+          `Windsor Beauty
+windsorbeauty.co.uk
 
 ` +
           `All products are strictly for laboratory and in vitro research use. Not for human consumption.`,
@@ -288,7 +288,7 @@ windsorglow.com
           <tr>
             <td style="padding:40px 40px 32px">
               <p style="margin:0 0 16px;font-size:14px;color:#44403c">${escapeHtml(emailGreeting(name))}</p>
-              <p style="margin:0 0 16px;font-size:13px;color:#57534e">Thank you for getting in touch with Windsor Glow. This is just to confirm we have received your message.</p>
+              <p style="margin:0 0 16px;font-size:13px;color:#57534e">Thank you for getting in touch with Windsor Beauty. This is just to confirm we have received your message.</p>
               <p style="margin:0 0 4px;font-size:13px;color:#57534e"><strong>You asked about:</strong> ${escapeHtml(subjectLabel)}</p>
               ${orderNumber ? `<p style="margin:0 0 12px;font-size:13px;color:#57534e"><strong>Order number:</strong> <span style="font-family:monospace;color:#b8902a">${escapeHtml(orderNumber)}</span></p>` : ''}
               <p style="margin:16px 0 4px;font-size:13px;color:#57534e"><strong>Your message:</strong></p>

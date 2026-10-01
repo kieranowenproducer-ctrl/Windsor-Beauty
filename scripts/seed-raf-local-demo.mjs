@@ -5,7 +5,7 @@ import { randomBytes } from 'node:crypto';
 const raw = process.env.DATABASE_URL;
 if (!raw) throw new Error('No test DATABASE_URL was provided.');
 const url = new URL(raw);
-if (decodeURIComponent(url.pathname) !== '/windsor_glow_affiliate_test' || !url.hostname.startsWith('ep-round-cloud-')) {
+if (decodeURIComponent(url.pathname) !== '/windsor_beauty_affiliate_test' || !url.hostname.startsWith('ep-round-cloud-')) {
   throw new Error('Refusing a connection outside the existing Raf test database and branch.');
 }
 const { neon } = await import('@neondatabase/serverless');
@@ -15,7 +15,7 @@ const [tables] = await sql`
   SELECT COUNT(*)::INTEGER AS count FROM information_schema.tables
   WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
 `;
-if (database.name !== 'windsor_glow_affiliate_test' || tables.count !== 0) {
+if (database.name !== 'windsor_beauty_affiliate_test' || tables.count !== 0) {
   throw new Error('The dedicated demo database must be empty before seeding.');
 }
 

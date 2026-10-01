@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 // POST /api/invoices/[token]/accept-terms
 //
-// Records the customer ticking "I have read and agree to the Windsor Glow
+// Records the customer ticking "I have read and agree to the Windsor Beauty
 // Terms & Conditions" on the /pay/[token] page, BEFORE the payment buttons
 // unlock. Token-gated like the invoice itself; idempotent (first acceptance
 // wins — see recordInvoiceTermsAcceptance). The timestamp + IP are the

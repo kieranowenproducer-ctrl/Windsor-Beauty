@@ -45,7 +45,7 @@ export default function ProductPrice({
                   </span>
                 </p>
                 <p className="mt-1.5 text-xs text-stone-600">
-                  Because you are a Windsor Glow member. Non-members pay &pound;{nonMemberPrice(discountedPrice).toFixed(2)}.
+                  Because you are a Windsor Beauty member. Non-members pay &pound;{nonMemberPrice(discountedPrice).toFixed(2)}.
                 </p>
               </div>
             ) : (

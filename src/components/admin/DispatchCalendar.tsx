@@ -157,7 +157,7 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `windsor-glow-dispatch-${date}.csv`;
+      link.download = `windsor-beauty-dispatch-${date}.csv`;
       link.click();
       URL.revokeObjectURL(url);
       await loadOrders();

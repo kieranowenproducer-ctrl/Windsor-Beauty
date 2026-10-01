@@ -1,5 +1,5 @@
 /**
- * How every Windsor Glow email says hello.
+ * How every Windsor Beauty email says hello.
  *
  * Kieran, 10 September 2026, after seeing a draft open "Hello Emma Lewis":
  *

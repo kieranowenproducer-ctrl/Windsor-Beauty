@@ -70,7 +70,7 @@ export async function POST(_request: Request, props: { params: Promise<{ id: str
       await setInvoiceFenaPaymentUrl(invoice.id, fenaPaymentUrl).catch(() => {});
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
     emailSent = await sendInvoiceEmail({
       to: invoice.email,
       customerName: invoice.customer_name,

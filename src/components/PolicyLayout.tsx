@@ -12,7 +12,7 @@ export default function PolicyLayout({ title, intro, children }: PolicyLayoutPro
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-20">
       <div className="text-center mb-14">
-        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Glow</p>
+        <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">Windsor Beauty</p>
         <h1 className="font-serif text-4xl sm:text-5xl text-stone-800 tracking-wide mb-4">{title}</h1>
         {intro && (
           <p className="text-sm text-stone-500 leading-relaxed max-w-xl mx-auto mb-3">{intro}</p>

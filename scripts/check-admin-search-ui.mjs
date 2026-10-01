@@ -42,7 +42,7 @@ const check = (name, ok, detail = '') => {
 
 const browser = await chromium.launch({ executablePath: findChromium() });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
-await ctx.addCookies([{ name: 'wg_admin_session', value: TOKEN, domain: 'localhost', path: '/' }]);
+await ctx.addCookies([{ name: 'wb_admin_session', value: TOKEN, domain: 'localhost', path: '/' }]);
 const page = await ctx.newPage();
 const errors = [];
 page.on('pageerror', e => errors.push(String(e)));

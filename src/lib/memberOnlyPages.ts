@@ -16,10 +16,10 @@ import { findCustomerByValidSessionToken, isDbConfigured } from '@/lib/db';
  * NOTHING IS DELETED. A signed-in member gets both pages exactly as they were. This decides who
  * arrives at them, not what they say.
  *
- * WHY THE REAL SESSION AND NOT THE HINT. `wg_ui_session` is a non-httpOnly cookie the middleware
+ * WHY THE REAL SESSION AND NOT THE HINT. `wb_ui_session` is a non-httpOnly cookie the middleware
  * sets so the storefront can show member prices, and shopServerData is explicit that it "opens no
  * door on its own". Anyone can type it into their own browser. A door needs the httpOnly
- * `wg_customer_session` checked against the database, which is what this does, so the gate is
+ * `wb_customer_session` checked against the database, which is what this does, so the gate is
  * worth something.
  *
  * WHAT THIS IS NOT. A shopping account is not a researcher credential. Members are still
@@ -72,9 +72,9 @@ export async function maySeeMemberOnlyTools(): Promise<boolean> {
   // Staff keep their own way in, so the pages can be checked without a customer account.
   // The cookie must EQUAL the real admin token, the same test proxy.ts guards /admin with.
   // Until 26 Sept 2026 this only asked whether the cookie existed, so anybody who typed a
-  // `wg_admin_session` cookie of any value into their own browser got the full calculator.
+  // `wb_admin_session` cookie of any value into their own browser got the full calculator.
   const staffToken = (process.env.ADMIN_SESSION_TOKEN ?? '').trim();
-  if (staffToken && jar.get('wg_admin_session')?.value === staffToken) return true;
+  if (staffToken && jar.get('wb_admin_session')?.value === staffToken) return true;
 
   const member = await currentMember();
   if (!member) return false;

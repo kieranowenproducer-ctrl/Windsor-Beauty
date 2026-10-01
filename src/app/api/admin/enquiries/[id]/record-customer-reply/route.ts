@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  *
  * The twin of record-existing-reply, which does the same job for an email WE sent outside the
  * dashboard. This one is for the other direction, and it is the half that was missing: Emma
- * answered a website enquiry straight to info@windsorglow.com and there was no way at all to get
+ * answered a website enquiry straight to info@windsorbeauty.co.uk and there was no way at all to get
  * her words onto the thread, so the enquiry sat there reading as answered and finished.
  *
  * Automatic capture handles this on its own once the inbound address is switched on. This stays

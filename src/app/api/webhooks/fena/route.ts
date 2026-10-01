@@ -4,18 +4,18 @@
  * Receives payment status updates from Fena Pay by Bank.
  *
  * Enter this URL in your Fena dashboard:
- *   Webhook / Payment Notification URL:  https://windsorglow.com/api/webhooks/fena
+ *   Webhook / Payment Notification URL:  https://www.windsorbeauty.co.uk/api/webhooks/fena
  *   (append ?key=<FENA_WEBHOOK_SECRET> once that env var is set — see below)
  *
- * Ground truth captured from production on 2026-06-29 (order WG-FZMGBJ) via
+ * Ground truth captured from production on 2026-06-29 (order WB-FZMGBJ) via
  * Vercel logs — Fena sends a plain JSON POST (Content-Type: application/json),
  * NOT a JWT. The previously-documented JWT/token format never applied to this
  * product. Two deliveries are sent per payment (status "sent" then "paid");
  * we only act on "paid". Real shape:
  *   {
  *     "eventScope": "single-payments", "eventName": "status-update",
- *     "status": "paid", "amount": "0.50", "reference": "WG-FZMGBJ",
- *     "externalReference": "WG-FZMGBJ-7ed4e", "customerEmail": "...",
+ *     "status": "paid", "amount": "0.50", "reference": "WB-FZMGBJ",
+ *     "externalReference": "WB-FZMGBJ-7ed4e", "customerEmail": "...",
  *     "isSandbox": false, "completedAt": "...", ...
  *   }
  * `reference` matches our order_number exactly (no suffix) — Fena's own
@@ -287,7 +287,7 @@ ${existingNotes}` : notice.note)
     if (!underpaymentAdminSent) {
       await logAutomationFailure('admin_email', 'Admin sales@ notification email failed to send (underpayment alert)', {
         orderNumber: order.order_number,
-        detail: 'sendAdminOrderNotificationEmail returned false — check RESEND_API_KEY and windsorglow.com domain verification in Resend',
+        detail: 'sendAdminOrderNotificationEmail returned false — check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
       });
     }
     return new NextResponse('OK', { status: 200 });
@@ -355,7 +355,7 @@ ${existingNotes}` : notice.note)
   if (!confirmationSent) {
     await logAutomationFailure('customer_email', 'Order confirmation email failed to send', {
       orderNumber: order.order_number,
-      detail: 'sendOrderConfirmationEmail returned false — check RESEND_API_KEY and windsorglow.com domain verification in Resend',
+      detail: 'sendOrderConfirmationEmail returned false — check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
     });
   }
 
@@ -407,7 +407,7 @@ ${existingNotes}` : notice.note)
   if (!adminNotifSent) {
     await logAutomationFailure('admin_email', 'Admin sales@ notification email failed to send', {
       orderNumber: order.order_number,
-      detail: 'sendAdminOrderNotificationEmail returned false — check RESEND_API_KEY and windsorglow.com domain verification in Resend',
+      detail: 'sendAdminOrderNotificationEmail returned false — check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
     });
   }
 

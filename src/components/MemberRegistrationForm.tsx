@@ -204,7 +204,7 @@ export default function MemberRegistrationForm({
       return;
     }
     if (!form.referralCode.trim() && !referralSource) {
-      setValidationError('Please tell us where you heard about Windsor Glow.');
+      setValidationError('Please tell us where you heard about Windsor Beauty.');
       return;
     }
     /* The follow-up is asked for because the answer is worth having, so an empty one is refused
@@ -480,7 +480,7 @@ export default function MemberRegistrationForm({
         )}
         {!form.referralCode.trim() && <>
         <label className={labelCls} htmlFor="referredBy">
-          Where did you hear about Windsor Glow?
+          Where did you hear about Windsor Beauty?
         </label>
         <select
           id="referredBy"
@@ -580,11 +580,11 @@ export default function MemberRegistrationForm({
             className="mt-0.5 w-4 h-4 accent-gold-500 shrink-0"
           />
           <span className="text-xs text-stone-500 leading-relaxed">
-            Keep me updated about Windsor Glow products and exclusive offers.
+            Keep me updated about Windsor Beauty products and exclusive offers.
           </span>
         </label>
         <p className="text-xs text-stone-600 leading-relaxed">
-          Add your social profiles to hear about Windsor Glow offers there.
+          Add your social profiles to hear about Windsor Beauty offers there.
         </p>
         <div>
           <label className={labelCls} htmlFor="instagramProfile">Instagram username</label>

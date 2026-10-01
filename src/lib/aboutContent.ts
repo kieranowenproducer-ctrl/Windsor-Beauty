@@ -28,11 +28,11 @@ export interface AboutContent {
 
 export const DEFAULT_ABOUT_CONTENT: AboutContent = {
   eyebrow: 'Our Story',
-  heading: 'About Windsor Glow',
+  heading: 'About Windsor Beauty',
   tagline: 'Regenerate • Renew • Revitalise',
   paragraphs: [
-    'Windsor Glow is a premium supplier of high-purity research peptides and compounds, operating as part of the C&S Holdings Group. We are committed to providing the scientific community with the highest quality research materials, supported by comprehensive quality assurance and full documentation.',
-    'All products supplied by Windsor Glow are manufactured to the highest standards, independently tested for purity, and accompanied by a full certificate of analysis. Our catalogue covers a range of research compounds including GLP-1 receptor agonists, peptide complexes, growth hormone peptides, and other advanced research materials.',
+    'Windsor Beauty is a premium supplier of high-purity research peptides and compounds, operating as part of the C&S Holdings Group. We are committed to providing the scientific community with the highest quality research materials, supported by comprehensive quality assurance and full documentation.',
+    'All products supplied by Windsor Beauty are manufactured to the highest standards, independently tested for purity, and accompanied by a full certificate of analysis. Our catalogue covers a range of research compounds including GLP-1 receptor agonists, peptide complexes, growth hormone peptides, and other advanced research materials.',
     'We are dedicated to the responsible supply of research materials. Every product in our catalogue is supplied strictly for laboratory and in vitro research purposes. We do not make any therapeutic, diagnostic, or medical claims regarding our products.',
   ],
   values: [
@@ -42,7 +42,7 @@ export const DEFAULT_ABOUT_CONTENT: AboutContent = {
   ],
   groupEyebrow: 'Part of',
   groupHeading: 'C&S Holdings Group',
-  groupBody: 'Windsor Glow operates under the C&S Holdings Group, ensuring high standards of corporate governance, compliance, and operational excellence across all supply activities.',
+  groupBody: 'Windsor Beauty operates under the C&S Holdings Group, ensuring high standards of corporate governance, compliance, and operational excellence across all supply activities.',
   imageUrl: null,
   format: 'markdown',
 };

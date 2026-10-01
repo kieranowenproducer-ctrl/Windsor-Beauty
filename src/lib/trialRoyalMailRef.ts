@@ -1,7 +1,7 @@
 // The Royal Mail reference for a trial product (task 9e2f4a11).
 //
 // WHY THIS EXISTS
-// Kieran: "Whenever a product is classed as a trial product, I do NOT want its normal Windsor Glow
+// Kieran: "Whenever a product is classed as a trial product, I do NOT want its normal Windsor Beauty
 // product name being used as its Royal Mail product reference. Instead, each trial product should
 // automatically be assigned a simple unique neutral name such as Product 37... That reference
 // becomes permanently associated with that product."

@@ -107,7 +107,7 @@ if (!Object.prototype.hasOwnProperty.call(rates, 'freeShippingThreshold') && pro
 
 // Wait for the page to be built, then give the network a short chance to go
 // quiet — but never insist on it. `waitUntil: 'networkidle'` alone works fine
-// against a local build and CANNOT be used against windsorglow.com: the real
+// against a local build and CANNOT be used against windsorbeauty.co.uk: the real
 // site keeps a connection open and never goes idle, so every single page timed
 // out at 45 seconds and the check reported the live shop as broken. That was
 // the check failing, not the shop.

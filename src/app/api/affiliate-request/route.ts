@@ -4,7 +4,7 @@ import { sendAffiliateInvitationEmail } from '@/lib/affiliateEmail';
 import { findMarketingContactByEmail } from '@/lib/db/marketing';
 
 export const dynamic = 'force-dynamic';
-const acknowledgement = 'If this address can receive an invitation, Windsor Glow will email the private link shortly. Please check your inbox.';
+const acknowledgement = 'If this address can receive an invitation, Windsor Beauty will email the private link shortly. Please check your inbox.';
 const headers = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {

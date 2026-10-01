@@ -48,7 +48,7 @@ export default function Header() {
   // When a logged-in ADMIN is browsing the public site, the account icon should
   // take them back to the admin panel (where they're still signed in), not to
   // the customer /account login — otherwise clicking it looks like being
-  // "signed out". The middleware sets a non-httpOnly `wg_ui_session=staff`
+  // "signed out". The middleware sets a non-httpOnly `wb_ui_session=staff`
   // hint cookie for admins, which we can read here.
   const [isStaff, setIsStaff] = useState(false);
   useEffect(() => {
@@ -101,8 +101,8 @@ export default function Header() {
         {/* Header logo — horizontal version */}
         <Link href="/" className="flex items-center select-none shrink-0 relative z-10">
           <Image
-            src="/images/windsor-glow-logo-transparent.png"
-            alt="Windsor Glow"
+            src="/images/windsor-beauty-logo-transparent.png"
+            alt="Windsor Beauty"
             width={1202}
             height={304}
             className="w-auto object-contain"

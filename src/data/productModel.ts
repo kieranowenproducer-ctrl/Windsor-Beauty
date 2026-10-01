@@ -235,7 +235,7 @@ export interface CertificateInfoRow {
 export interface ProductCertificate {
   /** Shows the "Show Certificate" button on the product page when true. */
   enabled: boolean;
-  /** Batch/certificate reference code, e.g. "WG-AM191". */
+  /** Batch/certificate reference code, e.g. "WB-AM191". */
   certificateId: string;
   /** Defaults to the product's name when absent. */
   productName?: string;
@@ -278,7 +278,7 @@ export type CertificateFillerStatus = typeof CERTIFICATE_FILLER_STATUSES[number]
 // Default research-use caution shown on the certificate when no per-product
 // override is set, consistent with the disclaimer on the product page.
 export const DEFAULT_CERTIFICATE_CAUTION =
-  'All compounds sold by Windsor Glow are strictly intended for in vitro scientific research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals.';
+  'All compounds sold by Windsor Beauty are strictly intended for in vitro scientific research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals.';
 
 // Built-in fallback content for the "Storage Instructions" popup, used when
 // no admin override exists in the database yet (e.g. before the global

@@ -119,7 +119,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
 
   <div class="header">
     <div>
-      <div class="brand">Windsor Glow</div>
+      <div class="brand">Windsor Beauty</div>
       <div class="brand-sub">Research Peptides &amp; Compounds</div>
     </div>
     <div class="ref">
@@ -182,7 +182,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   ${invoice.customer_notes ? `<div class="notes"><strong>Notes:</strong><br>${escapeHtml(invoice.customer_notes)}</div>` : ''}
 
   <div class="footer">
-    <p>Windsor Glow — windsorglow.com — sales@windsorglow.com</p>
+    <p>Windsor Beauty — windsorbeauty.co.uk — sales@windsorbeauty.co.uk</p>
     <p style="margin-top:6px">${escapeHtml(invoice.footer_text || 'All products are supplied strictly for research purposes only. Not for human use.')}</p>
   </div>
 

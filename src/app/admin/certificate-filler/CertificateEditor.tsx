@@ -229,7 +229,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
 
             {/* logo */}
             <div className="mb-8 flex justify-center">
-              <Image src="/images/windsor-glow-logo-transparent.png" alt="Windsor Glow" width={220} height={70} className="h-14 sm:h-16 w-auto object-contain" />
+              <Image src="/images/windsor-beauty-logo-transparent.png" alt="Windsor Beauty" width={220} height={70} className="h-14 sm:h-16 w-auto object-contain" />
             </div>
 
             {/* header bar with inline certificate number */}

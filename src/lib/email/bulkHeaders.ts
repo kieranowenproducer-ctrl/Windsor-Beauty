@@ -3,7 +3,7 @@
 // WHY THIS EXISTS. The launch and announcement blasts went to the whole signup list on
 // 29 July 2026 with no unsubscribe header and no unsubscribe link in the body. When the only
 // way out of a mailing list is the Junk button, that is the button people press, and every
-// press is a complaint recorded against windsorglow.com. Transactional mail then inherits the
+// press is a complaint recorded against windsorbeauty.co.uk. Transactional mail then inherits the
 // damage: on 31 July a customer's invoice landed in their junk folder. Marketing complaints
 // and invoice deliverability are the same reputation.
 //
@@ -20,7 +20,7 @@ export interface BulkUnsubscribe {
   oneClick: boolean;
 }
 
-const MAILTO = 'mailto:sales@windsorglow.com?subject=Unsubscribe';
+const MAILTO = 'mailto:sales@windsorbeauty.co.uk?subject=Unsubscribe';
 
 /**
  * Build the unsubscribe route for one recipient.
@@ -39,14 +39,14 @@ export async function bulkUnsubscribeFor(email: string): Promise<BulkUnsubscribe
       oneClick: false,
     };
   }
-  const oneClickUrl = `https://windsorglow.com/api/marketing/unsubscribe?token=${encodeURIComponent(token)}`;
+  const oneClickUrl = `https://www.windsorbeauty.co.uk/api/marketing/unsubscribe?token=${encodeURIComponent(token)}`;
   return {
     headers: {
       // The URL first: Gmail POSTs to the first https entry it finds.
       'List-Unsubscribe': `<${oneClickUrl}>, <${MAILTO}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     },
-    url: `https://windsorglow.com/unsubscribe?token=${encodeURIComponent(token)}`,
+    url: `https://www.windsorbeauty.co.uk/unsubscribe?token=${encodeURIComponent(token)}`,
     oneClick: true,
   };
 }

@@ -4,10 +4,10 @@ import { sendEmail } from '@/lib/email/send';
 // INTERNAL mail — same identity split as adminOrderNotificationEmail.ts:
 // ops mail goes out from alerts@, never from the customer-facing addresses,
 // per the 31 July 2026 deliverability audit.
-const FROM_ADDRESS = 'Windsor Glow Ops <alerts@windsorglow.com>';
-const TO_ADDRESS = 'sales@windsorglow.com';
+const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
+const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://windsorglow.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
 
 export interface LowStockEmailItem {
   slug: string;
@@ -55,8 +55,8 @@ export function buildLowStockAlertEmail(items: LowStockEmailItem[], threshold: n
             <!-- Straight to the stock editor -->
             <table cellpadding="0" cellspacing="0" style="margin-bottom:24px">
               <tr>
-                <td class="wg-gold-bg" bgcolor="#b8902a" style="background:#b8902a">
-                  <a href="${SITE_URL}/admin/products" class="wg-white-text" style="display:inline-block;padding:12px 28px;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#ffffff;text-decoration:none">
+                <td class="wb-gold-bg" bgcolor="#b8902a" style="background:#b8902a">
+                  <a href="${SITE_URL}/admin/products" class="wb-white-text" style="display:inline-block;padding:12px 28px;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#ffffff;text-decoration:none">
                     Update stock in admin
                   </a>
                 </td>

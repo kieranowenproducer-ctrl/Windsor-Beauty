@@ -5,7 +5,7 @@
 // QR flow's destination (/account/register) is gate-EXEMPT, so a poster living
 // inside EntryGate could never appear there. This component mounts on every
 // public page via SiteChrome and is driven purely by the non-httpOnly
-// `wg_qr_campaign` session cookie set by /r/[slug]:
+// `wb_qr_campaign` session cookie set by /r/[slug]:
 //   fresh scan -> cookie set -> poster shows ONCE (per browser session) ->
 //   gold "Continue to Site" button -> the page they were sent to.
 // Unlike the old EntryGate version, it shows for logged-in members too — a gym
@@ -14,7 +14,7 @@
 import { useEffect, useState } from 'react';
 import { CAMPAIGN_POSTERS } from '@/lib/campaignPosters';
 
-const posterSeenKey = (slug: string) => `wg_poster_seen_${slug}`;
+const posterSeenKey = (slug: string) => `wb_poster_seen_${slug}`;
 
 export default function CampaignPoster() {
   const [poster, setPoster] = useState<{ slug: string; src: string } | null>(null);
@@ -22,7 +22,7 @@ export default function CampaignPoster() {
   useEffect(() => {
     const cookieSlug = document.cookie
       .split('; ')
-      .find(row => row.startsWith('wg_qr_campaign='))
+      .find(row => row.startsWith('wb_qr_campaign='))
       ?.split('=')[1];
     if (cookieSlug && CAMPAIGN_POSTERS[cookieSlug] && sessionStorage.getItem(posterSeenKey(cookieSlug)) !== 'true') {
       setPoster({ slug: cookieSlug, src: CAMPAIGN_POSTERS[cookieSlug] });
@@ -48,7 +48,7 @@ export default function CampaignPoster() {
           {/* eslint-disable-next-line @next/next/no-img-element -- an admin-uploaded poster from blob storage, with no known dimensions at build time. next/image needs a width and height or a configured loader, and neither is true of an image the shop owner uploads. */}
           <img
             src={poster.src}
-            alt="Exclusive Windsor Glow partner offer"
+            alt="Exclusive Windsor Beauty partner offer"
             className="w-full block"
             draggable={false}
           />

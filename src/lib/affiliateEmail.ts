@@ -1,10 +1,10 @@
 import { sendEmail, type SendEmailResult } from '@/lib/email/send';
 import { EMAIL_COLORS, emailDocument, escapeHtml } from '@/lib/email/shared';
 
-const from = 'Windsor Glow <sales@windsorglow.com>';
-const invitationFrom = 'Windsor Glow <info@windsorglow.com>';
+const from = 'Windsor Beauty <sales@windsorbeauty.co.uk>';
+const invitationFrom = 'Windsor Beauty <info@windsorbeauty.co.uk>';
 /** The two-minute "joining through Raf" video, served from the site's public folder (Samuel, 27 Sep 2026). */
-const JOIN_GUIDE_URL = 'https://www.windsorglow.com/videos/joining-through-raf.mp4';
+const JOIN_GUIDE_URL = 'https://www.windsorbeauty.co.uk/videos/joining-through-raf.mp4';
 
 export type AffiliateInvitationEmailParams = {
   email: string;
@@ -27,7 +27,7 @@ export function affiliateInvitationEmail(params: AffiliateInvitationEmailParams)
   const until = new Date(params.expiresAt).toLocaleDateString('en-GB', { timeZone: 'Europe/London', weekday: 'long', day: 'numeric', month: 'long' });
   const opening = params.requested
     ? `You asked for a private invitation from ${name}. Here it is.`
-    : `${name} has invited you to join Windsor Glow as a member, and asked us to send you this.`;
+    : `${name} has invited you to join Windsor Beauty as a member, and asked us to send you this.`;
   const steps: Array<[string, string]> = [
     ['Press the button below', `It opens your sign-up page with ${name}’s invitation already filled in.`],
     ['Join with this email address', `Use ${params.email}. The invitation only works with this address.`],
@@ -42,7 +42,7 @@ export function affiliateInvitationEmail(params: AffiliateInvitationEmailParams)
 
   const bodyHtml = `<tr><td style="padding:34px 32px 8px">
       <p style="margin:0;color:${c.gold};font-size:11px;letter-spacing:3px;text-transform:uppercase">Courtesy of ${safeName}</p>
-      <h1 style="margin:10px 0 0;color:${c.headingDark};font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:normal;line-height:1.25">Welcome to Windsor Glow</h1>
+      <h1 style="margin:10px 0 0;color:${c.headingDark};font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:normal;line-height:1.25">Welcome to Windsor Beauty</h1>
       <p style="margin:14px 0 0;color:${c.bodyText};font-size:15px;line-height:1.7">${escapeHtml(opening)} Joining takes about two minutes.</p>
     </td></tr>
     <tr><td style="padding:22px 32px 6px"><table width="100%" cellpadding="0" cellspacing="0">${stepRows}</table></td></tr>
@@ -59,7 +59,7 @@ export function affiliateInvitationEmail(params: AffiliateInvitationEmailParams)
       <p style="margin:12px 0 0">You have not been added to our marketing list. If you were not expecting this, you can ignore it, or reply to tell us and we will not send another.</p>
     </td></tr>`;
 
-  const text = `Welcome to Windsor Glow, courtesy of ${name}.
+  const text = `Welcome to Windsor Beauty, courtesy of ${name}.
 
 ${opening} Joining takes about two minutes.
 
@@ -78,15 +78,15 @@ This invitation works once and lasts until ${until}.
 
 You have not been added to our marketing list. If you were not expecting this, you can ignore it, or reply to tell us and we will not send another.
 
-Windsor Glow`;
+Windsor Beauty`;
 
   return {
-    subject: params.requested ? `Your private invitation from ${name}` : `${name} has invited you to Windsor Glow`,
+    subject: params.requested ? `Your private invitation from ${name}` : `${name} has invited you to Windsor Beauty`,
     text,
     html: emailDocument({
-      title: `Welcome to Windsor Glow, courtesy of ${name}`,
+      title: `Welcome to Windsor Beauty, courtesy of ${name}`,
       headerLabel: 'Your invitation',
-      preheader: `Welcome to Windsor Glow, courtesy of ${name}. Join in three steps and get 10% off your first order.`,
+      preheader: `Welcome to Windsor Beauty, courtesy of ${name}. Join in three steps and get 10% off your first order.`,
       bodyHtml,
     }),
   };
@@ -100,7 +100,7 @@ const RETRY_DELAY_MS = 1500;
  */
 export async function sendAffiliateInvitationEmail(params: AffiliateInvitationEmailParams & { invitationId: number }): Promise<SendEmailResult & { attempts: number }> {
   const message = affiliateInvitationEmail(params);
-  const payload = { from: invitationFrom, to: params.email, replyTo: 'info@windsorglow.com', ...message };
+  const payload = { from: invitationFrom, to: params.email, replyTo: 'info@windsorbeauty.co.uk', ...message };
   const options = {
     filing: { emailType: params.requested ? 'affiliate_requested_invitation' : 'affiliate_invitation' },
     idempotencyKey: `affiliate-invitation-${params.invitationId}`,
@@ -126,7 +126,7 @@ export async function sendAffiliatePayoutRequestEmail(params: { affiliateName: s
     from,
     to: params.email,
     subject: `We received your affiliate request for ${amount}`,
-    text: `Hello ${params.affiliateName},\n\n${message}\n\nWe will update its status after staff review.\n\nWindsor Glow`,
+    text: `Hello ${params.affiliateName},\n\n${message}\n\nWe will update its status after staff review.\n\nWindsor Beauty`,
   }, { filing: { emailType: 'affiliate_payout_request' } });
   return { ok: staffResult.ok && affiliateResult.ok, staff: staffResult, affiliate: affiliateResult };
 }
@@ -136,7 +136,7 @@ export async function sendAffiliateCodeExpiryEmail(params: { email: string; firs
   return sendEmail({
     from,
     to: params.email,
-    subject: 'Your Windsor Glow Raf discount code expires soon',
-    text: `Hello ${params.firstName || 'there'},\n\nYour personal 5% code ${params.code} expires on ${date}. It can be used on product orders of £30 or more. Delivery does not count towards the £30 minimum.\n\nWindsor Glow`,
+    subject: 'Your Windsor Beauty Raf discount code expires soon',
+    text: `Hello ${params.firstName || 'there'},\n\nYour personal 5% code ${params.code} expires on ${date}. It can be used on product orders of £30 or more. Delivery does not count towards the £30 minimum.\n\nWindsor Beauty`,
   }, { filing: { emailType: 'affiliate_code_expiry' } });
 }
