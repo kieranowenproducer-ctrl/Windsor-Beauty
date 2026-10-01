@@ -3,12 +3,12 @@ import sanitizeHtml from 'sanitize-html';
 // The Windsor Beauty brand gold (Tailwind `gold-500`, tailwind.config.js) — the
 // only colour the rich text editor is allowed to apply to text, per the
 // "no colour picker, no random colours" requirement.
-export const RICH_TEXT_GOLD = '#B8902A';
+export const RICH_TEXT_GOLD = '#AD8E54';
 
 const ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'u', 'h2', 'h3', 'ul', 'ol', 'li', 'span', 'mark'];
 
 // Matches the gold colour in either form Tiptap/browsers might serialise it as.
-const GOLD_STYLE_PATTERN = [/^#b8902a$/i, /^rgb\(\s*184\s*,\s*144\s*,\s*42\s*\)$/i];
+const GOLD_STYLE_PATTERN = [/^#AD8E54$/i, /^rgb\(\s*184\s*,\s*144\s*,\s*42\s*\)$/i];
 
 // Strict allowlist sanitizer for admin-authored rich text. Only the formatting
 // exposed by RichTextEditor is permitted to survive: bold/italic/underline,

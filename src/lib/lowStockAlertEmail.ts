@@ -24,7 +24,7 @@ export function buildLowStockAlertEmail(items: LowStockEmailItem[], threshold: n
       <td style="padding:10px 0;border-bottom:1px solid #e7e5e4;font-size:13px;color:#57534e">
         ${escapeHtml(item.name)} <span style="color:#a8a29e">(${escapeHtml(item.dosage)})</span>
       </td>
-      <td style="padding:10px 0;border-bottom:1px solid #e7e5e4;text-align:right;font-size:13px;font-weight:bold;color:${item.quantity === 0 ? '#991b1b' : '#b8902a'}">
+      <td style="padding:10px 0;border-bottom:1px solid #e7e5e4;text-align:right;font-size:13px;font-weight:bold;color:${item.quantity === 0 ? '#991b1b' : '#AD8E54'}">
         ${item.quantity === 0 ? 'SOLD OUT' : `${item.quantity} left`}
       </td>
     </tr>
@@ -34,13 +34,13 @@ export function buildLowStockAlertEmail(items: LowStockEmailItem[], threshold: n
         <!-- Body -->
         <tr>
           <td style="padding:40px 40px 32px">
-            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#b8902a">Stock Warning</p>
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#AD8E54">Stock Warning</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">Stock is running low</h1>
 
             <!-- Action note — what this email is asking for, in plain language -->
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px">
               <tr>
-                <td style="border-left:3px solid #b8902a;background:#fefce8;padding:10px 16px;font-size:12px;color:#57534e;line-height:1.5">
+                <td style="border-left:3px solid #AD8E54;background:#fefce8;padding:10px 16px;font-size:12px;color:#57534e;line-height:1.5">
                   ${items.length === 1 ? 'This product has' : 'These products have'} fewer than ${threshold} units left. Order more soon so ${items.length === 1 ? 'it does not' : 'they do not'} sell out.
                 </td>
               </tr>
@@ -55,7 +55,7 @@ export function buildLowStockAlertEmail(items: LowStockEmailItem[], threshold: n
             <!-- Straight to the stock editor -->
             <table cellpadding="0" cellspacing="0" style="margin-bottom:24px">
               <tr>
-                <td class="wb-gold-bg" bgcolor="#b8902a" style="background:#b8902a">
+                <td class="wb-gold-bg" bgcolor="#AD8E54" style="background:#AD8E54">
                   <a href="${SITE_URL}/admin/products" class="wb-white-text" style="display:inline-block;padding:12px 28px;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#ffffff;text-decoration:none">
                     Update stock in admin
                   </a>

@@ -24,8 +24,8 @@ html {
 
 body {
   font-family: 'Outfit', system-ui, sans-serif;
-  background: #ffffff;
-  color: #1a1a1a;
+  background: #FBF7F1;
+  color: #2B2723;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Guard against horizontal page scroll on mobile: a single wide element (a
@@ -45,7 +45,7 @@ body {
 }
 
 ::selection {
-  background: #B8902A;
+  background: #AD8E54;
   color: #fff;
 }
 
@@ -55,7 +55,7 @@ body {
    assistive navigation, so mouse clicks stay clean. gold-700 is the one
    gold shade that passes WCAG AA on white. */
 :focus-visible {
-  outline: 2px solid #8B6914;
+  outline: 2px solid #2B2723;
   outline-offset: 2px;
 }
 

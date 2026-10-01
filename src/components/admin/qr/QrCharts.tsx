@@ -36,8 +36,8 @@ interface QrChartsProps {
   ordersTimeSeries: { date: string; orders: number; revenue: number }[];
 }
 
-const GOLD = '#B8902A';
-const GOLD_LIGHT = '#C49A2E';
+const GOLD = '#AD8E54';
+const GOLD_LIGHT = '#C7A769';
 const STONE = '#78716c';
 const STONE_LIGHT = '#e7e5e4';
 
@@ -148,7 +148,7 @@ export default function QrCharts({ campaigns, stats, scansTimeSeries, ordersTime
                   <CartesianGrid strokeDasharray="3 3" stroke={STONE_LIGHT} horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 9, fill: STONE }} axisLine={false} tickLine={false} />
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 9, fill: STONE }} axisLine={false} tickLine={false} width={100} />
-                  <Tooltip content={<ScanTooltip />} cursor={{ fill: '#FDF8EC' }} />
+                  <Tooltip content={<ScanTooltip />} cursor={{ fill: '#FBF7F1' }} />
                   <Bar dataKey="scans" fill={GOLD} radius={0} maxBarSize={14} />
                 </BarChart>
               </ResponsiveContainer>
@@ -161,7 +161,7 @@ export default function QrCharts({ campaigns, stats, scansTimeSeries, ordersTime
                   <CartesianGrid strokeDasharray="3 3" stroke={STONE_LIGHT} horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 9, fill: STONE }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 9, fill: STONE }} axisLine={false} tickLine={false} width={100} />
-                  <Tooltip content={<RevenueTooltip />} cursor={{ fill: '#FDF8EC' }} />
+                  <Tooltip content={<RevenueTooltip />} cursor={{ fill: '#FBF7F1' }} />
                   <Bar dataKey="revenue" fill={GOLD_LIGHT} radius={0} maxBarSize={14} />
                 </BarChart>
               </ResponsiveContainer>
@@ -195,7 +195,7 @@ export default function QrCharts({ campaigns, stats, scansTimeSeries, ordersTime
                     </div>
                   );
                 }}
-                cursor={{ fill: '#FDF8EC' }}
+                cursor={{ fill: '#FBF7F1' }}
               />
               <Bar dataKey="rate" fill="#16a34a" radius={0} maxBarSize={14} />
             </BarChart>

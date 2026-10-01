@@ -113,7 +113,7 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
             </table>
             <p style="margin:0 0 24px;">${escapeHtml(codeVerifyLine)}</p>` : ''}
             <p style="margin:0 0 24px;">
-              <a href="${params.verifyUrl}" style="display:inline-block;background:#b8902a;color:#ffffff;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:12px 28px;text-decoration:none;">Verify Email Address</a>
+              <a href="${params.verifyUrl}" style="display:inline-block;background:#AD8E54;color:#ffffff;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:12px 28px;text-decoration:none;">Verify Email Address</a>
             </p>
             <p style="margin:0 0 16px;"><strong>${escapeHtml(expiryLine)}</strong></p>
             <p style="margin:0 0 16px;font-size:12px;color:#78716c;">${escapeHtml(spamLine)}</p>

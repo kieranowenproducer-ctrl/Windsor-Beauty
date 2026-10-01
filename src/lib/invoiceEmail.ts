@@ -62,7 +62,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
   const discountRow = params.discountAmount > 0 ? `
     <tr>
       <td colspan="3" style="padding:6px 0;font-size:12px;color:#a8a29e">Discount${params.discountCode ? ` (${escapeHtml(params.discountCode)})` : ''}</td>
-      <td style="padding:6px 0;text-align:right;font-size:12px;color:#b8902a">&minus;&pound;${params.discountAmount.toFixed(2)}</td>
+      <td style="padding:6px 0;text-align:right;font-size:12px;color:#AD8E54">&minus;&pound;${params.discountAmount.toFixed(2)}</td>
     </tr>
   ` : '';
 
@@ -84,7 +84,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
           <tr>
             <td style="padding:8px 0 4px;text-align:center">
               <a href="${escapeHtml(params.payUrl)}"
-                 style="display:inline-block;background:#b8902a;color:#ffffff;font-size:13px;font-weight:bold;
+                 style="display:inline-block;background:#AD8E54;color:#ffffff;font-size:13px;font-weight:bold;
                         padding:14px 36px;text-decoration:none;letter-spacing:0.02em">
                 Review &amp; Pay &pound;${params.total.toFixed(2)} &rarr;
               </a>
@@ -100,7 +100,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
             <td style="padding:4px 24px 0;text-align:center;font-size:10px;color:#a8a29e;line-height:1.6">
               By completing this payment, you confirm that you have read and agree to the
               Windsor Beauty Terms &amp; Conditions.<br />
-              <a href="${escapeHtml(termsUrl)}" style="color:#b8902a;text-decoration:underline">Read Terms &amp; Conditions</a>
+              <a href="${escapeHtml(termsUrl)}" style="color:#AD8E54;text-decoration:underline">Read Terms &amp; Conditions</a>
             </td>
           </tr>
         </table>
@@ -112,7 +112,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
         <!-- Body -->
         <tr>
           <td style="padding:40px 40px 0">
-            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#b8902a">${escapeHtml(params.subject || 'Invoice')}</p>
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#AD8E54">${escapeHtml(params.subject || 'Invoice')}</p>
             <h1 style="margin:0 0 20px;font-size:26px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">${escapeHtml(emailGreeting(params.customerName))}</h1>
             ${params.message ? `<p style="margin:0 0 24px;font-size:13px;color:#57534e;line-height:1.6;white-space:pre-line">${escapeHtml(params.message)}</p>` : ''}
 
@@ -121,7 +121,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
               <tr>
                 <td style="border:1px solid #e7dcc8;background:#fefce8;padding:10px 20px">
                   <p style="margin:0;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#a8a29e;margin-bottom:2px">Invoice Number</p>
-                  <p style="margin:0;font-size:14px;font-family:monospace;font-weight:bold;color:#b8902a;letter-spacing:0.1em">${escapeHtml(params.invoiceNumber)}</p>
+                  <p style="margin:0;font-size:14px;font-family:monospace;font-weight:bold;color:#AD8E54;letter-spacing:0.1em">${escapeHtml(params.invoiceNumber)}</p>
                   ${params.dueDate ? `<p style="margin:6px 0 0;font-size:11px;color:#a8a29e">Due ${escapeHtml(params.dueDate)}</p>` : ''}
                 </td>
               </tr>
@@ -132,7 +132,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
         <!-- Payment buttons -->
         <tr>
           <td style="padding:0 40px 8px">
-            <table width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #1a1a1a;background:#fafaf9">
+            <table width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #2B2723;background:#fafaf9">
               <tr>
                 <td style="padding:16px 24px 0;text-align:center">
                   <p style="margin:0;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#1c1917;font-weight:bold">Choose a Payment Method</p>
@@ -168,8 +168,8 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
               ${discountRow}
               ${shippingRow}
               <tr>
-                <td colspan="3" style="padding:10px 0 6px;font-size:14px;font-weight:bold;color:#1c1917;border-top:2px solid #1a1a1a">Total Due</td>
-                <td style="padding:10px 0 6px;text-align:right;font-size:14px;font-weight:bold;color:#b8902a;border-top:2px solid #1a1a1a">&pound;${params.total.toFixed(2)}</td>
+                <td colspan="3" style="padding:10px 0 6px;font-size:14px;font-weight:bold;color:#1c1917;border-top:2px solid #2B2723">Total Due</td>
+                <td style="padding:10px 0 6px;text-align:right;font-size:14px;font-weight:bold;color:#AD8E54;border-top:2px solid #2B2723">&pound;${params.total.toFixed(2)}</td>
               </tr>
             </table>
 
@@ -180,7 +180,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions about this invoice, just reply to this email, or contact
-              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#b8902a;text-decoration:none">sales@windsorbeauty.co.uk</a>
+              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#AD8E54;text-decoration:none">sales@windsorbeauty.co.uk</a>
               quoting your invoice reference <strong style="color:#78716c">${escapeHtml(params.invoiceNumber)}</strong>.
             </p>
           </td>

@@ -144,14 +144,14 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
   const discountRow = Number(params.discountAmount) > 0 ? `
     <tr>
       <td colspan="2" style="padding:6px 0;font-size:12px;color:#a8a29e">Discount${params.discountCode ? ` (${escapeHtml(params.discountCode)})` : ''}</td>
-      <td style="padding:6px 0;text-align:right;font-size:12px;color:#b8902a">&minus;&pound;${Number(params.discountAmount).toFixed(2)}</td>
+      <td style="padding:6px 0;text-align:right;font-size:12px;color:#AD8E54">&minus;&pound;${Number(params.discountAmount).toFixed(2)}</td>
     </tr>
   ` : '';
 
   const ruleDiscountRow = Number(params.ruleDiscountAmount) > 0 ? `
     <tr>
       <td colspan="2" style="padding:6px 0;font-size:12px;color:#a8a29e">Promotional discount</td>
-      <td style="padding:6px 0;text-align:right;font-size:12px;color:#b8902a">&minus;&pound;${Number(params.ruleDiscountAmount).toFixed(2)}</td>
+      <td style="padding:6px 0;text-align:right;font-size:12px;color:#AD8E54">&minus;&pound;${Number(params.ruleDiscountAmount).toFixed(2)}</td>
     </tr>
   ` : '';
 
@@ -178,7 +178,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
         <!-- Body -->
         <tr>
           <td style="padding:40px 40px 32px">
-            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#b8902a">Order Received</p>
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#AD8E54">Order Received</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">Thank you, ${escapeHtml(params.customerName.split(' ')[0])}.</h1>
             <p style="margin:0 0 24px;font-size:13px;color:#57534e;line-height:1.6">
               Your order has been confirmed and payment received. We are now preparing it for dispatch.
@@ -189,7 +189,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
               <tr>
                 <td style="border:1px solid #e7dcc8;background:#fefce8;padding:10px 20px">
                   <p style="margin:0;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#a8a29e;margin-bottom:2px">Order Reference</p>
-                  <p style="margin:0;font-size:14px;font-family:monospace;font-weight:bold;color:#b8902a;letter-spacing:0.1em">${escapeHtml(params.orderNumber)}</p>
+                  <p style="margin:0;font-size:14px;font-family:monospace;font-weight:bold;color:#AD8E54;letter-spacing:0.1em">${escapeHtml(params.orderNumber)}</p>
                 </td>
               </tr>
             </table>
@@ -221,8 +221,8 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
               </tr>
               ${paypalFeeRow}
               <tr>
-                <td colspan="2" style="padding:10px 0 6px;font-size:14px;font-weight:bold;color:#1c1917;border-top:2px solid #1a1a1a">Total Paid</td>
-                <td style="padding:10px 0 6px;text-align:right;font-size:14px;font-weight:bold;color:#b8902a;border-top:2px solid #1a1a1a">&pound;${Number(params.total).toFixed(2)}</td>
+                <td colspan="2" style="padding:10px 0 6px;font-size:14px;font-weight:bold;color:#1c1917;border-top:2px solid #2B2723">Total Paid</td>
+                <td style="padding:10px 0 6px;text-align:right;font-size:14px;font-weight:bold;color:#AD8E54;border-top:2px solid #2B2723">&pound;${Number(params.total).toFixed(2)}</td>
               </tr>
             </table>
 
@@ -246,7 +246,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions, just reply to this email, or contact
-              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#b8902a;text-decoration:none">sales@windsorbeauty.co.uk</a>
+              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#AD8E54;text-decoration:none">sales@windsorbeauty.co.uk</a>
               and include your order reference <strong style="color:#78716c">${escapeHtml(params.orderNumber)}</strong>.
             </p>
           </td>

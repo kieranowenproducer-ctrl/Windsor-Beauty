@@ -44,13 +44,13 @@ export function buildReviewNotificationEmail(params: ReviewNotificationParams): 
         <!-- Body -->
         <tr>
           <td style="padding:40px 40px 32px">
-            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#b8902a">Waiting for Approval</p>
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#AD8E54">Waiting for Approval</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">New customer review</h1>
 
             <!-- Action note — what needs doing, in plain language -->
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px">
               <tr>
-                <td style="border-left:3px solid #b8902a;background:#fefce8;padding:10px 16px;font-size:12px;color:#57534e;line-height:1.5">
+                <td style="border-left:3px solid #AD8E54;background:#fefce8;padding:10px 16px;font-size:12px;color:#57534e;line-height:1.5">
                   This review is not on the website yet. Nothing shows to customers until you approve it in the admin panel.
                 </td>
               </tr>
@@ -60,7 +60,7 @@ export function buildReviewNotificationEmail(params: ReviewNotificationParams): 
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px">
               <tr>
                 <td style="border:1px solid #e7dcc8;padding:20px">
-                  <p style="margin:0 0 8px;font-size:18px;color:#b8902a;letter-spacing:0.12em">${stars} <span style="font-size:12px;color:#a8a29e;letter-spacing:0">${params.rating} out of 5</span></p>
+                  <p style="margin:0 0 8px;font-size:18px;color:#AD8E54;letter-spacing:0.12em">${stars} <span style="font-size:12px;color:#a8a29e;letter-spacing:0">${params.rating} out of 5</span></p>
                   ${params.title ? `<p style="margin:0 0 8px;font-size:15px;font-weight:bold;color:#1c1917">${escapeHtml(params.title)}</p>` : ''}
                   <p style="margin:0 0 14px;font-size:13px;color:#57534e;line-height:1.6;white-space:pre-wrap">${escapeHtml(params.body)}</p>
                   ${params.imageUrl ? `
@@ -97,7 +97,7 @@ export function buildReviewNotificationEmail(params: ReviewNotificationParams): 
             <!-- Approve -->
             <table cellpadding="0" cellspacing="0">
               <tr>
-                <td style="background:#b8902a">
+                <td style="background:#AD8E54">
                   <a href="${approveUrl}" style="display:inline-block;padding:14px 32px;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#ffffff;text-decoration:none;font-weight:bold">Review and approve</a>
                 </td>
               </tr>

@@ -105,14 +105,14 @@ export async function POST(request: Request) {
     : `Website enquiry: ${subjectLabel}, ${name}`;
 
   const orderBlockHtml = orderSummary ? `
-    <div style="margin:20px 0;border:2px solid #b8902a;background:#fefce8;padding:16px 20px">
+    <div style="margin:20px 0;border:2px solid #AD8E54;background:#fefce8;padding:16px 20px">
       <p style="margin:0 0 12px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#a8a29e;font-family:Arial">
         Order on File
       </p>
       <table style="width:100%;border-collapse:collapse;font-size:12px;color:#57534e;font-family:Arial">
         <tr>
           <td style="padding:3px 0;color:#a8a29e;width:130px">Order Number</td>
-          <td style="padding:3px 0;font-family:monospace;font-weight:bold;color:#b8902a;letter-spacing:0.1em">${escapeHtml(orderSummary.orderNumber)}</td>
+          <td style="padding:3px 0;font-family:monospace;font-weight:bold;color:#AD8E54;letter-spacing:0.1em">${escapeHtml(orderSummary.orderNumber)}</td>
         </tr>
         <tr>
           <td style="padding:3px 0;color:#a8a29e">Customer</td>
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
         </tr>
       </table>
       <a href="${escapeHtml(orderSummary.adminUrl)}"
-         style="display:inline-block;margin-top:14px;background:#1a1a1a;color:#ffffff;font-size:10px;
+         style="display:inline-block;margin-top:14px;background:#2B2723;color:#ffffff;font-size:10px;
                 letter-spacing:0.15em;text-transform:uppercase;padding:8px 18px;text-decoration:none;font-family:Arial">
         View in Admin Panel &rarr;
       </a>
@@ -216,9 +216,9 @@ Admin:        ${orderSummary.adminUrl}
         <tr>
           <td style="padding:40px 40px 32px">
             <p style="margin:0 0 4px;font-size:13px;color:#57534e"><strong>Name:</strong> ${escapeHtml(name)}</p>
-            <p style="margin:0 0 4px;font-size:13px;color:#57534e"><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}" style="color:#b8902a">${escapeHtml(email)}</a></p>
+            <p style="margin:0 0 4px;font-size:13px;color:#57534e"><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}" style="color:#AD8E54">${escapeHtml(email)}</a></p>
             <p style="margin:0 0 4px;font-size:13px;color:#57534e"><strong>Subject:</strong> ${escapeHtml(subjectLabel)}</p>
-            ${orderNumber ? `<p style="margin:0 0 16px;font-size:13px;color:#57534e"><strong>Order Number (submitted):</strong> <span style="font-family:monospace;color:#b8902a">${escapeHtml(orderNumber)}</span></p>` : '<br>'}
+            ${orderNumber ? `<p style="margin:0 0 16px;font-size:13px;color:#57534e"><strong>Order Number (submitted):</strong> <span style="font-family:monospace;color:#AD8E54">${escapeHtml(orderNumber)}</span></p>` : '<br>'}
 
             ${orderBlockHtml}
 
@@ -285,7 +285,7 @@ windsorbeauty.co.uk`,
               <p style="margin:0 0 16px;font-size:14px;color:#44403c">${escapeHtml(emailGreeting(name))}</p>
               <p style="margin:0 0 16px;font-size:13px;color:#57534e">Thank you for getting in touch with Windsor Beauty. This is just to confirm we have received your message.</p>
               <p style="margin:0 0 4px;font-size:13px;color:#57534e"><strong>You asked about:</strong> ${escapeHtml(subjectLabel)}</p>
-              ${orderNumber ? `<p style="margin:0 0 12px;font-size:13px;color:#57534e"><strong>Order number:</strong> <span style="font-family:monospace;color:#b8902a">${escapeHtml(orderNumber)}</span></p>` : ''}
+              ${orderNumber ? `<p style="margin:0 0 12px;font-size:13px;color:#57534e"><strong>Order number:</strong> <span style="font-family:monospace;color:#AD8E54">${escapeHtml(orderNumber)}</span></p>` : ''}
               <p style="margin:16px 0 4px;font-size:13px;color:#57534e"><strong>Your message:</strong></p>
               <p style="margin:0 0 20px;white-space:pre-wrap;background:#f5f5f4;padding:12px 16px;font-size:13px;color:#57534e">${escapeHtml(message)}</p>
               <p style="margin:0;font-size:13px;color:#57534e">We aim to respond <strong>within one business day</strong>. You do not need to send it again.</p>

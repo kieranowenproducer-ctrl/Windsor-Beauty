@@ -78,7 +78,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   const discountRow = Number(invoice.discount_amount) > 0 ? `
     <tr>
       <td colspan="4" style="text-align:right">Discount${invoice.discount_code ? ` (${escapeHtml(invoice.discount_code)})` : ''}</td>
-      <td style="text-align:right;color:#b8902a">−£${Number(invoice.discount_amount).toFixed(2)}</td>
+      <td style="text-align:right;color:#AD8E54">−£${Number(invoice.discount_amount).toFixed(2)}</td>
     </tr>
   ` : '';
 
@@ -90,8 +90,8 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   <title>Invoice ${escapeHtml(invoice.invoice_number)}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #1a1a1a; padding: 32px 40px; max-width: 720px; margin: auto; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1a1a1a; padding-bottom: 16px; margin-bottom: 24px; }
+    body { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #2B2723; padding: 32px 40px; max-width: 720px; margin: auto; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #2B2723; padding-bottom: 16px; margin-bottom: 24px; }
     .brand { font-size: 22px; font-weight: bold; letter-spacing: 0.5px; }
     .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #666; margin-top: 2px; }
     .ref { text-align: right; }
@@ -106,7 +106,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
     td { padding: 8px 0; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.4; }
     .totals { margin-left: auto; width: 280px; }
     .totals td { border: none; padding: 4px 0; font-size: 12px; }
-    .totals .grand-total td { font-size: 14px; font-weight: bold; border-top: 2px solid #1a1a1a; padding-top: 8px; }
+    .totals .grand-total td { font-size: 14px; font-weight: bold; border-top: 2px solid #2B2723; padding-top: 8px; }
     .notes { margin-top: 16px; padding: 10px; background: #fefce8; border: 1px solid #e7dcc8; border-radius: 4px; font-size: 12px; color: #555; white-space: pre-line; }
     .footer { border-top: 1px solid #ccc; padding-top: 16px; margin-top: 24px; font-size: 10px; color: #888; line-height: 1.6; text-align: center; }
     @media print {
@@ -187,7 +187,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   </div>
 
   <div class="no-print" style="text-align:center;margin-top:24px">
-    <button onclick="window.print()" style="padding:10px 24px;background:#1a1a1a;color:white;border:none;cursor:pointer;font-size:14px;border-radius:4px">
+    <button onclick="window.print()" style="padding:10px 24px;background:#2B2723;color:white;border:none;cursor:pointer;font-size:14px;border-radius:4px">
       Print / Save as PDF
     </button>
   </div>

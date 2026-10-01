@@ -1,5 +1,5 @@
-// gold-500 = #B8902A, stone-100 = #f5f5f4 (Tailwind defaults for this project)
-const GOLD = '#B8902A';
+// gold-500 = #AD8E54, stone-100 = #f5f5f4 (Tailwind defaults for this project)
+const GOLD = '#AD8E54';
 const STONE_LIGHT = '#f5f5f4';
 
 // Each star sits inside a small square box — Trustpilot-inspired but in Windsor

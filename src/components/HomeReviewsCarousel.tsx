@@ -49,9 +49,9 @@ function RatingSummary({ average, count }: { average: number; count: number }) {
       <div
         className="text-center px-8 py-7 sm:px-10 sm:py-8"
         style={{
-          background: 'linear-gradient(160deg, #fefcf6 0%, #fffdf8 60%, #fdf8ec 100%)',
-          border: '1px solid #D4AF5A',
-          boxShadow: '0 4px 32px 0 rgba(184,144,42,0.08), 0 1px 4px 0 rgba(184,144,42,0.10)',
+          background: 'linear-gradient(160deg, #fefcf6 0%, #fffdf8 60%, #FBF7F1 100%)',
+          border: '1px solid #C7A769',
+          boxShadow: '0 4px 32px 0 rgba(173,142,84,0.08), 0 1px 4px 0 rgba(173,142,84,0.10)',
         }}
       >
         <div

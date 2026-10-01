@@ -75,7 +75,7 @@ export function buildAutomationAlertEmail(params: AutomationAlertParams): { subj
             <p style="margin:0 0 24px;"><strong>What happened:</strong> ${escapeHtml(params.message)}</p>
             <p style="margin:0 0 24px;">${escapeHtml(whatToDo)}</p>
             <p style="margin:0 0 24px;">
-              <a href="${healthUrl}" style="display:inline-block;background:#b8902a;color:#ffffff;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:12px 28px;text-decoration:none;">Open System Health</a>
+              <a href="${healthUrl}" style="display:inline-block;background:#AD8E54;color:#ffffff;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:12px 28px;text-decoration:none;">Open System Health</a>
             </p>
             ${params.detail ? `<p style="margin:0 0 8px;font-size:11px;color:#78716c;">Technical detail</p><pre style="margin:0 0 16px;padding:12px;background:#fafaf9;border:1px solid #e7e5e4;font-size:11px;color:#57534e;white-space:pre-wrap;">${escapeHtml(params.detail)}</pre>` : ''}
             <p style="margin:0;">Windsor Beauty</p>

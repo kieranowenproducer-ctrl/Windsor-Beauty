@@ -64,7 +64,7 @@ export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Prom
             </p>
             <p style="margin:0 0 24px;">
               <a href="${escapeHtml(params.paymentUrl)}"
-                 style="display:inline-block;background:#b8902a;color:#ffffff;text-decoration:none;padding:14px 28px;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600">
+                 style="display:inline-block;background:#AD8E54;color:#ffffff;text-decoration:none;padding:14px 28px;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600">
                 Pay ${amount}
               </a>
             </p>
@@ -74,7 +74,7 @@ export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Prom
             </p>
             <p style="margin:0 0 16px;color:#57534e;">
               If the button does not work, copy this into your browser:<br />
-              <span style="word-break:break-all;color:#b8902a;">${escapeHtml(params.paymentUrl)}</span>
+              <span style="word-break:break-all;color:#AD8E54;">${escapeHtml(params.paymentUrl)}</span>
             </p>
             <p style="margin:0 0 16px;color:#57534e;">
               If the link has stopped working, or anything else goes wrong, just reply to this

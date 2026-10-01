@@ -14,24 +14,41 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // WINDSOR BEAUTY'S OWN PALETTE (the colours of the first Windsor Beauty site):
+        // warm cream pages, charcoal type and buttons, champagne accents. The page layout
+        // came from the sister shop, and every screen there is written against a "gold"
+        // and a "stone" scale, so the two scales are redefined here rather than renaming
+        // thousands of classes. Read "gold-700" as "the main brand colour" (charcoal) and
+        // "gold-400" as "the accent" (champagne).
         gold: {
-          50:  '#FDF8EC',
-          100: '#F5EDD5',
-          200: '#EDD9A3',
-          300: '#D4AF5A',
-          400: '#C49A2E',
-          500: '#B8902A',
-          600: '#A07820',
-          // 650 exists for one reason: small gold text on white that still passes WCAG AA.
-          // It is the brightest gold that does (4.56:1). 600 is 4.04:1 and 500 is 2.97:1, so
-          // both are unreadable at the 7px the admin sidebar's section headings use. Do not
-          // brighten this hex: scripts/check-admin-contrast.mjs measures it and will fail.
-          // White backgrounds only. On gold-50 it drops to 4.30:1 and stops passing.
-          650: '#957014',
-          700: '#8B6914',
-          800: '#6B4F0E',
-          900: '#4A3508',
+          50:  '#FBF7F1', // cream
+          100: '#F1E9DD', // sand
+          200: '#E7DECE', // line
+          300: '#D9C39A',
+          400: '#C7A769', // champagne, the accent
+          500: '#B9985C',
+          600: '#AD8E54', // champagne-dark, hover
+          // 650: small accent text on white that still passes WCAG AA (4.8:1).
+          // scripts/check-admin-contrast.mjs measures it. White backgrounds only.
+          650: '#8A6D3B',
+          700: '#2B2723', // charcoal: buttons, headings, strong accents
+          800: '#4A4038', // hover on charcoal, and dark accent text
+          900: '#191613',
         },
+        stone: {
+          50:  '#FBF7F1',
+          100: '#F4EEE4',
+          200: '#E7DECE',
+          300: '#D5CABA',
+          400: '#A39A8E',
+          500: '#776F66',
+          600: '#5E5750',
+          700: '#48423C',
+          800: '#37322D',
+          900: '#2B2723',
+          950: '#191613',
+        },
+        black: '#2B2723',
       },
       fontFamily: {
         sans: ['Outfit', 'system-ui', 'sans-serif'],
