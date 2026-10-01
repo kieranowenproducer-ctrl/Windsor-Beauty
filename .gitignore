@@ -55,3 +55,6 @@ backups/
 .invoice-render-*/
 .email-archive-test-*/
 .pearl-letter-test-*/
+
+# Windsor Beauty local test database (npm run db:local)
+/.local-db/

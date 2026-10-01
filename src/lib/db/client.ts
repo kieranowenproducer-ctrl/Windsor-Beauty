@@ -1,4 +1,5 @@
-import { neon } from '@neondatabase/serverless';
+import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
+import { localSql, isLocalDatabaseUrl } from './localClient';
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -9,8 +10,15 @@ const connectionString =
 // Next.js's fetch Data Cache silently caches the HTTP calls to Neon's Data API
 // (keyed by query text), so reads can return stale results forever regardless
 // of `export const dynamic = 'force-dynamic'` on the calling route.
-export const sql = connectionString
-  ? neon(connectionString, { fetchOptions: { cache: 'no-store' } })
+//
+// A database address on this computer (localhost) is Windsor Beauty's own test
+// database from `npm run db:local`. Neon's driver only speaks to Neon, so that
+// one address is served by a small stand-in with the same shape. A hosted
+// address always goes through the real driver.
+export const sql: NeonQueryFunction<false, false> | null = connectionString
+  ? isLocalDatabaseUrl(connectionString)
+    ? localSql(connectionString)
+    : neon(connectionString, { fetchOptions: { cache: 'no-store' } })
   : null;
 
 export function isDbConfigured() {

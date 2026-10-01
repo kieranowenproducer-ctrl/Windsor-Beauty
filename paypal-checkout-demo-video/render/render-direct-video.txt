@@ -1,5 +1,0 @@
-[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=#fbfaf7,setsar=1,fps=30,drawbox=x=250:y=905:w=1420:h=115:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='1. Choose PayPal at checkout':fontcolor=#1c1917:fontsize=44:x=(w-text_w)/2:y=940[v0];
-[1:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=#fbfaf7,setsar=1,fps=30,drawbox=x=250:y=905:w=1420:h=115:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='2. Tick both boxes and press Pay now with PayPal':fontcolor=#1c1917:fontsize=40:x=(w-text_w)/2:y=942[v1];
-[2:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=#f4f8fb,setsar=1,fps=30,drawbox=x=250:y=905:w=1420:h=115:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='3. PayPal opens immediately':fontcolor=#1c1917:fontsize=44:x=(w-text_w)/2:y=940[v2];
-[v0][v1]xfade=transition=fade:duration=0.45:offset=2.55[x1];
-[x1][v2]xfade=transition=fade:duration=0.45:offset=5.10,format=yuv420p[outv]
