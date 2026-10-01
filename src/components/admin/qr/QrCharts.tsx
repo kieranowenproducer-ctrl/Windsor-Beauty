@@ -123,14 +123,14 @@ export default function QrCharts({ campaigns, stats, scansTimeSeries, ordersTime
   const hasTimeData = scanTimeData.length > 0 || orderTimeData.length > 0;
 
   const ChartLabel = ({ children }: { children: React.ReactNode }) => (
-    <p className="text-[8px] tracking-[0.22em] uppercase text-stone-400 mb-3">{children}</p>
+    <p className="text-[8px] tracking-[0.22em] uppercase text-stone-500 mb-3">{children}</p>
   );
 
   const EmptyChart = ({ label }: { label: string }) => (
     <div>
       <ChartLabel>{label}</ChartLabel>
       <div className="h-40 flex items-center justify-center border border-stone-100 bg-stone-50">
-        <p className="text-[10px] text-stone-300">No data yet — scans will appear here after campaigns go live</p>
+        <p className="text-[10px] text-stone-300">No data yet - scans will appear here after campaigns go live</p>
       </div>
     </div>
   );
@@ -205,8 +205,8 @@ export default function QrCharts({ campaigns, stats, scansTimeSeries, ordersTime
 
       {/* Time-series charts */}
       <div>
-        <p className="text-[9px] text-stone-400 leading-relaxed mb-4 bg-stone-50 border border-stone-100 px-3 py-2">
-          These two charts track different things, not cause and effect &mdash; a revenue spike on a given day is not
+        <p className="text-[9px] text-stone-500 leading-relaxed mb-4 bg-stone-50 border border-stone-100 px-3 py-2">
+          These two charts track different things, not cause and effect - a revenue spike on a given day is not
           necessarily from that day&apos;s scans. Orders are credited to a campaign for up to 30 days after the scan
           (see Attribution above), so today&apos;s revenue can come from scans recorded weeks earlier.
         </p>

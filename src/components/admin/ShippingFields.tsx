@@ -72,7 +72,7 @@ export function shippingDraftToPayload(draft: ShippingDraft): ProductShipping | 
 export default function ShippingFields({
   draft,
   onChange,
-  label = 'Shipping & Customs (optional — falls back to global defaults)',
+  label = 'Shipping & Customs (optional - falls back to global defaults)',
 }: {
   draft: ShippingDraft;
   onChange: (next: ShippingDraft) => void;
@@ -84,13 +84,13 @@ export default function ShippingFields({
 
   return (
     <details className="border border-stone-200 group">
-      <summary className="px-3 py-2 text-[8px] tracking-widest uppercase text-stone-400 cursor-pointer select-none group-open:text-gold-700">
+      <summary className="px-3 py-2 text-[8px] tracking-widest uppercase text-stone-500 cursor-pointer select-none group-open:text-gold-700">
         {label}
       </summary>
       <div className="p-3 pt-1 space-y-3 border-t border-stone-100">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Weight (g)</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Weight (g)</label>
             <input
               type="number" min={0} max={30000}
               value={draft.weightGrams}
@@ -100,7 +100,7 @@ export default function ShippingFields({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Length (mm)</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Length (mm)</label>
             <input
               type="number" min={0}
               value={draft.lengthMm}
@@ -109,7 +109,7 @@ export default function ShippingFields({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Width (mm)</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Width (mm)</label>
             <input
               type="number" min={0}
               value={draft.widthMm}
@@ -118,7 +118,7 @@ export default function ShippingFields({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Height (mm)</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Height (mm)</label>
             <input
               type="number" min={0}
               value={draft.heightMm}
@@ -130,24 +130,24 @@ export default function ShippingFields({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Royal Mail Package Format</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Royal Mail Package Format</label>
             <select
               value={draft.packageFormat}
               onChange={e => set('packageFormat', e.target.value)}
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none bg-white"
             >
-              <option value="">— Use global default —</option>
+              <option value="">- Use global default -</option>
               {PACKAGE_FORMATS.map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Default Royal Mail Service</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Default Royal Mail Service</label>
             <select
               value={draft.defaultService}
               onChange={e => set('defaultService', e.target.value)}
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none bg-white"
             >
-              <option value="">— Use checkout shipping option —</option>
+              <option value="">- Use checkout shipping option -</option>
               {SHIPPING_SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
@@ -155,7 +155,7 @@ export default function ShippingFields({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Customs Description</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Customs Description</label>
             <input
               value={draft.customsDescription}
               onChange={e => set('customsDescription', e.target.value)}
@@ -164,7 +164,7 @@ export default function ShippingFields({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">HS / Commodity Code</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">HS / Commodity Code</label>
             <input
               value={draft.customsCode}
               onChange={e => set('customsCode', e.target.value)}
@@ -176,7 +176,7 @@ export default function ShippingFields({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Country of Origin</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Country of Origin</label>
             <input
               value={draft.originCountryCode}
               onChange={e => set('originCountryCode', e.target.value.toUpperCase())}
@@ -186,13 +186,13 @@ export default function ShippingFields({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Customs Category</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Customs Category</label>
             <select
               value={draft.customsCategory}
               onChange={e => set('customsCategory', e.target.value)}
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none bg-white"
             >
-              <option value="">— Use global default —</option>
+              <option value="">- Use global default -</option>
               {CUSTOMS_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>

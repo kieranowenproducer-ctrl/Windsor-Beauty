@@ -1,35 +1,10 @@
 /**
- * Searching the admin lists with more than one word.
- *
- * Kieran's complaint, 2026-09-24: typing "Amber Reta" into Orders found nothing, because the box
- * only ever looked for that whole phrase inside ONE field (the name, the email or the order
- * number). Nobody's name is "Amber Reta", so the search came back empty even though the order was
- * sitting right there: Amber bought a Reta pen.
- *
- * What it does now: every word you type has to appear SOMEWHERE on the order or invoice, and they
- * do not have to be in the same place. "Amber Reta" means "the customer Amber AND the product
- * Reta". Add a third word and it narrows further. That is the whole idea.
- *
- * The rules, in plain words:
- *
- *   - Spaces, commas and plus signs separate the words. "Anne + Mots", "Anne, Mots" and
- *     "Anne Mots" all do the same thing.
- *   - A dash between words is treated as a separator too ("Amber- Reta"), but a dash INSIDE a word
- *     is left alone, so MOTS-C stays one word and still finds MOTS-C.
- *   - "and" is ignored, because it is how people join two words out loud and never a product.
- *     "hgh and aod" means the same as "hgh aod".
- *   - "or" does the opposite: "hgh or aod" shows everything with EITHER of them.
- *   - Short names count. "Reta" finds Retatrutide and "Retatrutide" finds an order written down as
- *     "Reta 30mg". The list of short names is PEARL's, see src/lib/searchAliases.ts.
- *   - Punctuation, spacing and accents are forgiven. "motsc", "mots-c" and "MOTS C" all find
- *     MOTS-C; "jose" finds Jose.
- *   - Put double quotes round something to keep it whole, short names and all: "pen kit" then has
- *     to appear exactly like that, next to each other.
- *   - One word on its own behaves exactly as it always did.
- *
- * This file is shared so Orders (filtered in the browser) and Invoices (filtered in the database)
- * split the typed words the same way and can never drift apart. The matching itself happens in two
- * places, and the invoices SQL in src/lib/db/invoices.ts repeats these same two comparisons.
+ * Shared word-by-word search for Orders and Invoices.
+ * Each word can match a different field, such as a customer name and a product.
+ * Spaces, commas and plus signs split words. "and" combines matches; "or"
+ * accepts either group. Quoted phrases stay together. Accents and punctuation
+ * are ignored, and optional product spellings come from searchAliases.ts.
+ * Keep the browser and database matching rules in sync.
  */
 
 /** Characters that only ever join two search words together, never part of a word worth matching. */

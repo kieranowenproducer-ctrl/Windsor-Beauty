@@ -184,7 +184,7 @@ export default function TopProductsPanel() {
       <div className="flex flex-wrap items-start justify-between gap-3 mb-1">
         <div>
           <h2 className="text-xs tracking-[0.18em] uppercase text-stone-500 font-semibold mb-1">Most Popular Products</h2>
-          <p className="text-[10px] text-stone-400">
+          <p className="text-[10px] text-stone-500">
             What sells the most, and who buys it. Counts orders that have been paid for.
           </p>
         </div>
@@ -202,7 +202,7 @@ export default function TopProductsPanel() {
           {/* Controls */}
           <div className="px-5 py-4 border-b border-stone-100 flex flex-wrap items-end gap-4">
             <div>
-              <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Group customers by</label>
+              <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Group customers by</label>
               <select
                 value={kind}
                 onChange={e => { setKind(e.target.value as GroupKind); setExcluded([]); }}
@@ -212,7 +212,7 @@ export default function TopProductsPanel() {
                   <option key={g.key} value={g.key}>{g.label}</option>
                 ))}
               </select>
-              <p className="text-[9px] text-stone-400 mt-1 max-w-xs">
+              <p className="text-[9px] text-stone-500 mt-1 max-w-xs">
                 {GROUP_KINDS.find(g => g.key === kind)?.note}
               </p>
             </div>
@@ -234,7 +234,7 @@ export default function TopProductsPanel() {
           {filterOpen && (
             <div className="px-5 py-4 border-b border-stone-100 bg-stone-50/60">
               <div className="flex items-center justify-between gap-3 mb-3">
-                <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">
+                <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">
                   Include these customers
                 </p>
                 <div className="flex gap-2">
@@ -248,7 +248,7 @@ export default function TopProductsPanel() {
                 </div>
               </div>
               {groups.length === 0 ? (
-                <p className="text-[10px] text-stone-400">No paid orders yet, so there is nobody to group.</p>
+                <p className="text-[10px] text-stone-500">No paid orders yet, so there is nobody to group.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {groups.map(group => {
@@ -268,7 +268,7 @@ export default function TopProductsPanel() {
                         />
                         <span className="min-w-0">
                           <span className="block text-[11px] text-stone-700 truncate">{group.label}</span>
-                          <span className="block text-[9px] text-stone-400">
+                          <span className="block text-[9px] text-stone-500">
                             {formatWholeNumber(group.customers)} who {group.customers === 1 ? 'has' : 'have'} ordered · {formatWholeNumber(group.orders)} order{group.orders === 1 ? '' : 's'}
                           </span>
                         </span>
@@ -278,7 +278,7 @@ export default function TopProductsPanel() {
                 </div>
               )}
               {excluded.length === 0 && groups.length > 0 && (
-                <p className="text-[9px] text-stone-400 mt-3">
+                <p className="text-[9px] text-stone-500 mt-3">
                   Everyone is included. Untick a group to leave those customers out.
                 </p>
               )}
@@ -288,15 +288,15 @@ export default function TopProductsPanel() {
           {/* Results */}
           <div className="px-5 py-4">
             {loading ? (
-              <p className="text-xs text-stone-400">Working it out…</p>
+              <p className="text-xs text-stone-500">Working it out…</p>
             ) : error ? (
               <p className="text-xs text-red-600">{error}</p>
             ) : nothingTicked ? (
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 Every group is unticked, so there is nobody to count. Tick a group, or press Everyone.
               </p>
             ) : !loaded ? null : products.length === 0 ? (
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 Nothing to show for the customers you have ticked. Tick more groups, or press Everyone.
               </p>
             ) : (
@@ -307,7 +307,7 @@ export default function TopProductsPanel() {
                 </p>
                 {/* Said plainly because this figure is NOT the Revenue tile above and never will
                     be: that one is money taken, this one is what the products themselves came to. */}
-                <p className="text-[9px] text-stone-400 mb-4">
+                <p className="text-[9px] text-stone-500 mb-4">
                   Product prices only, before delivery and any discount, so it will not match the Revenue figure above.
                 </p>
 
@@ -321,19 +321,19 @@ export default function TopProductsPanel() {
                           onClick={() => openBuyers(product)}
                           className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-stone-50 transition-colors"
                         >
-                          <span className={`shrink-0 w-6 text-center text-[11px] font-semibold ${index === 0 ? 'text-gold-700' : 'text-stone-400'}`}>
+                          <span className={`shrink-0 w-6 text-center text-[11px] font-semibold ${index === 0 ? 'text-gold-700' : 'text-stone-500'}`}>
                             {formatWholeNumber(index + 1)}
                           </span>
                           <span className="min-w-0 flex-1">
                             <span className="block text-xs text-stone-700 truncate">{product.name}</span>
-                            <span className="block text-[9px] text-stone-400">
+                            <span className="block text-[9px] text-stone-500">
                               {formatWholeNumber(product.orders)} order{product.orders === 1 ? '' : 's'} · {formatWholeNumber(product.customers)} customer{product.customers === 1 ? '' : 's'}
                               {product.lastBought ? ` · last bought ${shortDate(product.lastBought)}` : ''}
                             </span>
                           </span>
                           <span className="shrink-0 text-right">
                             <span className="block text-xs font-semibold text-stone-800">{formatWholeNumber(product.units)} sold</span>
-                            <span className="block text-[9px] text-stone-400">&pound;{formatMoney(product.revenue)}</span>
+                            <span className="block text-[9px] text-stone-500">&pound;{formatMoney(product.revenue)}</span>
                           </span>
                           <span className={`shrink-0 text-stone-300 text-[10px] transition-transform ${isOpen ? 'rotate-90' : ''}`}>›</span>
                         </button>
@@ -341,15 +341,15 @@ export default function TopProductsPanel() {
                         {isOpen && (
                           <div className="px-4 pb-4 pt-1 bg-stone-50/60">
                             {buyersLoading ? (
-                              <p className="text-[11px] text-stone-400">Loading who bought it…</p>
+                              <p className="text-[11px] text-stone-500">Loading who bought it…</p>
                             ) : buyersError ? (
                               <p className="text-[11px] text-red-600">{buyersError}</p>
                             ) : buyers.length === 0 ? (
-                              <p className="text-[11px] text-stone-400">Nobody in the ticked groups has bought this.</p>
+                              <p className="text-[11px] text-stone-500">Nobody in the ticked groups has bought this.</p>
                             ) : (
                               <>
                                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                  <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">
+                                  <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">
                                     Who buys it ({formatWholeNumber(buyers.length)})
                                   </p>
                                 </div>
@@ -358,20 +358,20 @@ export default function TopProductsPanel() {
                                     <div key={buyer.email} className="px-3 py-2 flex items-center justify-between gap-3">
                                       <span className="min-w-0">
                                         <span className="block text-[11px] text-stone-700 truncate">{buyer.name}</span>
-                                        <span className="block text-[9px] text-stone-400 truncate">
+                                        <span className="block text-[9px] text-stone-500 truncate">
                                           {buyer.email} · {buyer.group}
                                         </span>
                                       </span>
                                       <span className="shrink-0 text-right">
                                         <span className="block text-[11px] text-stone-700">{formatWholeNumber(buyer.units)} bought</span>
-                                        <span className="block text-[9px] text-stone-400">
+                                        <span className="block text-[9px] text-stone-500">
                                           &pound;{formatMoney(buyer.spend)}{buyer.lastBought ? ` · ${shortDate(buyer.lastBought)}` : ''}
                                         </span>
                                       </span>
                                     </div>
                                   ))}
                                 </div>
-                                <p className="text-[9px] text-stone-400 mt-2">
+                                <p className="text-[9px] text-stone-500 mt-2">
                                   Pressing Email these customers opens the composer with these addresses filled in.
                                   Nothing is sent until you write it and press send, and anyone who has unsubscribed
                                   is dropped at that point.

@@ -335,7 +335,7 @@ export async function deleteOrder(orderNumber: string): Promise<boolean> {
 /**
  * The newest order placed with an email address. Website enquiries often omit
  * the order number, but the product on the most recent order can still give
- * PEARL the missing context. This is read-only and never changes an order.
+ * staff the missing context. This is read-only and never changes an order.
  */
 export async function findLatestOrderByEmail(email: string): Promise<OrderRow | null> {
   const db = requireDb();

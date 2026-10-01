@@ -341,7 +341,7 @@ export default function AdminReviewsPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-4xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Reviews</h1>
-          <p className="text-xs text-stone-400 mb-6">
+          <p className="text-xs text-stone-500 mb-6">
             Moderate customer reviews submitted from the public Reviews page. Only approved reviews are shown to customers.
             You can also add a review yourself, for bulk customers whose own buyers have no account here.
           </p>
@@ -362,7 +362,7 @@ export default function AdminReviewsPage() {
                 className={`text-[10px] tracking-[0.15em] uppercase px-3.5 py-2 border transition-colors ${
                   filter === value
                     ? 'border-gold-400 bg-gold-50 text-gold-700'
-                    : 'border-stone-200 text-stone-400 hover:border-stone-300'
+                    : 'border-stone-200 text-stone-500 hover:border-stone-300'
                 }`}
               >
                 {label}
@@ -393,7 +393,7 @@ export default function AdminReviewsPage() {
                 <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold mb-1">
                   Add a Review
                 </p>
-                <p className="text-[10px] text-stone-400 mb-4">
+                <p className="text-[10px] text-stone-500 mb-4">
                   For bulk customers whose own buyers have no account here. It publishes straight away
                   and looks exactly like any approved customer review. You can hide, edit or delete it
                   afterwards like any other. As with every review, the site shows the name as first name
@@ -401,7 +401,7 @@ export default function AdminReviewsPage() {
                 </p>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Reviewer Name</label>
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Reviewer Name</label>
                     <input
                       type="text"
                       value={addDraft.customer_name}
@@ -411,7 +411,7 @@ export default function AdminReviewsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Star Rating</label>
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Star Rating</label>
                     <div className="flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map(n => (
                         <button
@@ -424,11 +424,11 @@ export default function AdminReviewsPage() {
                           ★
                         </button>
                       ))}
-                      <span className="text-[10px] text-stone-400 ml-2">{addDraft.rating}/5</span>
+                      <span className="text-[10px] text-stone-500 ml-2">{addDraft.rating}/5</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Title <span className="normal-case tracking-normal">(optional)</span></label>
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Title <span className="normal-case tracking-normal">(optional)</span></label>
                     <input
                       type="text"
                       value={addDraft.title}
@@ -437,7 +437,7 @@ export default function AdminReviewsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Review Text</label>
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Review Text</label>
                     <textarea
                       value={addDraft.body}
                       onChange={e => setAddDraft(d => ({ ...d, body: e.target.value }))}
@@ -447,7 +447,7 @@ export default function AdminReviewsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Products <span className="normal-case tracking-normal">(optional — also shows it on those product pages)</span></label>
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Products <span className="normal-case tracking-normal">(optional - also shows it on those product pages)</span></label>
                     <ProductPicker
                       products={products}
                       selected={addProducts}
@@ -469,7 +469,7 @@ export default function AdminReviewsPage() {
                   <button
                     onClick={() => { setAddOpen(false); setAddError(''); }}
                     disabled={addBusy}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -478,11 +478,11 @@ export default function AdminReviewsPage() {
             )}
 
             {reviews === null && (
-              <div className="px-6 py-8 text-center text-stone-400 text-xs">Loading…</div>
+              <div className="px-6 py-8 text-center text-stone-500 text-xs">Loading…</div>
             )}
 
             {reviews && reviews.length === 0 && (
-              <div className="px-6 py-8 text-center text-stone-400 text-xs">No reviews in this filter.</div>
+              <div className="px-6 py-8 text-center text-stone-500 text-xs">No reviews in this filter.</div>
             )}
 
             <div className="divide-y divide-stone-50">
@@ -506,8 +506,8 @@ export default function AdminReviewsPage() {
                         {'★'.repeat(row.rating)}
                         <span className="text-stone-200">{'★'.repeat(5 - row.rating)}</span>
                       </div>
-                      <p className="text-[10px] text-stone-400 mb-1">{formatDate(row.created_at)}</p>
-                      <p className="text-[10px] text-stone-400">
+                      <p className="text-[10px] text-stone-500 mb-1">{formatDate(row.created_at)}</p>
+                      <p className="text-[10px] text-stone-500">
                         Source: {row.customer_id === null
                           ? 'Added manually (no customer account)'
                           : row.product_slug ? `Submitted on ${productName(row.product_slug)}` : 'Website reviews page'}
@@ -523,7 +523,7 @@ export default function AdminReviewsPage() {
                       </p>
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Reviewer Name</label>
+                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Reviewer Name</label>
                           <input
                             type="text"
                             value={editDraft.customer_name}
@@ -532,7 +532,7 @@ export default function AdminReviewsPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Star Rating</label>
+                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Star Rating</label>
                           <div className="flex items-center gap-1">
                             {[1, 2, 3, 4, 5].map(n => (
                               <button
@@ -544,11 +544,11 @@ export default function AdminReviewsPage() {
                                 ★
                               </button>
                             ))}
-                            <span className="text-[10px] text-stone-400 ml-2">{editDraft.rating}/5</span>
+                            <span className="text-[10px] text-stone-500 ml-2">{editDraft.rating}/5</span>
                           </div>
                         </div>
                         <div>
-                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Title <span className="normal-case tracking-normal">(optional)</span></label>
+                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Title <span className="normal-case tracking-normal">(optional)</span></label>
                           <input
                             type="text"
                             value={editDraft.title}
@@ -557,7 +557,7 @@ export default function AdminReviewsPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Review Text</label>
+                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Review Text</label>
                           <textarea
                             value={editDraft.body}
                             onChange={e => setEditDraft(d => d && ({ ...d, body: e.target.value }))}
@@ -566,7 +566,7 @@ export default function AdminReviewsPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Display Date</label>
+                          <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Display Date</label>
                           <input
                             type="datetime-local"
                             value={editDraft.created_at}
@@ -587,7 +587,7 @@ export default function AdminReviewsPage() {
                         <button
                           onClick={cancelEdit}
                           disabled={editBusy}
-                          className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors disabled:opacity-50"
+                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors disabled:opacity-50"
                         >
                           Cancel
                         </button>
@@ -616,7 +616,7 @@ export default function AdminReviewsPage() {
                       <button
                         onClick={() => setStatus(row.id, 'hidden')}
                         disabled={busyId === row.id}
-                        className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors disabled:opacity-50"
+                        className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors disabled:opacity-50"
                       >
                         Hide
                       </button>
@@ -664,7 +664,7 @@ export default function AdminReviewsPage() {
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(null)}
-                          className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors shrink-0"
+                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors shrink-0"
                         >
                           Cancel
                         </button>
@@ -673,7 +673,7 @@ export default function AdminReviewsPage() {
                       <button
                         onClick={() => setDeleteConfirm(row.id)}
                         disabled={busyId === row.id}
-                        className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors disabled:opacity-50 ml-auto"
+                        className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors disabled:opacity-50 ml-auto"
                       >
                         Delete Permanently
                       </button>
@@ -686,7 +686,7 @@ export default function AdminReviewsPage() {
                       <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 font-semibold mb-2">
                         Show This Review On
                       </p>
-                      <p className="text-[10px] text-stone-400 mb-3">
+                      <p className="text-[10px] text-stone-500 mb-3">
                         This review always stays on the main Reviews page. Map it to products to also show it on those product pages.
                       </p>
                       {linksLoading === row.id ? (
@@ -728,7 +728,7 @@ export default function AdminReviewsPage() {
                         <button
                           onClick={cancelReply}
                           disabled={replyBusy}
-                          className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors disabled:opacity-50"
+                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors disabled:opacity-50"
                         >
                           Cancel
                         </button>
@@ -745,7 +745,7 @@ export default function AdminReviewsPage() {
                               </button>
                               <button
                                 onClick={() => setDeleteReplyConfirm(null)}
-                                className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                                className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                               >
                                 Cancel
                               </button>

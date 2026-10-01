@@ -94,14 +94,14 @@ interface ProfileData {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatDate(value: string | null) {
-  if (!value) return '—';
+  if (!value) return '-';
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return value;
   return d.toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function formatDatetime(value: string | null) {
-  if (!value) return '—';
+  if (!value) return '-';
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return value;
   return d.toLocaleString('en-GB', {
@@ -713,13 +713,13 @@ export default function CustomerProfilePage() {
 
           <Link
             href="/admin/customers"
-            className="text-[9px] tracking-[0.18em] uppercase text-stone-400 hover:text-gold-700 transition-colors mb-6 inline-block"
+            className="text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-gold-700 transition-colors mb-6 inline-block"
           >
             &larr; All Customers
           </Link>
 
           {loading && (
-            <p className="text-xs text-stone-400">Loading profile...</p>
+            <p className="text-xs text-stone-500">Loading profile...</p>
           )}
 
           {error && (
@@ -748,7 +748,7 @@ export default function CustomerProfilePage() {
                       <span className="text-[10px] text-green-600">{savedNote}</span>
                     )}
                   </div>
-                  <p className="text-xs text-stone-400">{c.email}</p>
+                  <p className="text-xs text-stone-500">{c.email}</p>
                   <div className="flex flex-wrap items-center gap-1.5 mt-1">
                     {/* Read before anything else on this page: it changes what every other line
                         on it means (task 9cd55f28). */}
@@ -773,7 +773,7 @@ export default function CustomerProfilePage() {
                 </div>
                 <div className="text-right shrink-0">
                   <div className="text-xl font-semibold text-gold-700">&pound;{profile.totalSpent.toFixed(2)}</div>
-                  <div className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Lifetime Spend</div>
+                  <div className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Lifetime Spend</div>
                 </div>
               </div>
 
@@ -782,7 +782,7 @@ export default function CustomerProfilePage() {
                   after scrolling past the whole record. */}
               {editing && (
                 <div className="bg-white border border-gold-300 p-5 mb-8">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-4">Edit Customer</p>
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-4">Edit Customer</p>
                   <div className="space-y-3 max-w-xl">
                     <CustomerEditFields draft={draft} setField={setField} disabled={saving} />
                     {saveError && <p className="text-[10px] text-red-500">{saveError}</p>}
@@ -819,7 +819,7 @@ export default function CustomerProfilePage() {
                       >
                         {deleting ? 'Deleting...' : 'Delete this customer'}
                       </button>
-                      <p className="text-[9px] text-stone-400 mt-2 leading-relaxed">
+                      <p className="text-[9px] text-stone-500 mt-2 leading-relaxed">
                         Removes them for good. Past orders are kept. There is no undo, so ban them
                         instead if you only want to shut them out.
                       </p>
@@ -837,7 +837,7 @@ export default function CustomerProfilePage() {
                   { label: 'Marketing',       value: c.marketing_consent ? 'Subscribed' : 'Not subscribed' },
                 ].map(({ label, value }) => (
                   <div key={label} className="bg-white border border-stone-200 p-4">
-                    <div className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">{label}</div>
+                    <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">{label}</div>
                     <div className="text-xs font-medium text-stone-700">{value}</div>
                   </div>
                 ))}
@@ -852,11 +852,11 @@ export default function CustomerProfilePage() {
                       the question that gets asked on the phone, and the button
                       that answers it should not be hunted for. */}
                   <div className="bg-white border border-stone-200 p-5">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">Email Verification</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Email Verification</p>
                     {c.email_verified ? (
                       <>
                         <p className="text-xs text-green-600 font-medium">Verified</p>
-                        <p className="text-[10px] text-stone-400 mt-1">
+                        <p className="text-[10px] text-stone-500 mt-1">
                           {c.email_verified_at ? `Confirmed ${formatDatetime(c.email_verified_at)}` : 'Confirmed'}
                         </p>
                         {resendResult && (
@@ -879,7 +879,7 @@ export default function CustomerProfilePage() {
                     ) : (
                       <>
                         <p className="text-xs text-amber-600 font-medium">Not verified yet</p>
-                        <p className="text-[10px] text-stone-400 mt-1 leading-relaxed">
+                        <p className="text-[10px] text-stone-500 mt-1 leading-relaxed">
                           {profile.verificationEmail.lastSentAt
                             ? `Their link was last sent ${formatDatetime(profile.verificationEmail.lastSentAt)}${profile.verificationEmail.timesSent > 1 ? ` (${profile.verificationEmail.timesSent} sent in total)` : ''}. They have not clicked it, so they have no member discount yet.`
                             : 'No verification link has ever been sent to this customer.'}
@@ -921,7 +921,7 @@ export default function CustomerProfilePage() {
 
                   {/* Contact */}
                   <div className="bg-white border border-stone-200 p-5">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">Contact</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Contact</p>
                     <div className="space-y-1.5 text-xs text-stone-600">
                       <p>{c.email}</p>
                       {c.phone ? <p>{c.phone}</p> : <p className="text-stone-300">No phone on file</p>}
@@ -936,7 +936,7 @@ export default function CustomerProfilePage() {
 
                   {/* Address */}
                   <div className="bg-white border border-stone-200 p-5">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">Address</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Address</p>
                     {c.address_line1 ? (
                       <div className="text-[10px] text-stone-600 leading-relaxed space-y-0.5">
                         <p>{c.address_line1}</p>
@@ -953,7 +953,7 @@ export default function CustomerProfilePage() {
                       here as its own clear field (not just a footnote on Original Source)
                       so nothing the customer entered at sign-up is missed. */}
                   <div className="bg-white border border-stone-200 p-5">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">Referred By</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Referred By</p>
                     {c.referred_by ? (
                       <p className="text-xs text-stone-700">{c.referred_by}</p>
                     ) : (
@@ -965,7 +965,7 @@ export default function CustomerProfilePage() {
                       than as a stray red button, but says plainly what it does before it is
                       pressed: shut out of the shop, nothing deleted, undo here. */}
                   <div className={`border p-5 ${c.banned_at ? 'border-red-200 bg-red-50/50' : 'bg-white border-stone-200'}`}>
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">Account Access</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Account Access</p>
                     {c.banned_at ? (
                       <>
                         <p className="text-xs text-red-700 font-semibold">Banned</p>
@@ -991,7 +991,7 @@ export default function CustomerProfilePage() {
                     ) : (
                       <>
                         <p className="text-xs text-stone-700">Normal</p>
-                        <p className="text-[10px] text-stone-400 mt-1 leading-relaxed">
+                        <p className="text-[10px] text-stone-500 mt-1 leading-relaxed">
                           Banning shuts the account: no signing in, no ordering, signed out everywhere.
                           Nothing is deleted and you can undo it here.
                         </p>
@@ -1013,28 +1013,28 @@ export default function CustomerProfilePage() {
 
                   {/* Attribution */}
                   <div className="bg-white border border-stone-200 p-5">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">Original Source</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Original Source</p>
                     {c.qr_campaign_name ? (
                       <div className="space-y-1 text-[10px]">
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-gold-700 shrink-0" />
                           <span className="text-xs font-medium text-stone-700">{c.qr_campaign_name}</span>
                         </div>
-                        {c.qr_campaign_type && <p className="text-stone-400 uppercase tracking-wider ml-4">{c.qr_campaign_type}</p>}
+                        {c.qr_campaign_type && <p className="text-stone-500 uppercase tracking-wider ml-4">{c.qr_campaign_type}</p>}
                         {c.qr_partner_name && <p className="text-stone-500 ml-4">{c.qr_partner_name}</p>}
                         {c.qr_campaign_slug && <p className="font-mono text-stone-300 ml-4">/r/{c.qr_campaign_slug}</p>}
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-stone-200 shrink-0" />
-                        <span className="text-[10px] text-stone-400">Direct / No QR campaign</span>
+                        <span className="text-[10px] text-stone-500">Direct / No QR campaign</span>
                       </div>
                     )}
                   </div>
 
                   {/* Discount */}
                   <div className="bg-white border border-stone-200 p-5">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">10% Member Discount</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">10% Member Discount</p>
                     {c.discount_code ? (
                       <>
                         <p className="font-mono text-xs text-gold-700">{c.discount_code}</p>
@@ -1082,7 +1082,7 @@ export default function CustomerProfilePage() {
                     )}
                     {profile.discountCodesUsed.length > 0 && (
                       <div className="mt-2">
-                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">Codes Used on Orders</p>
+                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">Codes Used on Orders</p>
                         <div className="flex flex-wrap gap-1">
                           {profile.discountCodesUsed.map(code => (
                             <span key={code} className="font-mono text-[9px] bg-green-50 text-green-600 px-1.5 py-0.5">{code}</span>
@@ -1097,7 +1097,7 @@ export default function CustomerProfilePage() {
                       the last thing you come to, not something a thumb meets on the way past.
                       Banning, directly above, is the reversible version of the same instinct. */}
                   <div className="bg-white border border-red-200 p-5">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-3">Delete This Account</p>
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Delete This Account</p>
                     <p className="text-[10px] text-stone-500 leading-relaxed">
                       Removes their login, their sessions and their membership details for good.
                       Past orders are kept in full and stay in your reports, they just stop being
@@ -1137,7 +1137,7 @@ export default function CustomerProfilePage() {
                         className={`text-[9px] tracking-[0.18em] uppercase px-5 py-3 -mb-px border-b-2 transition-colors ${
                           profileTab === key
                             ? 'border-gold-700 text-gold-800 font-semibold'
-                            : 'border-transparent text-stone-400 hover:text-stone-600'
+                            : 'border-transparent text-stone-500 hover:text-stone-600'
                         }`}
                       >
                         {label}
@@ -1152,13 +1152,13 @@ export default function CustomerProfilePage() {
                       question you are asking when you open somebody's page before a promotion. */}
                   <div className="bg-white border border-stone-200">
                     <div className="px-5 py-4 border-b border-stone-100">
-                      <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400">
+                      <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
                         What They Buy
                         {(profile.productHistory?.length ?? 0) > 0 && (
                           <span className="text-stone-300 ml-1">({profile.productHistory!.length} product{profile.productHistory!.length === 1 ? '' : 's'})</span>
                         )}
                       </p>
-                      <p className="text-[9px] text-stone-400 mt-1">
+                      <p className="text-[9px] text-stone-500 mt-1">
                         Most bought first, from orders they have paid for.
                       </p>
                     </div>
@@ -1172,7 +1172,7 @@ export default function CustomerProfilePage() {
                           <p className="text-[10px] text-stone-600">
                             Buys the most:{' '}
                             <span className="font-semibold text-stone-800">{profile.productHistory[0].name}</span>
-                            {' '}&mdash; {profile.productHistory[0].units} bought
+                            {' '}- {profile.productHistory[0].units} bought
                             {profile.productHistory[0].orders > 1 ? ` over ${profile.productHistory[0].orders} orders` : ''}
                             {profile.productHistory[0].lastBought ? `, last on ${formatDate(profile.productHistory[0].lastBought)}` : ''}.
                           </p>
@@ -1182,7 +1182,7 @@ export default function CustomerProfilePage() {
                             <div key={row.slug ?? row.name} className="px-5 py-3 flex items-start justify-between gap-3">
                               <div className="min-w-0">
                                 <p className="text-xs text-stone-700 truncate">{row.name}</p>
-                                <p className="text-[9px] text-stone-400 mt-0.5">
+                                <p className="text-[9px] text-stone-500 mt-0.5">
                                   {row.firstBought === row.lastBought
                                     ? `Bought ${formatDate(row.lastBought)}`
                                     : `First ${formatDate(row.firstBought)}, last ${formatDate(row.lastBought)}`}
@@ -1191,7 +1191,7 @@ export default function CustomerProfilePage() {
                               </div>
                               <div className="shrink-0 text-right">
                                 <p className="text-xs font-semibold text-stone-700">{row.units} bought</p>
-                                <p className="text-[9px] text-stone-400">&pound;{row.spend.toFixed(2)}</p>
+                                <p className="text-[9px] text-stone-500">&pound;{row.spend.toFixed(2)}</p>
                               </div>
                             </div>
                           ))}
@@ -1203,7 +1203,7 @@ export default function CustomerProfilePage() {
                   {/* Orders */}
                   <div className="bg-white border border-stone-200">
                     <div className="px-5 py-4 border-b border-stone-100">
-                      <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400">
+                      <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
                         Orders and Payment Attempts <span className="text-stone-300 ml-1">({profile.orderCount} paid)</span>
                       </p>
                     </div>
@@ -1212,7 +1212,7 @@ export default function CustomerProfilePage() {
                     ) : (
                       <div className="divide-y divide-stone-50">
                         {profile.orders.map(order => {
-                          const chip = ORDER_STATUS_CHIP[order.status] ?? 'bg-stone-100 text-stone-400';
+                          const chip = ORDER_STATUS_CHIP[order.status] ?? 'bg-stone-100 text-stone-500';
                           const label = ORDER_STATUS_LABEL[order.status] ?? order.status;
                           const items: OrderItem[] = Array.isArray(order.items)
                             ? order.items
@@ -1227,7 +1227,7 @@ export default function CustomerProfilePage() {
                                   >
                                     {order.order_number}
                                   </Link>
-                                  <p className="text-[9px] text-stone-400 mt-0.5">{formatDate(order.created_at)}</p>
+                                  <p className="text-[9px] text-stone-500 mt-0.5">{formatDate(order.created_at)}</p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
                                   <span className="text-xs font-semibold text-stone-700">&pound;{Number(order.total).toFixed(2)}</span>
@@ -1239,7 +1239,7 @@ export default function CustomerProfilePage() {
                                   {items.map((item, i) => (
                                     <div key={i} className="flex justify-between text-[9px] text-stone-500">
                                       <span>{item.name} {(item.qty ?? item.quantity ?? 1) > 1 ? `x${item.qty ?? item.quantity}` : ''}</span>
-                                      <span className="text-stone-400">&pound;{Number(item.price).toFixed(2)}</span>
+                                      <span className="text-stone-500">&pound;{Number(item.price).toFixed(2)}</span>
                                     </div>
                                   ))}
                                 </div>
@@ -1268,7 +1268,7 @@ export default function CustomerProfilePage() {
                       page instead of only in the sales inbox. */}
                   <div className="bg-white border border-stone-200">
                     <div className="px-5 py-4 border-b border-stone-100">
-                      <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400">
+                      <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
                         Email History <span className="text-stone-300 ml-1">({emails.length})</span>
                       </p>
                     </div>
@@ -1306,21 +1306,21 @@ export default function CustomerProfilePage() {
                                     </div>
                                     <p className="text-[11px] font-semibold text-stone-700 truncate">{mail.subject || '(no subject)'}</p>
                                     {!open && (
-                                      <p className="text-[10px] text-stone-400 truncate">{mail.body_text}</p>
+                                      <p className="text-[10px] text-stone-500 truncate">{mail.body_text}</p>
                                     )}
                                   </div>
-                                  <p className="text-[9px] text-stone-400 whitespace-nowrap shrink-0">{formatDatetime(mail.created_at)}</p>
+                                  <p className="text-[9px] text-stone-500 whitespace-nowrap shrink-0">{formatDatetime(mail.created_at)}</p>
                                 </div>
                               </button>
                               {open && (
                                 <div className="px-5 pb-3">
                                   <div className="border-l-2 border-gold-200 pl-3">
                                     <p className="text-[10px] text-stone-600 whitespace-pre-wrap">{mail.body_text}</p>
-                                    <p className="text-[9px] text-stone-400 mt-1.5">
+                                    <p className="text-[9px] text-stone-500 mt-1.5">
                                       {mail.direction === 'received'
                                         ? `From ${mail.email}`
                                         : mail.direction === 'draft'
-                                          ? 'Draft — not sent yet. Open it to edit and send, or discard it.'
+                                          ? 'Draft - not sent yet. Open it to edit and send, or discard it.'
                                           : `Sent to ${mail.email}${mail.our_address ? ` from ${mail.our_address}` : ''}`}
                                     </p>
                                     {mail.direction === 'draft' && (

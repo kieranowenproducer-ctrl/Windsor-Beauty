@@ -15,7 +15,7 @@ export function generateSignupDiscountCode(): string {
   for (let i = 0; i < 6; i += 1) {
     suffix += SIGNUP_CODE_CHARS[Math.floor(Math.random() * SIGNUP_CODE_CHARS.length)];
   }
-  return `WGLOW10-${suffix}`;
+  return `WBEAUTY10-${suffix}`;
 }
 
 export function isRafPersonalDiscountCode(code: string | null | undefined): boolean {
@@ -24,7 +24,7 @@ export function isRafPersonalDiscountCode(code: string | null | undefined): bool
 
 // Why a staff-made code cannot be spent right now, in the basket's own words, or null when it can.
 // Used when the order is placed, so a code that is switched off, out of date or used up is refused
-// there too, not only in the basket preview (Samuel, 27 Sep 2026). Mirrors the conditions in
+// there too, not only in the basket preview. Mirrors the conditions in
 // redeemDiscountCodeAtomic (src/lib/db.ts).
 export function staffCodeRefusal(
   row: { active: boolean; expires_at: string | Date | null; usage_limit: number | null; times_redeemed: number },

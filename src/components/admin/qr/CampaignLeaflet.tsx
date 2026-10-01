@@ -150,7 +150,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Windsor Beauty Leaflet – ${campaignName}</title>
+  <title>Windsor Beauty Leaflet - ${campaignName}</title>
   <style>
     @page { size: A5 portrait; margin: 0; }
     @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
@@ -213,7 +213,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
     <div className="space-y-5">
       {/* Preview */}
       <div>
-        <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-3">Leaflet Preview</p>
+        <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-3">Leaflet Preview</p>
         <div className="overflow-auto">
           <div
             ref={leafletRef}
@@ -330,7 +330,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
 
       {/* Editable fields */}
       <div>
-        <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-3">Edit Leaflet Text</p>
+        <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-3">Edit Leaflet Text</p>
         <div className="space-y-2">
           {([
             { key: 'headline', label: 'Headline' },
@@ -342,7 +342,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
             { key: 'footer', label: 'Footer' },
           ] as { key: keyof LeafletFields; label: string }[]).map(({ key, label }) => (
             <div key={key}>
-              <label className="block text-[8px] tracking-wider uppercase text-stone-400 mb-1">{label}</label>
+              <label className="block text-[8px] tracking-wider uppercase text-stone-500 mb-1">{label}</label>
               <input
                 type="text"
                 value={fields[key] as string}

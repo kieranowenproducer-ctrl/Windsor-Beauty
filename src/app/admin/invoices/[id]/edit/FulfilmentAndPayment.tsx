@@ -34,7 +34,7 @@ export default function FulfilmentAndPayment({
           <h2 className="text-sm font-semibold text-stone-800 mb-1">Fulfilment &amp; Payment</h2>
           <p className="text-xs text-stone-500 mb-4 leading-relaxed">
             Controls how this invoice is paid and delivered, and which automations run. Defaults reproduce a normal
-            online order (Royal Mail, all automations on) — change these for an in-person/cash/collection sale.
+            online order (Royal Mail, all automations on) - change these for an in-person/cash/collection sale.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <label className="flex flex-col gap-1.5">

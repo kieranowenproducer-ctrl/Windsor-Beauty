@@ -611,10 +611,10 @@ export default function AdminEnquiriesPage() {
 
           {notice && <div role="status" aria-live="polite" className="bg-green-50 border border-green-200 text-green-800 text-xs px-4 py-3 mb-6">{notice}</div>}
           {error && <div role="alert" className="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3 mb-6">{error}</div>}
-          {loading && <p role="status" aria-live="polite" className="text-sm text-stone-400">Loading…</p>}
+          {loading && <p role="status" aria-live="polite" className="text-sm text-stone-500">Loading…</p>}
 
           {!loading && visible.length === 0 && (
-            <p className="text-sm text-stone-400 bg-white border border-stone-200 px-4 py-8 text-center">
+            <p className="text-sm text-stone-500 bg-white border border-stone-200 px-4 py-8 text-center">
               {filter === 'all'
                 ? 'No enquiries yet. Contact forms and direct emails will appear here.'
                 : `No ${filter} enquiries.`}
@@ -657,11 +657,11 @@ export default function AdminEnquiriesPage() {
                           </span>
                         ) : null}
                         <span className="text-sm font-medium text-stone-800">{enquiry.name}</span>
-                        <span className="text-xs text-stone-400">{enquiry.subject_label}</span>
+                        <span className="text-xs text-stone-500">{enquiry.subject_label}</span>
                         {enquiry.order_number && (
                           <span className="text-xs font-mono text-gold-700">{enquiry.order_number}</span>
                         )}
-                        <span className="text-xs text-stone-400">· {when(enquiry.created_at)}</span>
+                        <span className="text-xs text-stone-500">· {when(enquiry.created_at)}</span>
                       </div>
                       <p className="text-xs text-stone-500 truncate">{enquiry.message}</p>
                     </div>
@@ -670,12 +670,12 @@ export default function AdminEnquiriesPage() {
 
                   {open && (
                     <div className="border-t border-stone-100 px-4 py-4">
-                      <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1">From</p>
+                      <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1">From</p>
                       <p className="text-xs text-stone-600 mb-4">
                         {enquiry.name} &middot; <span className="text-gold-700">{enquiry.email}</span>
                       </p>
 
-                      <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1">
+                      <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1">
                         Message
                       </p>
                       <p className="text-sm text-stone-700 whitespace-pre-wrap bg-stone-50 px-4 py-3 mb-5">{enquiry.message}</p>
@@ -685,14 +685,14 @@ export default function AdminEnquiriesPage() {
                           does not arrive as three separate enquiries. */}
                       {enquiry.notes?.length > 0 && (
                         <div className="mb-5">
-                          <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                          <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                             Added later in the same conversation
                           </p>
                           <div className="space-y-2">
                             {enquiry.notes.map(note => (
                               <div key={note.id} className="border-l-2 border-blue-200 pl-3">
                                 <p className="text-sm text-stone-700 whitespace-pre-wrap">{note.body}</p>
-                                <p className="text-[10px] text-stone-400 mt-1">
+                                <p className="text-[10px] text-stone-500 mt-1">
                                   {note.author} &middot; {when(note.created_at)}
                                 </p>
                               </div>
@@ -709,7 +709,7 @@ export default function AdminEnquiriesPage() {
                           as something we told them. */}
                       {enquiry.replies.length > 0 && (
                         <div className="mb-5">
-                          <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                          <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                             Conversation
                           </p>
                           <div className="space-y-2">
@@ -739,7 +739,7 @@ export default function AdminEnquiriesPage() {
                                     </details>
                                   ) : null}
                                   <Attachments items={reply.inbound_attachments} />
-                                  <p className="mt-1 break-all text-[10px] text-stone-400">
+                                  <p className="mt-1 break-all text-[10px] text-stone-500">
                                     {when(reply.created_at)}
                                     {reply.provider_message_id ? ` · Recorded ${reply.provider_message_id}` : ''}
                                   </p>
@@ -770,7 +770,7 @@ export default function AdminEnquiriesPage() {
                               placeholder="Paste their email here, exactly as they sent it."
                               className="w-full border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                             />
-                            <p className="text-[10px] text-stone-400 mt-1.5 mb-3">
+                            <p className="text-[10px] text-stone-500 mt-1.5 mb-3">
                               This saves their words here and puts the enquiry back in the queue. Nothing is emailed to anyone.
                             </p>
                             <div className="flex items-center gap-2 flex-wrap">
@@ -839,7 +839,7 @@ export default function AdminEnquiriesPage() {
                           </div>
                       </div>
 
-                          <label htmlFor={`reply-${enquiry.id}`} className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                          <label htmlFor={`reply-${enquiry.id}`} className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                             {automatedDraft?.status === 'ready' ? 'Email draft to check' : 'Your reply'}
                           </label>
                            <textarea
@@ -851,7 +851,7 @@ export default function AdminEnquiriesPage() {
                              placeholder={`Hi ${emailGreetingName(enquiry.name) || 'there'},`}
                              className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                            />
-                          <p className="text-[10px] text-stone-400 mt-1.5 mb-3">
+                          <p className="text-[10px] text-stone-500 mt-1.5 mb-3">
                              Goes to {enquiry.email} from info@windsorbeauty.co.uk. Their original message is quoted underneath so it makes sense on its own.
                            </p>
                            {draftFormats[enquiry.id] === 'order' && draft.trim() ? (

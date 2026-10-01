@@ -29,7 +29,7 @@ export default function AboutPageSection({
             {/* About page */}
             <div id="section-about" className="bg-white border border-stone-200 p-6">
               <h2 className="text-sm font-semibold text-stone-800 mb-1">About Page</h2>
-              <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
                 Edit the headings, body text, values, and image shown on the About page. The layout stays
                 the same; only the content changes.
               </p>
@@ -44,7 +44,7 @@ export default function AboutPageSection({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Eyebrow</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Eyebrow</span>
                     <input
                       type="text"
                       value={about.eyebrow}
@@ -53,7 +53,7 @@ export default function AboutPageSection({
                     />
                   </label>
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Tagline</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Tagline</span>
                     <input
                       type="text"
                       value={about.tagline}
@@ -64,7 +64,7 @@ export default function AboutPageSection({
                 </div>
 
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Heading</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Heading</span>
                   <input
                     type="text"
                     value={about.heading}
@@ -75,13 +75,13 @@ export default function AboutPageSection({
 
                 {about.paragraphs.map((paragraph, i) => (
                   <div key={i} className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Body Paragraph {i + 1}</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Body Paragraph {i + 1}</span>
                     <AboutParagraphEditor index={i} value={paragraph} setAbout={setAbout} />
                   </div>
                 ))}
 
                 <div>
-                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">Values</span>
+                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">Values</span>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {about.values.map((value, i) => (
                       <div key={i} className="border border-stone-100 p-3 space-y-2">
@@ -100,7 +100,7 @@ export default function AboutPageSection({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Group Eyebrow</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Group Eyebrow</span>
                     <input
                       type="text"
                       value={about.groupEyebrow}
@@ -109,7 +109,7 @@ export default function AboutPageSection({
                     />
                   </label>
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Group Heading</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Group Heading</span>
                     <input
                       type="text"
                       value={about.groupHeading}
@@ -120,7 +120,7 @@ export default function AboutPageSection({
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Group Body</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Group Body</span>
                   <MarkdownLiteEditor
                     value={about.groupBody}
                     onChange={(text) => setAbout(prev => ({ ...prev, groupBody: text }))}
@@ -141,7 +141,7 @@ export default function AboutPageSection({
                   <button
                     onClick={handleResetAbout}
                     disabled={aboutSaving}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
                   >
                     Reset to Default
                   </button>

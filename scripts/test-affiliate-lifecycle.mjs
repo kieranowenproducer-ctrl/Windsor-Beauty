@@ -127,7 +127,7 @@ try {
   const selfInvite = await createAffiliateInvitation(raf, 'self@example.test');
   check('RAF cannot refer himself', await createAffiliateReferralFromInvitation(selfInvite.token, 'self@example.test', raf), null);
 
-  // Raf types an email into his dashboard and presses Send (26 September 2026).
+  // A partner types an email into his dashboard and presses Send (26 September 2026).
   const stateOf = async id => (await getAffiliateDashboard(raf)).invitations.find(row => Number(row.id) === Number(id))?.state;
   const sentInvite = await createAffiliateInvitation(raf, 'phone@example.test', 'affiliate', { sendEmail: true });
   check('a Raf-sent invitation starts as sending', await stateOf(sentInvite.id), 'sending');
@@ -157,7 +157,7 @@ try {
   try { await createAffiliateInvitation(raf, 'staff-help@example.test', 'staff'); } catch { staffStillWorks = false; }
   check('staff can still help after Raf reaches his daily limit', staffStillWorks, true);
 
-  // Samuel, 27 Sep 2026: only an order paid with the customer's own RAF code earns. The 10%
+  // only an order paid with the customer's own RAF code earns. The 10%
   // welcome code is for everyone, so it earns nothing, and neither does an order with no code.
   const welcomeOrder = await order(referred, 11);
   check('a 10% welcome-code order earns Raf nothing', await recordAffiliateOrder({

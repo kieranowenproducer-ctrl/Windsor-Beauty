@@ -238,7 +238,7 @@ export default function AdminCertificatesPage() {
           <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
             <div>
               <h1 className="font-serif text-2xl text-stone-800 tracking-wide">Certificates</h1>
-              <p className="text-xs text-stone-400 mt-1">
+              <p className="text-xs text-stone-500 mt-1">
                 See every product certificate in one place. Search, filter and spot anything missing before a customer does. A certificate is optional, so a product with none is not marked as a problem.
               </p>
             </div>
@@ -472,14 +472,14 @@ export default function AdminCertificatesPage() {
               <table className="w-full min-w-[1100px]">
                 <thead>
                   <tr className="border-b border-stone-100 bg-stone-50">
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Product</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Brand</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Category</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Storage</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Certificate</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Last Updated</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Issues to fix</th>
-                    <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Actions</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Product</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Brand</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Category</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Storage</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Certificate</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Last Updated</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Issues to fix</th>
+                    <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -491,10 +491,10 @@ export default function AdminCertificatesPage() {
                           <div className="text-xs font-medium text-stone-700">{row.product.name}</div>
                           <div className="text-[9px] text-stone-300">{row.product.slug}</div>
                         </td>
-                        <td className="px-4 py-3 text-xs text-stone-500">{row.product.brand ?? <span className="text-stone-300">—</span>}</td>
+                        <td className="px-4 py-3 text-xs text-stone-500">{row.product.brand ?? <span className="text-stone-300">-</span>}</td>
                         <td className="px-4 py-3 text-xs text-stone-500">{row.format}</td>
                         <td className="px-4 py-3 text-xs text-stone-500 max-w-[220px] truncate" title={row.firstCert?.storage || row.product.storage || ''}>
-                          {row.firstCert?.storage || row.product.storage || <span className="text-stone-300">—</span>}
+                          {row.firstCert?.storage || row.product.storage || <span className="text-stone-300">-</span>}
                         </td>
                         <td className="px-4 py-3 align-top">
                           <span
@@ -510,8 +510,8 @@ export default function AdminCertificatesPage() {
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-[10px] text-stone-400">
-                          {row.updatedAt ? new Date(row.updatedAt).toLocaleDateString('en-GB') : <span className="text-stone-300">—</span>}
+                        <td className="px-4 py-3 text-[10px] text-stone-500">
+                          {row.updatedAt ? new Date(row.updatedAt).toLocaleDateString('en-GB') : <span className="text-stone-300">-</span>}
                         </td>
                         <td className="px-4 py-3 align-top">
                           {row.warnings.length === 0 && row.issues.length === 0 ? (
@@ -565,7 +565,7 @@ export default function AdminCertificatesPage() {
                               disabled={!row.firstCert}
                               title={row.firstCert ? 'Open the certificate with every problem marked on it' : 'There is no certificate on this product yet, so there is nothing to view.'}
                               className={`p-2 -m-2 text-[9px] tracking-wider uppercase transition-colors disabled:opacity-30 ${
-                                row.shownIssues.length > 0 ? 'text-red-600 hover:text-red-700 font-semibold' : 'text-stone-400 hover:text-gold-700'
+                                row.shownIssues.length > 0 ? 'text-red-600 hover:text-red-700 font-semibold' : 'text-stone-500 hover:text-gold-700'
                               }`}
                             >
                               {!row.firstCert

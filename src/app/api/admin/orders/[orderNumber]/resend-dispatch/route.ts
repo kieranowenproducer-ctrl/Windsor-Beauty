@@ -27,7 +27,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
   }
 
   if (!order.tracking_number) {
-    return NextResponse.json({ error: 'No tracking number on this order — save a tracking number first.' }, { status: 400 });
+    return NextResponse.json({ error: 'No tracking number on this order - save a tracking number first.' }, { status: 400 });
   }
 
   const sent = await sendShippingConfirmationEmail({
@@ -39,7 +39,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
   }).catch(() => false);
 
   if (!sent) {
-    return NextResponse.json({ error: 'Email could not be sent — check RESEND_API_KEY.' }, { status: 500 });
+    return NextResponse.json({ error: 'Email could not be sent - check RESEND_API_KEY.' }, { status: 500 });
   }
 
   await markShippingEmailSent(order.order_number).catch(() => {});

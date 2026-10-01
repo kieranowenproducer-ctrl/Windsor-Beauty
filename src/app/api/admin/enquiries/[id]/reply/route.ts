@@ -1,3 +1,4 @@
+import { buildEnquiryReplyEmail } from '@/lib/enquiryEmails';
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email/send';
 import { findOrderByNumber, isDbConfigured } from '@/lib/db';
@@ -100,35 +101,12 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
 
   try {
     const { id: providerId, error } = await sendEmail({
-      from: FROM_ADDRESS,
-      to: enquiry.email,
-      // Resend cannot write into IONOS Sent Items. A hidden copy gives the
-      // team an independent mailbox record without exposing that address to
-      // the customer or sending the customer a second message.
-      bcc: archiveAddress ?? undefined,
-      // Reply capture (task b2084076): when on, the customer's answer routes
-      // through the capture address, is stored under them, and is forwarded
-      // to the inbox. Off = exactly as before.
-      replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
-      subject,
-      text: `${standardText}\n\n` +
-          `Windsor Beauty\nwindsorbeauty.co.uk\n\n` +
-          `--- Your original message ---\n${enquiry.message}\n`,
-      html: emailDocument({
-        title: subject,
-        headerLabel: 'Windsor Beauty',
-        // No footerText override: the shared footer already prints
-        // "Windsor Beauty, windsorbeauty.co.uk", which is all this email needs.
-        bodyHtml: `
-        <tr>
-          <td style="padding:40px 40px 32px">
-            ${addAutomaticGreeting ? `<p style="margin:0 0 20px;font-size:13px;color:#57534e;font-family:Arial">${escapeHtml(automaticGreeting)}</p>` : ''}
-            <p style="margin:0;white-space:pre-wrap;font-size:13px;color:#57534e;line-height:1.7;font-family:Arial">${escapeHtml(message)}</p>
-            ${quotedHtml}
-          </td>
-        </tr>`,
-      }),
-    });
+from: FROM_ADDRESS,
+to: enquiry.email,
+bcc: archiveAddress ?? undefined,
+replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
+...buildEnquiryReplyEmail({ subject, standardText, originalMessage: enquiry.message, addAutomaticGreeting, automaticGreeting, message, quotedHtml })
+});
 
     if (error) {
       console.error('[admin/enquiries/reply] Resend error:', error);

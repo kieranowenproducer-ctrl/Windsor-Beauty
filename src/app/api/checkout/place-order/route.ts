@@ -408,7 +408,7 @@ export async function POST(request: Request) {
           .join(', ');
         return NextResponse.json(
           {
-            error: `Sorry — we don't have enough stock left to fulfil this order (${names}). Please reduce the quantity and try again.`,
+            error: `Sorry - we don't have enough stock left to fulfil this order (${names}). Please reduce the quantity and try again.`,
           },
           { status: 409 }
         );
@@ -432,7 +432,7 @@ export async function POST(request: Request) {
     if (unavailableNames.length) {
       return NextResponse.json(
         {
-          error: `Sorry — the following item(s) are no longer available to order (${unavailableNames.join(', ')}). Please remove them and try again.`,
+          error: `Sorry - the following item(s) are no longer available to order (${unavailableNames.join(', ')}). Please remove them and try again.`,
         },
         { status: 409 }
       );

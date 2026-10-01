@@ -172,8 +172,8 @@ export default function AdminNavLinksPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-2xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Nav Links</h1>
-          <p className="text-xs text-stone-400 mb-8">
-            Add your own extra links to the admin sidebar &mdash; they appear in a &ldquo;Custom&rdquo; group below
+          <p className="text-xs text-stone-500 mb-8">
+            Add your own extra links to the admin sidebar - they appear in a &ldquo;Custom&rdquo; group below
             the built-in pages, so the standard admin navigation can never be hidden or lost by accident. Links can
             point to another page on this site (start with /) or an external site (start with https://).
           </p>
@@ -224,9 +224,9 @@ export default function AdminNavLinksPage() {
               <h2 className="text-sm font-semibold text-stone-800">Custom links</h2>
             </div>
             {links === null ? (
-              <p className="px-6 py-5 text-xs text-stone-400">Loading…</p>
+              <p className="px-6 py-5 text-xs text-stone-500">Loading…</p>
             ) : links.length === 0 ? (
-              <p className="px-6 py-5 text-xs text-stone-400">No custom links yet &mdash; add one above.</p>
+              <p className="px-6 py-5 text-xs text-stone-500">No custom links yet - add one above.</p>
             ) : (
               <div className="divide-y divide-stone-50">
                 {links.map((row, index) => (
@@ -286,7 +286,7 @@ export default function AdminNavLinksPage() {
                             <button
                               onClick={cancelEdit}
                               disabled={saving === row.id}
-                              className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 border border-stone-200 text-stone-400 hover:border-stone-300 transition-colors disabled:opacity-50 shrink-0"
+                              className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 border border-stone-200 text-stone-500 hover:border-stone-300 transition-colors disabled:opacity-50 shrink-0"
                             >
                               Cancel
                             </button>
@@ -297,7 +297,7 @@ export default function AdminNavLinksPage() {
                         <div className="flex items-center gap-2.5">
                           <div>
                             <p className="text-sm text-stone-700 font-medium truncate">{row.label}</p>
-                            <p className="text-[10px] text-stone-400 font-mono truncate">{row.href}</p>
+                            <p className="text-[10px] text-stone-500 font-mono truncate">{row.href}</p>
                           </div>
                           <button
                             onClick={() => startEdit(row)}
@@ -312,7 +312,7 @@ export default function AdminNavLinksPage() {
                     <button
                       onClick={() => handleDelete(row)}
                       disabled={deleting === row.id}
-                      className="text-[10px] tracking-[0.15em] uppercase px-4 py-2 border border-stone-200 text-stone-400 hover:border-red-300 hover:text-red-400 transition-colors disabled:opacity-30 shrink-0"
+                      className="text-[10px] tracking-[0.15em] uppercase px-4 py-2 border border-stone-200 text-stone-500 hover:border-red-300 hover:text-red-400 transition-colors disabled:opacity-30 shrink-0"
                     >
                       {deleting === row.id ? 'Deleting…' : 'Delete'}
                     </button>

@@ -222,7 +222,7 @@ export default function CartPage() {
 
             <div className="border-t border-gold-200 pt-4 mb-5">
               <div className="flex justify-between">
-                <span className="text-xs uppercase tracking-wider text-stone-600 font-semibold">Total</span>
+                <span className="text-xs uppercase tracking-wider text-stone-600 font-semibold">Items total</span>
                 <span className="text-lg font-semibold text-gold-700">
                   &pound;{displayTotal.toFixed(2)}
                 </span>

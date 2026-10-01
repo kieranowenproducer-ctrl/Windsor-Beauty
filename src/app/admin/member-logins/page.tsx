@@ -23,7 +23,7 @@ const METHOD_CONFIG: Record<LoginMethod, { label: string; chip: string; note: st
   register:       { label: 'New Member',     chip: 'bg-gold-50 text-gold-700',     note: 'Signed in as part of creating the account' },
   password_set:   { label: 'Password Set',   chip: 'bg-stone-100 text-stone-600',  note: 'Set a password from an invitation and was signed in' },
   password_reset: { label: 'Password Reset', chip: 'bg-amber-50 text-amber-700',   note: 'Finished a password reset and was signed in' },
-  earlier_record: { label: 'Earlier Record', chip: 'bg-stone-100 text-stone-400',  note: 'Recorded before this log existed' },
+  earlier_record: { label: 'Earlier Record', chip: 'bg-stone-100 text-stone-500',  note: 'Recorded before this log existed' },
 };
 
 function formatDatetime(value: string) {
@@ -110,13 +110,13 @@ export default function AdminMemberLoginsPage() {
 
           <Link
             href="/admin/dashboard"
-            className="text-[9px] tracking-[0.18em] uppercase text-stone-400 hover:text-gold-700 transition-colors mb-6 inline-block"
+            className="text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-gold-700 transition-colors mb-6 inline-block"
           >
             &larr; Dashboard
           </Link>
 
           <h1 className="text-lg font-semibold text-stone-800 mb-0.5">Member Logins</h1>
-          <p className="text-xs text-stone-400 mb-8">
+          <p className="text-xs text-stone-500 mb-8">
             Audit trail of every member sign-in, newest first. Times are UK time.
           </p>
 
@@ -129,7 +129,7 @@ export default function AdminMemberLoginsPage() {
               { label: 'Last 7 Days',     value: loading ? '-' : String(stats.week) },
             ].map(({ label, value }) => (
               <div key={label} className="bg-white border border-stone-200 p-4">
-                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">{label}</div>
+                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">{label}</div>
                 <div className="text-xl font-semibold text-stone-800">{value}</div>
               </div>
             ))}
@@ -165,7 +165,7 @@ export default function AdminMemberLoginsPage() {
               <thead>
                 <tr className="border-b border-stone-100 bg-stone-50">
                   {['Date / Time', 'Member', 'How', 'Device', 'IP Address'].map(h => (
-                    <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 whitespace-nowrap">
+                    <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -173,20 +173,20 @@ export default function AdminMemberLoginsPage() {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={5} className="text-center text-xs text-stone-400 py-10">Loading...</td></tr>
+                  <tr><td colSpan={5} className="text-center text-xs text-stone-500 py-10">Loading...</td></tr>
                 ) : failed ? (
-                  <tr><td colSpan={5} className="text-center text-xs text-stone-400 py-10">
+                  <tr><td colSpan={5} className="text-center text-xs text-stone-500 py-10">
                     Could not load the sign-in log. Please refresh.
                   </td></tr>
                 ) : filtered.length === 0 ? (
-                  <tr><td colSpan={5} className="text-center text-xs text-stone-400 py-10">
+                  <tr><td colSpan={5} className="text-center text-xs text-stone-500 py-10">
                     {log.length === 0
                       ? 'No sign-ins recorded yet. Every member sign-in from now on appears here.'
                       : 'No sign-ins match this search.'}
                   </td></tr>
                 ) : filtered.map(row => {
                   const cfg = METHOD_CONFIG[row.method]
-                    ?? { label: row.method, chip: 'bg-stone-100 text-stone-400', note: '' };
+                    ?? { label: row.method, chip: 'bg-stone-100 text-stone-500', note: '' };
                   const device = deviceOf(row.user_agent);
                   return (
                     <tr key={row.id} className="border-b border-stone-50 hover:bg-stone-50/50 transition-colors">
@@ -197,11 +197,11 @@ export default function AdminMemberLoginsPage() {
                         {row.customer_id ? (
                           <Link href={`/admin/customers/${row.customer_id}`} className="hover:text-gold-700 transition-colors">
                             <div className="text-[10px] text-stone-700">{row.customer_name ?? 'Unknown'}</div>
-                            <div className="text-[9px] text-stone-400">{row.customer_email ?? ''}</div>
+                            <div className="text-[9px] text-stone-500">{row.customer_email ?? ''}</div>
                           </Link>
                         ) : (
                           <>
-                            <div className="text-[10px] text-stone-400">{row.customer_name ?? 'Deleted customer'}</div>
+                            <div className="text-[10px] text-stone-500">{row.customer_name ?? 'Deleted customer'}</div>
                             <div className="text-[9px] text-stone-300">{row.customer_email ?? ''}</div>
                           </>
                         )}
@@ -224,7 +224,7 @@ export default function AdminMemberLoginsPage() {
             </table>
           </div>
 
-          <p className="text-[10px] text-stone-400 mt-4 leading-relaxed">
+          <p className="text-[10px] text-stone-500 mt-4 leading-relaxed">
             Rows marked <span className="text-stone-500">Earlier Record</span> were reconstructed from
             sign-in times the site was already storing before this log was added, so they carry no
             device or IP address. Everything recorded from now on is captured in full.

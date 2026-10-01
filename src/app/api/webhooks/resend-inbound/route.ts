@@ -195,7 +195,7 @@ export async function POST(request: Request) {
         from: FORWARD_FROM,
         to: enquiryAlertRecipients(),
         replyTo: fromAddress,
-        subject: `${urgent ? 'Urgent: ' : ''}Customer email needs attention — ${subject}`,
+        subject: `${urgent ? 'Urgent: ' : ''}Customer email needs attention - ${subject}`,
         text:
           `A customer message is waiting in Website Enquiries.\n` +
           `Case #${enquiryId}\nFrom: ${name} <${fromAddress}>\n` +

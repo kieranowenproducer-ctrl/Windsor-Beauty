@@ -30,7 +30,7 @@ export interface SendInvoiceEmailParams {
   total: number;
   dueDate?: string | null;
   fenaPaymentUrl: string | null;
-  /** The customer-facing /pay/<token> page — where the T&C acknowledgement
+  /** The customer-facing /pay/<token> page , where the T&C acknowledgement
    *  and the actual payment buttons live (audit 2026-07-07). */
   payUrl: string;
   /** No longer embedded in the email; see the note where the pixel used to be rendered.
@@ -41,7 +41,23 @@ export interface SendInvoiceEmailParams {
 export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false;
 
-  // Permanent URL — works pre-launch too (wall-exempt in proxy.ts) and
+  try {
+    const { error } = await sendEmail(buildInvoiceEmail(params));
+
+    if (error) {
+      console.error('[invoiceEmail] Resend error:', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[invoiceEmail] send threw:', err);
+    return false;
+  }
+}
+
+export function buildInvoiceEmail(params: SendInvoiceEmailParams) {
+
+  // Permanent URL , works pre-launch too (wall-exempt in proxy.ts) and
   // is unchanged at launch, so the emailed terms link never goes stale.
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
   const termsUrl = `${siteUrl}/terms`;
@@ -75,7 +91,7 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
 
   // One button, one destination: the /pay/<token> page hosts the Terms &
   // Conditions acknowledgement and both payment methods (bank + PayPal).
-  // Direct pay links were removed from the email deliberately — a customer
+  // Direct pay links were removed from the email deliberately , a customer
   // must pass the T&C checkbox before any payment button unlocks.
   const payButtonsHtml = `
     <tr>
@@ -199,8 +215,8 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
     // guess, and the pixel's own comment admitted most clients block remote images anyway.
   });
 
-  try {
-    const { error } = await sendEmail({
+
+  return {
       from: FROM_ADDRESS,
       // Replies reach a real mailbox. Without this a customer answering an invoice is
       // writing into a void, and a From address that cannot be replied to is a pattern
@@ -221,15 +237,5 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
         `\nAny questions about this invoice, just reply to this email, or contact ` +
         `sales@windsorbeauty.co.uk quoting your invoice reference ${params.invoiceNumber}.`,
       html,
-    });
-
-    if (error) {
-      console.error('[invoiceEmail] Resend error:', error);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error('[invoiceEmail] send threw:', err);
-    return false;
-  }
+    };
 }

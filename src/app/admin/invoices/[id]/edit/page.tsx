@@ -559,7 +559,7 @@ export default function AdminInvoiceEditPage() {
       // straight to Fena, which understandably rejected it.
       const saved = await handleSave();
       if (!saved) {
-        setSendResult({ ok: false, message: 'Could not send — fix the save error above first.' });
+        setSendResult({ ok: false, message: 'Could not send - fix the save error above first.' });
         return;
       }
       const res = await fetch(`/api/admin/invoices/${id}/send`, { method: 'POST' });
@@ -570,7 +570,7 @@ export default function AdminInvoiceEditPage() {
           ok: true,
           message: data.fenaPaymentUrl
             ? `Invoice sent to ${email}${data.emailSent ? '' : ' (email delivery could not be confirmed)'}.`
-            : `Invoice order ${data.orderNumber} created, but the Fena payment link could not be generated. Reason: ${data.fenaError || 'unknown — check Fena is configured'}. Email was still sent with the PayPal option only.`,
+            : `Invoice order ${data.orderNumber} created, but the Fena payment link could not be generated. Reason: ${data.fenaError || 'unknown - check Fena is configured'}. Email was still sent with the PayPal option only.`,
         });
       } else {
         setSendResult({ ok: false, message: data.error || 'Failed to send invoice.' });
@@ -709,7 +709,7 @@ export default function AdminInvoiceEditPage() {
     return (
       <div className="h-full bg-stone-50 flex flex-col lg:flex-row overflow-clip">
         <AdminSidebar />
-        <main className="flex-1 p-8 overflow-clip text-sm text-stone-400">Loading…</main>
+        <main className="flex-1 p-8 overflow-clip text-sm text-stone-500">Loading…</main>
       </div>
     );
   }
@@ -721,7 +721,7 @@ export default function AdminInvoiceEditPage() {
       <div className="max-w-4xl">
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
-            <Link href="/admin/invoices" className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors">
+            <Link href="/admin/invoices" className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors">
               &larr; Invoices
             </Link>
             <h1 className="text-lg font-semibold text-stone-800 mt-2 flex items-center gap-3">
@@ -731,7 +731,7 @@ export default function AdminInvoiceEditPage() {
               </span>
             </h1>
             {invoice.order_number && (
-              <p className="text-xs text-stone-400 mt-1">
+              <p className="text-xs text-stone-500 mt-1">
                 Linked order: <Link href={`/admin/orders?search=${encodeURIComponent(invoice.order_number)}`} className="text-gold-700 hover:text-gold-700 font-mono">{invoice.order_number}</Link>
                 {invoice.payment_method_used && <span className="capitalize"> · paid via {invoice.payment_method_used}</span>}
                 {invoice.payment_method_used === 'paypal' && Number(invoice.paypal_fee_amount) > 0 && (
@@ -745,18 +745,18 @@ export default function AdminInvoiceEditPage() {
               href={`/api/admin/invoices/${id}/print`}
               target="_blank"
               rel="noreferrer"
-              className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+              className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
             >
               Print / PDF
             </a>
-            <button onClick={handleDuplicate} disabled={duplicating} className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors disabled:opacity-50">
+            <button onClick={handleDuplicate} disabled={duplicating} className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors disabled:opacity-50">
               {duplicating ? 'Duplicating…' : 'Duplicate'}
             </button>
-            <button onClick={handleDelete} disabled={deleting} className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors disabled:opacity-50">
+            <button onClick={handleDelete} disabled={deleting} className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors disabled:opacity-50">
               {deleting ? 'Deleting…' : 'Delete Invoice'}
             </button>
             {['sent', 'viewed', 'payment_pending'].includes(invoice.status) && (
-              <button onClick={handleCancel} disabled={cancelling} className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors disabled:opacity-50">
+              <button onClick={handleCancel} disabled={cancelling} className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors disabled:opacity-50">
                 {cancelling ? 'Cancelling…' : 'Cancel Invoice'}
               </button>
             )}

@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
   if (!fields) {
     return NextResponse.json(
-      { error: 'Invalid invoice data — check the customer name/email are filled in, and every line item has a name with a valid quantity, price, and discount.' },
+      { error: 'Invalid invoice data - check the customer name/email are filled in, and every line item has a name with a valid quantity, price, and discount.' },
       { status: 400 }
     );
   }

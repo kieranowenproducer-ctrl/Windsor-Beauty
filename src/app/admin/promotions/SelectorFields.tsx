@@ -23,7 +23,7 @@ export default function SelectorFields({
   const selectedProduct = products.find((p) => p.slug === value.slug);
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">{label}</span>
+      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">{label}</span>
       <div className="flex flex-wrap gap-2">
         <select
           value={value.scope}

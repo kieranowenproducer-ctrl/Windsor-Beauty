@@ -140,12 +140,12 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <span className="text-[11px] min-w-[70px] text-right" aria-live="polite">
-              {saveState === 'saving' ? <span className="text-stone-400">Saving…</span>
+              {saveState === 'saving' ? <span className="text-stone-500">Saving…</span>
                 : saveState === 'saved' ? <span className="text-green-600">Saved ✓</span>
                 : saveState === 'error' ? <span className="text-red-500">Save failed</span>
                 : <span className="text-stone-300">Auto-saves</span>}
             </span>
-            <button onClick={onClose} aria-label="Close editor" className="text-stone-400 hover:text-stone-700 transition-colors p-1">
+            <button onClick={onClose} aria-label="Close editor" className="text-stone-500 hover:text-stone-700 transition-colors p-1">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -363,7 +363,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                 aria-label="Note text"
                 onChange={(e) => onEdit({ caution: e.target.value })}
               />
-              <p className="text-[10px] text-stone-400">Leave blank to print the standard note.</p>
+              <p className="text-[10px] text-stone-500">Leave blank to print the standard note.</p>
             </div>
           </div>
         )}
@@ -382,7 +382,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
             ) : (
               <button onClick={() => canComplete && setStatus('complete')} disabled={!canComplete}
                 title={canComplete ? 'Mark this certificate as checked and finished' : duplicate ? 'Fix the duplicate number first' : `Still need: ${miss.join(', ')}`}
-                className={`text-xs px-3 py-1.5 rounded ${canComplete ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-stone-100 text-stone-400 cursor-not-allowed'}`}>
+                className={`text-xs px-3 py-1.5 rounded ${canComplete ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-stone-100 text-stone-500 cursor-not-allowed'}`}>
                 Mark complete
               </button>
             )}

@@ -31,7 +31,7 @@ export default function ImportedRulesSummary({
                 <h2 className="text-sm font-semibold text-stone-800">
                   CSV-Imported Rules {rules ? `(${rules.length})` : ''}
                 </h2>
-                <p className="text-[10px] text-stone-400 mt-0.5">
+                <p className="text-[10px] text-stone-500 mt-0.5">
                   {totalProducts} product{totalProducts !== 1 ? 's' : ''} referenced
                   {settings.lastImport && (
                     <> · last import {new Date(settings.lastImport.at).toLocaleString('en-GB')} ({settings.lastImport.mode}, {settings.lastImport.totalRules} rules)</>
@@ -49,10 +49,10 @@ export default function ImportedRulesSummary({
 
             <div className="p-6">
               {rules && rules.length === 0 && (
-                <p className="text-xs text-stone-400 text-center py-8">No CSV-imported rules yet. Import a CSV above, or use the manual editor — either way works.</p>
+                <p className="text-xs text-stone-500 text-center py-8">No CSV-imported rules yet. Import a CSV above, or use the manual editor - either way works.</p>
               )}
               {rules && rules.length > 0 && filteredGroups.length === 0 && (
-                <p className="text-xs text-stone-400 text-center py-8">No relationships match &ldquo;{search}&rdquo;.</p>
+                <p className="text-xs text-stone-500 text-center py-8">No relationships match &ldquo;{search}&rdquo;.</p>
               )}
               <div className="space-y-6">
                 {filteredGroups.map(group => {
@@ -62,7 +62,7 @@ export default function ImportedRulesSummary({
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <p className="text-xs font-semibold text-stone-700">{productLabel(group.trigger)}</p>
                         {overridden && (
-                          <span className="px-1.5 py-0.5 text-[8px] tracking-wider uppercase bg-gold-100 text-gold-700">Manual override active — these rules are unused</span>
+                          <span className="px-1.5 py-0.5 text-[8px] tracking-wider uppercase bg-gold-100 text-gold-700">Manual override active - these rules are unused</span>
                         )}
                         <button
                           type="button"
@@ -79,10 +79,10 @@ export default function ImportedRulesSummary({
                               <span className="text-gold-700 mr-1.5">&rarr;</span>
                               {productLabel(rule.upsell_handle)}
                               {!rule.active && (
-                                <span className="ml-2 inline-block px-1.5 py-0.5 text-[9px] tracking-wider uppercase bg-stone-100 text-stone-400">Inactive</span>
+                                <span className="ml-2 inline-block px-1.5 py-0.5 text-[9px] tracking-wider uppercase bg-stone-100 text-stone-500">Inactive</span>
                               )}
                               {rule.custom_message && (
-                                <p className="text-[10px] text-stone-400 italic mt-0.5">&ldquo;{rule.custom_message}&rdquo;</p>
+                                <p className="text-[10px] text-stone-500 italic mt-0.5">&ldquo;{rule.custom_message}&rdquo;</p>
                               )}
                             </div>
                             <button

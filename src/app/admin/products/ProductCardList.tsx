@@ -51,13 +51,13 @@ export default function ProductCardList({
                     {product.badge && (
                       <span className="text-[7px] tracking-wider bg-gold-100 text-gold-700 px-1.5 py-0.5 uppercase">{product.badge}</span>
                     )}
-                    <div className="text-[10px] text-stone-400 mt-0.5">{product.categories.join(', ')}{product.purity ? <> &middot; {product.purity}</> : null}</div>
+                    <div className="text-[10px] text-stone-500 mt-0.5">{product.categories.join(', ')}{product.purity ? <> &middot; {product.purity}</> : null}</div>
                   </div>
                   <div className="text-right shrink-0">
                     <div className="text-xs font-semibold text-stone-700">
                       {renderPriceCell(product)}
                     </div>
-                    <div className="text-[9px] text-stone-400">{soldCounts[product.slug] !== undefined ? `${soldCounts[product.slug].toLocaleString()} sold` : '0 sold'}</div>
+                    <div className="text-[9px] text-stone-500">{soldCounts[product.slug] !== undefined ? `${soldCounts[product.slug].toLocaleString()} sold` : '0 sold'}</div>
                   </div>
                 </div>
 
@@ -126,7 +126,7 @@ export default function ProductCardList({
                       ? 'Put this product back on the shop.'
                       : 'Take this product off the shop and every customer page. Nothing is deleted.'}
                     className={`p-2 -m-2 text-[9px] tracking-wider uppercase transition-colors disabled:opacity-40 ${
-                      hiddenSlugs.has(product.slug) ? 'text-green-600 hover:text-green-700' : 'text-stone-400 hover:text-red-400'
+                      hiddenSlugs.has(product.slug) ? 'text-green-600 hover:text-green-700' : 'text-stone-500 hover:text-red-400'
                     }`}
                   >
                     {togglingSlug === product.slug ? 'Saving…' : hiddenSlugs.has(product.slug) ? 'Unhide' : 'Hide'}
@@ -147,7 +147,7 @@ export default function ProductCardList({
                         ? 'Undoes your edits and puts the original built-in product back. It does not remove the product.'
                         : 'Permanently deletes this product.'
                     }
-                    className="p-2 -m-2 text-[9px] tracking-wider uppercase text-stone-400 hover:text-red-500 transition-colors disabled:opacity-40 ml-auto"
+                    className="p-2 -m-2 text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-500 transition-colors disabled:opacity-40 ml-auto"
                   >
                     {deletingSlug === product.slug
                       ? 'Working…'
@@ -159,7 +159,7 @@ export default function ProductCardList({
               </div>
             ))}
             {filtered.length === 0 && (
-              <div className="bg-white border border-stone-200 text-center text-xs text-stone-400 py-10">
+              <div className="bg-white border border-stone-200 text-center text-xs text-stone-500 py-10">
                 {products.length === 0 ? 'No products in catalogue.' : 'No products match your search.'}
               </div>
             )}

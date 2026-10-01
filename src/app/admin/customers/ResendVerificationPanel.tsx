@@ -27,7 +27,7 @@ export default function ResendVerificationPanel({
               <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold mb-1">
                 Waiting To Verify Their Email
               </p>
-              <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
                 {unverified.length === 1 ? 'This customer' : `These ${unverified.length} customers`} created an account but never clicked the verification link, so they have no member discount yet.
                 Press Resend to send a fresh link now. It does not matter whether the first one failed or just went to junk.
               </p>
@@ -44,8 +44,8 @@ export default function ResendVerificationPanel({
                           >
                             {`${u.first_name ?? ''} ${u.last_name ?? ''}`.trim() || u.email}
                           </Link>
-                          <p className="text-[10px] text-stone-400 mt-0.5">{u.email}</p>
-                          <p className="text-[10px] text-stone-400 mt-1">
+                          <p className="text-[10px] text-stone-500 mt-0.5">{u.email}</p>
+                          <p className="text-[10px] text-stone-500 mt-1">
                             Signed up {formatDate(u.created_at)}.
                             {u.last_sent_at
                               ? ` Link last sent ${formatDate(u.last_sent_at)}${u.times_sent > 1 ? ` (${u.times_sent} times in total)` : ''}.`
@@ -62,11 +62,11 @@ export default function ResendVerificationPanel({
                             });
                             return (
                               <p className="text-[10px] mt-1">
-                                <span className="text-stone-400">Came from: </span>
+                                <span className="text-stone-500">Came from: </span>
                                 <span className={from.known ? 'text-gold-700 font-medium' : 'text-stone-300'}>
                                   {from.main}
                                 </span>
-                                {from.detail && <span className="text-stone-400"> ({from.detail})</span>}
+                                {from.detail && <span className="text-stone-500"> ({from.detail})</span>}
                               </p>
                             );
                           })()}

@@ -32,7 +32,7 @@ export default function ContactPageSection({
             {/* Contact page */}
             <div id="section-contact" className="bg-white border border-stone-200 p-6">
               <h2 className="text-sm font-semibold text-stone-800 mb-1">Contact Page</h2>
-              <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
                 Edit the heading, intro text, email addresses, and subject dropdown options shown on the
                 Contact page. The form fields and layout stay the same; only this text and these lists change.
               </p>
@@ -40,7 +40,7 @@ export default function ContactPageSection({
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Eyebrow</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Eyebrow</span>
                     <input
                       type="text"
                       value={contact.eyebrow}
@@ -49,7 +49,7 @@ export default function ContactPageSection({
                     />
                   </label>
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Heading</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Heading</span>
                     <input
                       type="text"
                       value={contact.heading}
@@ -60,7 +60,7 @@ export default function ContactPageSection({
                 </div>
 
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Intro Text</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Intro Text</span>
                   <textarea
                     value={contact.intro}
                     onChange={(e) => setContact(prev => ({ ...prev, intro: e.target.value }))}
@@ -70,7 +70,7 @@ export default function ContactPageSection({
                 </label>
 
                 <div>
-                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                     Email Addresses
                   </span>
                   <div className="space-y-2">
@@ -93,7 +93,7 @@ export default function ContactPageSection({
                         <button
                           onClick={() => removeEmail(i)}
                           disabled={contact.emails.length <= 1}
-                          className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2 self-start sm:self-auto"
+                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2 self-start sm:self-auto"
                         >
                           Remove
                         </button>
@@ -109,7 +109,7 @@ export default function ContactPageSection({
                 </div>
 
                 <div>
-                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                     Subject Dropdown Options
                   </span>
                   <div className="space-y-2">
@@ -125,7 +125,7 @@ export default function ContactPageSection({
                         <button
                           onClick={() => removeSubject(i)}
                           disabled={contact.subjects.length <= 1}
-                          className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2"
+                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2"
                         >
                           Remove
                         </button>
@@ -153,7 +153,7 @@ export default function ContactPageSection({
                   <button
                     onClick={handleResetContact}
                     disabled={contactSaving}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
                   >
                     Reset to Default
                   </button>

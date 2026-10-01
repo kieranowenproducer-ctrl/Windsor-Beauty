@@ -36,7 +36,7 @@ Decided by Kieran on 1 October 2026: the two shops are run by the same people, s
 **Shared (same accounts, set as Windsor Beauty's own live settings):**
 - Admin sign-in: the same username and password as Windsor Glow. If the password is ever changed, change it on both sites.
 - Royal Mail Click & Drop: the same account. Windsor Beauty orders arrive with a reference starting `WB-`.
-- PayPal: the same receiving account, and the same email account for the PayPal instructions email.
+- PayPal: the same receiving account. Customers pay on the website. No PayPal payment-link email is sent.
 - Fena Pay by Bank: to be the same account. **Not connected yet**, see "Before the shop can open".
 
 **Never shared:** the database (orders, customers, products, stock), the image store, the admin
@@ -50,9 +50,7 @@ typed "Shipping description" on a product replaces its name.
 
 - It is on unless the live site's settings contain `MAINTENANCE_MODE=off`. Nothing in the code turns
   it off. Setting that value and publishing again is the launch.
-- While it is on, every page **and every back-end address** (checkout, payments, contact form,
-  scheduled jobs, payment notifications) answers with the holding screen. Only the admin area
-  works, behind its sign-in.
+- While it is on, public pages and back-end addresses answer with the holding screen. Staff sign-in and authorised payment notices and scheduled jobs still work.
 - To look at the real shop on the live address while it is closed: type the access code **1379**
   into the box on the holding screen (that browser is remembered for 30 days), or sign in at
   `/admin/login`. The code is a short one for showing people round, not a lock.
@@ -112,3 +110,15 @@ Still owed:
 
 The repository is `kieranowenproducer-ctrl/Windsor-Beauty`. A push to `main` publishes to
 www.windsorbeauty.co.uk. The new platform went live there on 1 October 2026, behind the holding screen.
+
+## Codex follow-up, 1 October 2026
+
+PayPal opens directly, keeps the on-screen resume link and sends the staff order notice. Customer PayPal payment emails and automatic PayPal reminders are off. Payment still needs staff verification in PayPal; a redirect is not proof of payment. Windsor Glow still sends its backup email and was not changed.
+
+Emails and the holding screen use the approved logo and Blush and Plum colours. There are 15 real email previews at `/api/admin/email-preview?type=paid` (other types are listed by that route). The old affiliate, referral, loyalty and countdown routes are blocked, with their intertwined files retained. The old affiliate schedule has been removed.
+
+The daily Royal Mail job requires its secret even when one is missing from settings. Product weights remain estimates that need measuring before launch. Print documents use true white; packing slips escape typed text and include discounts and fees.
+
+Fena remains unconnected: Edge showed the signed-in account but was unavailable to this chat. Existing Fena keys were untouched. An unsent live 50p invoice, INV-UZ5C7Y, is ready with a hidden test product, zero delivery and all automatic actions off. See [the bank test instructions](docs/OWNER-50P-BANK-TEST.md).
+
+See [the check record](docs/CODEX-CHECKS-2026-10-01.md) for tested behaviour and remaining checks. Keep the holding screen on until Kieran explicitly says to launch.

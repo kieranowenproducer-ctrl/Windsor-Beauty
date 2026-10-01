@@ -108,7 +108,7 @@ export default function InvoiceLineItems({
         <div className="bg-white border border-stone-200 p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-stone-800">Line Items</h2>
-            {financialsDisabled && <span className="text-[10px] tracking-[0.15em] uppercase text-amber-600">Locked — paid invoice</span>}
+            {financialsDisabled && <span className="text-[10px] tracking-[0.15em] uppercase text-amber-600">Locked - paid invoice</span>}
           </div>
           <div className="space-y-3">
             {lineItems.map((item, index) => (
@@ -132,7 +132,7 @@ export default function InvoiceLineItems({
                       type="button"
                       onClick={() => removeLineItem(index)}
                       disabled={financialsDisabled}
-                      className="ml-auto text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                      className="ml-auto text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors disabled:opacity-50"
                     >
                       Remove
                     </button>
@@ -155,7 +155,7 @@ export default function InvoiceLineItems({
                       <option value="">Select a product…</option>
                       {liveProductsSorted.map((product) => (
                         <option key={product.slug} value={product.slug}>
-                          {product.name} — {stockWord(totalStock(product.slug))}
+                          {product.name} - {stockWord(totalStock(product.slug))}
                         </option>
                       ))}
                     </select>
@@ -167,7 +167,7 @@ export default function InvoiceLineItems({
                     >
                       {item.slug && products.find((p) => p.slug === item.slug)?.variants.map((variant) => (
                         <option key={variant.dosage} value={variant.dosage}>
-                          {variant.dosage} — £{variant.price.toFixed(2)} ({stockWord(dosageStock(item.slug, variant.dosage))})
+                          {variant.dosage} - £{variant.price.toFixed(2)} ({stockWord(dosageStock(item.slug, variant.dosage))})
                         </option>
                       ))}
                     </select>
@@ -209,13 +209,13 @@ export default function InvoiceLineItems({
                       >
                         {trialProducts.find((p) => `trial:${p.id}` === item.slug)?.variants.map((variant) => (
                           <option key={variant.dosage} value={variant.dosage}>
-                            {variant.dosage} — £{variant.price.toFixed(2)} ({variant.stock} in stock)
+                            {variant.dosage} - £{variant.price.toFixed(2)} ({variant.stock} in stock)
                           </option>
                         ))}
                       </select>
                     </div>
                     {trialProducts.length === 0 && (
-                      <p className="text-[10px] text-stone-400 mt-1.5">
+                      <p className="text-[10px] text-stone-500 mt-1.5">
                         No trial products yet. Add them on the Trial products page and they will be pickable here.
                       </p>
                     )}
@@ -251,31 +251,31 @@ export default function InvoiceLineItems({
 
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-end">
                   <label className="flex flex-col gap-1">
-                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Qty</span>
+                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Qty</span>
                     <NumberField value={item.quantity} min={1} step={1} onCommit={(n) => updateLineItem(index, { quantity: n })} disabled={financialsDisabled} className={INPUT_CLASS} />
                   </label>
                   <label className="flex flex-col gap-1">
-                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Unit Price £</span>
+                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Unit Price £</span>
                     <NumberField value={item.unitPrice} min={0} step={0.01} onCommit={(n) => updateLineItem(index, { unitPrice: n })} disabled={financialsDisabled} className={INPUT_CLASS} />
                   </label>
                   <label className="flex flex-col gap-1">
-                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Discount £</span>
+                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Discount £</span>
                     <NumberField value={item.discount} min={0} step={0.01} onCommit={(n) => updateLineItem(index, { discount: n })} disabled={financialsDisabled} className={INPUT_CLASS} />
                   </label>
                   {item.type === 'custom' && (
                     <label className="flex flex-col gap-1">
-                      <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Weight (g, optional)</span>
+                      <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Weight (g, optional)</span>
                       <input type="number" min={0} step={1} value={item.weightGrams ?? ''} onChange={(e) => updateLineItem(index, { weightGrams: e.target.value ? Number(e.target.value) : undefined })} disabled={financialsDisabled} className={INPUT_CLASS} />
                     </label>
                   )}
                   <div className="flex flex-col gap-1">
-                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Line Total</span>
+                    <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Line Total</span>
                     <p className="text-xs font-semibold text-gold-700 py-2.5">£{item.lineTotal.toFixed(2)}</p>
                   </div>
                 </div>
 
                 <label className="flex flex-col gap-1 mt-2">
-                  <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Batch code(s) allocated</span>
+                  <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Batch code(s) allocated</span>
                   <input
                     type="text"
                     list="invoice-batch-pool"
@@ -287,7 +287,7 @@ export default function InvoiceLineItems({
                     placeholder="Pick or type a code. Separate several with commas"
                     className={`${INPUT_CLASS} font-mono`}
                   />
-                  <span className="text-[9px] text-stone-400">
+                  <span className="text-[9px] text-stone-500">
                     Shown on the invoice so the customer knows which verified batch their product came from.
                     {' '}Use several for a mixed line (e.g. two items from two batches).
                   </span>

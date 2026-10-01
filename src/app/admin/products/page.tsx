@@ -522,7 +522,7 @@ function AdminProductsPageContent() {
       <div className="flex flex-col gap-1">
         {variants.map(v => (
           <div key={v.dosage} className="flex items-center gap-1.5">
-            <span className="text-[9px] text-stone-400 w-12 shrink-0 truncate" title={v.dosage}>{v.dosage}</span>
+            <span className="text-[9px] text-stone-500 w-12 shrink-0 truncate" title={v.dosage}>{v.dosage}</span>
             <span className="text-xs text-stone-700 tabular-nums">{v.price === 0 ? 'TBC' : <>&pound;{v.price.toFixed(2)}</>}</span>
           </div>
         ))}
@@ -540,7 +540,7 @@ function AdminProductsPageContent() {
           const key = stockKey(product.slug, v.dosage);
           return (
             <div key={v.dosage} className="flex items-center gap-1.5">
-              <span className="text-[9px] text-stone-400 w-12 shrink-0 truncate" title={v.dosage}>{v.dosage}</span>
+              <span className="text-[9px] text-stone-500 w-12 shrink-0 truncate" title={v.dosage}>{v.dosage}</span>
               <input
                 type="number"
                 min={0}
@@ -557,7 +557,7 @@ function AdminProductsPageContent() {
               {/* Auto-save (task 81f143ba): no Save button — the field saves itself.
                   The label shows exactly where each edit stands. */}
               {savingStockKey === key ? (
-                <span className="text-[9px] tracking-wider uppercase text-stone-400">Saving…</span>
+                <span className="text-[9px] tracking-wider uppercase text-stone-500">Saving…</span>
               ) : stockSavedKey === key ? (
                 <span className="text-[9px] tracking-wider uppercase text-green-600">Saved</span>
               ) : stockDrafts[key] !== undefined ? (
@@ -865,12 +865,12 @@ function AdminProductsPageContent() {
           <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-0.5">Products</h1>
-              <p className="text-xs text-stone-400">{products.length} products in catalogue</p>
+              <p className="text-xs text-stone-500">{products.length} products in catalogue</p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => exportProductHandlesCsv(products, hiddenSlugs, stock)}
-                title="A reference list of every live product's handle/slug — for building your own custom upsell CSV by hand."
+                title="A reference list of every live product's handle/slug - for building your own custom upsell CSV by hand."
                 className="border border-stone-200 text-stone-500 text-[9px] tracking-[0.18em] uppercase px-4 py-2.5 hover:border-gold-300 hover:text-gold-700 transition-colors"
               >
                 Export Product Handles CSV
@@ -902,7 +902,7 @@ function AdminProductsPageContent() {
                 {unnamedProducts.length} product{unnamedProducts.length === 1 ? '' : 's'} ship without a unique shipping description
               </p>
               <p className="text-amber-700 leading-snug">
-                {unnamedProducts.map(p => p.name).join(', ')} — {unnamedProducts.length === 1 ? 'it' : 'they'} will
+                {unnamedProducts.map(p => p.name).join(', ')} - {unnamedProducts.length === 1 ? 'it' : 'they'} will
                 reach Royal Mail and Fena as &ldquo;Cosmetic Item&rdquo;. Nothing leaks, but you cannot tell
                 {unnamedProducts.length === 1 ? ' it' : ' them'} apart on the paperwork. Open{' '}
                 {unnamedProducts.length === 1 ? 'it' : 'each'} and set a <strong>Shipping description</strong>, or
@@ -1085,7 +1085,7 @@ function AdminProductsPageContent() {
               every row three lines above it. Both cannot be true, and the reader is left to
               guess which. It now says what each of the two buttons really does. */}
           <p className="text-[9px] text-stone-300 mt-4">
-            Note: every change made here — Live/Hidden status, stock numbers, edited details and newly created products —
+            Note: every change made here - Live/Hidden status, stock numbers, edited details and newly created products -
             is saved to the database and takes effect on the live site immediately. To take a product off the shop use
             &ldquo;Disable&rdquo;, which can always be switched back on without losing anything. &ldquo;Undo Edits&rdquo; on a
             built-in product throws away your changes and puts the original back; it does not remove the product.

@@ -39,7 +39,7 @@ export async function PUT(request: Request, props: { params: Promise<{ slug: str
   const product = parseProductInput({ ...draft, id: original.id, slug: original.slug });
   if (!product) {
     return NextResponse.json(
-      { error: 'Check the product details — some fields are missing or invalid.' },
+      { error: 'Check the product details - some fields are missing or invalid.' },
       { status: 400 }
     );
   }

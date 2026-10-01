@@ -5,13 +5,8 @@
 // This is pure logic over data the shop already holds, so it needs no database and no network. It
 // runs the real orderStage from src/lib/orderStage.ts.
 //
-// THE ONE THAT MATTERS. Kieran named a real order when he asked for this: Amber Costello's, which
-// he said had not been processed and should be red. It is `pending_postage`, which reads like a
-// label has been made and means the opposite: Royal Mail has the order and is holding it until the
-// postage is paid, so nothing has printed. Asking Royal Mail directly confirmed it, no printedOn
-// and no tracking number. The first version of this rule called it orange, which would have told
-// him a job was done when it was not. The check named "Amber's order" below is that case, and it
-// is the reason this file exists.
+// Royal Mail pending_postage means postage is still unpaid. It must stay in
+// the waiting-for-label stage until a label or tracking number exists.
 import { readFileSync } from 'node:fs';
 import { orderStage } from '../src/lib/orderStage.ts';
 
@@ -27,7 +22,7 @@ console.log('\n=== Which colour an order gets ===\n');
 
 // 1. RED — paid and still waiting on a label.
 check("a paid order with no label", { status: 'awaiting_dispatch', royalMailLabelStatus: 'none', trackingNumber: null }, 'to_label');
-check("Amber's order: Royal Mail has it but the postage is unpaid", { status: 'awaiting_dispatch', royalMailLabelStatus: 'pending_postage', trackingNumber: null }, 'to_label');
+check("a pending order: Royal Mail has it but the postage is unpaid", { status: 'awaiting_dispatch', royalMailLabelStatus: 'pending_postage', trackingNumber: null }, 'to_label');
 check("a label that failed goes back to red, not forward", { status: 'awaiting_dispatch', royalMailLabelStatus: 'error', trackingNumber: null }, 'to_label');
 check("just paid, nothing done yet", { status: 'paid', royalMailLabelStatus: 'none', trackingNumber: null }, 'to_label');
 check("exported to Royal Mail but no label made", { status: 'exported', royalMailLabelStatus: 'none', trackingNumber: null }, 'to_label');

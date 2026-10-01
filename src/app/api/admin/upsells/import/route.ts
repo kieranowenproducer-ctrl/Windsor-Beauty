@@ -98,7 +98,7 @@ export async function POST(request: Request) {
     if (unknown.length > 0) {
       errors.push({
         row: row.sourceRow,
-        reason: `Unknown product handle — ${unknown.join(' and ')} do not match any product in the catalogue. Use "Export Product Handles CSV" on the Products page to get the exact current handles.`,
+        reason: `Unknown product handle - ${unknown.join(' and ')} do not match any product in the catalogue. Use "Export Product Handles CSV" on the Products page to get the exact current handles.`,
         raw: `${row.triggerHandle},${row.upsellHandle}`,
         kind: 'unknown_handle',
       });
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       error: parsed.rows.length === 0
         ? 'No usable data rows were found in the file.'
-        : 'None of the rows in this file matched real products — nothing was imported. Existing upsell rules have not been changed.',
+        : 'None of the rows in this file matched real products - nothing was imported. Existing upsell rules have not been changed.',
       errors,
     }, { status: 400 });
   }

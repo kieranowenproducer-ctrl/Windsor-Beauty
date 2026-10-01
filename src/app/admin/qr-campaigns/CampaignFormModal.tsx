@@ -59,10 +59,10 @@ export default function CampaignFormModal({
             <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-4">
               {isEditing && selected && (
                 <div className="bg-stone-50 border border-stone-100 px-3 py-2">
-                  <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-0.5">Permanent Tracking URL (cannot be changed)</p>
+                  <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-0.5">Permanent Tracking URL (cannot be changed)</p>
                   <code className="text-[9px] text-stone-600 font-mono">/r/{selected.slug}</code>
-                  <p className="text-[8px] text-stone-400 mt-1 leading-relaxed">
-                    The slug is locked — your printed QR codes will always work.
+                  <p className="text-[8px] text-stone-500 mt-1 leading-relaxed">
+                    The slug is locked - your printed QR codes will always work.
                   </p>
                 </div>
               )}
@@ -77,7 +77,7 @@ export default function CampaignFormModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="sm:col-span-2">
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Campaign Name *</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Campaign Name *</label>
                   <input
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
@@ -87,20 +87,20 @@ export default function CampaignFormModal({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Bespoke Title (optional)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Bespoke Title (optional)</label>
                   <input
                     value={form.bespoke_title}
                     onChange={e => setForm(f => ({ ...f, bespoke_title: e.target.value }))}
                     placeholder="e.g. Exclusive for salon guests"
                     className="w-full border border-stone-200 px-3 py-2 text-xs text-stone-700 focus:border-gold-400 outline-none"
                   />
-                  <p className="text-[8px] text-stone-400 mt-1">
+                  <p className="text-[8px] text-stone-500 mt-1">
                     Shown on the leaflet only, between &ldquo;Windsor Beauty&rdquo; and the subheading. Doesn&rsquo;t affect tracking, URLs, or reporting.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Status</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Status</label>
                   <select
                     value={form.status}
                     onChange={e => setForm(f => ({ ...f, status: e.target.value as CampaignStatus }))}
@@ -113,7 +113,7 @@ export default function CampaignFormModal({
                 </div>
 
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Campaign Type</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Campaign Type</label>
                   <select
                     value={form.campaign_type}
                     onChange={e => setForm(f => ({ ...f, campaign_type: e.target.value }))}
@@ -127,7 +127,7 @@ export default function CampaignFormModal({
                 </div>
 
                 <div className="col-span-2">
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Partner / Location</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Partner / Location</label>
                   <input
                     value={form.partner_name}
                     onChange={e => setForm(f => ({ ...f, partner_name: e.target.value }))}
@@ -137,7 +137,7 @@ export default function CampaignFormModal({
                 </div>
 
                 <div className="col-span-2">
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Destination *</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Destination *</label>
                   <select
                     value={destinationPreset}
                     onChange={e => handleDestinationPresetChange(e.target.value)}
@@ -161,18 +161,18 @@ export default function CampaignFormModal({
                 </div>
 
                 <div className="col-span-2">
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Linked Discount Code (optional)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Linked Discount Code (optional)</label>
                   <input
                     value={form.discount_code}
                     onChange={e => setForm(f => ({ ...f, discount_code: e.target.value.toUpperCase() }))}
                     placeholder="e.g. CLAIRE20"
                     className="w-full border border-stone-200 px-3 py-2 text-xs text-stone-700 focus:border-gold-400 outline-none font-mono"
                   />
-                  <p className="text-[8px] text-stone-400 mt-1">For reference only. QR attribution works whether or not the code is used at checkout.</p>
+                  <p className="text-[8px] text-stone-500 mt-1">For reference only. QR attribution works whether or not the code is used at checkout.</p>
                 </div>
 
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Start Date</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Start Date</label>
                   <input
                     type="date"
                     value={form.start_date}
@@ -182,7 +182,7 @@ export default function CampaignFormModal({
                 </div>
 
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">End Date</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">End Date</label>
                   <input
                     type="date"
                     value={form.end_date}
@@ -192,7 +192,7 @@ export default function CampaignFormModal({
                 </div>
 
                 <div className="col-span-2">
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Notes (internal only)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Notes (internal only)</label>
                   <textarea
                     rows={3}
                     value={form.notes}

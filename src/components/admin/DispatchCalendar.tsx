@@ -103,7 +103,7 @@ const DISPATCH_STATUS_LABEL: Record<DispatchStatus, string> = {
 const DISPATCH_STATUS_CHIP: Record<DispatchStatus, string> = {
   dispatched: 'bg-gold-50 text-gold-700',
   awaiting: 'bg-sky-50 text-sky-600',
-  na: 'bg-stone-100 text-stone-400',
+  na: 'bg-stone-100 text-stone-500',
 };
 
 function isoDate(year: number, month: number, day: number): string {
@@ -237,7 +237,7 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
   }, [selectedOrders]);
 
   if (loading) {
-    return <p className="text-xs text-stone-400 py-4">Loading calendar...</p>;
+    return <p className="text-xs text-stone-500 py-4">Loading calendar...</p>;
   }
 
   return (
@@ -248,7 +248,7 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
         <div className="flex items-center gap-4">
           <button
             onClick={() => { setViewDate(new Date(year, month - 1, 1)); setSelectedDay(null); }}
-            className="w-7 h-7 flex items-center justify-center text-stone-400 hover:text-gold-700 hover:bg-gold-50 rounded-sm transition-colors text-sm"
+            className="w-7 h-7 flex items-center justify-center text-stone-500 hover:text-gold-700 hover:bg-gold-50 rounded-sm transition-colors text-sm"
           >
             ‹
           </button>
@@ -259,18 +259,18 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
           </div>
           <button
             onClick={() => { setViewDate(new Date(year, month + 1, 1)); setSelectedDay(null); }}
-            className="w-7 h-7 flex items-center justify-center text-stone-400 hover:text-gold-700 hover:bg-gold-50 rounded-sm transition-colors text-sm"
+            className="w-7 h-7 flex items-center justify-center text-stone-500 hover:text-gold-700 hover:bg-gold-50 rounded-sm transition-colors text-sm"
           >
             ›
           </button>
         </div>
         <div className="flex items-center gap-6 text-right">
           <div>
-            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Orders this month</p>
+            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Orders this month</p>
             <p className="text-base font-semibold text-stone-800">{monthStats.count}</p>
           </div>
           <div>
-            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Revenue this month</p>
+            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Revenue this month</p>
             <p className="text-base font-semibold text-gold-700">£{monthStats.revenue.toFixed(2)}</p>
           </div>
         </div>
@@ -279,7 +279,7 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
       {/* Day-of-week header row */}
       <div className="grid grid-cols-7 border-b border-stone-100">
         {DAY_LABELS.map(d => (
-          <div key={d} className="py-2 text-center text-[9px] tracking-[0.18em] uppercase text-stone-400 font-medium">
+          <div key={d} className="py-2 text-center text-[9px] tracking-[0.18em] uppercase text-stone-500 font-medium">
             {d}
           </div>
         ))}
@@ -335,7 +335,7 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
                   <span className={`text-[9px] font-semibold leading-none ${isSelected ? 'text-white' : 'text-gold-700'}`}>
                     {count} order{count !== 1 ? 's' : ''}
                   </span>
-                  <span className={`text-[8px] leading-none ${isSelected ? 'text-white/80' : 'text-stone-400'}`}>
+                  <span className={`text-[8px] leading-none ${isSelected ? 'text-white/80' : 'text-stone-500'}`}>
                     £{dayRevenue.toFixed(0)}
                   </span>
                 </div>
@@ -415,7 +415,7 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
                     {/* Customer */}
                     <div>
                       <p className="text-xs text-stone-700 font-medium">{o.customerName}</p>
-                      <p className="text-[10px] text-stone-400">{o.email}</p>
+                      <p className="text-[10px] text-stone-500">{o.email}</p>
                     </div>
 
                     {/* Items */}
@@ -439,7 +439,7 @@ export default function DispatchCalendar({ onExported }: DispatchCalendarProps) 
                       {DISPATCH_STATUS_LABEL[dispatchStatus]}
                     </span>
                     {o.paymentMethod && (
-                      <span className="text-[9px] text-stone-400">via {o.paymentMethod}</span>
+                      <span className="text-[9px] text-stone-500">via {o.paymentMethod}</span>
                     )}
                   </div>
                 </div>

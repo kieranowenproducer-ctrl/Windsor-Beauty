@@ -62,11 +62,11 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   // Trial lines print as Product 1, Product 2 (task ae168547).
   const itemRows = anonymiseTrialLines(invoice.line_items).map((item) => {
     const batch = item.batchCodes && item.batchCodes.length
-      ? `<br><span style="font-size:11px;color:#888">Batch verified: ${escapeHtml(item.batchCodes.join(', '))}</span>`
+      ? `<br><span style="font-size:11px;color:#555">Batch verified: ${escapeHtml(item.batchCodes.join(', '))}</span>`
       : '';
     return `
     <tr>
-      <td>${escapeHtml(item.name)}${item.description ? `<br><span style="font-size:11px;color:#888">${escapeHtml(item.description)}</span>` : ''}${batch}</td>
+      <td>${escapeHtml(item.name)}${item.description ? `<br><span style="font-size:11px;color:#555">${escapeHtml(item.description)}</span>` : ''}${batch}</td>
       <td style="text-align:center">${item.quantity}</td>
       <td style="text-align:right">£${item.unitPrice.toFixed(2)}</td>
       <td style="text-align:right">${item.discount > 0 ? `-£${item.discount.toFixed(2)}` : ''}</td>
@@ -90,7 +90,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   <title>Invoice ${escapeHtml(invoice.invoice_number)}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #3A2630; padding: 32px 40px; max-width: 720px; margin: auto; }
+    body { background: #ffffff; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #3A2630; padding: 32px 40px; max-width: 720px; margin: auto; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #3A2630; padding-bottom: 16px; margin-bottom: 24px; }
     .brand { font-size: 22px; font-weight: bold; letter-spacing: 0.5px; }
     .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #666; margin-top: 2px; }
@@ -98,17 +98,17 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
     .ref h2 { font-size: 15px; }
     .ref p { font-size: 12px; color: #555; margin-top: 3px; }
     .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin-bottom: 6px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
+    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 6px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
     .address { white-space: pre-line; line-height: 1.6; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-    th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ccc; padding: 6px 0; text-align: left; }
+    th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #555; border-bottom: 1px solid #ccc; padding: 6px 0; text-align: left; }
     th:not(:first-child) { text-align: right; }
     td { padding: 8px 0; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.4; }
     .totals { margin-left: auto; width: 280px; }
     .totals td { border: none; padding: 4px 0; font-size: 12px; }
     .totals .grand-total td { font-size: 14px; font-weight: bold; border-top: 2px solid #3A2630; padding-top: 8px; }
     .notes { margin-top: 16px; padding: 10px; background: #fefce8; border: 1px solid #e7dcc8; border-radius: 4px; font-size: 12px; color: #555; white-space: pre-line; }
-    .footer { border-top: 1px solid #ccc; padding-top: 16px; margin-top: 24px; font-size: 10px; color: #888; line-height: 1.6; text-align: center; }
+    .footer { border-top: 1px solid #ccc; padding-top: 16px; margin-top: 24px; font-size: 10px; color: #555; line-height: 1.6; text-align: center; }
     @media print {
       body { padding: 16px 24px; }
       .no-print { display: none; }

@@ -100,7 +100,7 @@ export default function SecurityReviewsPage() {
                 </div>
 
                 <div className={`mt-4 border p-3 text-sm ${ipOnly ? 'border-blue-200 bg-blue-50 text-blue-900' : 'border-gold-200 bg-gold-50 text-stone-800'}`}>
-                  <strong>{ipOnly ? 'Shared IP only — no matching identity information.' : row.summary}</strong>
+                  <strong>{ipOnly ? 'Shared IP only - no matching identity information.' : row.summary}</strong>
                   <div className="mt-1">Associated customer records: {row.matched_customer_ids.join(', ') || 'none'}</div>
                   {row.order_number && <div>Order: {row.order_number}</div>}
                   {row.discount_code && <div>Discount code: {row.discount_code}</div>}

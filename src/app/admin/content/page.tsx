@@ -522,7 +522,7 @@ export default function AdminContentPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-3xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Site Content</h1>
-          <p className="text-xs text-stone-400 mb-8">
+          <p className="text-xs text-stone-500 mb-8">
             Edit the announcement bar and legal page content shown on the live site.
           </p>
 
@@ -554,7 +554,7 @@ export default function AdminContentPage() {
               <a
                 key={href}
                 href={href}
-                className="text-[9px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors whitespace-nowrap"
+                className="text-[9px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors whitespace-nowrap"
               >
                 {label}
               </a>

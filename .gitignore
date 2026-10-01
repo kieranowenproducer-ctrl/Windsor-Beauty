@@ -59,3 +59,9 @@ backups/
 # Windsor Beauty local test database (npm run db:local)
 /.local-db/
 *.local.txt
+
+# Preserved build caches while switching between development and production
+/.next-before-*/
+/.codex-audit/
+
+/.email-previews/

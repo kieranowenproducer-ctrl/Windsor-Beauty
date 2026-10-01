@@ -1,6 +1,6 @@
 // Placing an order must refuse a staff-made code that is switched off, out of date or used up,
 // exactly as the basket does (Samuel, 27 Sep 2026). Until then only the basket checked, so a
-// request sent straight to place-order could spend, for example, Raf's one-use shop credit twice.
+// request sent straight to place-order could spend, for example, a partner's one-use shop credit twice.
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { staffCodeRefusal } from '../src/lib/discountCodes.ts';
@@ -12,7 +12,7 @@ assert.equal(staffCodeRefusal(code({}), now), null, 'a live code with no limits 
 assert.equal(staffCodeRefusal(code({ active: false }), now), 'That code is no longer active.');
 assert.equal(staffCodeRefusal(code({ expires_at: '2026-09-27T11:59:59Z' }), now), 'That code has expired.');
 assert.equal(staffCodeRefusal(code({ expires_at: '2026-09-28T00:00:00Z' }), now), null, 'a code still in date can be spent');
-// Raf's shop credit: RAF-CREDIT-..., one use.
+// a partner's shop credit: RAF-CREDIT-..., one use.
 assert.equal(staffCodeRefusal(code({ usage_limit: 1, times_redeemed: 0 }), now), null, 'unused one-use shop credit can be spent once');
 assert.equal(staffCodeRefusal(code({ usage_limit: 1, times_redeemed: 1 }), now), 'That code has reached its usage limit.', 'used shop credit is refused');
 // A personal RAF5 code: no usage limit, but it expires and staff can switch it off.

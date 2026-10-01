@@ -443,14 +443,14 @@ export default function DispatchPage() {
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-0.5">Dispatch Centre</h1>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 Create Royal Mail labels and send tracking emails, with a manual CSV system as backup.
               </p>
             </div>
             <button
               onClick={() => { load(); loadRmOrders(); }}
               disabled={loading || rmLoading}
-              className="shrink-0 text-[9px] tracking-[0.18em] uppercase text-stone-400 hover:text-gold-700 border border-stone-200 hover:border-gold-300 disabled:opacity-50 px-3 py-2 transition-colors"
+              className="shrink-0 text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-gold-700 border border-stone-200 hover:border-gold-300 disabled:opacity-50 px-3 py-2 transition-colors"
             >
               {loading || rmLoading ? 'Refreshing...' : 'Refresh'}
             </button>
@@ -466,7 +466,7 @@ export default function DispatchPage() {
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-stone-700 tracking-wide">Royal Mail Dispatch</h2>
-                <p className="text-[10px] text-stone-400 mt-0.5">
+                <p className="text-[10px] text-stone-500 mt-0.5">
                   Create labels, download postage documents, and send tracking emails directly through the Royal Mail Click &amp; Drop API.
                 </p>
               </div>
@@ -475,7 +475,7 @@ export default function DispatchPage() {
             {!royalMailConfigured && (
               <div className="border border-amber-200 bg-amber-50 px-4 py-3 mb-4">
                 <p className="text-[10px] text-amber-700 leading-relaxed">
-                  Royal Mail isn&apos;t connected yet — add <code className="font-mono">ROYAL_MAIL_API_KEY</code> to
+                  Royal Mail isn&apos;t connected yet - add <code className="font-mono">ROYAL_MAIL_API_KEY</code> to
                   the environment variables to enable label creation here. The Manual CSV / Fallback
                   Dispatch System below still works without it.
                 </p>
@@ -540,12 +540,12 @@ export default function DispatchPage() {
             >
               <div>
                 <h2 className="text-sm font-semibold text-stone-700 tracking-wide">Manual Backup System (CSV)</h2>
-                <p className="text-[10px] text-stone-400 mt-0.5">
+                <p className="text-[10px] text-stone-500 mt-0.5">
                   Only needed if the automatic Royal Mail system above is down. Everything below is the old
                   manual route: export a CSV, upload it to Click &amp; Drop yourself, paste tracking numbers back in.
                 </p>
               </div>
-              <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400 shrink-0 ml-4">{fallbackOpen ? 'Hide' : 'Show'}</span>
+              <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500 shrink-0 ml-4">{fallbackOpen ? 'Hide' : 'Show'}</span>
             </button>
           </div>
           {fallbackOpen && (<>
@@ -560,7 +560,7 @@ export default function DispatchPage() {
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-stone-700 tracking-wide">Order Calendar</h2>
-                <p className="text-[10px] text-stone-400 mt-0.5">
+                <p className="text-[10px] text-stone-500 mt-0.5">
                   Click any day to see who ordered, what they bought, and the order status.
                 </p>
               </div>
@@ -569,7 +569,7 @@ export default function DispatchPage() {
           </section>
 
           {loading ? (
-            <p className="text-xs text-stone-400">Loading dispatch queue...</p>
+            <p className="text-xs text-stone-500">Loading dispatch queue...</p>
           ) : (
             <>
               <ExportStep

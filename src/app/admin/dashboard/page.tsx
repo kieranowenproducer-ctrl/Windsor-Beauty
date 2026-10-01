@@ -665,7 +665,7 @@ export default function AdminDashboard() {
           <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-1">Dashboard</h1>
-              <p className="text-xs text-stone-400">Windsor Beauty Admin Overview</p>
+              <p className="text-xs text-stone-500">Windsor Beauty Admin Overview</p>
             </div>
             {/* Wraps rather than squashing on a phone. */}
             <div className="flex flex-wrap gap-2">
@@ -824,7 +824,7 @@ export default function AdminDashboard() {
                       : `${formatWholeNumber(lowStock.length)} products have fewer than ${formatWholeNumber(lowStockThreshold)} units left`}
                   </div>
                   <div className="text-[10px] text-stone-500 mt-0.5">
-                    Fix a number right here: type the new stock and press Update. Press Stop stocking on anything you will not reorder — it leaves this warning now, sells whatever is left, and comes off the shop by itself when the last one goes.
+                    Fix a number right here: type the new stock and press Update. Press Stop stocking on anything you will not reorder - it leaves this warning now, sells whatever is left, and comes off the shop by itself when the last one goes.
                   </div>
                 </div>
                 <span className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -843,8 +843,8 @@ export default function AdminDashboard() {
                   return (
                     <div key={key} className="py-2.5 flex flex-wrap items-center gap-2">
                       <span className="flex-1 min-w-[220px] text-[11px] text-stone-700">
-                        {item.name} <span className="text-stone-400">({item.dosage})</span>
-                        {' — '}
+                        {item.name} <span className="text-stone-500">({item.dosage})</span>
+                        {' - '}
                         {item.quantity === 0
                           ? <span className="text-red-600 font-semibold">Sold out</span>
                           : <span className="text-gold-700 font-semibold">{formatWholeNumber(item.quantity)} left</span>}
@@ -944,7 +944,7 @@ export default function AdminDashboard() {
 
           {!stats.dbConfigured && (
             <div className="border border-gold-200 bg-gold-50/50 text-gold-700 text-xs px-4 py-3 mb-6">
-              Database not connected — orders, customers, and revenue figures will stay at zero until <span className="font-mono">DATABASE_URL</span> is configured.
+              Database not connected - orders, customers, and revenue figures will stay at zero until <span className="font-mono">DATABASE_URL</span> is configured.
             </div>
           )}
 
@@ -958,12 +958,12 @@ export default function AdminDashboard() {
             {[
               { label: 'Paid Orders', value: formatWholeNumber(stats.totalOrders), note: 'Payment confirmed, all time', href: '/admin/orders' },
               { label: 'Awaiting Payment', value: formatWholeNumber(stats.awaitingPayment), note: 'Payment started, money not confirmed', accent: stats.awaitingPayment > 0, href: '/admin/orders?status=pending,awaiting_payment' },
-              { label: 'Awaiting Dispatch', value: formatWholeNumber(stats.awaitingDispatch), note: 'Paid — ready to ship', accent: stats.awaitingDispatch > 0, href: '/admin/orders?status=paid,awaiting_dispatch,processing,exported' },
+              { label: 'Awaiting Dispatch', value: formatWholeNumber(stats.awaitingDispatch), note: 'Paid - ready to ship', accent: stats.awaitingDispatch > 0, href: '/admin/orders?status=paid,awaiting_dispatch,processing,exported' },
               { label: 'In Transit', value: formatWholeNumber(stats.inTransit), note: 'Dispatched, not yet delivered', href: '/admin/orders?status=dispatched' },
             ].map(({ label, value, note, accent, href }) => (
               <Link key={label} href={href} className={`block bg-white border p-5 cursor-pointer hover:border-gold-300 transition-colors ${accent ? 'border-gold-300' : 'border-stone-200'}`}>
-                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-2">{label}</div>
-                <div className={`text-2xl font-semibold mb-1 ${accent ? 'text-gold-700' : 'text-stone-800'}`}>{loading ? '—' : value}</div>
+                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
+                <div className={`text-2xl font-semibold mb-1 ${accent ? 'text-gold-700' : 'text-stone-800'}`}>{loading ? '-' : value}</div>
                 <div className="text-[9px] text-stone-300">{note}</div>
               </Link>
             ))}
@@ -974,8 +974,8 @@ export default function AdminDashboard() {
               the row stays one line rather than dropping a single box onto a line of its own. */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
             {[
-              { label: 'Revenue — All Time', value: `£${formatMoney(stats.revenue)}`, note: 'Confirmed payments only', href: '/admin/revenue', accent: false },
-              { label: 'Revenue — This Month', value: `£${formatMoney(stats.thisMonthRevenue)}`, note: new Date().toLocaleString('en-GB', { month: 'long', year: 'numeric' }), href: '/admin/revenue?period=this_month', accent: false },
+              { label: 'Revenue - All Time', value: `£${formatMoney(stats.revenue)}`, note: 'Confirmed payments only', href: '/admin/revenue', accent: false },
+              { label: 'Revenue - This Month', value: `£${formatMoney(stats.thisMonthRevenue)}`, note: new Date().toLocaleString('en-GB', { month: 'long', year: 'numeric' }), href: '/admin/revenue?period=this_month', accent: false },
               { label: 'Customer Accounts', value: formatWholeNumber(stats.customerCount), note: 'Registered on the website', href: '/admin/customers', accent: false },
               /* Kieran, 9 September: show a separate box for new clients from the preceding day.
                  It gold-borders itself on a
@@ -993,8 +993,8 @@ export default function AdminDashboard() {
               { label: 'Products', value: formatWholeNumber(stats.products), note: 'In catalogue', href: '/admin/products', accent: false },
             ].map(({ label, value, note, href, accent }) => (
               <Link key={label} href={href} className={`block bg-white border p-5 cursor-pointer hover:border-gold-300 transition-colors ${accent ? 'border-gold-300' : 'border-stone-200'}`}>
-                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-2">{label}</div>
-                <div className="text-2xl font-semibold text-stone-800 mb-1">{loading ? '—' : value}</div>
+                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
+                <div className="text-2xl font-semibold text-stone-800 mb-1">{loading ? '-' : value}</div>
                 <div className="text-[9px] text-stone-300">{note}</div>
               </Link>
             ))}
@@ -1011,14 +1011,14 @@ export default function AdminDashboard() {
               each; press a row for the detail. */}
           <div className="mb-10">
             <h2 className="text-xs tracking-[0.18em] uppercase text-stone-500 font-semibold mb-1">Latest Activity</h2>
-            <p className="text-[10px] text-stone-400 mb-4">
+            <p className="text-[10px] text-stone-500 mb-4">
               Orders, payments, new customers and anything that went wrong, newest first. Press a row for the detail.
             </p>
             {/* What the coloured squares on the order rows mean (task 41a3910f). */}
             <OrderStageKey className="mb-4" />
             {/* Where a problem goes when it leaves this list (task f95367d6). Rows that
                 disappear with no explanation are worse than rows that pile up. */}
-            <p className="text-[10px] text-stone-400 mb-4 leading-relaxed">
+            <p className="text-[10px] text-stone-500 mb-4 leading-relaxed">
               On a Problem row, the tick files it away under{' '}
               <Link href="/admin/system-health" className="underline decoration-stone-300 hover:text-gold-700">
                 System Health
@@ -1032,9 +1032,9 @@ export default function AdminDashboard() {
               <p className="text-[11px] text-red-700 font-semibold mb-3">{deleteIssueError}</p>
             )}
             {activityLoading ? (
-              <p className="text-xs text-stone-400">Loading…</p>
+              <p className="text-xs text-stone-500">Loading…</p>
             ) : activity.length === 0 ? (
-              <p className="text-xs text-stone-400">Nothing yet. Payments, registrations and any problems will appear here as they happen.</p>
+              <p className="text-xs text-stone-500">Nothing yet. Payments, registrations and any problems will appear here as they happen.</p>
             ) : (
               <div className="bg-white border border-stone-200 divide-y divide-stone-100">
                 {activity.map((event, index) => {
@@ -1108,7 +1108,7 @@ export default function AdminDashboard() {
                             <span className="min-w-0 flex-1 truncate text-xs text-stone-700">{event.message}</span>
                           </>
                         )}
-                        <span className="shrink-0 text-[10px] text-stone-400">{activityTime(event.at)}</span>
+                        <span className="shrink-0 text-[10px] text-stone-500">{activityTime(event.at)}</span>
                         {/* No chevron where a button sits beside it: the buttons need the
                             width more than the arrow does, and the row is still tappable. */}
                         {event.type !== 'issue' && !clearableOrder && (
@@ -1228,7 +1228,7 @@ export default function AdminDashboard() {
                                         {formatWholeNumber(item.quantity)} &times; {item.name}
                                         {/* Real orders carry an empty dosage, so brackets only
                                             appear when there is something to put in them. */}
-                                        {item.variant && <span className="text-stone-400"> ({item.variant})</span>}
+                                        {item.variant && <span className="text-stone-500"> ({item.variant})</span>}
                                       </span>
                                       <span className="shrink-0 text-stone-500">
                                         &pound;{formatMoney(item.price * item.quantity)}
@@ -1236,7 +1236,7 @@ export default function AdminDashboard() {
                                     </li>
                                   ))}
                                   {event.itemCount > event.items.length && (
-                                    <li className="text-stone-400">
+                                    <li className="text-stone-500">
                                       and {formatWholeNumber(event.itemCount - event.items.length)} more. Open the order to see everything.
                                     </li>
                                   )}
@@ -1259,7 +1259,7 @@ export default function AdminDashboard() {
                                   is why the row gets opened: reading the number used to cost
                                   four screens on a phone. Tapping it goes straight to Royal Mail. */}
                               <div className="mt-2.5 border border-gold-100 bg-gold-50/30 px-3 py-2.5">
-                                <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">
+                                <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">
                                   {NON_POSTAL_FULFILMENT[event.fulfilmentType] ? 'Delivery' : 'Royal Mail Tracking'}
                                 </p>
                                 {NON_POSTAL_FULFILMENT[event.fulfilmentType] ? (
@@ -1306,7 +1306,7 @@ export default function AdminDashboard() {
                                 )}
                               </div>
                               {event.clearable && (
-                                <p className="mt-2 text-stone-400">
+                                <p className="mt-2 text-stone-500">
                                   Taking it off hides this line only. The order stays on the Orders
                                   screen with everything on it.
                                 </p>
@@ -1373,7 +1373,7 @@ export default function AdminDashboard() {
             <h2 className="text-xs tracking-[0.18em] uppercase text-stone-500 font-semibold mb-4">Date Range Stats</h2>
             <div className="flex flex-wrap items-end gap-3 mb-4">
               <div>
-                <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">From</label>
+                <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">From</label>
                 <input
                   type="date"
                   value={dateFrom}
@@ -1382,7 +1382,7 @@ export default function AdminDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">To</label>
+                <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">To</label>
                 <input
                   type="date"
                   value={dateTo}
@@ -1401,13 +1401,13 @@ export default function AdminDashboard() {
             {/* Why the button is greyed out, said out loud. A button that cannot be pressed and
                 does not say why reads as broken, and this is the first screen anybody sees. */}
             {(!dateFrom || !dateTo) && (
-              <p className="text-xs text-stone-400 mb-3">Pick a From date and a To date, then View Stats turns on.</p>
+              <p className="text-xs text-stone-500 mb-3">Pick a From date and a To date, then View Stats turns on.</p>
             )}
             {rangeError && <p className="text-xs text-red-500 mb-3">{rangeError}</p>}
             {rangeStats && (() => {
               const allZeros = rangeStats.totalOrders === 0 && rangeStats.awaitingPayment === 0 && rangeStats.awaitingDispatch === 0 && rangeStats.inTransit === 0 && rangeStats.revenue === 0;
               return allZeros ? (
-                <p className="text-xs text-stone-400">No data — check date range</p>
+                <p className="text-xs text-stone-500">No data - check date range</p>
               ) : (
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
                   {[
@@ -1418,7 +1418,7 @@ export default function AdminDashboard() {
                     { label: 'Revenue',           value: `£${formatMoney(rangeStats.revenue)}`,            href: '/admin/revenue' },
                   ].map(({ label, value, href }) => (
                     <Link key={label} href={href} className="block bg-white border border-stone-200 hover:border-gold-300 p-4 cursor-pointer transition-colors">
-                      <div className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-2">{label}</div>
+                      <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
                       <div className="text-xl font-semibold text-stone-800">{value}</div>
                     </Link>
                   ))}
@@ -1431,19 +1431,19 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
             <Link href="/admin/orders" className="bg-white border border-stone-200 hover:border-gold-300 p-5 transition-colors">
               <div className="text-xs font-semibold text-stone-700 mb-1">View Orders</div>
-              <div className="text-[9px] text-stone-400">Manage and update order statuses</div>
+              <div className="text-[9px] text-stone-500">Manage and update order statuses</div>
             </Link>
             <Link href="/admin/customers" className="bg-white border border-stone-200 hover:border-gold-300 p-5 transition-colors">
               <div className="text-xs font-semibold text-stone-700 mb-1">View Customers</div>
-              <div className="text-[9px] text-stone-400">See accounts, spend, and marketing opt-ins</div>
+              <div className="text-[9px] text-stone-500">See accounts, spend, and marketing opt-ins</div>
             </Link>
             <Link href="/admin/products" className="bg-white border border-stone-200 hover:border-gold-300 p-5 transition-colors">
               <div className="text-xs font-semibold text-stone-700 mb-1">Manage Products</div>
-              <div className="text-[9px] text-stone-400">Edit products, prices, and stock</div>
+              <div className="text-[9px] text-stone-500">Edit products, prices, and stock</div>
             </Link>
             <a href="/" target="_blank" className="bg-white border border-stone-200 hover:border-gold-300 p-5 transition-colors">
               <div className="text-xs font-semibold text-stone-700 mb-1">View Live Site</div>
-              <div className="text-[9px] text-stone-400">Open the public website in a new tab</div>
+              <div className="text-[9px] text-stone-500">Open the public website in a new tab</div>
             </a>
           </div>
 
@@ -1454,7 +1454,7 @@ export default function AdminDashboard() {
             <h2 className="text-xs tracking-[0.18em] uppercase text-stone-500 font-semibold mb-2">
               Database Maintenance
             </h2>
-            <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+            <p className="text-xs text-stone-500 mb-4 leading-relaxed">
               Run this whenever a site update adds new database tables or columns. It only creates what is
               missing, never touches existing data, and is always safe to run again.
             </p>

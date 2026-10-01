@@ -69,7 +69,7 @@ const registrationForm = await readFile(new URL('../src/components/MemberRegistr
 assert.match(registrationForm, /NEXT_PUBLIC_WB_AFFILIATE_CUSTOMER_ACCESS_ENABLED/, 'the public signup choice must also require launch approval');
 assert.match(registrationForm, /affiliateInvite/, 'signup must recognise the private link');
 assert.match(registrationForm, /\.filter\(source => source\.value !== 'RAF affiliate' \|\| Boolean\(form\.affiliateInvite\)\)/, 'the public signup list must not offer Raf');
-// Samuel, 27 Sep 2026: commission only on orders paid with the customer's own verified RAF code.
+// commission only on orders paid with the customer's own verified RAF code.
 assert.match(checkout, /if \(affiliatesEnabled\(\) && customer && isAffiliateCode\)/, 'commission must be recorded only for an order using the customer\'s own Raf code');
 assert.match(affiliates, /acc\.customer_id = \$\{params\.customerId\}\s+AND upper\(acc\.code\) = upper\(/, 'the commission record must re-check that the Raf code belongs to the customer');
 

@@ -19,7 +19,7 @@ function formatStock(stock: number | null): string {
 }
 
 function formatUpdatedAt(value: string | null): string {
-  if (!value) return '—';
+  if (!value) return '-';
   return new Date(value).toLocaleString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
   });
@@ -32,7 +32,7 @@ function csvField(value: string): string {
 function buildCsv(rows: StockReportRow[], generatedAt: string): string {
   const header = ['Product Name', 'SKU / ID', 'Size', 'Category', 'Price', 'Stock Quantity', 'Status', 'Last Updated'];
   const lines: string[] = [];
-  lines.push(csvField(`Windsor Beauty Stock Check — generated ${new Date(generatedAt).toLocaleString('en-GB')}`));
+  lines.push(csvField(`Windsor Beauty Stock Check - generated ${new Date(generatedAt).toLocaleString('en-GB')}`));
   lines.push('');
 
   for (const status of ['enabled', 'disabled'] as const) {
@@ -95,7 +95,7 @@ function StockTable({ rows }: { rows: StockReportRow[] }) {
                 <p className="text-[8px] tracking-[0.15em] uppercase text-stone-300">In stock</p>
               </div>
             </div>
-            <p className="mt-1 text-[10px] text-stone-400">
+            <p className="mt-1 text-[10px] text-stone-500">
               <span className="font-mono">{r.id}</span>
               <span className="text-stone-200"> · </span>
               {r.category}
@@ -109,27 +109,27 @@ function StockTable({ rows }: { rows: StockReportRow[] }) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-stone-100 bg-stone-50">
-              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Product</th>
-              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">SKU</th>
-              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Size</th>
-              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Category</th>
-              <th className="text-right text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Price</th>
-              <th className="text-right text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Stock</th>
-              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Last Updated</th>
+              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 px-4 py-2.5">Product</th>
+              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 px-4 py-2.5">SKU</th>
+              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 px-4 py-2.5">Size</th>
+              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 px-4 py-2.5">Category</th>
+              <th className="text-right text-[9px] tracking-[0.15em] uppercase text-stone-500 px-4 py-2.5">Price</th>
+              <th className="text-right text-[9px] tracking-[0.15em] uppercase text-stone-500 px-4 py-2.5">Stock</th>
+              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 px-4 py-2.5">Last Updated</th>
             </tr>
           </thead>
           <tbody>
             {rows.map(r => (
               <tr key={`${r.slug}::${r.dosage}`} className="border-b border-stone-50 last:border-0">
                 <td className="px-4 py-2.5 text-xs font-medium text-stone-700 whitespace-nowrap">{r.name}</td>
-                <td className="px-4 py-2.5 text-xs text-stone-400 font-mono">{r.id}</td>
+                <td className="px-4 py-2.5 text-xs text-stone-500 font-mono">{r.id}</td>
                 <td className="px-4 py-2.5 text-xs text-stone-500 whitespace-nowrap">{r.dosage}</td>
                 <td className="px-4 py-2.5 text-xs text-stone-500 whitespace-nowrap">{r.category}</td>
                 <td className="px-4 py-2.5 text-xs text-stone-600 text-right whitespace-nowrap">{formatPrice(r.price)}</td>
                 <td className={`px-4 py-2.5 text-xs text-right font-semibold whitespace-nowrap ${r.stock !== null && r.stock <= 0 ? 'text-red-500' : 'text-stone-700'}`}>
                   {formatStock(r.stock)}
                 </td>
-                <td className="px-4 py-2.5 text-[10px] text-stone-400 whitespace-nowrap">{formatUpdatedAt(r.updatedAt)}</td>
+                <td className="px-4 py-2.5 text-[10px] text-stone-500 whitespace-nowrap">{formatUpdatedAt(r.updatedAt)}</td>
               </tr>
             ))}
           </tbody>
@@ -206,7 +206,7 @@ export default function StockReportModal({ open, onClose }: Props) {
             <button
               onClick={onClose}
               aria-label="Close stock report"
-              className="p-2 -m-2 text-stone-400 hover:text-stone-700 transition-colors"
+              className="p-2 -m-2 text-stone-500 hover:text-stone-700 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -217,7 +217,7 @@ export default function StockReportModal({ open, onClose }: Props) {
 
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6">
           {error && <p className="text-xs text-red-500 mb-4">{error}</p>}
-          {!rows && !error && <p className="text-xs text-stone-400 py-10 text-center">Loading live stock data…</p>}
+          {!rows && !error && <p className="text-xs text-stone-500 py-10 text-center">Loading live stock data…</p>}
 
           {rows && (
             <>

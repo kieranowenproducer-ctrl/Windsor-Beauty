@@ -5,7 +5,7 @@ import {
   updateOrderPaypalId,
   updateOrderStatus,
 } from '@/lib/db';
-import { buildPaypalLink, sendPaypalInstructionsEmail } from '@/lib/paypalInstructionsEmail';
+import { buildPaypalLink } from '@/lib/paypalInstructionsEmail';
 import { sendAdminOrderNotificationEmail } from '@/lib/adminOrderNotificationEmail';
 import { reportAutomationFailure } from '@/lib/automationFailure';
 
@@ -16,8 +16,7 @@ export const dynamic = 'force-dynamic';
  *
  * Called by the checkout when the customer selects "Pay by PayPal".
  * Marks the order awaiting_payment, stores a PayPal reference, returns the
- * pre-filled PayPal link for the immediate on-site handoff, and emails the
- * same link as a backup.
+ * pre-filled PayPal link for the immediate on-site handoff. No customer email is sent.
  *
  * Environment variables:
  *   PAYPAL_RECEIVING_EMAIL  — business PayPal email or PayPal.me handle
@@ -53,26 +52,6 @@ export async function POST(request: Request) {
 
   await updateOrderPaypalId(order.order_number, paypalReference);
   await updateOrderStatus(order.order_number, 'awaiting_payment');
-
-  // Send instructions email — awaited so it completes before the serverless
-  // function exits, but a failure here doesn't fail the request.
-  const emailSent = await sendPaypalInstructionsEmail({
-    to:             order.email,
-    customerName:   order.customer_name,
-    orderNumber:    order.order_number,
-    items:          order.items,
-    subtotal:       Number(order.subtotal),
-    discountCode:   order.discount_code,
-    discountAmount: Number(order.discount_amount),
-    ruleDiscountAmount: Number(order.rule_discount_amount),
-    shippingLabel:  order.shipping_label,
-    shippingCost:   Number(order.shipping_cost),
-    paypalFee:      Number(order.paypal_fee),
-    total:          Number(order.total),
-  }).catch(err => {
-    console.error('[paypal/instructions] Email send failed:', err);
-    return false;
-  });
 
   // Tell staff a PayPal order has been placed the moment it happens — until
   // now this was silent, and the only way to learn it existed was noticing
@@ -119,22 +98,10 @@ export async function POST(request: Request) {
       alertAdmin: true,
     });
     return NextResponse.json({
-      success: false, emailSent, orderNumber: order.order_number, resumeUrl,
+      success: false, orderNumber: order.order_number, resumeUrl,
       error: 'Your order is reserved, but the PayPal page could not be opened. Please contact sales@windsorbeauty.co.uk.',
     }, { status: 503 });
   }
 
-  if (!emailSent) {
-    await reportAutomationFailure('customer_email', `The PayPal payment email for ${order.order_number} was not sent.`, {
-      orderNumber: order.order_number,
-      subject: order.email,
-      whatToDo: 'Open the order and resend its payment link after checking the customer address.',
-      alertAdmin: true,
-    });
-    return NextResponse.json({
-      success: true, emailSent: false, orderNumber: order.order_number, paymentUrl, resumeUrl,
-      notice: 'The backup email could not be sent, but your PayPal payment page is ready.',
-    });
-  }
-  return NextResponse.json({ success: true, orderNumber: order.order_number, emailSent: true, paymentUrl, resumeUrl });
+  return NextResponse.json({ success: true, orderNumber: order.order_number, paymentUrl, resumeUrl });
 }

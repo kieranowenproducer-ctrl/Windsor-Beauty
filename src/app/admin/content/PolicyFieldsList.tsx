@@ -27,11 +27,11 @@ export default function PolicyFieldsList({
               return (
                 <div key={field.key} id={`section-${field.key}`} className="bg-white border border-stone-200 p-6">
                   <h2 className="text-sm font-semibold text-stone-800 mb-1">{field.label}</h2>
-                  <p className="text-xs text-stone-400 mb-4 leading-relaxed">{field.description}</p>
+                  <p className="text-xs text-stone-500 mb-4 leading-relaxed">{field.description}</p>
 
                   {field.hasTitle && (
                     <label className="flex flex-col gap-1.5 mb-3">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Page Title (optional)</span>
+                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Page Title (optional)</span>
                       <input
                         type="text"
                         value={value.title}
@@ -42,9 +42,9 @@ export default function PolicyFieldsList({
                   )}
 
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Content</span>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Content</span>
                     {field.hasTitle && (
-                      <span className="text-[10px] text-stone-400 normal-case tracking-normal -mt-1 mb-1">
+                      <span className="text-[10px] text-stone-500 normal-case tracking-normal -mt-1 mb-1">
                         Leave a blank line between paragraphs. Use the toolbar, or type directly:
                         <code className="mx-1 bg-stone-50 px-1 py-0.5 rounded-sm">**bold**</code>
                         <code className="mx-1 bg-stone-50 px-1 py-0.5 rounded-sm">_italic_</code>
@@ -84,7 +84,7 @@ export default function PolicyFieldsList({
                       <button
                         onClick={() => handleReset(field.key)}
                         disabled={saving === field.key}
-                        className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                        className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
                       >
                         Reset {field.label} to Default
                       </button>

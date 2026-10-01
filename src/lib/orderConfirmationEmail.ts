@@ -15,7 +15,7 @@ export interface OrderConfirmationParams {
   subtotal: number;
   discountCode?: string | null;
   discountAmount?: number;
-  // Automatic promotion / site-sale money off (orders.rule_discount_amount) —
+  // Automatic promotion / site-sale money off (orders.rule_discount_amount) ,
   // shown as its own line so the visible sums always reconcile to the total.
   ruleDiscountAmount?: number;
   shippingLabel: string;
@@ -121,7 +121,7 @@ function glowCardVisual(card: OrderConfirmationParams['glowCard']) {
   return buildGlowCardEmailVisual(card.points);
 }
 
-// Pure message builder — exported so the rendered output can be inspected and
+// Pure message builder , exported so the rendered output can be inspected and
 // tested without sending anything.
 export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { subject: string; text: string; html: string } {
   const visibleItems = displayOrderItems(params.items);
@@ -140,7 +140,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
   `).join('');
 
   // A discount with no code (invoice manual discount, first-order 10%) must
-  // still appear in writing — condition on the amount alone.
+  // still appear in writing , condition on the amount alone.
   const discountRow = Number(params.discountAmount) > 0 ? `
     <tr>
       <td colspan="2" style="padding:6px 0;font-size:12px;color:#a8a29e">Discount${params.discountCode ? ` (${escapeHtml(params.discountCode)})` : ''}</td>

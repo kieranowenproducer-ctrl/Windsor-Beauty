@@ -26,7 +26,7 @@ function trackingUrl(trackingNumber: string) {
  * Builds the dispatch email without sending it.
  *
  * Split out of the sender (task 8a498491) so the admin can LOOK at the real
- * email rather than a mock-up of it — Kieran asked to see what a customer
+ * email rather than a mock-up of it , Kieran asked to see what a customer
  * actually receives. Same shape as `buildOrderConfirmationEmail`, which has
  * always worked this way. The sender below is the only other caller, so what
  * is previewed is byte-for-byte what is sent.

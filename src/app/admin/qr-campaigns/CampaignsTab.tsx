@@ -67,7 +67,7 @@ export default function CampaignsTab({
                     className={`text-[9px] tracking-[0.15em] uppercase px-3 py-1.5 border transition-colors ${
                       statusFilter === s
                         ? 'bg-gold-700 text-white border-gold-500'
-                        : 'border-stone-200 text-stone-400 hover:border-gold-300 hover:text-gold-700'
+                        : 'border-stone-200 text-stone-500 hover:border-gold-300 hover:text-gold-700'
                     }`}
                   >
                     {s === 'all' ? `All (${campaigns.length})` : `${s.charAt(0).toUpperCase() + s.slice(1)} (${campaigns.filter(c => c.status === s).length})`}
@@ -88,18 +88,18 @@ export default function CampaignsTab({
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-stone-100 bg-stone-50">
-                        <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Campaign</th>
-                        <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 hidden sm:table-cell">Scans</th>
-                        <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Revenue</th>
+                        <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Campaign</th>
+                        <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 hidden sm:table-cell">Scans</th>
+                        <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Revenue</th>
                       </tr>
                     </thead>
                     <tbody>
                       {loading ? (
-                        <tr><td colSpan={3} className="text-center text-xs text-stone-400 py-10">Loading…</td></tr>
+                        <tr><td colSpan={3} className="text-center text-xs text-stone-500 py-10">Loading…</td></tr>
                       ) : filtered.length === 0 ? (
                         <tr>
                           <td colSpan={3} className="text-center py-10">
-                            <p className="text-xs text-stone-400 mb-3">
+                            <p className="text-xs text-stone-500 mb-3">
                               {campaigns.length === 0 ? 'No campaigns yet.' : 'No campaigns match your filters.'}
                             </p>
                             {campaigns.length === 0 && (
@@ -124,11 +124,11 @@ export default function CampaignsTab({
                                 </span>
                                 <span className="text-xs text-stone-700 font-medium truncate max-w-[140px]">{c.name}</span>
                               </div>
-                              {c.partner_name && <div className="text-[9px] text-stone-400 mt-0.5">{c.partner_name}</div>}
+                              {c.partner_name && <div className="text-[9px] text-stone-500 mt-0.5">{c.partner_name}</div>}
                             </td>
                             <td className="px-4 py-3 text-right text-xs text-stone-500 hidden sm:table-cell">{s?.total_scans ?? 0}</td>
                             <td className="px-4 py-3 text-right text-xs font-semibold text-gold-700">
-                              {s?.total_revenue ? `£${s.total_revenue.toFixed(2)}` : '—'}
+                              {s?.total_revenue ? `£${s.total_revenue.toFixed(2)}` : '-'}
                             </td>
                           </tr>
                         );
@@ -151,14 +151,14 @@ export default function CampaignsTab({
                                   {selected.status}
                                 </span>
                                 {selected.campaign_type && (
-                                  <span className="text-[7px] tracking-wider uppercase px-2 py-0.5 bg-stone-50 text-stone-400 shrink-0">
+                                  <span className="text-[7px] tracking-wider uppercase px-2 py-0.5 bg-stone-50 text-stone-500 shrink-0">
                                     {CAMPAIGN_TYPES.find(t => t.value === selected.campaign_type)?.label ?? selected.campaign_type}
                                   </span>
                                 )}
                               </div>
                               <h2 className="text-sm font-semibold text-stone-800 truncate">{selected.name}</h2>
                               {selected.partner_name && (
-                                <p className="text-[9px] text-stone-400 mt-0.5">{selected.partner_name}</p>
+                                <p className="text-[9px] text-stone-500 mt-0.5">{selected.partner_name}</p>
                               )}
                               <p className="text-[9px] text-stone-300 mt-0.5">Created {formatDate(selected.created_at)}</p>
                             </div>
@@ -193,7 +193,7 @@ export default function CampaignsTab({
                                 className={`text-[9px] tracking-[0.16em] uppercase px-4 py-2.5 border-b-2 transition-colors ${
                                   detailTab === tab
                                     ? 'border-gold-500 text-gold-700 font-semibold'
-                                    : 'border-transparent text-stone-400 hover:text-stone-600'
+                                    : 'border-transparent text-stone-500 hover:text-stone-600'
                                 }`}
                               >
                                 {tab === 'overview' ? 'Overview' : tab === 'people' ? 'People' : 'Print'}
@@ -257,12 +257,12 @@ export default function CampaignsTab({
                           {/* QR code + tracking info */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
                             <div className="flex flex-col items-center">
-                              <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-2 self-start">QR Code</p>
+                              <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-2 self-start">QR Code</p>
                               <QRCodeDisplay url={getTrackingUrl(selected.slug)} slug={selected.slug} />
                             </div>
                             <div className="space-y-3">
                               <div>
-                                <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Tracking Link</p>
+                                <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Tracking Link</p>
                                 <code className="block text-[9px] text-stone-600 bg-stone-50 border border-stone-100 px-2 py-1.5 font-mono mb-1.5 break-all">
                                   /r/{selected.slug}
                                 </code>
@@ -277,18 +277,18 @@ export default function CampaignsTab({
                                 </button>
                               </div>
                               <div>
-                                <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-1">Destination</p>
+                                <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-1">Destination</p>
                                 <p className="text-[10px] text-stone-500 break-all">{selected.destination_url}</p>
                               </div>
                               {selected.discount_code && (
                                 <div>
-                                  <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-1">Linked Code</p>
+                                  <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-1">Linked Code</p>
                                   <p className="text-xs font-mono text-stone-600">{selected.discount_code}</p>
                                 </div>
                               )}
                               {selected.notes && (
                                 <div>
-                                  <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-1">Notes</p>
+                                  <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-1">Notes</p>
                                   <p className="text-[10px] text-stone-500 leading-relaxed">{selected.notes}</p>
                                 </div>
                               )}
@@ -298,7 +298,7 @@ export default function CampaignsTab({
                           {/* Performance stats */}
                           {selectedStats ? (
                             <div className="space-y-2 pt-4 border-t border-stone-100">
-                              <p className="text-[8px] tracking-widest uppercase text-stone-400 mb-3">Performance</p>
+                              <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-3">Performance</p>
                               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                                 {[
                                   { label: 'Scans', value: selectedStats.total_scans.toLocaleString() },
@@ -308,7 +308,7 @@ export default function CampaignsTab({
                                   { label: 'Revenue', value: `£${selectedStats.total_revenue.toFixed(2)}` },
                                 ].map(({ label, value }) => (
                                   <div key={label} className="bg-stone-50 border border-stone-100 px-2.5 py-2.5 text-center">
-                                    <p className="text-[7px] tracking-[0.2em] uppercase text-stone-400 mb-0.5">{label}</p>
+                                    <p className="text-[7px] tracking-[0.2em] uppercase text-stone-500 mb-0.5">{label}</p>
                                     <p className="text-xs font-semibold text-stone-700">{value}</p>
                                   </div>
                                 ))}
@@ -316,11 +316,11 @@ export default function CampaignsTab({
                               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                 {[
                                   { label: 'Conv. Rate', value: `${selectedStats.conversion_rate.toFixed(1)}%` },
-                                  { label: 'Avg Order', value: selectedStats.avg_order_value > 0 ? `£${selectedStats.avg_order_value.toFixed(2)}` : '—' },
-                                  { label: 'Rev / Scan', value: selectedStats.revenue_per_scan > 0 ? `£${selectedStats.revenue_per_scan.toFixed(2)}` : '—' },
+                                  { label: 'Avg Order', value: selectedStats.avg_order_value > 0 ? `£${selectedStats.avg_order_value.toFixed(2)}` : '-' },
+                                  { label: 'Rev / Scan', value: selectedStats.revenue_per_scan > 0 ? `£${selectedStats.revenue_per_scan.toFixed(2)}` : '-' },
                                 ].map(({ label, value }) => (
                                   <div key={label} className="bg-stone-50 border border-stone-100 px-2.5 py-2.5 text-center">
-                                    <p className="text-[7px] tracking-[0.2em] uppercase text-stone-400 mb-0.5">{label}</p>
+                                    <p className="text-[7px] tracking-[0.2em] uppercase text-stone-500 mb-0.5">{label}</p>
                                     <p className="text-xs font-semibold text-stone-700">{value}</p>
                                   </div>
                                 ))}
@@ -328,9 +328,9 @@ export default function CampaignsTab({
                               {(selectedStats.total_signups ?? 0) > 0 && (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                   {[
-                                    { label: 'Rev / Signup', value: selectedStats.revenue_per_signup > 0 ? `£${selectedStats.revenue_per_signup.toFixed(2)}` : '—' },
-                                    { label: 'Avg LTV', value: selectedStats.avg_customer_ltv > 0 ? `£${selectedStats.avg_customer_ltv.toFixed(2)}` : '—' },
-                                    { label: 'Repeat Rate', value: selectedStats.repeat_purchase_rate > 0 ? `${selectedStats.repeat_purchase_rate.toFixed(1)}%` : '—' },
+                                    { label: 'Rev / Signup', value: selectedStats.revenue_per_signup > 0 ? `£${selectedStats.revenue_per_signup.toFixed(2)}` : '-' },
+                                    { label: 'Avg LTV', value: selectedStats.avg_customer_ltv > 0 ? `£${selectedStats.avg_customer_ltv.toFixed(2)}` : '-' },
+                                    { label: 'Repeat Rate', value: selectedStats.repeat_purchase_rate > 0 ? `${selectedStats.repeat_purchase_rate.toFixed(1)}%` : '-' },
                                   ].map(({ label, value }) => (
                                     <div key={label} className="bg-gold-50 border border-gold-100 px-2.5 py-2.5 text-center">
                                       <p className="text-[7px] tracking-[0.2em] uppercase text-gold-400 mb-0.5">{label}</p>
@@ -343,7 +343,7 @@ export default function CampaignsTab({
                                   number. A figure that shrinks with no explanation is worse than
                                   the wrong figure, because there is no way to check it. */}
                               {(selectedStats.bot_scans ?? 0) > 0 && (
-                                <p className="text-[9px] text-stone-400 pt-1">
+                                <p className="text-[9px] text-stone-500 pt-1">
                                   Not counted: {selectedStats.bot_scans} link {selectedStats.bot_scans === 1 ? 'preview' : 'previews'} or automatic
                                   {' '}{selectedStats.bot_scans === 1 ? 'check' : 'checks'}. When somebody sends this link in WhatsApp, WhatsApp
                                   fetches the page itself to draw the preview picture. Nobody opened it.
@@ -369,7 +369,7 @@ export default function CampaignsTab({
                       {detailTab === 'people' && (
                         <div className="bg-white border border-stone-200 border-t-0">
                           {peopleLoading ? (
-                            <p className="text-xs text-stone-400 text-center py-12">Loading…</p>
+                            <p className="text-xs text-stone-500 text-center py-12">Loading…</p>
                           ) : (
                             <div>
                               {/* Members */}
@@ -379,7 +379,7 @@ export default function CampaignsTab({
                                   <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 font-semibold">
                                     Members ({campaignMembers.length})
                                   </p>
-                                  <p className="text-[9px] text-stone-300 ml-1">— created an account</p>
+                                  <p className="text-[9px] text-stone-300 ml-1">- created an account</p>
                                 </div>
                                 {campaignMembers.length === 0 ? (
                                   <p className="text-[10px] text-stone-300 ml-4">No account sign-ups from this campaign yet.</p>
@@ -398,14 +398,14 @@ export default function CampaignsTab({
                                         <tr key={m.id} className="border-b border-stone-50">
                                           <td className="py-2.5 pr-3">
                                             <p className="text-[10px] text-stone-700 font-medium">{(`${m.first_name ?? ''} ${m.last_name ?? ''}`.trim()) || m.email}</p>
-                                            <p className="text-[9px] text-stone-400">{m.email}</p>
+                                            <p className="text-[9px] text-stone-500">{m.email}</p>
                                           </td>
                                           <td className="py-2.5 pr-3 hidden sm:table-cell">
-                                            <p className="text-[9px] text-stone-400">{formatDate(m.created_at)}</p>
+                                            <p className="text-[9px] text-stone-500">{formatDate(m.created_at)}</p>
                                           </td>
                                           <td className="py-2.5 text-right text-[10px] text-stone-500">{m.order_count}</td>
                                           <td className="py-2.5 text-right text-[10px] font-semibold text-gold-700">
-                                            {m.lifetime_spend > 0 ? `£${m.lifetime_spend.toFixed(2)}` : '—'}
+                                            {m.lifetime_spend > 0 ? `£${m.lifetime_spend.toFixed(2)}` : '-'}
                                           </td>
                                         </tr>
                                       ))}
@@ -423,7 +423,7 @@ export default function CampaignsTab({
                                   <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 font-semibold">
                                     Guest Buyers ({campaignGuests.length})
                                   </p>
-                                  <p className="text-[9px] text-stone-300 ml-1">— no account</p>
+                                  <p className="text-[9px] text-stone-300 ml-1">- no account</p>
                                 </div>
                                 {campaignGuests.length === 0 ? (
                                   <p className="text-[10px] text-stone-300 ml-4">No guest purchases from this campaign yet.</p>
@@ -442,14 +442,14 @@ export default function CampaignsTab({
                                         <tr key={g.email} className="border-b border-stone-50">
                                           <td className="py-2.5 pr-3">
                                             <p className="text-[10px] text-stone-700">{g.customer_name}</p>
-                                            <p className="text-[9px] text-stone-400">{g.email}</p>
+                                            <p className="text-[9px] text-stone-500">{g.email}</p>
                                           </td>
                                           <td className="py-2.5 pr-3 hidden sm:table-cell">
-                                            <p className="text-[9px] text-stone-400">{formatDate(g.last_order_at)}</p>
+                                            <p className="text-[9px] text-stone-500">{formatDate(g.last_order_at)}</p>
                                           </td>
                                           <td className="py-2.5 text-right text-[10px] text-stone-500">{g.order_count}</td>
                                           <td className="py-2.5 text-right text-[10px] font-semibold text-stone-600">
-                                            {g.total_spend > 0 ? `£${g.total_spend.toFixed(2)}` : '—'}
+                                            {g.total_spend > 0 ? `£${g.total_spend.toFixed(2)}` : '-'}
                                           </td>
                                         </tr>
                                       ))}

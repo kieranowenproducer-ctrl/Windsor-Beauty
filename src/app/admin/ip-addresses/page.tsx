@@ -521,8 +521,8 @@ export default function AdminIpAddressesPage() {
               <div>
                 {/* Where visitors come from, counted on the page that brought them. */}
                 <div className="px-4 py-4 border-b border-stone-100">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Where visitors came from, last 30 days</p>
-                  <p className="text-[10px] text-stone-400">
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Where visitors came from, last 30 days</p>
+                  <p className="text-[10px] text-stone-500">
                     Counted on the first page of each visit. Signed up and Ordered are addresses that went on to do
                     that, matched by address: a fair guide, not a proof, because a house, an office or a phone mast
                     shares one address.
@@ -532,13 +532,13 @@ export default function AdminIpAddressesPage() {
                   <thead>
                     <tr className="border-b border-stone-100 bg-stone-50">
                       {['Came From', 'Visits', 'Addresses', 'Signed Up', 'Ordered'].map(h => (
-                        <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 whitespace-nowrap">{h}</th>
+                        <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 whitespace-nowrap">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {visitSources.length === 0 ? (
-                      <tr><td colSpan={5} className="text-center text-xs text-stone-400 py-8">
+                      <tr><td colSpan={5} className="text-center text-xs text-stone-500 py-8">
                         Nothing recorded yet. Every page opened on the shop appears here from the moment this goes live.
                       </td></tr>
                     ) : visitSources.map(s => (
@@ -555,20 +555,20 @@ export default function AdminIpAddressesPage() {
 
                 {/* One row per address that has visited, and what it went on to do. */}
                 <div className="px-4 py-4 border-y border-stone-100 bg-stone-50/60">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Visitor addresses</p>
-                  <p className="text-[10px] text-stone-400">How each address first arrived, how often it has been back, and whether it became a member or placed an order.</p>
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Visitor addresses</p>
+                  <p className="text-[10px] text-stone-500">How each address first arrived, how often it has been back, and whether it became a member or placed an order.</p>
                 </div>
                 <table className="w-full min-w-[900px]">
                   <thead>
                     <tr className="border-b border-stone-100 bg-stone-50">
                       {['Address', 'Roughly Where', 'First Came From', 'Visits', 'Became A Member', 'Ordered', 'First Seen', 'Last Seen'].map(h => (
-                        <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 whitespace-nowrap">{h}</th>
+                        <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 whitespace-nowrap">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {filteredVisitors.length === 0 ? (
-                      <tr><td colSpan={8} className="text-center text-xs text-stone-400 py-8">
+                      <tr><td colSpan={8} className="text-center text-xs text-stone-500 py-8">
                         {visitors.length === 0 ? 'No visitors recorded yet.' : 'Nothing matches this search.'}
                       </td></tr>
                     ) : filteredVisitors.map(v => (
@@ -576,7 +576,7 @@ export default function AdminIpAddressesPage() {
                         <td className="px-4 py-3 text-[10px] font-mono text-stone-600 whitespace-nowrap">{v.ip_address}</td>
                         <td className="px-4 py-3 text-[10px] text-stone-600">
                           {placeOf(v)}
-                          {v.postal_code && <span className="block text-[9px] text-stone-400">{v.postal_code}</span>}
+                          {v.postal_code && <span className="block text-[9px] text-stone-500">{v.postal_code}</span>}
                         </td>
                         <td className="px-4 py-3 text-[10px] text-stone-600">{sourceLabel(v.first_source, v.first_source_detail)}</td>
                         <td className="px-4 py-3 text-[10px] text-stone-600">{v.visits}</td>
@@ -597,20 +597,20 @@ export default function AdminIpAddressesPage() {
 
                 {/* The latest page views, one per row. */}
                 <div className="px-4 py-4 border-y border-stone-100 bg-stone-50/60">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Latest visits</p>
-                  <p className="text-[10px] text-stone-400">Every page opened, newest first. A first page is the one that brought the visitor in.</p>
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Latest visits</p>
+                  <p className="text-[10px] text-stone-500">Every page opened, newest first. A first page is the one that brought the visitor in.</p>
                 </div>
                 <table className="w-full min-w-[900px]">
                   <thead>
                     <tr className="border-b border-stone-100 bg-stone-50">
                       {['Date / Time', 'Address', 'Roughly Where', 'Came From', 'Page', 'First Page'].map(h => (
-                        <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 whitespace-nowrap">{h}</th>
+                        <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 whitespace-nowrap">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {filteredVisits.length === 0 ? (
-                      <tr><td colSpan={6} className="text-center text-xs text-stone-400 py-8">
+                      <tr><td colSpan={6} className="text-center text-xs text-stone-500 py-8">
                         {visits.length === 0 ? 'No visits recorded yet.' : 'Nothing matches this search.'}
                       </td></tr>
                     ) : filteredVisits.map(v => (
@@ -633,13 +633,13 @@ export default function AdminIpAddressesPage() {
                 <thead>
                   <tr className="border-b border-stone-100 bg-stone-50">
                     {['Address', 'Roughly Where', 'Members Seen', 'Times Seen', 'First Seen', 'Last Seen'].map(h => (
-                      <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredAddresses.length === 0 ? (
-                    <tr><td colSpan={6} className="text-center text-xs text-stone-400 py-10">
+                    <tr><td colSpan={6} className="text-center text-xs text-stone-500 py-10">
                       {addresses.length === 0
                         ? 'Nothing recorded yet. Sign-ins, new members and batch code checks appear here from now on.'
                         : 'Nothing matches this search.'}
@@ -649,13 +649,13 @@ export default function AdminIpAddressesPage() {
                       <td className="px-4 py-3 text-[10px] font-mono text-stone-600 whitespace-nowrap">{row.ip_address}</td>
                       <td className="px-4 py-3 text-[10px] text-stone-600">
                         {placeOf(row)}
-                        {row.postal_code && <span className="block text-[9px] text-stone-400">{row.postal_code}</span>}
+                        {row.postal_code && <span className="block text-[9px] text-stone-500">{row.postal_code}</span>}
                       </td>
                       <td className="px-4 py-3 text-[10px] text-stone-600">
                         {row.member_names.length === 0
                           ? <span className="text-stone-300">Not signed in</span>
                           : row.member_names.slice(0, 4).join(', ')}
-                        {row.member_names.length > 4 && <span className="text-stone-400"> +{row.member_names.length - 4} more</span>}
+                        {row.member_names.length > 4 && <span className="text-stone-500"> +{row.member_names.length - 4} more</span>}
                       </td>
                       <td className="px-4 py-3 text-[10px] text-stone-600">{row.events}</td>
                       <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">{formatDatetime(row.first_seen)}</td>
@@ -669,13 +669,13 @@ export default function AdminIpAddressesPage() {
                 <thead>
                   <tr className="border-b border-stone-100 bg-stone-50">
                     {['Country', 'Area', 'Town Or City', 'Addresses', 'Members', 'Times Seen'].map(h => (
-                      <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {places.length === 0 ? (
-                    <tr><td colSpan={6} className="text-center text-xs text-stone-400 py-10">
+                    <tr><td colSpan={6} className="text-center text-xs text-stone-500 py-10">
                       No locations recorded yet. Locations are worked out live on the real site, so they
                       start filling in the moment this goes live.
                     </td></tr>
@@ -694,14 +694,14 @@ export default function AdminIpAddressesPage() {
             ) : tab === 'concerns' ? (
               <div className="divide-y divide-stone-50">
                 {concerns.length === 0 ? (
-                  <p className="text-center text-xs text-stone-400 py-10">
+                  <p className="text-center text-xs text-stone-500 py-10">
                     Nothing looks out of the ordinary.
                   </p>
                 ) : concerns.map((c, i) => (
                   <div key={i} className="px-4 py-4">
                     <div className="text-[11px] text-stone-800">{c.headline}</div>
                     <div className="text-[10px] text-stone-500 mt-0.5">{c.detail}</div>
-                    <div className="text-[9px] font-mono text-stone-400 mt-1">{c.subject}</div>
+                    <div className="text-[9px] font-mono text-stone-500 mt-1">{c.subject}</div>
                   </div>
                 ))}
               </div>
@@ -715,16 +715,16 @@ export default function AdminIpAddressesPage() {
 
                 {/* The flag. An address a banned account used, now on somebody else's account. */}
                 <div className="px-4 py-4 border-b border-stone-100">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">
                     Flagged: same address as a banned account
                   </p>
-                  <p className="text-[10px] text-stone-400">
+                  <p className="text-[10px] text-stone-500">
                     A warning, never a verdict. Families share an address, so do offices, and so does
                     everybody on one phone mast. Read it, then decide.
                   </p>
                 </div>
                 {matches.length === 0 ? (
-                  <p className="text-center text-xs text-stone-400 py-8">
+                  <p className="text-center text-xs text-stone-500 py-8">
                     Nothing flagged. Nobody has appeared on an address a banned account used.
                   </p>
                 ) : (
@@ -741,7 +741,7 @@ export default function AdminIpAddressesPage() {
                           <p className="text-[10px] text-stone-500 mt-0.5">
                             The same address as {row.banned_names.join(', ')}, who {row.banned_names.length === 1 ? 'is' : 'are'} banned.
                           </p>
-                          <p className="text-[9px] text-stone-400 mt-0.5">
+                          <p className="text-[9px] text-stone-500 mt-0.5">
                             Seen {row.events} time{row.events === 1 ? '' : 's'}, last on {formatDatetime(row.last_seen)}
                             {row.city || row.country ? ` from ${placeOf({ city: row.city, country_region: null, country: row.country })}` : ''}.
                           </p>
@@ -812,14 +812,14 @@ export default function AdminIpAddressesPage() {
 
                 {/* Who is currently shut out, and which addresses they used. */}
                 <div className="px-4 py-4 border-y border-stone-100 bg-stone-50/60">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Banned accounts</p>
-                  <p className="text-[10px] text-stone-400">
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Banned accounts</p>
+                  <p className="text-[10px] text-stone-500">
                     Shut out of the shop. Nothing has been deleted, and any of these can be let back
                     in from their own customer page.
                   </p>
                 </div>
                 {banned.length === 0 ? (
-                  <p className="text-center text-xs text-stone-400 py-8">
+                  <p className="text-center text-xs text-stone-500 py-8">
                     Nobody is banned. You can ban an account from its customer page.
                   </p>
                 ) : (
@@ -830,14 +830,14 @@ export default function AdminIpAddressesPage() {
                           <Link href={`/admin/customers/${row.id}`} className="text-gold-700 hover:underline">
                             {`${row.first_name ?? ''} ${row.last_name ?? ''}`.trim() || row.email}
                           </Link>
-                          <span className="text-stone-400"> · {row.email}</span>
+                          <span className="text-stone-500"> · {row.email}</span>
                         </p>
                         <p className="text-[10px] text-stone-500 mt-0.5">
                           Banned {formatDatetime(row.banned_at)}
                           {row.banned_by ? ` by ${row.banned_by}` : ''}
                           {row.banned_reason ? `. ${row.banned_reason}` : '.'}
                         </p>
-                        <p className="text-[9px] text-stone-400 mt-1">
+                        <p className="text-[9px] text-stone-500 mt-1">
                           {row.addresses.length === 0
                             ? 'No addresses recorded against this account.'
                             : `Addresses used: ${row.addresses.slice(0, 8).join(', ')}${row.addresses.length > 8 ? ` and ${row.addresses.length - 8} more` : ''}`}
@@ -852,13 +852,13 @@ export default function AdminIpAddressesPage() {
                 <thead>
                   <tr className="border-b border-stone-100 bg-stone-50">
                     {['Date / Time', 'What Happened', 'Member', 'Address', 'Roughly Where'].map(h => (
-                      <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3 whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredRecent.length === 0 ? (
-                    <tr><td colSpan={5} className="text-center text-xs text-stone-400 py-10">Nothing to show.</td></tr>
+                    <tr><td colSpan={5} className="text-center text-xs text-stone-500 py-10">Nothing to show.</td></tr>
                   ) : filteredRecent.map(row => (
                     <tr key={row.id} className="border-b border-stone-50 hover:bg-stone-50/50 transition-colors">
                       <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">{formatDatetime(row.created_at)}</td>

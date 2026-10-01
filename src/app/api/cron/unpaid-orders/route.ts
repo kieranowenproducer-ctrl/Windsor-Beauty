@@ -8,7 +8,6 @@ import {
 import { recordCronRun } from '@/lib/cronHeartbeat';
 import { afterStockMovement } from '@/lib/retireProducts';
 import { sendPaymentResumeEmail } from '@/lib/paymentResumeEmail';
-import { sendPaypalInstructionsEmail } from '@/lib/paypalInstructionsEmail';
 import { reportAutomationFailure } from '@/lib/automationFailure';
 import { referralsEnabled, releaseReferralVoucherForUnpaidOrder } from '@/lib/memberReferrals';
 import { releaseGlowCardVoucherForUnpaidOrder } from '@/lib/glowCardLoyalty';
@@ -27,15 +26,8 @@ export async function GET(request: Request) {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
     for (const order of reminders) {
       const resumeUrl = `${siteUrl}/resume-payment/${order.payment_access_token}`;
-      const sent = order.payment_method === 'paypal'
-        ? await sendPaypalInstructionsEmail({
-            to: order.email, customerName: order.customer_name, orderNumber: order.order_number,
-            items: order.items, subtotal: Number(order.subtotal), discountCode: order.discount_code,
-            discountAmount: Number(order.discount_amount), ruleDiscountAmount: Number(order.rule_discount_amount),
-            shippingLabel: order.shipping_label, shippingCost: Number(order.shipping_cost),
-            paypalFee: Number(order.paypal_fee), total: Number(order.total),
-          })
-        : await sendPaymentResumeEmail({
+      if (order.payment_method === 'paypal') continue;
+      const sent = await sendPaymentResumeEmail({
             to: order.email, customerName: order.customer_name, orderNumber: order.order_number,
             total: Number(order.total), resumeUrl,
           });

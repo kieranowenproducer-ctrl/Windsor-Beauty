@@ -98,12 +98,12 @@ export async function POST(request: Request, props: { params: Promise<{ orderNum
         emailOutcome = 'customer notified';
       } else {
         // Deliberately NOT marked as sent, so it can be retried.
-        emailOutcome = 'email FAILED to send — use "Resend Dispatch Email"';
+        emailOutcome = 'email FAILED to send - use "Resend Dispatch Email"';
       }
     } catch (err) {
       console.error(`[dispatch] Failed to send shipping email for ${params.orderNumber}:`, err);
       // Don't fail the dispatch if email fails — it can be retried.
-      emailOutcome = 'email FAILED to send — use "Resend Dispatch Email"';
+      emailOutcome = 'email FAILED to send - use "Resend Dispatch Email"';
     }
   }
 
@@ -113,7 +113,7 @@ export async function POST(request: Request, props: { params: Promise<{ orderNum
 
   await addAdminNote(
     params.orderNumber,
-    `Dispatched with tracking ${trackingNumber}${weightGrams ? ` (${weightGrams}g)` : ''} — ${emailOutcome}`
+    `Dispatched with tracking ${trackingNumber}${weightGrams ? ` (${weightGrams}g)` : ''} - ${emailOutcome}`
   ).catch(() => {});
 
   return NextResponse.json({ success: true, order: updated, emailSent });

@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     const sent = await sendLaunchEmail(testTo, 'WGLOW10-SAMPLE', { subjectPrefix: '[TEST] ', sender: sender.key }).catch(() => false);
     return sent
       ? NextResponse.json({ success: true, test: true, to: testTo, sender: sender.key, sentFrom: sender.address })
-      : NextResponse.json({ error: 'Test send failed — check RESEND_API_KEY.' }, { status: 502 });
+      : NextResponse.json({ error: 'Test send failed - check RESEND_API_KEY.' }, { status: 502 });
   }
 
   const subscribers = await listLaunchSubscribers();

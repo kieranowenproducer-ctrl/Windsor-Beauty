@@ -78,11 +78,11 @@ function paymentDetailForLog(payload: Record<string, unknown>): Record<string, u
 export async function POST(request: Request) {
   const webhookSecret = process.env.FENA_WEBHOOK_SECRET;
   if (!webhookSecret && process.env.NODE_ENV === 'production') {
-    console.error('[webhooks/fena] FENA_WEBHOOK_SECRET not configured — rejecting in production');
+    console.error('[webhooks/fena] FENA_WEBHOOK_SECRET not configured - rejecting in production');
     return new NextResponse('Unauthorized', { status: 401 });
   }
   if (webhookSecret && new URL(request.url).searchParams.get('key') !== webhookSecret) {
-    console.warn('[webhooks/fena] Rejected — missing or incorrect ?key= on webhook URL');
+    console.warn('[webhooks/fena] Rejected - missing or incorrect ?key= on webhook URL');
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
@@ -153,7 +153,7 @@ export async function POST(request: Request) {
       // is exactly how the original JWT-vs-JSON payload bug was solved.
       await logAutomationFailure(
         'fena_webhook_unhandled_status',
-        `Received unhandled Fena status "${status}" — order left unchanged`,
+        `Received unhandled Fena status "${status}" - order left unchanged`,
         { orderNumber: orderRef, detail: payload }
       );
     }
@@ -287,7 +287,7 @@ ${existingNotes}` : notice.note)
     if (!underpaymentAdminSent) {
       await logAutomationFailure('admin_email', 'Admin sales@ notification email failed to send (underpayment alert)', {
         orderNumber: order.order_number,
-        detail: 'sendAdminOrderNotificationEmail returned false — check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+        detail: 'sendAdminOrderNotificationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
       });
     }
     return new NextResponse('OK', { status: 200 });
@@ -355,7 +355,7 @@ ${existingNotes}` : notice.note)
   if (!confirmationSent) {
     await logAutomationFailure('customer_email', 'Order confirmation email failed to send', {
       orderNumber: order.order_number,
-      detail: 'sendOrderConfirmationEmail returned false — check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+      detail: 'sendOrderConfirmationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
     });
   }
 
@@ -407,7 +407,7 @@ ${existingNotes}` : notice.note)
   if (!adminNotifSent) {
     await logAutomationFailure('admin_email', 'Admin sales@ notification email failed to send', {
       orderNumber: order.order_number,
-      detail: 'sendAdminOrderNotificationEmail returned false — check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+      detail: 'sendAdminOrderNotificationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
     });
   }
 

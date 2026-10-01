@@ -115,7 +115,7 @@ export default function InvoiceAddresses({
                   />
                   <span className={LABEL_CLASS}>Send it to a different person</span>
                 </label>
-                <p className="text-[10px] text-stone-400 mt-1">
+                <p className="text-[10px] text-stone-500 mt-1">
                   {sendToSomeoneElse
                     ? 'The parcel goes to the name below. The invoice, and who owes the money, stay with the customer above.'
                     : `The parcel will be addressed to ${customerName.trim() || 'the customer above'}. Tick this if it is going to somebody else.`}
@@ -130,7 +130,7 @@ export default function InvoiceAddresses({
                       placeholder="Who is receiving it"
                       className={INPUT_CLASS}
                     />
-                    <span className="text-[10px] text-stone-400">
+                    <span className="text-[10px] text-stone-500">
                       This is the name Royal Mail prints. Put it here, never in the address lines.
                     </span>
                   </label>

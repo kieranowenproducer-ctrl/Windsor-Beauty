@@ -19,8 +19,8 @@ export default function UpsellMasterSwitch({ settings, toggleEnabled, togglingEn
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h2 className="text-sm font-semibold text-stone-800 mb-1">Upsell System {settings.enabled ? 'On' : 'Off'}</h2>
-                <p className="text-xs text-stone-400 leading-relaxed max-w-md">
-                  When off, the basket behaves exactly as it does today — no recommendations are fetched or
+                <p className="text-xs text-stone-500 leading-relaxed max-w-md">
+                  When off, the basket behaves exactly as it does today - no recommendations are fetched or
                   shown anywhere, and nothing else on the site is affected. This applies to both CSV-imported
                   and manually-set upsells.
                 </p>

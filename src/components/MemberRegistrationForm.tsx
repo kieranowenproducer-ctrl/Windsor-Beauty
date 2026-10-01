@@ -58,7 +58,7 @@ export default function MemberRegistrationForm({
   submitting = false,
   serverError,
 }: Props) {
-  const affiliateSignupEnabled = process.env.NEXT_PUBLIC_WB_AFFILIATE_CUSTOMER_ACCESS_ENABLED === 'true' || process.env.NODE_ENV !== 'production';
+  const affiliateSignupEnabled = process.env.NEXT_PUBLIC_WB_AFFILIATE_CUSTOMER_ACCESS_ENABLED === 'true';
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',

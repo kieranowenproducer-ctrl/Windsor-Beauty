@@ -170,11 +170,11 @@ export default function CustomerEmailComposer(props: Props) {
               {setEmail ? 'Edit and send' : 'Send a message'}
             </p>
             {setEmail ? (
-              <p className="text-[11px] text-stone-400">Change anything below, then choose who it goes to.</p>
+              <p className="text-[11px] text-stone-500">Change anything below, then choose who it goes to.</p>
             ) : (
               <>
                 <p className="font-serif text-base text-stone-700 truncate">{customerName || email}</p>
-                {customerName && <p className="text-[11px] text-stone-400 truncate">{email}</p>}
+                {customerName && <p className="text-[11px] text-stone-500 truncate">{email}</p>}
               </>
             )}
           </div>
@@ -182,7 +182,7 @@ export default function CustomerEmailComposer(props: Props) {
             type="button"
             onClick={onClose}
             aria-label="Close the message box"
-            className="text-stone-400 hover:text-stone-700 transition-colors shrink-0"
+            className="text-stone-500 hover:text-stone-700 transition-colors shrink-0"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -283,7 +283,7 @@ export default function CustomerEmailComposer(props: Props) {
           )}
           {draftState === 'saved' && state.kind !== 'sent' && (
             <p className="text-sm text-green-700 bg-green-50 border border-green-200 px-3 py-2">
-              Draft saved under {customerName || email}. It is in their Email History whenever you want it — edit it, send it, or discard it.
+              Draft saved under {customerName || email}. It is in their Email History whenever you want it - edit it, send it, or discard it.
             </p>
           )}
           {state.kind === 'failed' && (

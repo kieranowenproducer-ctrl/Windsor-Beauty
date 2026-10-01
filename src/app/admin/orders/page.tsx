@@ -754,9 +754,9 @@ function AdminOrdersContent() {
               <h1 className="text-lg font-semibold text-stone-800 mb-0.5">
                 {viewingArchive ? 'Archived orders' : 'Orders'}
               </h1>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 {!dbConfigured
-                  ? 'Database not connected — orders cannot be recorded yet.'
+                  ? 'Database not connected - orders cannot be recorded yet.'
                   // On the archive, count the archive. The shop-wide total read as though all 83
                   // orders were in here, which they are not (task 831a4461).
                   : viewingArchive

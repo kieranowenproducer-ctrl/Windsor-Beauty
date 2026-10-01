@@ -23,7 +23,7 @@ export default function ProductDefaultsSection({
             {/* Product Defaults — global content for reusable product info sections */}
             <div id="section-product-defaults" className="bg-white border border-stone-200 p-6">
               <h2 className="text-sm font-semibold text-stone-800 mb-1">Product Defaults</h2>
-              <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
                 Site-wide default content for product page sections. Individual products use this
                 content unless they set their own override or hide the section, in the product
                 editor under Products.
@@ -31,7 +31,7 @@ export default function ProductDefaultsSection({
 
               <div className="space-y-4">
                 <div>
-                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                  <span className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                     Storage Instructions
                   </span>
                   <label className="flex items-center gap-2 text-xs text-stone-500 mb-3">

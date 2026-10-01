@@ -3,7 +3,7 @@ import { EMAIL_ICON_BASE, emailDocument, escapeHtml } from '@/lib/email/shared';
 import { resolveMarketingSender, type MarketingSenderKey } from '@/lib/email/marketingSender';
 import { sendEmail } from '@/lib/email/send';
 
-// Same from-address/key convention as marketingEmail.ts — this is an
+// Same from-address/key convention as marketingEmail.ts , this is an
 // announcement sent to people who opted in on the pre-launch coming-soon
 // page, so it follows the marketing sender rather than the transactional one:
 // chosen per send in the dashboard, no-reply by default (task 286b1863).
@@ -14,7 +14,7 @@ const ICON_BASE = EMAIL_ICON_BASE;
 export const LAUNCH_EMAIL_SUBJECT = 'Windsor Beauty is now live';
 
 // Real hosted PNGs (rasterised once from the same line-icon style used on
-// the homepage) rather than inline <svg> — Gmail's sanitiser strips inline
+// the homepage) rather than inline <svg> , Gmail's sanitiser strips inline
 // SVG inconsistently across web/iOS/Android, which is what made the
 // previous version of this email look broken in real inboxes despite
 // rendering correctly in a browser preview. A plain <img> against a hosted
@@ -112,7 +112,7 @@ ${discountBlock}
         </tr>`;
 
   // Same shared emailDocument/emailFooterHtml every other transactional and
-  // marketing email uses — previously this hand-rolled the entire document
+  // marketing email uses , previously this hand-rolled the entire document
   // and footer, which had drifted slightly from the canonical footer text
   // (and would drift further any time that text changed elsewhere). Only
   // this template's own responsive @media rules (mobile font/padding

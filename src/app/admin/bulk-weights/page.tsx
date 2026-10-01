@@ -160,7 +160,7 @@ export default function AdminBulkWeightsPage() {
       : `all ${filteredRows.length} variants`;
   const scopeTitle =
     formatFilter !== 'all'
-      ? `Values entered below are written only to the ${filteredRows.length} ${FORMAT_LABELS[formatFilter].toLowerCase()} variant${filteredRows.length === 1 ? '' : 's'} shown below when you click an Apply button — other products are left untouched. Switch the Format dropdown above to do the other format next.`
+      ? `Values entered below are written only to the ${filteredRows.length} ${FORMAT_LABELS[formatFilter].toLowerCase()} variant${filteredRows.length === 1 ? '' : 's'} shown below when you click an Apply button - other products are left untouched. Switch the Format dropdown above to do the other format next.`
       : `Values entered below are written to every one of the ${filteredRows.length} variants currently shown when you click an Apply button. Use the search box above first if you only want to change some of them.`;
 
   // Applies every non-blank field in bulkDraft (weight, length, width, height,
@@ -312,9 +312,9 @@ export default function AdminBulkWeightsPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-6xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Bulk Shipping Weights</h1>
-          <p className="text-xs text-stone-400 mb-6">
+          <p className="text-xs text-stone-500 mb-6">
             Set parcel weight, dimensions and package format across multiple size variants at once. Only the
-            fields you change here are updated — other shipping and customs data set on the Products page is
+            fields you change here are updated - other shipping and customs data set on the Products page is
             preserved. Leave a field blank to keep its current value.
           </p>
 
@@ -326,18 +326,18 @@ export default function AdminBulkWeightsPage() {
               shipping settings or scopes/runs a bulk edit; it's deliberately set
               apart from the actual per-product list below. */}
           <div className="border-2 border-stone-300 p-4 mb-6">
-            <p className="text-[8px] tracking-[0.22em] uppercase text-stone-400 font-semibold mb-4">Bulk Organisation</p>
+            <p className="text-[8px] tracking-[0.22em] uppercase text-stone-500 font-semibold mb-4">Bulk Organisation</p>
 
           {/* Free shipping threshold card */}
           <div className="bg-white border border-stone-200 p-4 mb-6">
-            <h2 className="text-[9px] tracking-[0.18em] uppercase text-stone-400 font-semibold mb-3">Free Shipping Threshold</h2>
+            <h2 className="text-[9px] tracking-[0.18em] uppercase text-stone-500 font-semibold mb-3">Free Shipping Threshold</h2>
             <div className="flex flex-wrap items-end gap-4">
               <div>
-                <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">
+                <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">
                   Minimum order value for free UK shipping (£)
                 </label>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-stone-400">£</span>
+                  <span className="text-xs text-stone-500">£</span>
                   <input
                     type="number"
                     min={0}
@@ -346,7 +346,7 @@ export default function AdminBulkWeightsPage() {
                     onChange={e => setFreeShippingThreshold(e.target.value)}
                     placeholder={settingsLoaded ? '0 = disabled' : 'Loading…'}
                     disabled={!settingsLoaded}
-                    className="w-32 border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none disabled:bg-stone-50 disabled:text-stone-400"
+                    className="w-32 border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none disabled:bg-stone-50 disabled:text-stone-500"
                   />
                 </div>
                 <p className="text-[8px] text-stone-300 mt-1">Leave blank or set to 0 to disable free shipping.</p>
@@ -372,7 +372,7 @@ export default function AdminBulkWeightsPage() {
             <div className="bg-white border border-stone-200 p-4 mb-3">
               <div className="flex flex-wrap items-end gap-3">
                 <div className="flex-1 min-w-[180px]">
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">
                     Search products or categories
                   </label>
                   <input
@@ -389,7 +389,7 @@ export default function AdminBulkWeightsPage() {
                   <button
                     type="button"
                     onClick={() => { setSearch(''); setFormatFilter('all'); }}
-                    className="text-[9px] tracking-wider uppercase text-stone-400 hover:text-gold-700 transition-colors pb-2"
+                    className="text-[9px] tracking-wider uppercase text-stone-500 hover:text-gold-700 transition-colors pb-2"
                   >
                     Clear
                   </button>
@@ -404,7 +404,7 @@ export default function AdminBulkWeightsPage() {
               {/* Header row: label + scope chip (hover it for the full explanation) + Clear */}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-[9px] tracking-widest uppercase text-stone-400">New Values</span>
+                  <span className="text-[9px] tracking-widest uppercase text-stone-500">New Values</span>
                   <span
                     className={`text-[9px] tracking-wider uppercase px-2 py-0.5 border cursor-help ${scopeChipClasses}`}
                     title={scopeTitle}
@@ -416,7 +416,7 @@ export default function AdminBulkWeightsPage() {
                   <button
                     type="button"
                     onClick={() => setBulkDraft({})}
-                    className="text-[9px] tracking-wider uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                    className="text-[9px] tracking-wider uppercase text-stone-500 hover:text-gold-700 transition-colors"
                   >
                     Clear
                   </button>
@@ -428,7 +428,7 @@ export default function AdminBulkWeightsPage() {
                   the active Format scope above. */}
               <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 items-end p-3 mb-4 border ${scopeBoxClasses}`}>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Weight (g)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Weight (g)</label>
                   <input
                     type="number" min={0} max={30000}
                     value={bulkDraft.weightGrams ?? ''}
@@ -438,7 +438,7 @@ export default function AdminBulkWeightsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Length (mm)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Length (mm)</label>
                   <input
                     type="number" min={0}
                     value={bulkDraft.lengthMm ?? ''}
@@ -448,7 +448,7 @@ export default function AdminBulkWeightsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Width (mm)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Width (mm)</label>
                   <input
                     type="number" min={0}
                     value={bulkDraft.widthMm ?? ''}
@@ -458,7 +458,7 @@ export default function AdminBulkWeightsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Height (mm)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Height (mm)</label>
                   <input
                     type="number" min={0}
                     value={bulkDraft.heightMm ?? ''}
@@ -468,13 +468,13 @@ export default function AdminBulkWeightsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Package Format</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Package Format</label>
                   <select
                     value={bulkDraft.packageFormat ?? ''}
                     onChange={e => setBulkDraftField('packageFormat', e.target.value)}
                     className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none bg-white"
                   >
-                    <option value="">— Leave unset —</option>
+                    <option value="">- Leave unset -</option>
                     {PACKAGE_FORMATS.map(f => <option key={f} value={f}>{f}</option>)}
                   </select>
                 </div>
@@ -531,7 +531,7 @@ export default function AdminBulkWeightsPage() {
                       <button
                         type="button"
                         onClick={() => setConfirmingDiscard(false)}
-                        className="text-[9px] tracking-wider uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                        className="text-[9px] tracking-wider uppercase text-stone-500 hover:text-stone-600 transition-colors"
                       >
                         Cancel
                       </button>
@@ -567,10 +567,10 @@ export default function AdminBulkWeightsPage() {
           {/* Product groups — each variant's fields wrap onto multiple lines on
               narrower windows instead of forcing the page to scroll sideways. */}
           {!rows && !loadError && (
-            <div className="bg-white border border-stone-200 px-4 py-8 text-center text-xs text-stone-400">Loading…</div>
+            <div className="bg-white border border-stone-200 px-4 py-8 text-center text-xs text-stone-500">Loading…</div>
           )}
           {rows && groupedRows.length === 0 && (
-            <div className="bg-white border border-stone-200 px-4 py-8 text-center text-xs text-stone-400">
+            <div className="bg-white border border-stone-200 px-4 py-8 text-center text-xs text-stone-500">
               {search.trim() ? <>No products match &ldquo;{search}&rdquo;.</> : 'No products match this filter.'}
             </div>
           )}
@@ -594,7 +594,7 @@ export default function AdminBulkWeightsPage() {
                         {group.productName}
 
                       </p>
-                      <p className="text-[9px] text-stone-400">
+                      <p className="text-[9px] text-stone-500">
                         {group.categories.join(', ')} · {group.variants.length} size{group.variants.length === 1 ? '' : 's'}
                       </p>
                     </div>
@@ -613,53 +613,53 @@ export default function AdminBulkWeightsPage() {
                             <span className="text-xs text-stone-500 whitespace-nowrap">{row.dosage}</span>
                           </div>
                           <div>
-                            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Weight (g)</label>
+                            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Weight (g)</label>
                             <input
                               type="number" min={0} max={30000}
                               value={currentValue(row, 'weightGrams')}
                               onChange={e => setValue(row, 'weightGrams', e.target.value)}
-                              placeholder={row.productShipping?.weightGrams !== undefined ? String(row.productShipping.weightGrams) : '—'}
+                              placeholder={row.productShipping?.weightGrams !== undefined ? String(row.productShipping.weightGrams) : '-'}
                               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                             />
                           </div>
                           <div>
-                            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Length (mm)</label>
+                            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Length (mm)</label>
                             <input
                               type="number" min={0}
                               value={currentValue(row, 'lengthMm')}
                               onChange={e => setValue(row, 'lengthMm', e.target.value)}
-                              placeholder={row.productShipping?.lengthMm !== undefined ? String(row.productShipping.lengthMm) : '—'}
+                              placeholder={row.productShipping?.lengthMm !== undefined ? String(row.productShipping.lengthMm) : '-'}
                               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                             />
                           </div>
                           <div>
-                            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Width (mm)</label>
+                            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Width (mm)</label>
                             <input
                               type="number" min={0}
                               value={currentValue(row, 'widthMm')}
                               onChange={e => setValue(row, 'widthMm', e.target.value)}
-                              placeholder={row.productShipping?.widthMm !== undefined ? String(row.productShipping.widthMm) : '—'}
+                              placeholder={row.productShipping?.widthMm !== undefined ? String(row.productShipping.widthMm) : '-'}
                               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                             />
                           </div>
                           <div>
-                            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Height (mm)</label>
+                            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Height (mm)</label>
                             <input
                               type="number" min={0}
                               value={currentValue(row, 'heightMm')}
                               onChange={e => setValue(row, 'heightMm', e.target.value)}
-                              placeholder={row.productShipping?.heightMm !== undefined ? String(row.productShipping.heightMm) : '—'}
+                              placeholder={row.productShipping?.heightMm !== undefined ? String(row.productShipping.heightMm) : '-'}
                               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                             />
                           </div>
                           <div>
-                            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Package Format</label>
+                            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Package Format</label>
                             <select
                               value={currentValue(row, 'packageFormat')}
                               onChange={e => setValue(row, 'packageFormat', e.target.value)}
                               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none bg-white"
                             >
-                              <option value="">{row.productShipping?.packageFormat ?? '— default —'}</option>
+                              <option value="">{row.productShipping?.packageFormat ?? '- default -'}</option>
                               {PACKAGE_FORMATS.map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
                           </div>

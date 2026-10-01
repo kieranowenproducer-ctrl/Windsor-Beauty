@@ -209,7 +209,7 @@ export default function AdminUpsellsPage() {
 
   function productLabel(slug: string): string {
     const product = productMap.get(slug);
-    return product ? `${product.name} (${slug})` : `${slug} — unknown product`;
+    return product ? `${product.name} (${slug})` : `${slug} - unknown product`;
   }
 
   const filteredGroups = useMemo(() => {
@@ -319,7 +319,7 @@ export default function AdminUpsellsPage() {
         if (Array.isArray(data.invalidHandles) && data.invalidHandles.length > 0) {
           notes.push(`Skipped ${data.invalidHandles.length} handle(s) that don't match any product: ${data.invalidHandles.join(', ')}.`);
         }
-        setEditorMessage(notes.length > 0 ? notes.join(' ') : 'Saved — this product now uses these manually-chosen upsells.');
+        setEditorMessage(notes.length > 0 ? notes.join(' ') : 'Saved - this product now uses these manually-chosen upsells.');
         loadData();
       } else {
         setEditorError(data.error || 'Could not save.');
@@ -346,7 +346,7 @@ export default function AdminUpsellsPage() {
       if (res.ok) {
         if (slug === editorTriggerSlug) {
           setEditorHasOverride(false);
-          setEditorMessage('Manual override cleared — this product now uses CSV-driven rules again.');
+          setEditorMessage('Manual override cleared - this product now uses CSV-driven rules again.');
           selectTriggerProduct(slug);
         }
         loadData();
@@ -389,7 +389,7 @@ export default function AdminUpsellsPage() {
   const selectedDetails = useMemo(() => {
     return editorSelected.map(slug => {
       const product = productMap.get(slug);
-      if (!product) return { slug, product: null, name: slug, willDisplay: false, reason: 'Unknown product — no longer in the catalogue' };
+      if (!product) return { slug, product: null, name: slug, willDisplay: false, reason: 'Unknown product - no longer in the catalogue' };
       if (hiddenSlugs.has(slug)) return { slug, product, name: product.name, willDisplay: false, reason: 'Hidden from the site' };
       const availability = effectiveAvailability(product, stock[slug]);
       if (availability !== 'available') {
@@ -410,10 +410,10 @@ export default function AdminUpsellsPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-4xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Upsell System</h1>
-          <p className="text-xs text-stone-400 mb-8 leading-relaxed">
+          <p className="text-xs text-stone-500 mb-8 leading-relaxed">
             Two ways to manage upsells: bulk CSV import for setting up many relationships at once, and a manual
             per-product editor for precise day-to-day control. When both exist for the same product, the manual
-            choice always wins — CSV import never overwrites a product you&apos;ve manually curated here.
+            choice always wins - CSV import never overwrites a product you&apos;ve manually curated here.
           </p>
 
           {loadError && (

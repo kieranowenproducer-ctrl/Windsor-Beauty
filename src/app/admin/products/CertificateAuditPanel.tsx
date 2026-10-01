@@ -25,13 +25,13 @@ export default function CertificateAuditPanel({ certAuditOpen, certAudit }: Prop
                   Missing Certificates ({certAudit.missing.length})
                 </p>
                 {certAudit.missing.length === 0 ? (
-                  <p className="text-stone-400">Every product has at least certificate data on file.</p>
+                  <p className="text-stone-500">Every product has at least certificate data on file.</p>
                 ) : (
                   <ul className="space-y-1.5 max-h-64 overflow-y-auto">
                     {certAudit.missing.map(row => (
                       <li key={row.id} className="text-stone-600">
                         <span className="font-medium">{row.name}</span>
-                        <span className="text-stone-400"> — ID {row.id} — {row.categories || 'Uncategorised'}</span>
+                        <span className="text-stone-500"> - ID {row.id} - {row.categories || 'Uncategorised'}</span>
                       </li>
                     ))}
                   </ul>
@@ -42,13 +42,13 @@ export default function CertificateAuditPanel({ certAuditOpen, certAudit }: Prop
                   Certificate Issues ({certAudit.issues.length})
                 </p>
                 {certAudit.issues.length === 0 ? (
-                  <p className="text-stone-400">No certificates with data are currently broken or unlinked.</p>
+                  <p className="text-stone-500">No certificates with data are currently broken or unlinked.</p>
                 ) : (
                   <ul className="space-y-1.5 max-h-64 overflow-y-auto">
                     {certAudit.issues.map(row => (
                       <li key={row.id} className="text-stone-600">
                         <span className="font-medium">{row.name}</span>
-                        <span className="text-stone-400"> — {row.issue}</span>
+                        <span className="text-stone-500"> - {row.issue}</span>
                       </li>
                     ))}
                   </ul>

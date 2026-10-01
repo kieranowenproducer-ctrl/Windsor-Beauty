@@ -354,6 +354,7 @@ export async function affiliateCodeOwnedBy(code: string, customerId: number): Pr
 }
 
 export async function affiliateCreditOwnedBy(code: string, customerId: number): Promise<boolean> {
+  if (!affiliatesEnabled()) return false;
   const db = requireDb();
   const rows = await db`
     SELECT 1 FROM affiliate_payout_requests

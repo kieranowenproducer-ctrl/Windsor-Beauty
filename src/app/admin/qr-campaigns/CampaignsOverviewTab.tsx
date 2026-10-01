@@ -40,14 +40,14 @@ export default function CampaignsOverviewTab({
                   { label: 'QR Revenue', value: `£${totalRevenue.toFixed(2)}` },
                 ].map(({ label, value }) => (
                   <div key={label} className="bg-white border border-stone-200 px-5 py-4">
-                    <p className="text-[8px] tracking-[0.22em] uppercase text-stone-400 mb-1.5">{label}</p>
+                    <p className="text-[8px] tracking-[0.22em] uppercase text-stone-500 mb-1.5">{label}</p>
                     <p className="text-2xl font-semibold text-stone-800">{value}</p>
                   </div>
                 ))}
               </div>
 
               {/* Attribution model info */}
-              <div className="bg-stone-50 border border-stone-100 px-5 py-3 flex flex-wrap gap-4 text-[9px] text-stone-400 tracking-wider">
+              <div className="bg-stone-50 border border-stone-100 px-5 py-3 flex flex-wrap gap-4 text-[9px] text-stone-500 tracking-wider">
                 <span><strong className="text-stone-600">Attribution:</strong> Last-touch, 30-day window</span>
                 <span><strong className="text-stone-600">Unique visitors:</strong> Tracked via 365-day browser cookie</span>
                 <span><strong className="text-stone-600">Order attribution:</strong> Independent of discount codes</span>
@@ -55,7 +55,7 @@ export default function CampaignsOverviewTab({
 
               {/* Charts */}
               <div className="bg-white border border-stone-200 p-6">
-                <p className="text-[8px] tracking-[0.22em] uppercase text-stone-400 mb-5">Campaign Performance Charts</p>
+                <p className="text-[8px] tracking-[0.22em] uppercase text-stone-500 mb-5">Campaign Performance Charts</p>
                 <QrCharts
                   campaigns={campaigns}
                   stats={stats}
@@ -70,7 +70,7 @@ export default function CampaignsOverviewTab({
                   {/* Top performers */}
                   <div className="bg-white border border-stone-200 overflow-x-auto">
                     <div className="px-5 py-3 border-b border-stone-100">
-                      <p className="text-[8px] tracking-[0.22em] uppercase text-stone-400">Top Performers by Revenue</p>
+                      <p className="text-[8px] tracking-[0.22em] uppercase text-stone-500">Top Performers by Revenue</p>
                     </div>
                     <table className="w-full">
                       <thead>
@@ -86,7 +86,7 @@ export default function CampaignsOverviewTab({
                           <tr key={c.id} className="border-b border-stone-50">
                             <td className="px-5 py-2.5">
                               <p className="text-xs text-stone-700 font-medium">{c.name}</p>
-                              {c.partner_name && <p className="text-[9px] text-stone-400">{c.partner_name}</p>}
+                              {c.partner_name && <p className="text-[9px] text-stone-500">{c.partner_name}</p>}
                             </td>
                             <td className="text-right text-xs text-stone-500 px-4 py-2.5">{stats[c.id]?.total_scans ?? 0}</td>
                             <td className="text-right text-xs text-stone-500 px-4 py-2.5">{stats[c.id]?.total_orders ?? 0}</td>
@@ -102,7 +102,7 @@ export default function CampaignsOverviewTab({
                   {/* Needs attention — lowest conversion */}
                   <div className="bg-white border border-stone-200 overflow-x-auto">
                     <div className="px-5 py-3 border-b border-stone-100">
-                      <p className="text-[8px] tracking-[0.22em] uppercase text-stone-400">Needs Attention (Most Scans, Fewest Orders)</p>
+                      <p className="text-[8px] tracking-[0.22em] uppercase text-stone-500">Needs Attention (Most Scans, Fewest Orders)</p>
                     </div>
                     <table className="w-full">
                       <thead>
@@ -122,7 +122,7 @@ export default function CampaignsOverviewTab({
                             <tr key={c.id} className="border-b border-stone-50">
                               <td className="px-5 py-2.5">
                                 <p className="text-xs text-stone-700 font-medium">{c.name}</p>
-                                {c.partner_name && <p className="text-[9px] text-stone-400">{c.partner_name}</p>}
+                                {c.partner_name && <p className="text-[9px] text-stone-500">{c.partner_name}</p>}
                               </td>
                               <td className="text-right text-xs text-stone-500 px-4 py-2.5">{stats[c.id]?.total_scans ?? 0}</td>
                               <td className="text-right text-xs text-stone-500 px-4 py-2.5">{stats[c.id]?.total_orders ?? 0}</td>
@@ -142,7 +142,7 @@ export default function CampaignsOverviewTab({
 
               {campaigns.length === 0 && !loading && (
                 <div className="bg-white border border-stone-200 p-12 text-center">
-                  <p className="text-xs text-stone-400 mb-4">No campaigns yet. Create one to start tracking QR code performance.</p>
+                  <p className="text-xs text-stone-500 mb-4">No campaigns yet. Create one to start tracking QR code performance.</p>
                   <button onClick={openCreate} className="bg-gold-700 text-white text-[9px] tracking-[0.18em] uppercase px-4 py-2.5 hover:bg-gold-800 transition-colors">
                     Create First Campaign
                   </button>

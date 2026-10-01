@@ -397,9 +397,7 @@ export default function CheckoutPage() {
     // customer to their bank — the navigation cancelled the request, so codes
     // stayed reusable and the admin panel never showed a redemption.
 
-    // Step 2a: PayPal — create the payment link and go straight there. The
-    // email remains a backup, but there is no extra page between checkout and
-    // PayPal.
+    // PayPal opens directly. The confirmation page keeps the recovery link.
     if (paymentOption === 'paypal') {
       try {
         const ppRes = await fetch('/api/payment/paypal/instructions', {
@@ -423,7 +421,7 @@ export default function CheckoutPage() {
         if (recovery) {
           try { localStorage.setItem('wb_payment_recovery', recovery); } catch { /* ignore */ }
           clearCart();
-          setPaymentRecovery({ orderNumber, url: recovery, message: ppData?.error || 'The email could not be sent.' });
+          setPaymentRecovery({ orderNumber, url: recovery, message: ppData?.error || 'The payment page could not be opened.' });
           return;
         }
         setOrderError(ppData?.error || 'Could not send your payment link. Please contact us at orders@windsorbeauty.co.uk.');
@@ -638,7 +636,7 @@ export default function CheckoutPage() {
               <p className="text-[10px] text-stone-500 mb-6">
                 {details.country === 'GB'
                   ? 'Based on your delivery address (United Kingdom). Shipping to Europe or internationally? Go back to step 1 and update your country to see international rates.'
-                  : 'Based on your delivery address (International). Estimated 7–14 working days via Royal Mail International Tracked.'}
+                  : 'Based on your delivery address (International). Estimated 7-14 working days via Royal Mail International Tracked.'}
               </p>
               <div className="space-y-3 mb-6">
                 {SHIPPING_OPTIONS.map(opt => (
@@ -743,11 +741,11 @@ export default function CheckoutPage() {
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-stone-800 tracking-wide">Pay by Bank</p>
-                      <p className="text-[10px] text-stone-500 mt-0.5">Secure open banking payment — no card details required</p>
+                      <p className="text-[10px] text-stone-500 mt-0.5">Secure open banking payment - no card details required</p>
                     </div>
                   </div>
                   <p className="text-[10px] text-stone-500 leading-relaxed">
-                    You will be securely redirected to your bank to authorise the payment. The amount is transferred directly — no card data is stored or shared.
+                    You will be securely redirected to your bank to authorise the payment. The amount is transferred directly - no card data is stored or shared.
                   </p>
                 </div>
               ) : (
@@ -764,7 +762,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <p className="text-[10px] text-stone-500 leading-relaxed mb-2">
-                    Press the payment button below and you will go straight to PayPal. We will also send the same link to <strong className="text-stone-600">{details.email}</strong> as a backup.
+                    Press the payment button below and you will go straight to PayPal. You can return to payment from your order confirmation page.
                   </p>
                   <p className="text-[10px] text-stone-500 leading-relaxed font-semibold">
                     PayPal payments include a 3.5% processing fee. Your updated total is &pound;{orderTotal.toFixed(2)}. To avoid this fee, we recommend paying by Pay by Bank, our free instant bank transfer option.
@@ -987,13 +985,13 @@ export default function CheckoutPage() {
                 >
                   {placingOrder
                     ? (paymentOption === 'paypal' ? 'Opening PayPal…' : 'Redirecting to Bank…')
-                    : (paymentOption === 'paypal' ? `Pay now with PayPal — £${orderTotal.toFixed(2)}` : `Pay £${orderTotal.toFixed(2)}`)}
+                    : (paymentOption === 'paypal' ? `Pay now with PayPal: £${orderTotal.toFixed(2)}` : `Pay £${orderTotal.toFixed(2)}`)}
                 </button>
               </div>
 
               <p className="text-[9px] text-stone-500 text-center mt-4">
                 {paymentOption === 'paypal'
-                  ? 'You will go straight to PayPal. A backup link is also emailed to you.'
+                  ? 'You will go straight to PayPal. No payment link email is sent.'
                   : 'You will be redirected to your bank to complete payment securely.'}
               </p>
             </div>

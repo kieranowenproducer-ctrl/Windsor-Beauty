@@ -110,7 +110,7 @@ export default function OrderActions({
                       copy, so a customer who closed the tab had nowhere to go back to. */}
                   {['pending', 'awaiting_payment', 'payment_failed', 'payment_cancelled'].includes(selectedOrder.status) && (
                     <div className="mb-4 border border-stone-200 p-4">
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-2">Customer Cannot Pay?</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">Customer Cannot Pay?</p>
                       <p className="text-[10px] text-stone-500 leading-relaxed mb-3">
                         Emails {selectedOrder.email} a fresh payment link for this order. Nothing is
                         charged and the order does not change. The link also appears here, so you can
@@ -138,7 +138,7 @@ export default function OrderActions({
                               ? 'Sending…'
                               : isOnCooldown('resend-payment-link', selectedOrder.orderNumber)
                                 ? 'Sent ✓'
-                                : via === 'fena' ? 'Send bank link' : 'Send PayPal link'}
+                                : via === 'fena' ? 'Send bank link' : 'Get PayPal link'}
                           </button>
                         ))}
                       </div>
@@ -162,7 +162,7 @@ export default function OrderActions({
                   {/* Mark as Paid — for PayPal / manual orders awaiting payment */}
                   {selectedOrder.paymentMethod === 'paypal' && ['pending', 'awaiting_payment'].includes(selectedOrder.status) && (
                     <div className="mb-4 border border-[#0070ba]/30 bg-blue-50/20 p-4">
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-2">PayPal Payment</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">PayPal Payment</p>
                       {/* The Royal Mail line was missing, and it is the one that spends money:
                           marking an order paid also asks Royal Mail for the postage label
                           (markOrderPaidManually.ts calls dispatchOrderToRoyalMail). */}
@@ -187,7 +187,7 @@ export default function OrderActions({
                       funds actually arrived — Fena normally needs no manual step. */}
                   {selectedOrder.paymentMethod === 'fena' && ['pending', 'awaiting_payment'].includes(selectedOrder.status) && (
                     <div className="mb-4 border border-gold-300 bg-gold-50/30 p-4">
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-2">Fena Payment &mdash; Not Auto-Confirmed</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">Fena Payment - Not Auto-Confirmed</p>
                       <p className="text-[10px] text-stone-500 leading-relaxed mb-3">
                         Fena's webhook normally confirms this automatically. If you've checked your bank/Fena dashboard
                         and the payment has genuinely landed, click below to confirm the order manually, move it to
@@ -210,7 +210,7 @@ export default function OrderActions({
                       markPaidResult.emailSent ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-600'
                     }`}>
                       {markPaidResult.emailSent
-                        ? `Order confirmed — confirmation email sent to ${selectedOrder.email}.`
+                        ? `Order confirmed - confirmation email sent to ${selectedOrder.email}.`
                         : 'Order marked as paid, but the confirmation email failed to send. Check RESEND_API_KEY.'}
                     </div>
                   )}
@@ -220,12 +220,12 @@ export default function OrderActions({
                       can't be used to set e.g. "dispatched" on an order
                       that was never marked paid. */}
                   <div className="mb-4">
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">
                       Update Status
                     </label>
                     {ORDER_STATUS_TRANSITIONS[selectedOrder.status].length === 0 ? (
                       <>
-                        <select disabled className="w-full border border-stone-200 px-2 py-2 text-xs text-stone-400 bg-stone-50">
+                        <select disabled className="w-full border border-stone-200 px-2 py-2 text-xs text-stone-500 bg-stone-50">
                           <option>{STATUS_LABELS[selectedOrder.status]}</option>
                         </select>
                         <p className="text-[9px] text-stone-300 mt-1">This is a final status and cannot be changed further.</p>
@@ -261,18 +261,18 @@ export default function OrderActions({
                       which only makes sense for an order going by post. */}
                   {selectedOrder.fulfilmentType !== 'royal_mail' && (
                     <div className="mb-4 border border-purple-100 bg-purple-50/20 p-4">
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                         {FULFILMENT_LABELS[selectedOrder.fulfilmentType]}
                       </p>
                       <p className="text-[10px] text-stone-500 leading-relaxed mb-3">
-                        This order is set to {FULFILMENT_LABELS[selectedOrder.fulfilmentType].toLowerCase()} — it never goes
+                        This order is set to {FULFILMENT_LABELS[selectedOrder.fulfilmentType].toLowerCase()} - it never goes
                         through Royal Mail, so no label, tracking number, or CSV export applies here.
                       </p>
                       {!PAYMENT_CONFIRMED_STATUSES.includes(selectedOrder.status) ? (
-                        <p className="text-[10px] text-stone-400 leading-relaxed">
+                        <p className="text-[10px] text-stone-500 leading-relaxed">
                           Confirm payment before marking this order delivered
                           {selectedOrder.paymentMethod === 'paypal' || selectedOrder.paymentMethod === 'fena'
-                            ? ' — use "Mark as Paid" above once funds have cleared.'
+                            ? ' - use "Mark as Paid" above once funds have cleared.'
                             : '.'}
                         </p>
                       ) : selectedOrder.status === 'delivered' ? (
@@ -293,7 +293,7 @@ export default function OrderActions({
                   {selectedOrder.fulfilmentType === 'royal_mail' && (
                   <div className="mb-4 border border-gold-100 bg-gold-50/20 p-4">
                     <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">
                         Royal Mail Label
                       </p>
                       <div className="flex gap-1.5">
@@ -310,10 +310,10 @@ export default function OrderActions({
                     </div>
 
                     {!PAYMENT_CONFIRMED_STATUSES.includes(selectedOrder.status) ? (
-                      <p className="text-[10px] text-stone-400 leading-relaxed">
+                      <p className="text-[10px] text-stone-500 leading-relaxed">
                         Confirm payment before a Royal Mail label can be created
                         {selectedOrder.paymentMethod === 'paypal' || selectedOrder.paymentMethod === 'fena'
-                          ? ' — use "Mark as Paid" above once funds have cleared.'
+                          ? ' - use "Mark as Paid" above once funds have cleared.'
                           : '.'}
                       </p>
                     ) : selectedOrder.royalMailLabelStatus === 'created' ? (
@@ -411,7 +411,7 @@ export default function OrderActions({
 
                         {trackingEmailSent === selectedOrder.orderNumber && (
                           <div className="border border-green-200 bg-green-50 text-green-700 px-3 py-2 text-[10px] leading-relaxed">
-                            Dispatched — tracking email sent to {selectedOrder.email}.
+                            Dispatched - tracking email sent to {selectedOrder.email}.
                           </div>
                         )}
                       </div>
@@ -438,10 +438,10 @@ export default function OrderActions({
                   {/* Manual CSV / fallback dispatch system */}
                   {selectedOrder.fulfilmentType === 'royal_mail' && (
                   <div className="mb-4 border border-stone-200 bg-stone-50/50 p-4">
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">
                       Manual CSV / Fallback Dispatch
                     </p>
-                    <p className="text-[9px] text-stone-400 mb-3 leading-relaxed">
+                    <p className="text-[9px] text-stone-500 mb-3 leading-relaxed">
                       Use this if the Royal Mail label above isn&apos;t available, for orders the
                       API can&apos;t handle yet, or as an emergency backup.
                     </p>
@@ -449,7 +449,7 @@ export default function OrderActions({
                       {[
                         { n: '1', text: 'Download the Royal Mail CSV below' },
                         { n: '2', text: 'In Click & Drop: Orders → Import from spreadsheet → upload the file' },
-                        { n: '3', text: 'Royal Mail generates your label — print it and attach to the parcel' },
+                        { n: '3', text: 'Royal Mail generates your label - print it and attach to the parcel' },
                         { n: '4', text: 'Copy the tracking number from Click & Drop and paste it below' },
                       ].map(({ n, text }) => (
                         <div key={n} className="flex gap-2.5">
@@ -474,7 +474,7 @@ export default function OrderActions({
                     )}
                     {selectedOrder.status === 'exported' && (
                       <p className="text-[9px] text-green-600 mt-2">
-                        Exported — once Royal Mail gives you a tracking number, paste it below (or on the
+                        Exported - once Royal Mail gives you a tracking number, paste it below (or on the
                         Dispatch page) to mark this order dispatched and email the customer.
                       </p>
                     )}
@@ -503,8 +503,8 @@ export default function OrderActions({
                       them. */}
                   {selectedOrder.fulfilmentType === 'royal_mail' && (
                   <div>
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">
-                      Tracking Number — paste from Click &amp; Drop
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">
+                      Tracking Number - paste from Click &amp; Drop
                     </label>
                     <input
                       type="text"
@@ -519,9 +519,9 @@ export default function OrderActions({
                     />
                     <p className="text-[8px] mt-1 leading-relaxed">
                       {savingTracking
-                        ? <span className="text-stone-400">Saving…</span>
+                        ? <span className="text-stone-500">Saving…</span>
                         : trackingEmailSent === selectedOrder.orderNumber
-                          ? <span className="text-green-600">Saved — dispatch email sent to {selectedOrder.email}</span>
+                          ? <span className="text-green-600">Saved - dispatch email sent to {selectedOrder.email}</span>
                           : <span className="text-stone-300">Saving the tracking number automatically emails the customer and marks the order as dispatched.</span>}
                     </p>
                   </div>
@@ -553,7 +553,7 @@ export default function OrderActions({
                         {resendingOrderEmails
                           ? 'Sending…'
                           : isOnCooldown('resend-order-emails', selectedOrder.orderNumber)
-                            ? 'Sent — resend again shortly'
+                            ? 'Sent - resend again shortly'
                             : 'Resend Order Emails'}
                       </button>
                       {resendOrderEmailsResult?.orderNumber === selectedOrder.orderNumber && (
@@ -575,12 +575,12 @@ export default function OrderActions({
                         {resendingEmail
                           ? 'Sending…'
                           : isOnCooldown('resend', selectedOrder.orderNumber)
-                            ? 'Sent — resend again in a few seconds'
+                            ? 'Sent - resend again in a few seconds'
                             : 'Resend Dispatch Email'}
                       </button>
                       {resendEmailResult?.orderNumber === selectedOrder.orderNumber && (
                         <p className={`text-[9px] mt-1 text-center ${resendEmailResult.ok ? 'text-green-600' : 'text-red-500'}`}>
-                          {resendEmailResult.ok ? 'Email resent successfully.' : 'Failed to send — check RESEND_API_KEY.'}
+                          {resendEmailResult.ok ? 'Email resent successfully.' : 'Failed to send - check RESEND_API_KEY.'}
                         </p>
                       )}
                     </div>
@@ -588,7 +588,7 @@ export default function OrderActions({
 
                   {/* Internal notes */}
                   <div className="mb-4">
-                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">
+                    <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">
                       Internal Notes
                     </label>
                     <textarea
@@ -596,7 +596,7 @@ export default function OrderActions({
                       rows={3}
                       defaultValue={selectedOrder.adminNotes || ''}
                       onChange={e => setNotesDraft(prev => ({ ...prev, [selectedOrder.orderNumber]: e.target.value }))}
-                      placeholder="Notes visible only to you — not sent to the customer."
+                      placeholder="Notes visible only to you - not sent to the customer."
                       className="w-full border border-stone-200 focus:border-gold-400 outline-none px-2 py-2 text-xs text-stone-600 bg-white transition-colors resize-none"
                     />
                     <button

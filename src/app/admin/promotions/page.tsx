@@ -404,7 +404,7 @@ export default function AdminPromotionsPage() {
 
     if (form.promotionType === 'code' && !form.discountCode.trim()) {
       setSaveStatus('error');
-      setSaveMessage('A code promotion needs a discount code — switch to Informational if this offer has none.');
+      setSaveMessage('A code promotion needs a discount code - switch to Informational if this offer has none.');
       return;
     }
 
@@ -524,7 +524,7 @@ export default function AdminPromotionsPage() {
   }
 
   function formatDate(value: string | null) {
-    if (!value) return '—';
+    if (!value) return '-';
     return new Date(value).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
@@ -538,8 +538,8 @@ export default function AdminPromotionsPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-4xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Promotions</h1>
-          <p className="text-xs text-stone-400 mb-8">
-            Manage every visible offer from one place — the homepage banner, automatic percentage discounts, and
+          <p className="text-xs text-stone-500 mb-8">
+            Manage every visible offer from one place - the homepage banner, automatic percentage discounts, and
             (below) automatic BOGO/bundle/spend-threshold rules.
           </p>
 
@@ -550,10 +550,10 @@ export default function AdminPromotionsPage() {
           )}
 
           <h2 className="text-base font-semibold text-stone-800 mb-1">Homepage Banner &amp; Percentage Discounts</h2>
-          <p className="text-xs text-stone-400 mb-4">
+          <p className="text-xs text-stone-500 mb-4">
             Only one active, in-date promotion is shown on the homepage banner at a time (whichever was created
             most recently). Percentage discount promotions also drive the Special Offers page and product pricing
-            independently of which one wins that banner slot — at most one percentage discount can be active at
+            independently of which one wins that banner slot - at most one percentage discount can be active at
             once.
           </p>
 

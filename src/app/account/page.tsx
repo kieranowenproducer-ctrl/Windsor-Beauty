@@ -349,7 +349,7 @@ export default function AccountDashboardPage() {
                                 {order.trackingNumber} &rarr;
                               </a>
                             ) : (
-                              <p className="text-xs text-stone-500">Not yet dispatched — tracking will appear here once your order ships.</p>
+                              <p className="text-xs text-stone-500">Not yet dispatched - tracking will appear here once your order ships.</p>
                             )}
                           </div>
                         </div>

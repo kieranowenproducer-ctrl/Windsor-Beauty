@@ -61,10 +61,8 @@ const NON_POSTAL = ['collection', 'hand_delivered', 'no_delivery', 'other_manual
  * like a made label and is not one: Royal Mail has the order but is holding it until the postage
  * is paid in Click & Drop, so nothing has been printed and the parcel cannot go anywhere.
  *
- * Kieran caught this himself with the example he gave: Amber Costello's order WB-MFQA6R, which he
- * said had not been processed and should be red. It is `pending_postage`, and asking Royal Mail
- * about it directly confirmed him: no printedOn, no shippedOn, no tracking number. It is a job
- * still waiting on him, so it is red. `error` is red for the same reason.
+ * An order without printedOn, shippedOn or a tracking number still needs
+ * postage. Both pending_postage and error need attention in the order list.
  *
  * A tracking number counts on its own, because an order that has one has certainly been through
  * Click & Drop, including older orders whose label status was never recorded.

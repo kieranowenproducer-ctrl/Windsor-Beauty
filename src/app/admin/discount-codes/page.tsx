@@ -293,7 +293,7 @@ export default function AdminDiscountCodesPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-4xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Discount Codes</h1>
-          <p className="text-xs text-stone-400 mb-8">
+          <p className="text-xs text-stone-500 mb-8">
             Create and manage promo codes that customers can apply at checkout.
           </p>
 
@@ -329,7 +329,7 @@ export default function AdminDiscountCodesPage() {
             </p>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Code</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Code</span>
                 <input
                   type="text"
                   value={code}
@@ -340,7 +340,7 @@ export default function AdminDiscountCodesPage() {
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Discount Type</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Discount Type</span>
                 <select
                   value={discountType}
                   onChange={(e) => setDiscountType(e.target.value as 'percentage' | 'fixed')}
@@ -352,7 +352,7 @@ export default function AdminDiscountCodesPage() {
               </label>
               {discountType === 'percentage' ? (
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Percentage Off</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Percentage Off</span>
                   <input
                     type="number"
                     value={percentage}
@@ -367,7 +367,7 @@ export default function AdminDiscountCodesPage() {
                 </label>
               ) : (
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Fixed Amount Off (£)</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Fixed Amount Off (£)</span>
                   <input
                     type="number"
                     value={fixedAmount}
@@ -381,7 +381,7 @@ export default function AdminDiscountCodesPage() {
                 </label>
               )}
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Applies To</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Applies To</span>
                 <select
                   value={scopeType}
                   onChange={(e) => setScopeType(e.target.value as 'all' | 'category' | 'product')}
@@ -394,7 +394,7 @@ export default function AdminDiscountCodesPage() {
               </label>
               {scopeType === 'category' && (
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Categories</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Categories</span>
                   <div className="flex flex-wrap gap-x-4 gap-y-2 border border-stone-200 p-3 max-h-40 overflow-y-auto">
                     {allCategories.map((category) => (
                       <label key={category} className="flex items-center gap-1.5 text-xs text-stone-600">
@@ -414,7 +414,7 @@ export default function AdminDiscountCodesPage() {
               )}
               {scopeType === 'product' && (
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Products</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Products</span>
                   <div className="flex flex-col gap-1.5 border border-stone-200 p-3 max-h-48 overflow-y-auto">
                     {products.map((product) => (
                       <label key={product.slug} className="flex items-center gap-1.5 text-xs text-stone-600">
@@ -433,7 +433,7 @@ export default function AdminDiscountCodesPage() {
                 </div>
               )}
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Expiry Date (optional)</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Expiry Date (optional)</span>
                 <input
                   type="date"
                   value={expiresAt}
@@ -442,7 +442,7 @@ export default function AdminDiscountCodesPage() {
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Usage Limit (optional)</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Usage Limit (optional)</span>
                 <input
                   type="number"
                   value={usageLimit}
@@ -454,7 +454,7 @@ export default function AdminDiscountCodesPage() {
                 />
               </label>
               <label className="flex flex-col gap-1.5 sm:col-span-2">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Minimum Order Value (£, optional)</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Minimum Order Value (£, optional)</span>
                 <input
                   type="number"
                   value={minOrderValue}
@@ -473,7 +473,7 @@ export default function AdminDiscountCodesPage() {
                     onChange={(e) => setActive(e.target.checked)}
                     className="accent-gold-500"
                   />
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Active</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Active</span>
                 </label>
               )}
               <div className="sm:col-span-2 flex items-center gap-3">
@@ -488,7 +488,7 @@ export default function AdminDiscountCodesPage() {
                   <button
                     type="button"
                     onClick={cancelEdit}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                   >
                     Cancel
                   </button>
@@ -513,7 +513,7 @@ export default function AdminDiscountCodesPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 border-b border-stone-100">
+                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 border-b border-stone-100">
                     <th className="px-6 py-3">Code</th>
                     <th className="px-6 py-3">Off</th>
                     <th className="px-6 py-3">Applies To</th>
@@ -527,7 +527,7 @@ export default function AdminDiscountCodesPage() {
                 <tbody>
                   {codes && codes.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="px-6 py-8 text-center text-stone-400">
+                      <td colSpan={8} className="px-6 py-8 text-center text-stone-500">
                         No discount codes yet. Create one using the form above.
                       </td>
                     </tr>
@@ -562,7 +562,7 @@ export default function AdminDiscountCodesPage() {
                             <div className="flex items-center gap-3 justify-end">
                               <button
                                 onClick={() => toggleUsageLog(row)}
-                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
                               >
                                 {loadingUsageId === row.id ? 'Loading…' : isOpen ? 'Hide' : 'Usage'}
                               </button>
@@ -570,14 +570,14 @@ export default function AdminDiscountCodesPage() {
                                 onClick={() => toggleActive(row)}
                                 disabled={toggleId === row.id}
                                 className={`p-2 -m-2 text-[10px] tracking-[0.15em] uppercase transition-colors disabled:opacity-50 ${
-                                  row.active ? 'text-stone-400 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
+                                  row.active ? 'text-stone-500 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
                                 }`}
                               >
                                 {toggleId === row.id ? 'Saving…' : row.active ? 'Deactivate' : 'Activate'}
                               </button>
                               <button
                                 onClick={() => startEdit(row)}
-                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
                               >
                                 Edit
                               </button>
@@ -593,7 +593,7 @@ export default function AdminDiscountCodesPage() {
                                   </button>
                                   <button
                                     onClick={() => setDeleteConfirm(null)}
-                                    className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                                    className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                                   >
                                     Cancel
                                   </button>
@@ -601,7 +601,7 @@ export default function AdminDiscountCodesPage() {
                               ) : (
                                 <button
                                   onClick={() => setDeleteConfirm(row.id)}
-                                  className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors"
+                                  className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors"
                                 >
                                   Delete
                                 </button>
@@ -613,11 +613,11 @@ export default function AdminDiscountCodesPage() {
                           <tr className="bg-stone-50/60">
                             <td colSpan={8} className="px-6 py-3">
                               {usage.length === 0 ? (
-                                <p className="text-[10px] text-stone-400">No orders have used this code yet.</p>
+                                <p className="text-[10px] text-stone-500">No orders have used this code yet.</p>
                               ) : (
                                 <table className="w-full text-[10px]">
                                   <thead>
-                                    <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400">
+                                    <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500">
                                       <th className="pr-6 pb-1.5">Order</th>
                                       <th className="pr-6 pb-1.5">Customer</th>
                                       <th className="pr-6 pb-1.5">Total</th>
@@ -628,9 +628,9 @@ export default function AdminDiscountCodesPage() {
                                     {usage.map(u => (
                                       <tr key={u.order_number} className="border-t border-stone-100">
                                         <td className="font-mono text-stone-600 pr-6 py-1">{u.order_number}</td>
-                                        <td className="text-stone-500 pr-6 py-1">{u.customer_name}<br /><span className="text-stone-400">{u.email}</span></td>
+                                        <td className="text-stone-500 pr-6 py-1">{u.customer_name}<br /><span className="text-stone-500">{u.email}</span></td>
                                         <td className="text-gold-700 font-semibold pr-6 py-1">£{Number(u.total).toFixed(2)}</td>
-                                        <td className="text-stone-400 py-1">{new Date(u.created_at).toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                                        <td className="text-stone-500 py-1">{new Date(u.created_at).toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'short', year: 'numeric' })}</td>
                                       </tr>
                                     ))}
                                   </tbody>

@@ -31,7 +31,7 @@ interface Props {
 export default function VariantEditor({ variants, onChange, onAdd, onRemove, onUploadingChange }: Props) {
   return (
     <div>
-      <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-2">Size Options &amp; Pricing</label>
+      <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-2">Size Options &amp; Pricing</label>
       <div className="space-y-2">
         {variants.map((variant, i) => (
           <div key={i} className="border border-stone-100 p-2 space-y-2">
@@ -43,7 +43,7 @@ export default function VariantEditor({ variants, onChange, onAdd, onRemove, onU
                 className="flex-1 min-w-[100px] border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
               />
               <div className="relative">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-stone-400">&pound;</span>
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-stone-500">&pound;</span>
                 <input
                   value={variant.price}
                   onChange={e => onChange(i, 'price', e.target.value)}
@@ -60,7 +60,7 @@ export default function VariantEditor({ variants, onChange, onAdd, onRemove, onU
                 className={`text-[9px] tracking-wider uppercase px-2.5 py-1.5 border transition-colors ${
                   variant.enabled
                     ? 'border-gold-300 text-gold-700 hover:border-gold-500 hover:bg-gold-50'
-                    : 'border-stone-200 text-stone-400 hover:border-stone-300'
+                    : 'border-stone-200 text-stone-500 hover:border-stone-300'
                 }`}
               >
                 {variant.enabled ? 'Enabled' : 'Disabled'}
@@ -84,7 +84,7 @@ export default function VariantEditor({ variants, onChange, onAdd, onRemove, onU
             <ShippingFields
               draft={variant.shipping}
               onChange={shipping => onChange(i, 'shipping', shipping)}
-              label={`Shipping override for ${variant.dosage || 'this size'} (optional — falls back to product/global defaults)`}
+              label={`Shipping override for ${variant.dosage || 'this size'} (optional - falls back to product/global defaults)`}
             />
           </div>
         ))}

@@ -9,6 +9,20 @@ export async function sendPaymentResumeEmail(params: {
   to: string; customerName: string; orderNumber: string; total: number; resumeUrl: string;
 }): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false;
+
+  try {
+    const { id, error } = await sendEmail(buildPaymentResumeEmail(params), {
+      // Filed under the customer automatically (task ce308493).
+      filing: { orderRef: params.orderNumber, emailType: 'payment_reminder' },
+    });
+    if (error || !id) return false;
+    return true;
+  } catch { return false; }
+}
+
+export function buildPaymentResumeEmail(params: {
+  to: string; customerName: string; orderNumber: string; total: number; resumeUrl: string;
+}) {
   const subject = `Complete your Windsor Beauty payment for order ${params.orderNumber}`;
   const text = `${emailGreeting(params.customerName)}\n\nYour order ${params.orderNumber} is reserved but payment has not been confirmed.\n\nComplete payment securely: ${params.resumeUrl}\n\nTotal due: £${params.total.toFixed(2)}\n\nThe reservation expires 48 hours after the order was placed. If you have already paid, please do not pay again. Reply to this email and we will check it.\n\nWindsor Beauty`;
 
@@ -29,14 +43,8 @@ export async function sendPaymentResumeEmail(params: {
       </tr>`,
   });
 
-  try {
-    const { id, error } = await sendEmail({
+
+  return {
       from: FROM_ADDRESS, replyTo: SUPPORT_REPLY_TO, to: params.to, subject, text, html,
-    }, {
-      // Filed under the customer automatically (task ce308493).
-      filing: { orderRef: params.orderNumber, emailType: 'payment_reminder' },
-    });
-    if (error || !id) return false;
-    return true;
-  } catch { return false; }
+    };
 }

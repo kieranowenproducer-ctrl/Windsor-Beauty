@@ -17,15 +17,14 @@
 // stylesheet or computed at runtime, so it proves the common case and no more.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
+import tailwindConfig from '../tailwind.config.js';
 
 const ROOTS = ['src/app/admin', 'src/components/admin'];
 
-const GOLD = {
-  300: '#CFA194', 400: '#B98478', 500: '#A9695D',
-  600: '#95574C', 650: '#8A4F45', 700: '#4B2A3A', 800: '#63394D',
-};
-const WHITE = '#F9F1E4';
-const GOLD_50 = '#F6E4DC';
+const colours = tailwindConfig.theme.extend.colors;
+const GOLD = colours.gold;
+const WHITE = colours.white;
+const GOLD_50 = GOLD[50];
 
 const channel = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 const luminance = (h) => {
@@ -77,6 +76,11 @@ function walk(dir) {
 }
 
 let failures = 0;
+for (const background of [WHITE, colours.stone[50], colours.stone[100]]) {
+  const measured = ratio(colours.stone[500], background);
+  if (measured < 4.5) { failures++; console.log('FAIL: small muted text contrast is ' + measured.toFixed(2) + ':1'); }
+}
+
 for (const root of ROOTS) {
   for (const file of walk(root)) {
     const source = readFileSync(file, 'utf8');

@@ -48,7 +48,7 @@ export default function CustomersTable({
                     ] as { label: string; field: SortField | null }[]).map(({ label, field }) => (
                       <th
                         key={label}
-                        className={`text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-2.5 py-2.5 whitespace-nowrap ${field ? 'cursor-pointer select-none hover:text-gold-700 transition-colors' : ''}`}
+                        className={`text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-2.5 py-2.5 whitespace-nowrap ${field ? 'cursor-pointer select-none hover:text-gold-700 transition-colors' : ''}`}
                         onClick={() => field && handleSort(field)}
                       >
                         {label}
@@ -62,13 +62,13 @@ export default function CustomersTable({
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={8} className="text-center text-xs text-stone-400 py-10">
+                      <td colSpan={8} className="text-center text-xs text-stone-500 py-10">
                         Loading customers…
                       </td>
                     </tr>
                   ) : filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="text-center text-xs text-stone-400 py-10">
+                      <td colSpan={8} className="text-center text-xs text-stone-500 py-10">
                         {customers.length === 0 ? 'No customer accounts yet.' : 'No customers match your search.'}
                       </td>
                     </tr>
@@ -94,7 +94,7 @@ export default function CustomersTable({
                             <span className="shrink-0 inline-flex items-center text-[8px] tracking-[0.1em] uppercase px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200">Pending</span>
                           )}
                         </div>
-                        <div className="text-[9px] text-stone-400 truncate">
+                        <div className="text-[9px] text-stone-500 truncate">
                           <CustomerEmailButton email={customer.email} customerName={customerDisplayName(customer)} />
                         </div>
                       </td>
@@ -107,32 +107,32 @@ export default function CustomersTable({
                                 {from.main}
                               </div>
                               {from.detail && (
-                                <div className="text-[8px] text-stone-400 truncate max-w-[130px]">{from.detail}</div>
+                                <div className="text-[8px] text-stone-500 truncate max-w-[130px]">{from.detail}</div>
                               )}
                             </div>
                           );
                         })()}
                       </td>
-                      <td className="px-2.5 py-2.5 text-[9px] text-stone-400 whitespace-nowrap">{formatDate(customer.createdAt)}</td>
+                      <td className="px-2.5 py-2.5 text-[9px] text-stone-500 whitespace-nowrap">{formatDate(customer.createdAt)}</td>
                       <td className="px-2.5 py-2.5 text-xs text-stone-600">{customer.orderCount}</td>
                       <td className="px-2.5 py-2.5 text-xs font-semibold text-gold-700 whitespace-nowrap">
                         &pound;{customer.totalSpent.toFixed(2)}
                       </td>
-                      <td className="px-2.5 py-2.5 text-[9px] text-stone-400 whitespace-nowrap">{formatDate(customer.lastOrderAt)}</td>
+                      <td className="px-2.5 py-2.5 text-[9px] text-stone-500 whitespace-nowrap">{formatDate(customer.lastOrderAt)}</td>
                       <td className="px-2.5 py-2.5">
                         {customer.discountCode ? (
                           <div className="space-y-0.5">
                             <div className="font-mono text-[9px] text-gold-700 whitespace-nowrap">{customer.discountCode}</div>
-                            <span className={`inline-block text-[8px] tracking-wider uppercase px-1.5 py-0.5 whitespace-nowrap ${customer.discountCodeStatus === 'used' ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-400'}`}>
+                            <span className={`inline-block text-[8px] tracking-wider uppercase px-1.5 py-0.5 whitespace-nowrap ${customer.discountCodeStatus === 'used' ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-500'}`}>
                               {customer.discountCodeStatus === 'used' ? 'Redeemed' : 'Unredeemed'}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-[9px] text-stone-300">—</span>
+                          <span className="text-[9px] text-stone-300">-</span>
                         )}
                       </td>
                       <td className="px-2.5 py-2.5">
-                        <span className={`text-[8px] tracking-wider uppercase px-2 py-0.5 whitespace-nowrap ${customer.marketingConsent ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-400'}`}>
+                        <span className={`text-[8px] tracking-wider uppercase px-2 py-0.5 whitespace-nowrap ${customer.marketingConsent ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-500'}`}>
                           {customer.marketingConsent ? 'Yes' : 'No'}
                         </span>
                       </td>

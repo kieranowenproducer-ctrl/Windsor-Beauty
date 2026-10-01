@@ -101,12 +101,12 @@ export default function MarketingOptInPrompt({
             type="button"
             onClick={onDecline}
             disabled={busy}
-            className="mt-3 block w-full px-2 py-2 text-center text-[11px] leading-relaxed text-stone-400 underline underline-offset-[3px] transition-colors hover:text-stone-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700 disabled:opacity-60"
+            className="mt-3 block w-full px-2 py-2 text-center text-[11px] leading-relaxed text-stone-500 underline underline-offset-[3px] transition-colors hover:text-stone-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700 disabled:opacity-60"
           >
             No thanks, I will pay full price and do not want special offers or discounts.
           </button>
 
-          <p className="mt-3.5 text-center text-[10.5px] leading-snug text-stone-400">
+          <p className="mt-3.5 text-center text-[10.5px] leading-snug text-stone-500">
             Choose how we contact you in your account at any time.
           </p>
         </div>

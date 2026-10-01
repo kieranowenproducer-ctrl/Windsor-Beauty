@@ -5,10 +5,8 @@ import { sumMoney } from './money';
 // who are not logged in see a non-member price inflated by the markup below,
 // next to a strong invitation to join free / log in.
 //
-// Kieran reviewed the single-product trial (Retatrutide) and approved the
-// rollout: EVERY product, with the non-member price rounded UP to the nearest
-// five pounds. The shared calculation below is used in both the customer
-// interface and the server-side checkout price check.
+// Every non-member price is rounded UP to the nearest five pounds. The same
+// calculation is used in the shop and in the server-side checkout price check.
 
 // Set so members save AT LEAST 20% OFF the non-member price (the claim on the
 // product page). A +20% markup (x1.2) only gives ~16.7% off; to actually be 20%
@@ -35,9 +33,8 @@ export function priceForCustomer(memberPrice: number, isMember: boolean): number
 }
 
 /** How much less a member pays for these basket lines than a non-member:
- * the member price difference only, before promotions, codes or delivery
- * (Samuel's "being a member has saved you this much", 25 Sept 2026). The same
- * difference the member offer pop-up quotes, so the two never disagree. */
+ * the member price difference only, before promotions, codes or delivery.
+ * The same difference appears in the member offer pop-up. */
 export function memberSavingFor(items: ReadonlyArray<{ price: number; quantity: number }>): number {
   return sumMoney(items.map(item => (nonMemberPrice(item.price) - item.price) * item.quantity));
 }

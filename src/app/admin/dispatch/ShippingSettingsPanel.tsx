@@ -30,18 +30,18 @@ export default function ShippingSettingsPanel({
                 className="w-full flex items-center justify-between px-5 py-3 text-left"
               >
                 <span className="text-xs font-semibold text-stone-700">Shipping Settings</span>
-                <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400">{settingsOpen ? 'Hide' : 'Show'}</span>
+                <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500">{settingsOpen ? 'Hide' : 'Show'}</span>
               </button>
               {settingsOpen && settingsDraft && (
                 <div className="px-5 py-4 border-t border-stone-100 space-y-3">
-                  <p className="text-[10px] text-stone-400 leading-relaxed">
+                  <p className="text-[10px] text-stone-500 leading-relaxed">
                     Fallback values used to calculate parcel weight and format when a product
                     doesn&apos;t specify its own shipping data. Edit per-product shipping fields on
                     the Products page for more accurate labels.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Default Item Weight (g)</label>
+                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Default Item Weight (g)</label>
                       <input
                         type="number" min={1}
                         value={settingsDraft.defaultItemWeightGrams}
@@ -50,7 +50,7 @@ export default function ShippingSettingsPanel({
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Packaging Allowance (g)</label>
+                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Packaging Allowance (g)</label>
                       <input
                         type="number" min={0}
                         value={settingsDraft.packagingWeightGrams}
@@ -59,7 +59,7 @@ export default function ShippingSettingsPanel({
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Safety Margin (g)</label>
+                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Safety Margin (g)</label>
                       <input
                         type="number" min={0}
                         value={settingsDraft.safetyMarginGrams}
@@ -68,7 +68,7 @@ export default function ShippingSettingsPanel({
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Default Package Format</label>
+                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Default Package Format</label>
                       <select
                         value={settingsDraft.defaultPackageFormat}
                         onChange={e => setSettingsDraft(prev => prev && { ...prev, defaultPackageFormat: e.target.value })}
@@ -78,7 +78,7 @@ export default function ShippingSettingsPanel({
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Default Shipping Service</label>
+                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Default Shipping Service</label>
                       <select
                         value={settingsDraft.defaultService}
                         onChange={e => setSettingsDraft(prev => prev && { ...prev, defaultService: e.target.value })}
@@ -88,7 +88,7 @@ export default function ShippingSettingsPanel({
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Default Origin Country</label>
+                      <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Default Origin Country</label>
                       <input
                         type="text" maxLength={3}
                         value={settingsDraft.defaultOriginCountry}
@@ -98,14 +98,14 @@ export default function ShippingSettingsPanel({
                     </div>
                   </div>
                   <div className="border-t border-stone-100 pt-3">
-                    <p className="text-[10px] text-stone-400 leading-relaxed mb-2">
+                    <p className="text-[10px] text-stone-500 leading-relaxed mb-2">
                       Checkout shipping prices charged to customers. These are also the rates the server
                       uses to verify each order&apos;s shipping cost, so they must be kept in sync with
                       what customers should be charged.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">UK Delivery Rate (£)</label>
+                        <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">UK Delivery Rate (£)</label>
                         <input
                           type="number" min={0} step="0.01"
                           value={settingsDraft.ukStandardRate}
@@ -114,7 +114,7 @@ export default function ShippingSettingsPanel({
                         />
                       </div>
                       <div>
-                        <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">International Delivery Rate (£)</label>
+                        <label className="block text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">International Delivery Rate (£)</label>
                         <input
                           type="number" min={0} step="0.01"
                           value={settingsDraft.internationalRate}

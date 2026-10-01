@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     : '';
   if (slug && merged.some((p) => p.slug === slug)) {
     return NextResponse.json(
-      { error: `A product with the slug "${slug}" already exists — choose a different one.` },
+      { error: `A product with the slug "${slug}" already exists - choose a different one.` },
       { status: 409 }
     );
   }
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
   const product = parseProductInput({ ...draft, id: nextId });
   if (!product) {
     return NextResponse.json(
-      { error: 'Check the product details — some fields are missing or invalid.' },
+      { error: 'Check the product details - some fields are missing or invalid.' },
       { status: 400 }
     );
   }

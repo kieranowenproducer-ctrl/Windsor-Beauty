@@ -124,7 +124,7 @@ function RevenueChart({ orders, rangeEnd }: { orders: RevenueOrder[]; rangeEnd?:
   if (sorted.length <= 1) {
     return (
       <div className="flex items-center justify-center" style={{ height: 300 }}>
-        <p className="text-xs text-stone-400">No revenue data for this period</p>
+        <p className="text-xs text-stone-500">No revenue data for this period</p>
       </div>
     );
   }
@@ -367,14 +367,14 @@ export default function AdminRevenuePage() {
           {/* Back link */}
           <Link
             href="/admin/dashboard"
-            className="text-[9px] tracking-[0.18em] uppercase text-stone-400 hover:text-gold-700 transition-colors mb-6 inline-block"
+            className="text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-gold-700 transition-colors mb-6 inline-block"
           >
             &larr; Dashboard
           </Link>
 
           {/* Page title */}
           <h1 className="text-lg font-semibold text-stone-800 mb-0.5">Revenue</h1>
-          <p className="text-xs text-stone-400 mb-1">Windsor Beauty - Confirmed Payments</p>
+          <p className="text-xs text-stone-500 mb-1">Windsor Beauty - Confirmed Payments</p>
           {/* Spelled out, so a figure read off this screen or sent as a photograph is never
               ambiguous about the period it covers. */}
           <p className="text-[11px] text-gold-700 mb-7">{describeRange(range)}</p>
@@ -390,7 +390,7 @@ export default function AdminRevenuePage() {
                   className={`text-[9px] tracking-[0.18em] uppercase px-5 py-2.5 border transition-colors ${
                     activePreset === key
                       ? 'bg-gold-700 text-white border-gold-500'
-                      : 'border-stone-200 text-stone-400 hover:border-gold-300 hover:text-gold-700'
+                      : 'border-stone-200 text-stone-500 hover:border-gold-300 hover:text-gold-700'
                   }`}
                 >
                   {label}
@@ -400,7 +400,7 @@ export default function AdminRevenuePage() {
 
             <div className="bg-white border border-stone-200 p-4 flex flex-wrap items-end gap-3">
               <label className="block">
-                <span className="block text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1.5">From</span>
+                <span className="block text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1.5">From</span>
                 <input
                   type="date"
                   value={range.from}
@@ -409,7 +409,7 @@ export default function AdminRevenuePage() {
                 />
               </label>
               <label className="block">
-                <span className="block text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1.5">To</span>
+                <span className="block text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1.5">To</span>
                 <input
                   type="date"
                   value={range.to}
@@ -421,12 +421,12 @@ export default function AdminRevenuePage() {
                 <button
                   type="button"
                   onClick={() => setRange({ ...OPEN_RANGE })}
-                  className="text-[9px] tracking-[0.18em] uppercase text-stone-400 border border-stone-200 px-4 py-2.5 hover:text-gold-700 hover:border-gold-300 transition-colors"
+                  className="text-[9px] tracking-[0.18em] uppercase text-stone-500 border border-stone-200 px-4 py-2.5 hover:text-gold-700 hover:border-gold-300 transition-colors"
                 >
                   Clear dates
                 </button>
               )}
-              <p className="text-[10px] text-stone-400 basis-full sm:basis-auto sm:ml-auto">
+              <p className="text-[10px] text-stone-500 basis-full sm:basis-auto sm:ml-auto">
                 Both dates are counted in full.
               </p>
             </div>
@@ -462,7 +462,7 @@ export default function AdminRevenuePage() {
               { label: 'Avg Order Value', value: `£${avgOrderValue.toFixed(2)}` },
             ] as { label: string; value: string }[]).map(({ label, value }) => (
               <div key={label} className="bg-white border border-stone-200 p-5">
-                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-2">{label}</div>
+                <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
                 <div className="text-2xl font-semibold text-stone-800">{loading ? '-' : value}</div>
               </div>
             ))}
@@ -470,10 +470,10 @@ export default function AdminRevenuePage() {
 
           {/* Chart */}
           <div className="bg-white border border-stone-200 p-6 mb-8">
-            <div className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-5">Cumulative Revenue</div>
+            <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-5">Cumulative Revenue</div>
             {loading ? (
               <div className="flex items-center justify-center" style={{ height: 300 }}>
-                <p className="text-xs text-stone-400">Loading chart...</p>
+                <p className="text-xs text-stone-500">Loading chart...</p>
               </div>
             ) : (
               <RevenueChart orders={revenueOrders} rangeEnd={chartEnd} />
@@ -485,21 +485,21 @@ export default function AdminRevenuePage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-stone-100 bg-stone-50">
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Order</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Date</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Customer</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Amount</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Status</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Order</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Date</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Customer</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Amount</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="text-center text-xs text-stone-400 py-10">Loading...</td>
+                    <td colSpan={5} className="text-center text-xs text-stone-500 py-10">Loading...</td>
                   </tr>
                 ) : tableOrders.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center text-xs text-stone-400 py-10">
+                    <td colSpan={5} className="text-center text-xs text-stone-500 py-10">
                       {backwards
                         ? 'Those two dates are the wrong way round.'
                         : 'No paid orders in this period.'}
@@ -514,7 +514,7 @@ export default function AdminRevenuePage() {
                     <td className="px-4 py-3 text-xs text-stone-500">{formatDate(order.createdAt)}</td>
                     <td className="px-4 py-3">
                       <div className="text-xs text-stone-700">{order.customerName}</div>
-                      <div className="text-[9px] text-stone-400">{order.email}</div>
+                      <div className="text-[9px] text-stone-500">{order.email}</div>
                     </td>
                     <td className="px-4 py-3 text-xs font-semibold text-gold-700">
                       &pound;{order.total.toFixed(2)}
@@ -522,7 +522,7 @@ export default function AdminRevenuePage() {
                     <td className="px-4 py-3">
                       <span
                         className={`text-[8px] tracking-wider uppercase px-2 py-0.5 ${
-                          STATUS_STYLES[order.status] ?? 'bg-stone-50 text-stone-400'
+                          STATUS_STYLES[order.status] ?? 'bg-stone-50 text-stone-500'
                         }`}
                       >
                         {STATUS_LABELS[order.status] ?? order.status}

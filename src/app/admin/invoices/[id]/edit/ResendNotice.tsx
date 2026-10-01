@@ -31,7 +31,7 @@ export default function ResendNotice({
           new Date(invoice.edit_log[invoice.edit_log.length - 1].at).getTime() > new Date(invoice.sent_at).getTime() && (
             <div className="bg-red-50 border border-red-200 text-red-800 text-xs px-4 py-3 mb-4 font-medium">
               This invoice was edited after it was last sent. The customer&rsquo;s email still has the old
-              payment link and amount — click{' '}
+              payment link and amount - click{' '}
               <strong>{automationFlags.sendPaymentLink ? 'Resend Payment Link' : 'Resend Invoice'}</strong> below to
               send them the current total.
             </div>
@@ -39,11 +39,11 @@ export default function ResendNotice({
 
         {invoice.edit_log.length > 0 && (
           <div className="bg-stone-50 border border-stone-200 px-4 py-3 mb-6 text-xs text-stone-500">
-            <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">Edit History</p>
+            <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">Edit History</p>
             <ul className="space-y-1">
               {invoice.edit_log.map((entry, i) => (
                 <li key={i}>
-                  <span className="text-stone-400">{new Date(entry.at).toLocaleString('en-GB', { timeZone: 'Europe/London' })}</span> — {entry.summary}
+                  <span className="text-stone-500">{new Date(entry.at).toLocaleString('en-GB', { timeZone: 'Europe/London' })}</span> - {entry.summary}
                 </li>
               ))}
             </ul>
@@ -52,7 +52,7 @@ export default function ResendNotice({
 
         {invoice.status === 'paid' && !adjusting && (
           <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs px-4 py-3 mb-6">
-            This invoice is paid — line items, shipping, and discount are locked. To correct a financial mistake,
+            This invoice is paid - line items, shipping, and discount are locked. To correct a financial mistake,
             use the override below (the change will be logged on this invoice).
             <button
               onClick={() => setAdjusting(true)}

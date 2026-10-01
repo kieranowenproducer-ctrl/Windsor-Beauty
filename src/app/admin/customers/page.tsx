@@ -619,10 +619,10 @@ export default function AdminCustomersPage() {
           <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-0.5">Customers</h1>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 {dbConfigured
                   ? `${customers.length} account${customers.length === 1 ? '' : 's'} registered, ${marketingCount} subscribed to marketing emails.`
-                  : 'Database not connected — customer accounts cannot be created yet.'}
+                  : 'Database not connected - customer accounts cannot be created yet.'}
               </p>
             </div>
             {/* Wraps on a phone (task 1fb77058). Two wide buttons side by side

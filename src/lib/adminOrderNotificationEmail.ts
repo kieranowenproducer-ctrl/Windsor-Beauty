@@ -22,11 +22,11 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
   bank_transfer: 'Bank Transfer',
 };
 
-// 'confirmed' — Fena's signed webhook/redirect-confirm verified payment itself.
-// 'awaiting_verification' — the order was just placed via a method with no
+// 'confirmed' , Fena's signed webhook/redirect-confirm verified payment itself.
+// 'awaiting_verification' , the order was just placed via a method with no
 //   automatic verification (PayPal today); staff need to go check and then
 //   mark it paid in admin.
-// 'paid_manually' — staff already checked and clicked Mark as Paid; nothing
+// 'paid_manually' , staff already checked and clicked Mark as Paid; nothing
 //   further to do.
 export type AdminOrderPaymentStatus = 'confirmed' | 'awaiting_verification' | 'paid_manually';
 
@@ -66,7 +66,7 @@ export interface AdminOrderNotificationParams {
   subtotal: number;
   discountCode?: string | null;
   discountAmount?: number;
-  // Automatic promotion / site-sale money off (orders.rule_discount_amount) —
+  // Automatic promotion / site-sale money off (orders.rule_discount_amount) ,
   // shown as its own line so the visible sums always reconcile to the total.
   ruleDiscountAmount?: number;
   shippingLabel: string;
@@ -78,17 +78,17 @@ export interface AdminOrderNotificationParams {
   paymentStatus: AdminOrderPaymentStatus;
   createdAt: string;
   // Set by the Fena webhook when its signed payload's reported amount
-  // doesn't match this order's total — surfaced as a prominent warning so a
+  // doesn't match this order's total , surfaced as a prominent warning so a
   // mismatch (like the 2026-06-29 incident) is caught immediately instead of
   // relying on someone noticing a bank statement later.
   amountMismatchNote?: string | null;
 }
 
 // Internal "new order" notification sent to sales@windsorbeauty.co.uk once payment
-// is confirmed — mirrors sendOrderConfirmationEmail's layout but adds the
+// is confirmed , mirrors sendOrderConfirmationEmail's layout but adds the
 // operational details staff need (phone, payment method, full order value
 // breakdown, timestamp) that the customer-facing email omits.
-// Pure message builder — exported so the rendered output can be inspected and
+// Pure message builder , exported so the rendered output can be inspected and
 // tested without sending anything.
 export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationParams): { subject: string; text: string; html: string } {
   const visibleItems = displayOrderItems(params.items);
@@ -107,7 +107,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
   `).join('');
 
   // A discount with no code (invoice manual discount, first-order 10%) must
-  // still appear in writing — condition on the amount alone.
+  // still appear in writing , condition on the amount alone.
   const discountRow = Number(params.discountAmount) > 0 ? `
     <tr>
       <td colspan="2" style="padding:6px 0;font-size:12px;color:#a8a29e">Discount${params.discountCode ? ` (${escapeHtml(params.discountCode)})` : ''}</td>
@@ -146,7 +146,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">${escapeHtml(params.customerName)}</h1>
 
             ${params.amountMismatchNote ? `
-            <!-- Amount mismatch warning — Fena's reported charge didn't match this order's total -->
+            <!-- Amount mismatch warning , Fena's reported charge didn't match this order's total -->
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:20px">
               <tr>
                 <td style="border:1px solid #fca5a5;background:#fef2f2;padding:12px 16px;font-size:12px;color:#991b1b;line-height:1.5;font-weight:bold">
@@ -156,7 +156,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
             </table>
             ` : ''}
 
-            <!-- Action note — what (if anything) staff need to do, in plain language -->
+            <!-- Action note , what (if anything) staff need to do, in plain language -->
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:20px">
               <tr>
                 <td style="border-left:3px solid #A9695D;background:#fefce8;padding:10px 16px;font-size:12px;color:#57534e;line-height:1.5">

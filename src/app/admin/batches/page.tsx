@@ -143,7 +143,7 @@ export default function AdminBatchesPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-4xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Batches</h1>
-          <p className="text-xs text-stone-400 mb-8 leading-relaxed">
+          <p className="text-xs text-stone-500 mb-8 leading-relaxed">
             Define the batch identifying codes you use. Once a code is here, you can allocate it to each
             product on an invoice, so every customer can be shown which verified batch their product came from.
           </p>
@@ -167,7 +167,7 @@ export default function AdminBatchesPage() {
             <h2 className="text-sm font-semibold text-stone-800 mb-4">Add a Batch Code</h2>
             <form onSubmit={addBatch} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <label className="flex flex-col gap-1.5">
-                <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Batch code</span>
+                <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Batch code</span>
                 <input
                   type="text"
                   value={code}
@@ -177,7 +177,7 @@ export default function AdminBatchesPage() {
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Product (optional)</span>
+                <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Product (optional)</span>
                 <input
                   type="text"
                   value={productName}
@@ -188,7 +188,7 @@ export default function AdminBatchesPage() {
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[9px] tracking-[0.1em] uppercase text-stone-400">Note (optional)</span>
+                <span className="text-[9px] tracking-[0.1em] uppercase text-stone-500">Note (optional)</span>
                 <input
                   type="text"
                   value={note}
@@ -219,7 +219,7 @@ export default function AdminBatchesPage() {
                   Your Batches {batches ? `(${batches.length})` : ''}
                 </h2>
                 {batches && (
-                  <p className="text-[10px] text-stone-400 mt-0.5">{activeCount} active</p>
+                  <p className="text-[10px] text-stone-500 mt-0.5">{activeCount} active</p>
                 )}
               </div>
               <button onClick={load} className="text-[10px] tracking-[0.15em] uppercase text-gold-700 hover:text-gold-700 transition-colors">
@@ -229,7 +229,7 @@ export default function AdminBatchesPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 border-b border-stone-100">
+                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 border-b border-stone-100">
                     <th className="px-6 py-3">Code</th>
                     <th className="px-6 py-3">Product</th>
                     <th className="px-6 py-3">Note</th>
@@ -240,7 +240,7 @@ export default function AdminBatchesPage() {
                 <tbody>
                   {batches && batches.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="px-6 py-8 text-center text-stone-400">
+                      <td colSpan={5} className="px-6 py-8 text-center text-stone-500">
                         No batches yet. Add your first batch code above.
                       </td>
                     </tr>
@@ -276,7 +276,7 @@ export default function AdminBatchesPage() {
                               {editSaving ? 'Saving…' : 'Save'}
                             </button>
                             <button onClick={cancelEdit}
-                              className="ml-3 text-[10px] tracking-[0.12em] uppercase text-stone-400 hover:text-stone-600 transition-colors">
+                              className="ml-3 text-[10px] tracking-[0.12em] uppercase text-stone-500 hover:text-stone-600 transition-colors">
                               Cancel
                             </button>
                             {editError && <p className="text-[10px] text-red-600 mt-1 normal-case tracking-normal">{editError}</p>}
@@ -287,19 +287,19 @@ export default function AdminBatchesPage() {
                     return (
                       <tr key={row.id} className="border-b border-stone-50">
                         <td className="px-6 py-3 font-mono text-stone-700">{row.code}</td>
-                        <td className="px-6 py-3 text-stone-600">{row.product_name || '—'}</td>
-                        <td className="px-6 py-3 text-stone-500">{row.note || '—'}</td>
+                        <td className="px-6 py-3 text-stone-600">{row.product_name || '-'}</td>
+                        <td className="px-6 py-3 text-stone-500">{row.note || '-'}</td>
                         <td className="px-6 py-3">{statusBadge}</td>
                         <td className="px-6 py-3 text-right whitespace-nowrap">
                           <button
                             onClick={() => startEdit(row)}
-                            className="text-[10px] tracking-[0.12em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                            className="text-[10px] tracking-[0.12em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => toggleActive(row)}
-                            className="ml-3 text-[10px] tracking-[0.12em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                            className="ml-3 text-[10px] tracking-[0.12em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
                           >
                             {row.active ? 'Retire' : 'Reactivate'}
                           </button>

@@ -80,7 +80,7 @@ export default function InvoiceTotals({
             <div className="flex justify-between text-sm font-semibold text-stone-800 border-t border-stone-200 pt-1.5 mt-1.5">
               <span>Total Due</span><span>£{total.toFixed(2)}</span>
             </div>
-            <p className="text-[10px] text-stone-400 pt-1">No VAT is applied to invoices.</p>
+            <p className="text-[10px] text-stone-500 pt-1">No VAT is applied to invoices.</p>
           </div>
         </div>
     </>

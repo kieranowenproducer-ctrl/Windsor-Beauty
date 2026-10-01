@@ -97,7 +97,7 @@ export default function CustomerDetailPanel({
                           >
                             {deleting ? 'Deleting…' : 'Delete this customer'}
                           </button>
-                          <p className="text-[9px] text-stone-400 mt-1.5 leading-relaxed">
+                          <p className="text-[9px] text-stone-500 mt-1.5 leading-relaxed">
                             Removes them for good. Past orders are kept. There is no undo.
                           </p>
                         </div>
@@ -119,10 +119,10 @@ export default function CustomerDetailPanel({
                         </button>
                       </p>
                     )}
-                    <p className="text-stone-400">Member since {formatDate(selected.createdAt)}</p>
+                    <p className="text-stone-500">Member since {formatDate(selected.createdAt)}</p>
                   </div>
                   <div>
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Contact</p>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Contact</p>
                     <p className="text-stone-600">
                       <CustomerEmailButton email={selected.email} customerName={customerDisplayName(selected)} />
                     </p>
@@ -130,7 +130,7 @@ export default function CustomerDetailPanel({
                   </div>
                   {/* QR campaign origin — permanent first-touch attribution */}
                   <div className="border border-stone-100 p-3">
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-2">Original Source</p>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">Original Source</p>
                     {selected.qrCampaignName ? (
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ export default function CustomerDetailPanel({
                           <p className="text-xs font-semibold text-stone-700">{selected.qrCampaignName}</p>
                         </div>
                         {selected.qrCampaignType && (
-                          <p className="text-[9px] text-stone-400 uppercase tracking-wider ml-4">{selected.qrCampaignType}</p>
+                          <p className="text-[9px] text-stone-500 uppercase tracking-wider ml-4">{selected.qrCampaignType}</p>
                         )}
                         {selected.qrPartnerName && (
                           <p className="text-[9px] text-stone-500 ml-4">{selected.qrPartnerName}</p>
@@ -150,11 +150,11 @@ export default function CustomerDetailPanel({
                     ) : (
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-stone-200 shrink-0" />
-                        <p className="text-[10px] text-stone-400">Direct / No QR campaign</p>
+                        <p className="text-[10px] text-stone-500">Direct / No QR campaign</p>
                       </div>
                     )}
                     {selected.referredBy && (
-                      <p className="text-[9px] text-stone-400 mt-2 pt-2 border-t border-stone-50">
+                      <p className="text-[9px] text-stone-500 mt-2 pt-2 border-t border-stone-50">
                         How they heard about us: {selected.referredBy}
                       </p>
                     )}
@@ -167,7 +167,7 @@ export default function CustomerDetailPanel({
 
                   {/* Membership address, collected at registration */}
                   <div className="border border-stone-100 p-3">
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-2">Address</p>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">Address</p>
                     {selected.addressLine1 ? (
                       <div className="text-[10px] text-stone-600 leading-relaxed">
                         <p>{selected.addressLine1}</p>
@@ -183,7 +183,7 @@ export default function CustomerDetailPanel({
                   {/* Email verification, directly above the discount it unlocks, because the two
                       questions always get asked together on a call. */}
                   <div>
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Email Verification</p>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Email Verification</p>
                     {selected.emailVerified ? (
                       <span className="inline-block text-[8px] tracking-wider uppercase px-2 py-0.5 bg-green-50 text-green-600">
                         Verified
@@ -203,7 +203,7 @@ export default function CustomerDetailPanel({
                             {resendingVerification ? 'Sending' : 'Resend verification email'}
                           </button>
                         </div>
-                        <p className="text-[10px] text-stone-400 mt-1.5 leading-relaxed">
+                        <p className="text-[10px] text-stone-500 mt-1.5 leading-relaxed">
                           Resending also creates their 10% code and puts it in the email, so they get it even if they never click the link.
                         </p>
                         {resendVerificationResult && (
@@ -216,12 +216,12 @@ export default function CustomerDetailPanel({
                   </div>
 
                   <div>
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">10% Member Discount</p>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">10% Member Discount</p>
                     {selected.discountCode ? (
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <p className="font-mono text-xs text-gold-700">{selected.discountCode}</p>
-                          <span className={`inline-block text-[8px] tracking-wider uppercase px-2 py-0.5 ${selected.discountCodeStatus === 'used' ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-400'}`}>
+                          <span className={`inline-block text-[8px] tracking-wider uppercase px-2 py-0.5 ${selected.discountCodeStatus === 'used' ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-500'}`}>
                             {selected.discountCodeStatus === 'used' ? 'Redeemed' : 'Unredeemed'}
                           </span>
                           <button
@@ -242,7 +242,7 @@ export default function CustomerDetailPanel({
                         )}
                       </div>
                     ) : (
-                      <span className="inline-block text-[8px] tracking-wider uppercase px-2 py-0.5 bg-stone-100 text-stone-400">
+                      <span className="inline-block text-[8px] tracking-wider uppercase px-2 py-0.5 bg-stone-100 text-stone-500">
                         Not issued
                       </span>
                     )}
@@ -273,24 +273,24 @@ export default function CustomerDetailPanel({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="border border-stone-100 p-3">
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Paid Orders</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Paid Orders</p>
                       <p className="text-base font-semibold text-stone-700">{selected.orderCount}</p>
                     </div>
                     <div className="border border-stone-100 p-3">
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Lifetime Spend</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Lifetime Spend</p>
                       <p className="text-base font-semibold text-gold-700">&pound;{selected.totalSpent.toFixed(2)}</p>
                     </div>
                   </div>
                   <div>
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Marketing Consent</p>
-                    <span className={`inline-block text-[8px] tracking-wider uppercase px-2 py-0.5 ${selected.marketingConsent ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-400'}`}>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Marketing Consent</p>
+                    <span className={`inline-block text-[8px] tracking-wider uppercase px-2 py-0.5 ${selected.marketingConsent ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-500'}`}>
                       {selected.marketingConsent ? 'Opted in' : 'Not opted in'}
                     </span>
                   </div>
 
                   {/* Order history */}
                   <div className="border-t border-stone-100 pt-3">
-                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-2">Orders and Payment Attempts</p>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">Orders and Payment Attempts</p>
                     {loadingOrders ? (
                       <p className="text-[10px] text-stone-300">Loading…</p>
                     ) : customerOrders.length === 0 ? (
@@ -301,7 +301,7 @@ export default function CustomerDetailPanel({
                           <div key={o.order_number} className="flex items-center justify-between gap-2 py-1.5 border-b border-stone-50">
                             <div>
                               <p className="font-mono text-[10px] text-stone-600">{o.order_number}</p>
-                              <p className="text-[9px] text-stone-400">{formatDate(o.created_at)}</p>
+                              <p className="text-[9px] text-stone-500">{formatDate(o.created_at)}</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <span className="text-[10px] font-semibold text-gold-700">&pound;{Number(o.total).toFixed(2)}</span>

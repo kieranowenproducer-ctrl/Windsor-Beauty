@@ -124,7 +124,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ hand
       override,
       invalidHandles,
       truncated,
-      ...(truncated ? { truncatedMessage: `Only the first ${MAX_MANUAL_UPSELLS} products were saved — at most ${MAX_MANUAL_UPSELLS} ever display.` } : {}),
+      ...(truncated ? { truncatedMessage: `Only the first ${MAX_MANUAL_UPSELLS} products were saved - at most ${MAX_MANUAL_UPSELLS} ever display.` } : {}),
     });
   } catch (err) {
     return NextResponse.json(

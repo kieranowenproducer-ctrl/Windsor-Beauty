@@ -33,7 +33,7 @@ export default function SentEmailViewer({ subject, html, text, onClose }: Props)
       >
         <div className="px-5 py-4 border-b border-stone-100 flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">
+            <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">
               The email as the customer received it
             </p>
             <p className="text-sm font-semibold text-stone-800 break-words">{subject || '(no subject)'}</p>

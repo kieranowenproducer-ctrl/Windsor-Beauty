@@ -5,7 +5,7 @@ import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in passwordResetEmail/membershipWelcomeEmail.
 const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
-// A monitored inbox — a transactional sender with no working reply path is a
+// A monitored inbox , a transactional sender with no working reply path is a
 // negative engagement signal to Gmail/Outlook and strands confused customers.
 const REPLY_TO = 'sales@windsorbeauty.co.uk';
 
@@ -18,8 +18,8 @@ interface VerifyEmailParams {
   customerName: string;
   verifyUrl: string;
   /**
-   * 'initial'  — sent at signup.
-   * 'reminder' — the single automatic follow-up for accounts still
+   * 'initial'  , sent at signup.
+   * 'reminder' , the single automatic follow-up for accounts still
    *              unverified after the first window (see
    *              /api/cron/verification-reminders). Different subject +
    *              copy so it reads as a deliberate final notice, and so the
@@ -41,15 +41,31 @@ interface VerifyEmailParams {
 // Sent at signup (both /account/register and the Coming Soon
 // /api/launch/subscribe) and again once by the reminder cron. The 10%
 // discount code is deliberately NOT included anywhere until the link below
-// is clicked — see /api/account/verify-email for where the code is issued.
+// is clicked , see /api/account/verify-email for where the code is issued.
 //
 // Deliverability notes (audit 2026-07-07): subject deliberately avoids
-// promo-scented wording ("claim", "10%", "code") — the discount is explained
+// promo-scented wording ("claim", "10%", "code") , the discount is explained
 // in the body instead; a plain-text part is always included; reply-to points
-// at a monitored inbox. Domain-level auth (SPF/DKIM/DMARC) is DNS-side —
+// at a monitored inbox. Domain-level auth (SPF/DKIM/DMARC) is DNS-side ,
 // see the audit report for the records.
 export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false;
+
+  try {
+    const { error } = await sendEmail(buildVerifyEmail(params));
+
+    if (error) {
+      console.error('Resend error (verify email):', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('Resend send threw (verify email):', err);
+    return false;
+  }
+}
+
+export function buildVerifyEmail(params: VerifyEmailParams) {
 
   const hours = EMAIL_VERIFICATION_TOKEN_HOURS;
   const isReminder = params.variant === 'reminder';
@@ -81,8 +97,8 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
     ? `This is the last automatic reminder we will send. You can also request a new link at any time by logging in at windsorbeauty.co.uk/account.`
     : '';
 
-  try {
-    const { error } = await sendEmail({
+
+  return {
       from: FROM_ADDRESS,
       to: params.to,
       replyTo: REPLY_TO,
@@ -113,7 +129,7 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
             </table>
             <p style="margin:0 0 24px;">${escapeHtml(codeVerifyLine)}</p>` : ''}
             <p style="margin:0 0 24px;">
-              <a href="${params.verifyUrl}" style="display:inline-block;background:#A9695D;color:#ffffff;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:12px 28px;text-decoration:none;">Verify Email Address</a>
+              <a href="${escapeHtml(params.verifyUrl)}" style="display:inline-block;background:#A9695D;color:#ffffff;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;padding:12px 28px;text-decoration:none;">Verify Email Address</a>
             </p>
             <p style="margin:0 0 16px;"><strong>${escapeHtml(expiryLine)}</strong></p>
             <p style="margin:0 0 16px;font-size:12px;color:#78716c;">${escapeHtml(spamLine)}</p>
@@ -122,15 +138,5 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
           </td>
         </tr>`,
       }),
-    });
-
-    if (error) {
-      console.error('Resend error (verify email):', error);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error('Resend send threw (verify email):', err);
-    return false;
-  }
+    };
 }

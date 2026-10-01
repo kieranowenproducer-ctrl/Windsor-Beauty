@@ -265,7 +265,7 @@ export default function QrCampaignsPage() {
           <div className="mb-5 flex items-start justify-between gap-4">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-0.5">QR Campaign Tracking</h1>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 Create campaigns, distribute QR codes, and track scans, orders and revenue by location.
               </p>
             </div>
@@ -293,7 +293,7 @@ export default function QrCampaignsPage() {
                 className={`text-[9px] tracking-[0.18em] uppercase px-5 py-3 border-b-2 transition-colors ${
                   activeTab === tab.id
                     ? 'border-gold-500 text-gold-700 font-semibold'
-                    : 'border-transparent text-stone-400 hover:text-stone-600'
+                    : 'border-transparent text-stone-500 hover:text-stone-600'
                 }`}
               >
                 {tab.label}

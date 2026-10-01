@@ -37,13 +37,13 @@ export default function CsvImportPanel({
 
             <div className="bg-gold-50/40 border border-gold-100 px-4 py-3 mb-4 text-xs text-stone-600 leading-relaxed">
               For bulk setup across many products at once. Manually-configured products (above) are never
-              affected by an import — their override always takes priority over whatever a CSV says.
+              affected by an import - their override always takes priority over whatever a CSV says.
             </div>
 
             <div className="text-xs text-stone-500 mb-4 leading-relaxed">
               <p className="mb-2">Required columns: <code className="bg-stone-100 px-1.5 py-0.5">trigger_product_handle</code>, <code className="bg-stone-100 px-1.5 py-0.5">upsell_product_handle</code>, <code className="bg-stone-100 px-1.5 py-0.5">priority</code>, <code className="bg-stone-100 px-1.5 py-0.5">active</code>.</p>
               <p className="mb-2">Optional columns: <code className="bg-stone-100 px-1.5 py-0.5">custom_message</code>, <code className="bg-stone-100 px-1.5 py-0.5">start_date</code>, <code className="bg-stone-100 px-1.5 py-0.5">end_date</code> (YYYY-MM-DD, reserved for future seasonal/temporary upsells).</p>
-              <p>Handles are product slugs (the part of the product&apos;s URL after <code className="bg-stone-100 px-1.5 py-0.5">/shop/</code>) — names change, handles don&apos;t, so they&apos;re the reliable key. Lower <code className="bg-stone-100 px-1.5 py-0.5">priority</code> numbers display first. <code className="bg-stone-100 px-1.5 py-0.5">active</code> accepts TRUE/FALSE.</p>
+              <p>Handles are product slugs (the part of the product&apos;s URL after <code className="bg-stone-100 px-1.5 py-0.5">/shop/</code>) - names change, handles don&apos;t, so they&apos;re the reliable key. Lower <code className="bg-stone-100 px-1.5 py-0.5">priority</code> numbers display first. <code className="bg-stone-100 px-1.5 py-0.5">active</code> accepts TRUE/FALSE.</p>
             </div>
 
             <div className="flex items-center gap-5 mb-5 flex-wrap">
@@ -66,10 +66,10 @@ export default function CsvImportPanel({
                 Append to existing rules
               </label>
             </div>
-            <p className="text-[10px] text-stone-400 mb-4 leading-relaxed">
+            <p className="text-[10px] text-stone-500 mb-4 leading-relaxed">
               {mode === 'replace'
-                ? 'Replace fully swaps the CSV rule set — every rule from this file becomes the new active set. Existing CSV rules are only removed once the new file has imported successfully. Manual overrides are never touched by this.'
-                : 'Append merges into the existing CSV rule set — a relationship already in this file updates in place, anything new is added, and rules not mentioned in this file are left untouched. Manual overrides are never touched by this.'}
+                ? 'Replace fully swaps the CSV rule set - every rule from this file becomes the new active set. Existing CSV rules are only removed once the new file has imported successfully. Manual overrides are never touched by this.'
+                : 'Append merges into the existing CSV rule set - a relationship already in this file updates in place, anything new is added, and rules not mentioned in this file are left untouched. Manual overrides are never touched by this.'}
             </p>
 
             <div
@@ -127,7 +127,7 @@ export default function CsvImportPanel({
 
             {preview?.preview && (
               <div className="mt-5 border border-stone-200 bg-stone-50 px-4 py-4 text-xs">
-                <p className="text-stone-700 font-semibold mb-2">Import Preview — nothing has been saved yet</p>
+                <p className="text-stone-700 font-semibold mb-2">Import Preview - nothing has been saved yet</p>
                 <ul className="text-stone-500 space-y-0.5 mb-4">
                   <li>Total rows in file: <span className="font-medium text-stone-700">{preview.totalRows}</span></li>
                   <li>Valid rules ready to import: <span className="font-medium text-green-700">{preview.validRows}</span></li>
@@ -141,10 +141,10 @@ export default function CsvImportPanel({
                     <ul className="space-y-1 max-h-48 overflow-y-auto pr-1">
                       {preview.rules.map((r, i) => (
                         <li key={i} className="text-stone-500">
-                          <span className="text-stone-400">Row {r.row}:</span> {r.triggerName} <span className="text-gold-700">&rarr;</span> {r.upsellName}
-                          {' '}<span className="text-stone-400">(priority {r.priority}{!r.active ? ', inactive' : ''})</span>
+                          <span className="text-stone-500">Row {r.row}:</span> {r.triggerName} <span className="text-gold-700">&rarr;</span> {r.upsellName}
+                          {' '}<span className="text-stone-500">(priority {r.priority}{!r.active ? ', inactive' : ''})</span>
                           {manualOverrideMap.has(r.triggerHandle) && (
-                            <span className="ml-2 px-1.5 py-0.5 text-[8px] tracking-wider uppercase bg-gold-100 text-gold-700">Manual override active — won&apos;t take effect</span>
+                            <span className="ml-2 px-1.5 py-0.5 text-[8px] tracking-wider uppercase bg-gold-100 text-gold-700">Manual override active - won&apos;t take effect</span>
                           )}
                         </li>
                       ))}
@@ -197,7 +197,7 @@ export default function CsvImportPanel({
                     <ul className="space-y-1 max-h-32 overflow-y-auto pr-1">
                       {preview.errors.filter(e => !e.kind).map((e, i) => (
                         <li key={i} className="text-stone-500">
-                          <span className="text-stone-400">Row {e.row}:</span> {e.reason}
+                          <span className="text-stone-500">Row {e.row}:</span> {e.reason}
                         </li>
                       ))}
                     </ul>
@@ -217,7 +217,7 @@ export default function CsvImportPanel({
                     type="button"
                     onClick={() => setPreview(null)}
                     disabled={importing}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -236,7 +236,7 @@ export default function CsvImportPanel({
                       <li>Total rules imported: <span className="font-medium text-stone-700">{importResult.summary?.totalRules ?? importResult.imported}</span></li>
                       <li>Total products referenced: <span className="font-medium text-stone-700">{importResult.summary?.totalProducts}</span></li>
                       <li>Total errors: <span className="font-medium text-stone-700">{importResult.summary?.totalErrors ?? importResult.errors?.length ?? 0}</span></li>
-                      <li>Imported at: <span className="font-medium text-stone-700">{importResult.summary?.at ? new Date(importResult.summary.at).toLocaleString('en-GB') : '—'}</span></li>
+                      <li>Imported at: <span className="font-medium text-stone-700">{importResult.summary?.at ? new Date(importResult.summary.at).toLocaleString('en-GB') : '-'}</span></li>
                     </ul>
                   </div>
                 )}
@@ -246,7 +246,7 @@ export default function CsvImportPanel({
                     <ul className="space-y-1 max-h-48 overflow-y-auto pr-1">
                       {importResult.errors.map((e, i) => (
                         <li key={i} className="text-stone-500">
-                          {e.row > 0 ? <span className="text-stone-400">Row {e.row}:</span> : null} {e.reason}
+                          {e.row > 0 ? <span className="text-stone-500">Row {e.row}:</span> : null} {e.reason}
                         </li>
                       ))}
                     </ul>

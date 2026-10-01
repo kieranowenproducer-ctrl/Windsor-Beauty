@@ -277,7 +277,7 @@ export function AdminAffiliates({ forcePreview = false }: { forcePreview?: boole
                         ? <p className="mt-2 text-xs text-stone-500">No invitations yet.</p>
                         : <ul className="mt-2 space-y-2 text-xs text-stone-700">
                           {(data?.invitations || []).filter(row => Number(row.affiliate_customer_id) === Number(p.customer_id)).map(row => <li key={String(row.id)} className="flex flex-wrap items-center justify-between gap-2 border border-stone-100 px-3 py-2">
-                            <span className="min-w-0 break-all">{String(row.recipient_email)}<span className="ml-2 text-stone-400">{row.created_source === 'recipient' ? 'asked on the request page' : row.created_source === 'staff' ? 'made by staff' : 'sent by the affiliate'}, {date(row.created_at)}</span></span>
+                            <span className="min-w-0 break-all">{String(row.recipient_email)}<span className="ml-2 text-stone-500">{row.created_source === 'recipient' ? 'asked on the request page' : row.created_source === 'staff' ? 'made by staff' : 'sent by the affiliate'}, {date(row.created_at)}</span></span>
                             <span className={`shrink-0 px-2 py-0.5 text-[10px] font-semibold ${INVITATION_STATE_TONE[String(row.state)] || 'bg-stone-100 text-stone-700'}`}>{INVITATION_STATE_LABEL[String(row.state)] || String(row.state)}</span>
                           </li>)}
                         </ul>}

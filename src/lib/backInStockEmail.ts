@@ -20,34 +20,7 @@ async function sendBackInStockEmail(params: BackInStockEmailParams): Promise<boo
   if (!process.env.RESEND_API_KEY) return false;
 
   try {
-    const { error } = await sendEmail({
-      from: FROM_ADDRESS,
-      // Replies reach a person. A customer answering an order or payment email was
-      // writing into a void, and a From address that refuses replies is a pattern spam
-      // filters associate with phishing (invoice junk-folder diagnosis, 31 July 2026).
-      replyTo: SUPPORT_REPLY_TO,
-      to: params.to,
-      subject: `${params.productName} is back in stock`,
-      text:
-        `Good news. ${params.productName} is back in stock at Windsor Beauty.\n\n` +
-        `Order now: ${params.productUrl}\n\n` +
-        `Thanks,\nWindsor Beauty`,
-      html: emailDocument({
-        title: `${params.productName} is back in stock`,
-        headerLabel: 'Back In Stock',
-        bodyHtml: `
-        <!-- Body -->
-        <tr>
-          <td style="padding:40px;font-size:14px;color:#44403c;line-height:1.6">
-            <p style="margin:0 0 16px;">Good news. <strong>${escapeHtml(params.productName)}</strong> is back in stock at Windsor Beauty.</p>
-            <p style="margin:0 0 16px;">
-              <a href="${params.productUrl}" style="color:#A9695D;">Order now &rarr;</a>
-            </p>
-            <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
-          </td>
-        </tr>`,
-      }),
-    });
+    const { error } = await sendEmail(buildBackInStockEmail(params));
 
     if (error) {
       console.error('Resend error (back in stock):', error);
@@ -63,7 +36,7 @@ async function sendBackInStockEmail(params: BackInStockEmailParams): Promise<boo
 // Called the moment an admin restocks a product from zero to a positive
 // quantity (see POST /api/admin/products/stock). Sends every customer
 // waiting on this slug their alert, then marks only the ones that actually
-// sent as notified — a transient Resend failure leaves a row pending so the
+// sent as notified , a transient Resend failure leaves a row pending so the
 // next restock (or a retry) picks it up again instead of silently dropping it.
 export async function notifyBackInStock(productSlug: string): Promise<void> {
   const pending = await listPendingStockAlerts(productSlug);
@@ -96,4 +69,37 @@ export async function notifyBackInStock(productSlug: string): Promise<void> {
   await markStockAlertsNotified(sentIds).catch(err =>
     logAutomationFailure('back_in_stock', 'Could not mark stock alerts as notified', { detail: err })
   );
+}
+
+export function buildBackInStockEmail(params: BackInStockEmailParams) {
+
+
+  return {
+      from: FROM_ADDRESS,
+      // Replies reach a person. A customer answering an order or payment email was
+      // writing into a void, and a From address that refuses replies is a pattern spam
+      // filters associate with phishing (invoice junk-folder diagnosis, 31 July 2026).
+      replyTo: SUPPORT_REPLY_TO,
+      to: params.to,
+      subject: `${params.productName} is back in stock`,
+      text:
+        `Good news. ${params.productName} is back in stock at Windsor Beauty.\n\n` +
+        `Order now: ${params.productUrl}\n\n` +
+        `Thanks,\nWindsor Beauty`,
+      html: emailDocument({
+        title: `${params.productName} is back in stock`,
+        headerLabel: 'Back In Stock',
+        bodyHtml: `
+        <!-- Body -->
+        <tr>
+          <td style="padding:40px;font-size:14px;color:#44403c;line-height:1.6">
+            <p style="margin:0 0 16px;">Good news. <strong>${escapeHtml(params.productName)}</strong> is back in stock at Windsor Beauty.</p>
+            <p style="margin:0 0 16px;">
+              <a href="${escapeHtml(params.productUrl)}" style="color:#A9695D;">Order now &rarr;</a>
+            </p>
+            <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
+          </td>
+        </tr>`,
+      }),
+    };
 }

@@ -19,7 +19,7 @@ export function slugify(value: string) {
 // The admin auth middleware returns a bare 401 with no body context when the
 // session cookie has expired — surfacing that raw "Unauthorized" string left
 // the admin with no idea what to do. This turns it into an actionable message.
-export const SESSION_EXPIRED_MESSAGE = 'Your admin session has expired. Please log in again in another tab, then retry — your changes here are preserved.';
+export const SESSION_EXPIRED_MESSAGE = 'Your admin session has expired. Please log in again in another tab, then retry - your changes here are preserved.';
 
 export interface AddProductForm {
   name: string;

@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
           <div className="font-serif text-2xl tracking-[0.08em] text-gold-700 font-bold">
             Windsor Beauty
           </div>
-          <div className="text-[8px] tracking-[0.3em] text-stone-400 uppercase mt-1">
+          <div className="text-[8px] tracking-[0.3em] text-stone-500 uppercase mt-1">
             Staff Portal
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-[9px] tracking-[0.2em] uppercase text-stone-400 mb-1.5">
+              <label className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">
                 Username
               </label>
               <input
@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
               />
             </div>
             <div>
-              <label className="block text-[9px] tracking-[0.2em] uppercase text-stone-400 mb-1.5">
+              <label className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">
                 Password
               </label>
               <input
@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
                 onChange={e => setRememberMe(e.target.checked)}
                 className="accent-gold-500"
               />
-              <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Stay signed in for 30 days</span>
+              <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Stay signed in for 30 days</span>
             </label>
 
             {error && (
@@ -101,14 +101,14 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gold-700 text-white text-[10px] tracking-[0.22em] uppercase py-3 hover:bg-gold-800 transition-colors disabled:bg-stone-200 disabled:text-stone-400"
+              className="w-full bg-gold-700 text-white text-[10px] tracking-[0.22em] uppercase py-3 hover:bg-gold-800 transition-colors disabled:bg-stone-200 disabled:text-stone-500"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-[9px] text-stone-400 mt-4">
+        <p className="text-center text-[9px] text-stone-500 mt-4">
           This area is restricted to authorised staff only.
         </p>
       </div>

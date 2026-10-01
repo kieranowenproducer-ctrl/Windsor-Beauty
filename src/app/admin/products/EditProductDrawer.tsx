@@ -187,11 +187,11 @@ export default function EditProductDrawer({
                 <div className="flex items-center justify-between px-6 py-5 border-b border-stone-200 shrink-0">
                   <div>
                     <h2 className="text-xs font-semibold text-stone-700 tracking-wide">Edit Product</h2>
-                    <p className="text-[9px] text-stone-400 mt-0.5">{editingProduct.name}</p>
+                    <p className="text-[9px] text-stone-500 mt-0.5">{editingProduct.name}</p>
                   </div>
                   <button
                     onClick={() => { setEditingId(null); setEditError(''); }}
-                    className="p-1.5 text-stone-400 hover:text-stone-700 transition-colors"
+                    className="p-1.5 text-stone-500 hover:text-stone-700 transition-colors"
                     aria-label="Close"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -215,7 +215,7 @@ export default function EditProductDrawer({
                       key={section.id}
                       type="button"
                       onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                      className="shrink-0 text-[9px] tracking-wider uppercase text-stone-400 hover:text-gold-700 transition-colors whitespace-nowrap"
+                      className="shrink-0 text-[9px] tracking-wider uppercase text-stone-500 hover:text-gold-700 transition-colors whitespace-nowrap"
                     >
                       {section.label}
                     </button>
@@ -225,7 +225,7 @@ export default function EditProductDrawer({
 
         <div id="edit-section-details" className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Name</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Name</label>
             <input
               value={editForm.name || ''}
               onChange={e => setEditForm(p => ({ ...p, name: e.target.value }))}
@@ -233,7 +233,7 @@ export default function EditProductDrawer({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Short Description</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Short Description</label>
             <input
               value={editForm.shortDescription || ''}
               onChange={e => setEditForm(p => ({ ...p, shortDescription: e.target.value }))}
@@ -241,7 +241,7 @@ export default function EditProductDrawer({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Purity badge (optional)</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Purity badge (optional)</label>
             <input
               value={editForm.purity || ''}
               onChange={e => setEditForm(p => ({ ...p, purity: e.target.value }))}
@@ -250,7 +250,7 @@ export default function EditProductDrawer({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Brand (optional)</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Brand (optional)</label>
             <input
               value={editForm.brand || ''}
               onChange={e => setEditForm(p => ({ ...p, brand: e.target.value }))}
@@ -261,14 +261,14 @@ export default function EditProductDrawer({
           {/* What Royal Mail and the payment provider are told this product is.
               Left blank, the product's own name is used (see genericNames.ts). */}
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Shipping description</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Shipping description</label>
             <input
               value={editForm.genericName || ''}
               onChange={e => setEditForm(p => ({ ...p, genericName: e.target.value }))}
               placeholder="Leave blank to use the product name"
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
             />
-            <p className="text-[9px] text-stone-400 mt-1 leading-snug">
+            <p className="text-[9px] text-stone-500 mt-1 leading-snug">
               What Royal Mail and the payment provider are told this product is. Leave it blank to send the product name.
               Customs descriptions are separate and unaffected.
               {!editForm.genericName?.trim() && editForm.slug && (
@@ -278,14 +278,14 @@ export default function EditProductDrawer({
                     &ldquo;{genericNameFor(editForm as Product, editForm.slug).name}&rdquo;
                   </strong>
                   {genericNameFor(editForm as Product, editForm.slug).source === 'default'
-                    ? ' — not unique. Type one, or leave blank and one is assigned on save.'
+                    ? ' - not unique. Type one, or leave blank and one is assigned on save.'
                     : ' from the standard list. Type here to override it.'}
                 </>
               )}
             </p>
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Availability</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Availability</label>
             <select
               value={visibilityChoiceFor(editForm.availability, editHidden)}
               onChange={e => {
@@ -304,14 +304,14 @@ export default function EditProductDrawer({
                 <option key={choice.value} value={choice.value}>{choice.label}</option>
               ))}
             </select>
-            <p className="text-[9px] text-stone-400 mt-1 leading-snug">
+            <p className="text-[9px] text-stone-500 mt-1 leading-snug">
               {editHidden
                 ? 'Hidden takes this product off the shop and every customer page when you press Save changes. Nothing is deleted, and picking Available puts it straight back.'
                 : 'Pick “Hidden (off the site)” to take this product off the shop and every customer page. Nothing is deleted.'}
             </p>
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Search Keywords (comma separated)</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Search Keywords (comma separated)</label>
             <input
               value={editKeywordsInput}
               onChange={e => setEditKeywordsInput(e.target.value)}
@@ -322,7 +322,7 @@ export default function EditProductDrawer({
         </div>
 
         <div id="edit-section-description" className="mb-3">
-          <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Full Description</label>
+          <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Full Description</label>
           <MarkdownLiteEditor
             value={editForm.fullDescription || ''}
             onChange={text => setEditForm(p => ({ ...p, fullDescription: text, fullDescriptionFormat: 'markdown' }))}
@@ -332,7 +332,7 @@ export default function EditProductDrawer({
         </div>
 
         <div id="edit-section-categories" className="mb-3">
-          <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Categories</label>
+          <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Categories</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 border border-stone-200 p-3">
             {allCategories.map(cat => (
               <label key={cat} className="flex items-center gap-1.5 text-xs text-stone-600">
@@ -373,10 +373,10 @@ export default function EditProductDrawer({
         </div>
 
         <div id="edit-section-specs" className="mb-3">
-          <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">
+          <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">
             Product Page Info (optional overrides)
           </label>
-          <p className="text-[10px] text-stone-400 mb-2 leading-relaxed">
+          <p className="text-[10px] text-stone-500 mb-2 leading-relaxed">
             Shown in the &ldquo;Product specs&rdquo; block on this product&apos;s page. Leave any field
             blank to use the standard wording shown as its placeholder.
           </p>
@@ -391,8 +391,8 @@ export default function EditProductDrawer({
               return (
                 <div key={row.key}>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400">{row.label}</label>
-                    <label className="flex items-center gap-1 text-[8px] tracking-widest uppercase text-stone-400 cursor-pointer">
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500">{row.label}</label>
+                    <label className="flex items-center gap-1 text-[8px] tracking-widest uppercase text-stone-500 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={!hidden}
@@ -413,7 +413,7 @@ export default function EditProductDrawer({
               );
             })}
           </div>
-          <p className="text-[10px] text-stone-400 mt-2 leading-relaxed">
+          <p className="text-[10px] text-stone-500 mt-2 leading-relaxed">
             Untick &ldquo;Show&rdquo; to remove that row from the &ldquo;Product specs&rdquo; block on this
             product&apos;s page entirely.
           </p>
@@ -457,7 +457,7 @@ export default function EditProductDrawer({
               ))}
               <p className="text-[10px] text-stone-500 leading-snug">{FORMAT_STANDARDS[certFormat].description}</p>
             </div>
-            <p className="text-[10px] text-stone-400 mt-2 leading-relaxed">
+            <p className="text-[10px] text-stone-500 mt-2 leading-relaxed">
               Neither button changes anything you have typed, and no result is ever changed.
             </p>
             {certFormatChanged.length > 0 && (
@@ -532,7 +532,7 @@ export default function EditProductDrawer({
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Certificate number</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Certificate number</label>
                   <input
                     value={editCertificate.certificateId}
                     onChange={e => setEditCertificate(p => ({ ...p, certificateId: e.target.value }))}
@@ -541,7 +541,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Product Name (override)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Product Name (override)</label>
                   <input
                     value={editCertificate.productName}
                     onChange={e => setEditCertificate(p => ({ ...p, productName: e.target.value }))}
@@ -550,7 +550,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">CAS Number (optional)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">CAS Number (optional)</label>
                   <input
                     value={editCertificate.casNumber}
                     onChange={e => setEditCertificate(p => ({ ...p, casNumber: e.target.value }))}
@@ -558,7 +558,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">PubChem CID (optional)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">PubChem CID (optional)</label>
                   <input
                     value={editCertificate.pubchemCid}
                     onChange={e => setEditCertificate(p => ({ ...p, pubchemCid: e.target.value }))}
@@ -566,7 +566,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Molecular Formula (optional)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Molecular Formula (optional)</label>
                   <input
                     value={editCertificate.molecularFormula}
                     onChange={e => setEditCertificate(p => ({ ...p, molecularFormula: e.target.value }))}
@@ -574,7 +574,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Molecular Weight (optional)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Molecular Weight (optional)</label>
                   <input
                     value={editCertificate.molecularWeight}
                     onChange={e => setEditCertificate(p => ({ ...p, molecularWeight: e.target.value }))}
@@ -582,7 +582,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Storage (override)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Storage (override)</label>
                   <input
                     value={editCertificate.storage}
                     onChange={e => setEditCertificate(p => ({ ...p, storage: e.target.value }))}
@@ -603,9 +603,9 @@ export default function EditProductDrawer({
                   what the real certificate says, and leave a box blank until you have it.
                 </p>
                 <div className="hidden sm:grid grid-cols-[110px_1fr_1fr] gap-2 mb-1">
-                  <span className="text-[8px] tracking-widest uppercase text-stone-400">Row</span>
-                  <span className="text-[8px] tracking-widest uppercase text-stone-400">Where it comes from</span>
-                  <span className="text-[8px] tracking-widest uppercase text-stone-400">Value</span>
+                  <span className="text-[8px] tracking-widest uppercase text-stone-500">Row</span>
+                  <span className="text-[8px] tracking-widest uppercase text-stone-500">Where it comes from</span>
+                  <span className="text-[8px] tracking-widest uppercase text-stone-500">Value</span>
                 </div>
                 {STANDARD_TEST_ROWS.map(row => {
                   const spec = standardTestSpec(editCertificate.testRows, row);
@@ -649,7 +649,7 @@ export default function EditProductDrawer({
                 {STANDARD_SUMMARY_ROWS.map(row => (
                   <div key={row.key} className="grid grid-cols-1 sm:grid-cols-[110px_1fr_1fr] gap-2 mb-1.5 sm:items-center">
                     <span className="text-xs text-stone-600 font-medium">{row.name}</span>
-                    <span className="hidden sm:block text-[10px] text-stone-400 py-1.5">From the certificate</span>
+                    <span className="hidden sm:block text-[10px] text-stone-500 py-1.5">From the certificate</span>
                     <input
                       value={standardSummaryValue(editCertificate.verificationSummary, row)}
                       onChange={e => setStandardSummary(row, e.target.value)}
@@ -659,7 +659,7 @@ export default function EditProductDrawer({
                     />
                   </div>
                 ))}
-                <p className="text-[10px] text-stone-400 mt-2 leading-relaxed">
+                <p className="text-[10px] text-stone-500 mt-2 leading-relaxed">
                   A row you leave completely blank is not saved and does not appear on the printed
                   certificate. Nothing empty is ever shown to a customer.
                 </p>
@@ -667,8 +667,8 @@ export default function EditProductDrawer({
 
               {/* Every test row on the certificate is typed here. */}
               <div className="mb-3">
-                <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Test Rows</label>
-                <p className="text-[10px] text-stone-400 mb-2 leading-relaxed">
+                <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Test Rows</label>
+                <p className="text-[10px] text-stone-500 mb-2 leading-relaxed">
                   One row for each test listed on the certificate. Copy the test name, the
                   specification and the result exactly as they are printed.
                 </p>
@@ -728,8 +728,8 @@ export default function EditProductDrawer({
                   : editCertificate.analyticalResults.map((row, index) => ({ row, index }));
                 return (
                   <div key={section} className="mb-3">
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">{title}</label>
-                    <p className="text-[10px] text-stone-400 mb-2 leading-relaxed">{hint}</p>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">{title}</label>
+                    <p className="text-[10px] text-stone-500 mb-2 leading-relaxed">{hint}</p>
                     {rows.map(({ row, index }) => (
                       <div key={index} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2 mb-1.5 sm:items-center">
                         <input
@@ -765,7 +765,7 @@ export default function EditProductDrawer({
               })}
 
               <div className="mb-3">
-                <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Note at the foot of the certificate</label>
+                <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Note at the foot of the certificate</label>
                 <textarea
                   value={editCertificate.caution}
                   onChange={e => setEditCertificate(p => ({ ...p, caution: e.target.value }))}
@@ -786,7 +786,7 @@ export default function EditProductDrawer({
             </>
           ) : (
             <div>
-              <p className="text-[10px] text-stone-400 mb-2.5 leading-relaxed">
+              <p className="text-[10px] text-stone-500 mb-2.5 leading-relaxed">
                 Upload the supplier&apos;s own certificate as one image per page, in order. The &ldquo;Show
                 Certificate&rdquo; button on the product page will show these pages instead of typed
                 details.
@@ -808,7 +808,7 @@ export default function EditProductDrawer({
           </label>
 
           <div className="mb-3">
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Content Source</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Content Source</label>
             <select
               value={editStorageInstructions.mode}
               onChange={e => {
@@ -822,13 +822,13 @@ export default function EditProductDrawer({
             >
               <option value="global">Use global default (edit under Site Content → Product Defaults)</option>
               <option value="custom">Custom override for this product</option>
-              <option value="hidden">Hidden — don&apos;t show the button on this product</option>
+              <option value="hidden">Hidden - don&apos;t show the button on this product</option>
             </select>
           </div>
 
           {editStorageInstructions.mode === 'custom' && (
             <div>
-              <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Custom Content</label>
+              <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Custom Content</label>
               <MarkdownLiteEditor
                 value={editStorageInstructions.content}
                 onChange={text => setEditStorageInstructions(p => ({ ...p, content: text }))}
@@ -845,7 +845,7 @@ export default function EditProductDrawer({
             onChange={e => setEditForm(p => ({ ...p, newIn: e.target.checked }))}
             className="accent-gold-500"
           />
-          New In — show a &ldquo;New In&rdquo; badge and feature in the homepage carousel
+          New In - show a &ldquo;New In&rdquo; badge and feature in the homepage carousel
         </label>
 
                 </div>

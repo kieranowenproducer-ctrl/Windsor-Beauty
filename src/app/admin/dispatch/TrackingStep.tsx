@@ -42,15 +42,15 @@ export default function TrackingStep({
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-stone-700 tracking-wide">Enter Tracking Numbers</h2>
-                    <p className="text-[10px] text-stone-400 mt-0.5">
-                      Import the tracking file from Royal Mail Click &amp; Drop — it auto-assigns every tracking number to the right order.
+                    <p className="text-[10px] text-stone-500 mt-0.5">
+                      Import the tracking file from Royal Mail Click &amp; Drop - it auto-assigns every tracking number to the right order.
                     </p>
                   </div>
                 </div>
 
                 {toTrack.length === 0 ? (
                   <div className="border border-stone-200 bg-white px-6 py-8 text-center">
-                    <p className="text-xs text-stone-400">
+                    <p className="text-xs text-stone-500">
                       {toExport.length > 0
                         ? 'Export the orders above first, then come back here to enter tracking numbers.'
                         : 'All exported orders have tracking numbers. Nothing to do.'}
@@ -64,8 +64,8 @@ export default function TrackingStep({
                       <div className="px-5 py-3 border-b border-stone-100 bg-stone-50 flex items-center justify-between">
                         <div>
                           <span className="text-xs font-semibold text-stone-700">Import from Royal Mail Click &amp; Drop</span>
-                          <p className="text-[10px] text-stone-400 mt-0.5">
-                            After printing labels, export your dispatched orders from Click &amp; Drop and drop the file here — or paste any text containing order numbers and tracking numbers.
+                          <p className="text-[10px] text-stone-500 mt-0.5">
+                            After printing labels, export your dispatched orders from Click &amp; Drop and drop the file here - or paste any text containing order numbers and tracking numbers.
                           </p>
                         </div>
                       </div>
@@ -86,7 +86,7 @@ export default function TrackingStep({
                           <p className="text-xs text-stone-500 mb-1">
                             Drop your Click &amp; Drop CSV here, or <span className="text-gold-700 underline">click to choose a file</span>
                           </p>
-                          <p className="text-[10px] text-stone-400">Accepts .csv or .txt — any format containing WB-order references</p>
+                          <p className="text-[10px] text-stone-500">Accepts .csv or .txt - any format containing WB-order references</p>
                           <input
                             ref={fileInputRef}
                             type="file"
@@ -102,11 +102,11 @@ export default function TrackingStep({
 
                         {/* Paste fallback */}
                         <div>
-                          <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">Or paste text directly</p>
+                          <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">Or paste text directly</p>
                           <textarea
                             value={importText}
                             onChange={e => setImportText(e.target.value)}
-                            placeholder={'Paste copied text from Click & Drop here — e.g.:\nWG-XGRXZ9, TT123456789GB\nWG-ABCDE1, TT987654321GB'}
+                            placeholder={'Paste copied text from Click & Drop here - e.g.:\nWG-XGRXZ9, TT123456789GB\nWG-ABCDE1, TT987654321GB'}
                             rows={4}
                             className="w-full border border-stone-200 focus:border-gold-400 outline-none px-3 py-2.5 text-xs text-stone-600 bg-white resize-none font-mono"
                           />
@@ -148,11 +148,11 @@ export default function TrackingStep({
                     {/* Per-order tracking table */}
                     <div className="border border-stone-200 bg-white">
                       <div className="grid grid-cols-[1fr_1fr_auto_auto_200px] gap-4 px-5 py-2.5 border-b border-stone-100 bg-stone-50">
-                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Order</span>
-                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Customer</span>
-                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Service</span>
-                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Total</span>
-                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Tracking Number</span>
+                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Order</span>
+                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Customer</span>
+                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Service</span>
+                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Total</span>
+                        <span className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Tracking Number</span>
                       </div>
 
                       <div className="divide-y divide-stone-100">
@@ -165,14 +165,14 @@ export default function TrackingStep({
                               <span className="font-mono text-[11px] text-gold-700 tracking-wider">{o.orderNumber}</span>
                               <div>
                                 <div className="text-xs text-stone-700">{o.customerName}</div>
-                                <div className="text-[10px] text-stone-400">{o.email}</div>
+                                <div className="text-[10px] text-stone-500">{o.email}</div>
                               </div>
                               <span className="text-[10px] text-stone-500 whitespace-nowrap">{o.shippingLabel}</span>
                               <span className="text-xs font-medium text-stone-700 whitespace-nowrap">£{o.total.toFixed(2)}</span>
                               <div>
                                 {result?.success ? (
                                   <p className="text-[10px] text-green-600 font-medium">
-                                    {result.emailSent ? 'Dispatched — email sent' : 'Dispatched'}
+                                    {result.emailSent ? 'Dispatched - email sent' : 'Dispatched'}
                                   </p>
                                 ) : (
                                   <>
@@ -197,7 +197,7 @@ export default function TrackingStep({
                       </div>
 
                       <div className="px-5 py-4 border-t border-stone-100 flex items-center justify-between bg-stone-50">
-                        <p className="text-[10px] text-stone-400">
+                        <p className="text-[10px] text-stone-500">
                           {filledTrackingCount} of {toTrack.length} tracking number{toTrack.length !== 1 ? 's' : ''} ready
                         </p>
                         <button

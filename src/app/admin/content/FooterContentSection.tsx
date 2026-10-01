@@ -27,14 +27,14 @@ export default function FooterContentSection({
             {/* Footer / navigation content */}
             <div id="section-footer-content" className="bg-white border border-stone-200 p-6">
               <h2 className="text-sm font-semibold text-stone-800 mb-1">Footer &amp; Navigation</h2>
-              <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
                 Edit the text and links shown in the site footer: the brand description, contact emails, the
                 Navigation and Legal link columns, the footer note, and the copyright line. Changes appear
                 on the live site as soon as they&apos;re saved.
               </p>
 
               <label className="flex flex-col gap-1.5 mb-4">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Brand Description</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Brand Description</span>
                 <textarea
                   value={footerContent.description}
                   onChange={(e) => updateFooterField({ description: e.target.value })}
@@ -44,12 +44,12 @@ export default function FooterContentSection({
               </label>
 
               <div className="mb-5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400 block mb-2">Contact Emails</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500 block mb-2">Contact Emails</span>
                 <div className="space-y-2">
                   {footerContent.emails.map((email, i) => (
                     <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-2 border border-stone-100 p-3">
                       <label className="flex flex-col gap-1.5">
-                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-400">Email Address</span>
+                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-500">Email Address</span>
                         <input
                           type="text"
                           value={email.address}
@@ -58,7 +58,7 @@ export default function FooterContentSection({
                         />
                       </label>
                       <label className="flex flex-col gap-1.5">
-                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-400">Label</span>
+                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-500">Label</span>
                         <input
                           type="text"
                           value={email.label}
@@ -72,12 +72,12 @@ export default function FooterContentSection({
               </div>
 
               <div className="mb-5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400 block mb-2">Navigation Links</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500 block mb-2">Navigation Links</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {footerContent.navLinks.map((link, i) => (
                     <div key={i} className="grid grid-cols-2 gap-2 border border-stone-100 p-3">
                       <label className="flex flex-col gap-1.5">
-                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-400">Label</span>
+                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-500">Label</span>
                         <input
                           type="text"
                           value={link.label}
@@ -86,7 +86,7 @@ export default function FooterContentSection({
                         />
                       </label>
                       <label className="flex flex-col gap-1.5">
-                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-400">URL</span>
+                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-500">URL</span>
                         <input
                           type="text"
                           value={link.href}
@@ -100,12 +100,12 @@ export default function FooterContentSection({
               </div>
 
               <div className="mb-5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400 block mb-2">Legal Links</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500 block mb-2">Legal Links</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {footerContent.legalLinks.map((link, i) => (
                     <div key={i} className="grid grid-cols-2 gap-2 border border-stone-100 p-3">
                       <label className="flex flex-col gap-1.5">
-                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-400">Label</span>
+                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-500">Label</span>
                         <input
                           type="text"
                           value={link.label}
@@ -114,7 +114,7 @@ export default function FooterContentSection({
                         />
                       </label>
                       <label className="flex flex-col gap-1.5">
-                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-400">URL</span>
+                        <span className="text-[9px] tracking-[0.12em] uppercase text-stone-500">URL</span>
                         <input
                           type="text"
                           value={link.href}
@@ -128,7 +128,7 @@ export default function FooterContentSection({
               </div>
 
               <label className="flex flex-col gap-1.5 mb-4">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Footer note</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Footer note</span>
                 <textarea
                   value={footerContent.disclaimer}
                   onChange={(e) => updateFooterField({ disclaimer: e.target.value })}
@@ -139,7 +139,7 @@ export default function FooterContentSection({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Copyright Line (after the year)</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Copyright Line (after the year)</span>
                   <input
                     type="text"
                     value={footerContent.copyrightSuffix}
@@ -148,7 +148,7 @@ export default function FooterContentSection({
                   />
                 </label>
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Bottom-Right Text</span>
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Bottom-Right Text</span>
                   <input
                     type="text"
                     value={footerContent.bottomRightText}
@@ -170,7 +170,7 @@ export default function FooterContentSection({
                   <button
                     onClick={handleResetFooter}
                     disabled={footerSaving}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
                   >
                     Reset to Default
                   </button>

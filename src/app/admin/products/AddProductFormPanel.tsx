@@ -45,7 +45,7 @@ export default function AddProductFormPanel({
               <form onSubmit={submitAddProduct} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Name</label>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Name</label>
                     <input
                       value={addForm.name}
                       onChange={e => updateAddName(e.target.value)}
@@ -53,7 +53,7 @@ export default function AddProductFormPanel({
                     />
                   </div>
                   <div>
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Slug (URL)</label>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Slug (URL)</label>
                     <input
                       value={addForm.slug}
                       onChange={e => {
@@ -65,7 +65,7 @@ export default function AddProductFormPanel({
                     />
                   </div>
                   <div>
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Purity badge (optional)</label>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Purity badge (optional)</label>
                     <input
                       value={addForm.purity}
                       onChange={e => setAddForm(prev => ({ ...prev, purity: e.target.value }))}
@@ -74,19 +74,19 @@ export default function AddProductFormPanel({
                     />
                   </div>
                   <div>
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Badge (optional)</label>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Badge (optional)</label>
                     <select
                       value={addForm.badge}
                       onChange={e => setAddForm(prev => ({ ...prev, badge: e.target.value }))}
                       className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none bg-white"
                     >
-                      <option value="">— None —</option>
+                      <option value="">- None -</option>
                       <option value="New">New</option>
                       <option value="Popular">Popular</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Brand (optional)</label>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Brand (optional)</label>
                     <input
                       value={addForm.brand}
                       onChange={e => setAddForm(prev => ({ ...prev, brand: e.target.value }))}
@@ -95,7 +95,7 @@ export default function AddProductFormPanel({
                     />
                   </div>
                   <div>
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Availability</label>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Availability</label>
                     <select
                       value={addForm.availability}
                       onChange={e => setAddForm(prev => ({ ...prev, availability: e.target.value as AvailabilityStatus }))}
@@ -109,7 +109,7 @@ export default function AddProductFormPanel({
                 </div>
 
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Categories</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Categories</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 border border-stone-200 p-3">
                     {allCategories.map(cat => (
                       <label key={cat} className="flex items-center gap-1.5 text-xs text-stone-600">
@@ -133,7 +133,7 @@ export default function AddProductFormPanel({
                 />
 
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Short Description</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Short Description</label>
                   <input
                     value={addForm.shortDescription}
                     onChange={e => setAddForm(prev => ({ ...prev, shortDescription: e.target.value }))}
@@ -141,7 +141,7 @@ export default function AddProductFormPanel({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Full Description</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Full Description</label>
                   <MarkdownLiteEditor
                     value={addForm.fullDescription}
                     onChange={text => setAddForm(prev => ({ ...prev, fullDescription: text }))}
@@ -151,7 +151,7 @@ export default function AddProductFormPanel({
                 </div>
 
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Search Keywords (comma separated, optional)</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-1">Search Keywords (comma separated, optional)</label>
                   <input
                     value={addForm.keywordsInput}
                     onChange={e => setAddForm(prev => ({ ...prev, keywordsInput: e.target.value }))}
@@ -183,7 +183,7 @@ export default function AddProductFormPanel({
                     onChange={e => setAddForm(prev => ({ ...prev, isPlaceholder: e.target.checked }))}
                     className="accent-gold-500"
                   />
-                  Mark as placeholder — awaiting final copy, pricing or photography
+                  Mark as placeholder - awaiting final copy, pricing or photography
                 </label>
 
                 <label className="flex items-center gap-2 text-xs text-stone-500">
@@ -193,7 +193,7 @@ export default function AddProductFormPanel({
                     onChange={e => setAddForm(prev => ({ ...prev, newIn: e.target.checked }))}
                     className="accent-gold-500"
                   />
-                  New In — show a &ldquo;New In&rdquo; badge and feature in the homepage carousel
+                  New In - show a &ldquo;New In&rdquo; badge and feature in the homepage carousel
                 </label>
 
                 {uploadingCount > 0 && (

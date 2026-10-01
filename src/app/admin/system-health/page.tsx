@@ -169,7 +169,7 @@ export default function SystemHealthPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-4xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">System Health</h1>
-          <p className="text-xs text-stone-400 mb-8 leading-relaxed">
+          <p className="text-xs text-stone-500 mb-8 leading-relaxed">
             The things the website does on its own: sending emails, booking dispatches, taking payment
             updates. When one of them does not work it is written down here the moment it happens, so a
             confirmation email that never sent is found in minutes instead of by a customer complaint.
@@ -177,7 +177,7 @@ export default function SystemHealthPage() {
 
           <div className="flex items-center gap-3 mb-8">
             <div className={`border px-5 py-4 ${openCount > 0 ? 'border-red-200 bg-red-50' : 'border-stone-200 bg-white'}`}>
-              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Still To Look At</p>
+              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Still To Look At</p>
               <p className={`text-xl font-semibold ${openCount > 0 ? 'text-red-600' : 'text-stone-700'}`}>{openCount}</p>
             </div>
           </div>
@@ -188,15 +188,15 @@ export default function SystemHealthPage() {
               junk folder leaves no error behind, so a list built from failures
               would miss exactly the customer who phones up. */}
           <div className="bg-white border border-stone-200 p-5 mb-8">
-            <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Customers Waiting To Verify Their Email</p>
-            <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+            <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Customers Waiting To Verify Their Email</p>
+            <p className="text-xs text-stone-500 mb-4 leading-relaxed">
               They created an account but have never clicked their verification link, so they have no member
               discount yet. Press Resend to send it again now. It does not matter whether the first one failed
               or simply went to junk.
             </p>
 
             {unverified.length === 0 ? (
-              <p className="text-xs text-stone-400">Everyone who has signed up has verified their email. Nothing to do.</p>
+              <p className="text-xs text-stone-500">Everyone who has signed up has verified their email. Nothing to do.</p>
             ) : (
               <div className="border border-stone-200 divide-y divide-stone-100">
                 {unverified.map(u => {
@@ -211,8 +211,8 @@ export default function SystemHealthPage() {
                           >
                             {customerName(u)}
                           </Link>
-                          <p className="text-[10px] text-stone-400 mt-0.5">{u.email}</p>
-                          <p className="text-[10px] text-stone-400 mt-1">
+                          <p className="text-[10px] text-stone-500 mt-0.5">{u.email}</p>
+                          <p className="text-[10px] text-stone-500 mt-1">
                             Signed up {formatDateShort(u.created_at)}. Link last sent {formatDateShort(u.last_sent_at)}
                             {u.times_sent > 1 ? ` (${u.times_sent} times in total)` : ''}.
                           </p>
@@ -248,8 +248,8 @@ export default function SystemHealthPage() {
               anybody about. */}
           {crons.length > 0 && (
             <div className="bg-white border border-stone-200 p-5 mb-8">
-              <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Scheduled Jobs</p>
-              <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+              <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Scheduled Jobs</p>
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
                 Jobs the website runs on its own overnight. Each one stamps the clock when it finishes, so a job
                 that has stopped shows up here instead of going unnoticed.
               </p>
@@ -258,7 +258,7 @@ export default function SystemHealthPage() {
                   <div key={c.job} className="px-4 py-3 flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-xs text-stone-800 font-medium">{c.label}</p>
-                      <p className="text-[10px] text-stone-400 mt-0.5">{c.schedule}</p>
+                      <p className="text-[10px] text-stone-500 mt-0.5">{c.schedule}</p>
                       {c.lastError && <p className="text-[10px] text-red-500 mt-1">Last run reported: {c.lastError}</p>}
                     </div>
                     <div className="text-right shrink-0">
@@ -266,7 +266,7 @@ export default function SystemHealthPage() {
                         {c.lastRunAt ? `Last ran ${formatDateShort(c.lastRunAt)}` : 'Has not run yet'}
                       </p>
                       {c.overdue && <p className="text-[9px] text-red-500 mt-0.5">Overdue, check this</p>}
-                      {!c.overdue && c.lastResult && <p className="text-[9px] text-stone-400 mt-0.5">{c.lastResult}</p>}
+                      {!c.overdue && c.lastResult && <p className="text-[9px] text-stone-500 mt-0.5">{c.lastResult}</p>}
                     </div>
                   </div>
                 ))}
@@ -276,8 +276,8 @@ export default function SystemHealthPage() {
 
           {/* DB Schema Maintenance */}
           <div className="bg-white border border-stone-200 p-5 mb-8">
-            <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Database Schema</p>
-            <p className="text-xs text-stone-400 mb-4">
+            <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Database Schema</p>
+            <p className="text-xs text-stone-500 mb-4">
               Run after deployments that add new tables or columns. Safe to run multiple times.
             </p>
             {dbSetupResult && (
@@ -314,7 +314,7 @@ export default function SystemHealthPage() {
           )}
 
           {failures === null && !loadError && (
-            <p className="text-xs text-stone-400">Loading…</p>
+            <p className="text-xs text-stone-500">Loading…</p>
           )}
 
           {tickError && (
@@ -352,11 +352,11 @@ export default function SystemHealthPage() {
                           {categoryLabel(f.category)}
                         </span>
                         {f.order_number && (
-                          <span className="text-[10px] font-mono text-stone-400">{f.order_number}</span>
+                          <span className="text-[10px] font-mono text-stone-500">{f.order_number}</span>
                         )}
                       </div>
                       <p className="text-xs text-stone-700">{f.message}</p>
-                      <p className="text-[10px] text-stone-400 mt-1">
+                      <p className="text-[10px] text-stone-500 mt-1">
                         {formatDate(f.created_at)}
                         {f.resolved_at ? ` · dealt with ${formatDateShort(f.resolved_at)}` : ''}
                         {f.detail ? (expanded ? ' · tap to hide the detail' : ' · tap for the detail') : ''}
@@ -370,7 +370,7 @@ export default function SystemHealthPage() {
                         className={`shrink-0 text-[9px] tracking-[0.18em] uppercase px-3 py-2 border transition-colors disabled:opacity-50 ${
                           options.tick === 'resolve'
                             ? 'border-stone-300 text-stone-600 hover:border-gold-400 hover:text-gold-700'
-                            : 'border-stone-200 text-stone-400 hover:border-stone-400 hover:text-stone-600'
+                            : 'border-stone-200 text-stone-500 hover:border-stone-400 hover:text-stone-600'
                         }`}
                       >
                         {tickingId === f.id ? 'Saving…' : options.tick === 'resolve' ? 'Done' : 'Reopen'}
@@ -389,14 +389,14 @@ export default function SystemHealthPage() {
             return (
               <>
                 <div className="mb-8">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Still To Look At</p>
-                  <p className="text-xs text-stone-400 mb-3 leading-relaxed">
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Still To Look At</p>
+                  <p className="text-xs text-stone-500 mb-3 leading-relaxed">
                     {canResolve
                       ? 'Something the website tried to do and could not. Press Done once it is sorted and it moves to the list at the bottom. Nothing disappears on its own any more.'
                       : 'Something the website tried to do and could not, in the last 24 hours. Press Run DB Setup above to switch on ticking things off, so nothing disappears on its own.'}
                   </p>
                   {openFaults.length === 0 ? (
-                    <p className="text-xs text-stone-400">Nothing waiting. Everything the website has tried to do has worked.</p>
+                    <p className="text-xs text-stone-500">Nothing waiting. Everything the website has tried to do has worked.</p>
                   ) : (
                     <div className="border border-red-200 bg-white divide-y divide-stone-100">
                       {openFaults.map(f => row(f, canResolve ? { tick: 'resolve' } : {}))}
@@ -406,8 +406,8 @@ export default function SystemHealthPage() {
 
                 {events.length > 0 && (
                   <div className="mb-8">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Payments That Did Not Go Through</p>
-                    <p className="text-xs text-stone-400 mb-3 leading-relaxed">
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Payments That Did Not Go Through</p>
+                    <p className="text-xs text-stone-500 mb-3 leading-relaxed">
                       A customer&apos;s bank did not complete a payment. Nothing is broken and there is nothing to
                       fix: their order stays payable so they can simply try again. Listed here so you can see it
                       happened, and who it was.
@@ -420,8 +420,8 @@ export default function SystemHealthPage() {
 
                 {done.length > 0 && (
                   <div className="mb-8">
-                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-1">Already Dealt With</p>
-                    <p className="text-xs text-stone-400 mb-3 leading-relaxed">
+                    <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">Already Dealt With</p>
+                    <p className="text-xs text-stone-500 mb-3 leading-relaxed">
                       Kept so there is a record. Press Reopen if one turns out not to be finished after all.
                     </p>
                     <div className="border border-stone-200 bg-white divide-y divide-stone-100">

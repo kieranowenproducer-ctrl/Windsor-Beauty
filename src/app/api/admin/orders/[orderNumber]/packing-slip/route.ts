@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { findOrderByNumber, isDbConfigured } from '@/lib/db';
+import { escapeHtml } from '@/lib/email/shared';
+import { findOrderByNumber, isDbConfigured, PAYMENT_CONFIRMED_STATUSES } from '@/lib/db';
 
 /**
  * GET /api/admin/orders/[orderNumber]/packing-slip
@@ -32,7 +33,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   });
 
   const addressLines = [
-    order.customer_name,
+    order.shipping_recipient || order.customer_name,
     order.shipping_line1,
     order.shipping_line2,
     order.shipping_city,
@@ -42,8 +43,8 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
 
   const itemRows = order.items.map((item) => `
     <tr>
-      <td>${item.name}</td>
-      <td>${item.variant}</td>
+      <td>${escapeHtml(String(item.name ?? ''))}</td>
+      <td>${escapeHtml(String(item.variant ?? ''))}</td>
       <td style="text-align:center">${item.quantity}</td>
       <td style="text-align:right">£${Number(item.price).toFixed(2)}</td>
       <td style="text-align:right">£${(Number(item.price) * item.quantity).toFixed(2)}</td>
@@ -52,7 +53,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
 
   const discountRow = Number(order.discount_amount) > 0 ? `
     <tr>
-      <td colspan="4" style="text-align:right">Discount${order.discount_code ? ` (${order.discount_code})` : ''}</td>
+      <td colspan="4" style="text-align:right">Discount${order.discount_code ? ` (${escapeHtml(String(order.discount_code ?? ''))})` : ''}</td>
       <td style="text-align:right;color:#c0392b">−£${Number(order.discount_amount).toFixed(2)}</td>
     </tr>
   ` : '';
@@ -60,7 +61,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   const trackingRow = order.tracking_number ? `
     <tr>
       <td colspan="5" style="padding-top:8px">
-        <strong>Tracking number:</strong> ${order.tracking_number}
+        <strong>Tracking number:</strong> ${escapeHtml(String(order.tracking_number ?? ''))}
       </td>
     </tr>
   ` : '';
@@ -70,10 +71,10 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Packing Slip ${order.order_number}</title>
+  <title>Packing Slip ${escapeHtml(String(order.order_number ?? ''))}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #3A2630; padding: 32px 40px; max-width: 720px; margin: auto; }
+    body { background: #ffffff; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #3A2630; padding: 32px 40px; max-width: 720px; margin: auto; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #3A2630; padding-bottom: 16px; margin-bottom: 24px; }
     .brand { font-size: 22px; font-weight: bold; letter-spacing: 0.5px; }
     .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #666; margin-top: 2px; }
@@ -81,11 +82,11 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
     .order-ref h2 { font-size: 15px; }
     .order-ref p { font-size: 12px; color: #555; margin-top: 3px; }
     .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin-bottom: 6px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
+    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 6px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
     .address { white-space: pre-line; line-height: 1.6; }
     .contact { line-height: 1.8; font-size: 12px; color: #444; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-    th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ccc; padding: 6px 0; text-align: left; }
+    th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #555; border-bottom: 1px solid #ccc; padding: 6px 0; text-align: left; }
     th:last-child, th:nth-child(4), th:nth-child(3) { text-align: right; }
     td { padding: 8px 0; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.4; }
     .totals { margin-left: auto; width: 260px; }
@@ -93,7 +94,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
     .totals .grand-total td { font-size: 14px; font-weight: bold; border-top: 2px solid #3A2630; padding-top: 8px; }
     .shipping-bar { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 10px 14px; border-radius: 4px; margin-bottom: 24px; font-size: 12px; }
     .shipping-bar strong { display: block; margin-bottom: 2px; }
-    .footer { border-top: 1px solid #ccc; padding-top: 16px; font-size: 10px; color: #888; line-height: 1.6; text-align: center; }
+    .footer { border-top: 1px solid #ccc; padding-top: 16px; font-size: 10px; color: #555; line-height: 1.6; text-align: center; }
     @media print {
       body { padding: 16px 24px; }
       .no-print { display: none; }
@@ -109,7 +110,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
     </div>
     <div class="order-ref">
       <h2>Packing Slip</h2>
-      <p>Order: <strong>${order.order_number}</strong></p>
+      <p>Order: <strong>${escapeHtml(String(order.order_number ?? ''))}</strong></p>
       <p>Date: ${orderDate}</p>
       <p>Status: ${order.status.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}</p>
     </div>
@@ -118,20 +119,20 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   <div class="columns">
     <div>
       <div class="section-title">Ship to</div>
-      <div class="address">${addressLines}</div>
+      <div class="address">${escapeHtml(String(addressLines ?? ''))}</div>
     </div>
     <div>
       <div class="section-title">Customer contact</div>
       <div class="contact">
-        <div>${order.email}</div>
-        ${order.phone ? `<div>${order.phone}</div>` : ''}
+        <div>${escapeHtml(String(order.email ?? ''))}</div>
+        ${order.phone ? `<div>${escapeHtml(String(order.phone ?? ''))}</div>` : ''}
       </div>
     </div>
   </div>
 
   <div class="shipping-bar">
     <strong>Delivery method</strong>
-    ${order.shipping_label}${order.tracking_number ? `, <strong>Tracking: ${order.tracking_number}</strong>` : ''}
+    ${escapeHtml(String(order.shipping_label ?? ''))}${order.tracking_number ? `, <strong>Tracking: ${escapeHtml(String(order.tracking_number ?? ''))}</strong>` : ''}
   </div>
 
   <div class="section-title" style="margin-bottom:8px">Order items</div>
@@ -157,19 +158,21 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
         <td style="text-align:right">£${Number(order.subtotal).toFixed(2)}</td>
       </tr>
       ${discountRow}
+      ${Number(order.rule_discount_amount) > 0 ? '<tr><td>Promotion discount</td><td style="text-align:right">−£' + Number(order.rule_discount_amount).toFixed(2) + '</td></tr>' : ''}
+      ${Number(order.paypal_fee) > 0 ? '<tr><td>PayPal fee</td><td style="text-align:right">£' + Number(order.paypal_fee).toFixed(2) + '</td></tr>' : ''}
       <tr>
-        <td>Shipping (${order.shipping_label})</td>
+        <td>Shipping (${escapeHtml(String(order.shipping_label ?? ''))})</td>
         <td style="text-align:right">£${Number(order.shipping_cost).toFixed(2)}</td>
       </tr>
       ${trackingRow}
       <tr class="grand-total">
-        <td><strong>Total paid</strong></td>
+        <td><strong>${PAYMENT_CONFIRMED_STATUSES.includes(order.status) ? 'Total paid' : 'Total due'}</strong></td>
         <td style="text-align:right"><strong>£${Number(order.total).toFixed(2)}</strong></td>
       </tr>
     </tbody>
   </table>
 
-  ${order.admin_notes ? `<div style="margin-top:16px;padding:10px;background:#fffbe6;border:1px solid #e8d44d;border-radius:4px;font-size:11px;color:#555"><strong>Admin notes:</strong><br>${order.admin_notes.replace(/\n/g, '<br>')}</div>` : ''}
+  ${order.admin_notes ? `<div style="margin-top:16px;padding:10px;background:#fffbe6;border:1px solid #e8d44d;border-radius:4px;font-size:11px;color:#555"><strong>Admin notes:</strong><br>${escapeHtml(order.admin_notes).replace(/\n/g, '<br>')}</div>` : ''}
 
   <div class="footer">
     <p>Windsor Beauty, windsorbeauty.co.uk, orders@windsorbeauty.co.uk</p>

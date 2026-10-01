@@ -3,7 +3,7 @@ import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
-// Mirrors the FROM_ADDRESS pattern used in passwordResetEmail — same verified
+// Mirrors the FROM_ADDRESS pattern used in passwordResetEmail , same verified
 // windsorbeauty.co.uk sending domain, distinct display name for account mail.
 const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
 
@@ -16,13 +16,29 @@ interface MembershipWelcomeEmailParams {
 
 // Sends the membership welcome email with the customer's 10% first-order
 // code. Called only after the customer's email is verified (see
-// /api/account/verify-email) — the code is never shown on-screen or sent
+// /api/account/verify-email) , the code is never shown on-screen or sent
 // any other way, so this is the customer's only way to receive it.
 export async function sendMembershipWelcomeEmail(params: MembershipWelcomeEmailParams): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false;
 
   try {
-    const { error } = await sendEmail({
+    const { error } = await sendEmail(buildMembershipWelcomeEmail(params));
+
+    if (error) {
+      console.error('Resend error (membership welcome):', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('Resend send threw (membership welcome):', err);
+    return false;
+  }
+}
+
+export function buildMembershipWelcomeEmail(params: MembershipWelcomeEmailParams) {
+
+
+  return {
       from: FROM_ADDRESS,
       // Replies reach a person. A customer answering an order or payment email was
       // writing into a void, and a From address that refuses replies is a pattern spam
@@ -55,15 +71,5 @@ export async function sendMembershipWelcomeEmail(params: MembershipWelcomeEmailP
           </td>
         </tr>`,
       }),
-    });
-
-    if (error) {
-      console.error('Resend error (membership welcome):', error);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error('Resend send threw (membership welcome):', err);
-    return false;
-  }
+    };
 }

@@ -1,7 +1,7 @@
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
 
-// INTERNAL mail — same identity split as adminOrderNotificationEmail.ts:
+// INTERNAL mail , same identity split as adminOrderNotificationEmail.ts:
 // ops mail goes out from alerts@, never from the customer-facing addresses,
 // per the 31 July 2026 deliverability audit.
 const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
@@ -16,7 +16,7 @@ export interface LowStockEmailItem {
   quantity: number;
 }
 
-// Pure message builder — exported so the rendered output can be inspected
+// Pure message builder , exported so the rendered output can be inspected
 // and tested without sending anything.
 export function buildLowStockAlertEmail(items: LowStockEmailItem[], threshold: number): { subject: string; text: string; html: string } {
   const itemRows = items.map((item) => `
@@ -37,7 +37,7 @@ export function buildLowStockAlertEmail(items: LowStockEmailItem[], threshold: n
             <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#A9695D">Stock Warning</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">Stock is running low</h1>
 
-            <!-- Action note — what this email is asking for, in plain language -->
+            <!-- Action note , what this email is asking for, in plain language -->
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px">
               <tr>
                 <td style="border-left:3px solid #A9695D;background:#fefce8;padding:10px 16px;font-size:12px;color:#57534e;line-height:1.5">

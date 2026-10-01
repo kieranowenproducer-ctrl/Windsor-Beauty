@@ -2,7 +2,7 @@ import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
 
 // Internal mail, so it uses the ops identity rather than the customer-facing
-// one — same pair and same reasoning as the review and new-order notifications
+// one , same pair and same reasoning as the review and new-order notifications
 // (31 July 2026 deliverability audit). sales@ is the inbox the team already
 // watches for "something needs you", so an alert lands where the others do
 // instead of creating a second place to check.
@@ -30,14 +30,14 @@ const CATEGORY_TITLES: Record<string, string> = {
 export interface AutomationAlertParams {
   category: string;
   message: string;
-  /** Who or what it happened to — a customer email, an order number. */
+  /** Who or what it happened to , a customer email, an order number. */
   subject?: string | null;
   detail?: string | null;
   /** What the reader should do about it, in one sentence. */
   whatToDo?: string | null;
 }
 
-// Pure message builder — exported so the rendered output can be inspected
+// Pure message builder , exported so the rendered output can be inspected
 // without sending anything.
 export function buildAutomationAlertEmail(params: AutomationAlertParams): { subject: string; text: string; html: string } {
   const title = CATEGORY_TITLES[params.category] ?? 'Something on the website failed';

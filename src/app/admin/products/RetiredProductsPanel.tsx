@@ -87,10 +87,10 @@ export default function RetiredProductsPanel() {
   return (
     <div className="bg-white border border-stone-200 mt-8">
       <div className="px-5 py-4 border-b border-stone-100">
-        <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400">
+        <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
           Retired <span className="text-stone-300 ml-1">({items.length})</span>
         </p>
-        <p className="text-[10px] text-stone-400 mt-1">
+        <p className="text-[10px] text-stone-500 mt-1">
           Products you have stopped stocking. They never appear in the low-stock warning. One with stock left
           stays on the shop until its last unit sells, then comes off by itself; put one back with real stock
           any time, or show a fully sold one as Coming soon.
@@ -108,7 +108,7 @@ export default function RetiredProductsPanel() {
             return (
               <div key={key} className="px-5 py-3 flex flex-wrap items-center gap-2">
                 <span className="flex-1 min-w-[220px] text-[11px] text-stone-700">
-                  {item.name} <span className="text-stone-400">({item.dosage})</span>
+                  {item.name} <span className="text-stone-500">({item.dosage})</span>
                   <span className={`ml-2 text-[8px] tracking-wider uppercase px-1.5 py-0.5 ${item.quantity > 0 ? 'bg-gold-50 text-gold-700' : item.productHidden ? 'bg-stone-100 text-stone-500' : 'bg-amber-50 text-amber-600'}`}>
                     {item.quantity > 0
                       ? `Selling the last ${item.quantity}`

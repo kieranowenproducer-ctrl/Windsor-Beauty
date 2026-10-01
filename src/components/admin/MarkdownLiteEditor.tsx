@@ -121,14 +121,14 @@ export default function MarkdownLiteEditor({ value, onChange, placeholder, heigh
           <button
             type="button"
             onClick={() => setTab('write')}
-            className={`text-[9px] tracking-[0.15em] uppercase px-2.5 py-1.5 transition-colors ${tab === 'write' ? 'text-gold-700 font-semibold' : 'text-stone-400 hover:text-stone-600'}`}
+            className={`text-[9px] tracking-[0.15em] uppercase px-2.5 py-1.5 transition-colors ${tab === 'write' ? 'text-gold-700 font-semibold' : 'text-stone-500 hover:text-stone-600'}`}
           >
             Write
           </button>
           <button
             type="button"
             onClick={() => setTab('preview')}
-            className={`text-[9px] tracking-[0.15em] uppercase px-2.5 py-1.5 transition-colors ${tab === 'preview' ? 'text-gold-700 font-semibold' : 'text-stone-400 hover:text-stone-600'}`}
+            className={`text-[9px] tracking-[0.15em] uppercase px-2.5 py-1.5 transition-colors ${tab === 'preview' ? 'text-gold-700 font-semibold' : 'text-stone-500 hover:text-stone-600'}`}
           >
             Preview
           </button>

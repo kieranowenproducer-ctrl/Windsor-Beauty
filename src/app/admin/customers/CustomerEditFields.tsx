@@ -44,7 +44,7 @@ export default function CustomerEditFields({ draft, setField, disabled }: Props)
       </div>
 
       <div className="space-y-1.5">
-        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Contact</p>
+        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Contact</p>
         <input
           type="email"
           value={draft.email}
@@ -66,7 +66,7 @@ export default function CustomerEditFields({ draft, setField, disabled }: Props)
       </div>
 
       <div className="space-y-1.5">
-        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">How they heard about us</p>
+        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">How they heard about us</p>
         <input
           type="text"
           value={draft.referredBy}
@@ -76,14 +76,14 @@ export default function CustomerEditFields({ draft, setField, disabled }: Props)
           disabled={disabled}
           className={`${editInput} w-full`}
         />
-        <p className="text-[9px] text-stone-400">
+        <p className="text-[9px] text-stone-500">
           This is what groups members under a referral partner, so a misspelling
           here is why someone does not appear under their partner.
         </p>
       </div>
 
       <div className="space-y-1.5">
-        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400">Address</p>
+        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500">Address</p>
         <input
           type="text"
           value={draft.addressLine1}
@@ -145,7 +145,7 @@ export default function CustomerEditFields({ draft, setField, disabled }: Props)
       </label>
       {/* Ticking this now genuinely puts them on the Email Marketing list
           (task 99476dc9). It used to change this screen and nothing else. */}
-      <p className="text-[9px] text-stone-400 leading-relaxed">
+      <p className="text-[9px] text-stone-500 leading-relaxed">
         This is the same list the Email Marketing page sends from. Ticking it adds them,
         unticking it takes them off.
       </p>

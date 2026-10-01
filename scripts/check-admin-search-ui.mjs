@@ -6,7 +6,7 @@
 // Drives the two real screens in a real browser against the real database. Read-only: it types in
 // boxes and reads the list back, and never presses a button that writes anything.
 //
-// WHY IT EXISTS. Kieran, 2026-09-24: typing "Amber Reta" into Orders found nothing, because the
+// WHY IT EXISTS. Searching for a customer and product together found nothing, because the
 // box looked for that whole phrase in one field at a time and never looked at the products at all.
 // The unit checks in scripts/test-admin-search.mjs prove the rules on made-up data. This one
 // proves the boxes on the screen are wired to those rules, on his own orders.

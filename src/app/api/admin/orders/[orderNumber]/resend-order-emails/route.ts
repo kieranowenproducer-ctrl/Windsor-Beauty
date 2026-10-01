@@ -118,7 +118,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
     message: customerSent && adminSent
       ? 'Both emails sent successfully.'
       : customerSent
-        ? 'Customer email sent. Admin notification failed — check Resend.'
-        : 'Admin notification sent. Customer email failed — check Resend.',
+        ? 'Customer email sent. Admin notification failed - check Resend.'
+        : 'Admin notification sent. Customer email failed - check Resend.',
   });
 }

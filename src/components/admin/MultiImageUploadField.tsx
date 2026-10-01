@@ -103,7 +103,7 @@ export default function MultiImageUploadField({ value, onChange, endpoint, label
 
   return (
     <div>
-      <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-2">{fieldLabel}</label>
+      <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-2">{fieldLabel}</label>
 
       {value.length > 0 && (
         <div className="flex flex-col gap-2 mb-3">
@@ -130,7 +130,7 @@ export default function MultiImageUploadField({ value, onChange, endpoint, label
                   type="button"
                   onClick={() => move(i, -1)}
                   disabled={i === 0}
-                  className="p-2.5 -m-0.5 sm:p-0 sm:m-0 text-[9px] tracking-wider uppercase text-stone-400 hover:text-gold-700 transition-colors disabled:opacity-30 disabled:hover:text-stone-400"
+                  className="p-2.5 -m-0.5 sm:p-0 sm:m-0 text-[9px] tracking-wider uppercase text-stone-500 hover:text-gold-700 transition-colors disabled:opacity-30 disabled:hover:text-stone-500"
                 >
                   Up
                 </button>
@@ -138,7 +138,7 @@ export default function MultiImageUploadField({ value, onChange, endpoint, label
                   type="button"
                   onClick={() => move(i, 1)}
                   disabled={i === value.length - 1}
-                  className="p-2.5 -m-0.5 sm:p-0 sm:m-0 text-[9px] tracking-wider uppercase text-stone-400 hover:text-gold-700 transition-colors disabled:opacity-30 disabled:hover:text-stone-400"
+                  className="p-2.5 -m-0.5 sm:p-0 sm:m-0 text-[9px] tracking-wider uppercase text-stone-500 hover:text-gold-700 transition-colors disabled:opacity-30 disabled:hover:text-stone-500"
                 >
                   Down
                 </button>

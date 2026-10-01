@@ -59,14 +59,14 @@ export default function ManualUpsellEditor({
             <h2 className="text-sm font-semibold text-stone-800 mb-2">Manual Product Upsell Editor</h2>
             <p className="text-xs text-stone-500 mb-5 leading-relaxed">
               Pick a product, choose exactly which other products should be recommended for it, and set the
-              heading shown above them — e.g. &ldquo;Goes really well with&rdquo; or &ldquo;Complete the
+              heading shown above them - e.g. &ldquo;Goes really well with&rdquo; or &ldquo;Complete the
               stack&rdquo;. Saving here takes over completely for that product; CSV rules for it are ignored
               until you clear the override below.
             </p>
 
             {/* Step 1 — pick the product: a dropdown to browse, or search to type-filter */}
             <div className="mb-5">
-              <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">Select a product</label>
+              <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">Select a product</label>
               <div className="flex flex-col sm:flex-row gap-3 mb-2">
                 <select
                   value={editorTriggerSlug ?? ''}
@@ -103,7 +103,7 @@ export default function ManualUpsellEditor({
               )}
             </div>
 
-            {editorLoading && <p className="text-xs text-stone-400">Loading…</p>}
+            {editorLoading && <p className="text-xs text-stone-500">Loading…</p>}
 
             {editorTriggerSlug && !editorLoading && (
               <div className="border-t border-stone-100 pt-5">
@@ -114,13 +114,13 @@ export default function ManualUpsellEditor({
                   {editorHasOverride ? (
                     <span className="px-2 py-1 text-[9px] tracking-wider uppercase bg-gold-100 text-gold-700">Manual override active</span>
                   ) : (
-                    <span className="px-2 py-1 text-[9px] tracking-wider uppercase bg-stone-100 text-stone-400">Using CSV-driven rules (no override yet)</span>
+                    <span className="px-2 py-1 text-[9px] tracking-wider uppercase bg-stone-100 text-stone-500">Using CSV-driven rules (no override yet)</span>
                   )}
                 </div>
 
                 <div className="mb-5 grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">
+                    <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">
                       Heading on this product&apos;s page
                     </label>
                     <input
@@ -131,10 +131,10 @@ export default function ManualUpsellEditor({
                       maxLength={80}
                       className="border border-stone-200 px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors w-full"
                     />
-                    <p className="text-[10px] text-stone-400 mt-1">Shown at the bottom of this product&apos;s page while browsing the shop. Leave blank for &ldquo;Frequently bought with&rdquo;.</p>
+                    <p className="text-[10px] text-stone-500 mt-1">Shown at the bottom of this product&apos;s page while browsing the shop. Leave blank for &ldquo;Frequently bought with&rdquo;.</p>
                   </div>
                   <div>
-                    <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">
+                    <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">
                       Heading in the basket popup
                     </label>
                     <input
@@ -145,12 +145,12 @@ export default function ManualUpsellEditor({
                       maxLength={80}
                       className="border border-stone-200 px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors w-full"
                     />
-                    <p className="text-[10px] text-stone-400 mt-1">Shown when this product is the one just added to the basket. Leave blank for &ldquo;Frequently bought with&rdquo;.</p>
+                    <p className="text-[10px] text-stone-500 mt-1">Shown when this product is the one just added to the basket. Leave blank for &ldquo;Frequently bought with&rdquo;.</p>
                   </div>
                 </div>
 
                 <div className="mb-5">
-                  <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">
+                  <label className="block text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">
                     Search products to add as upsells ({editorSelected.length}/{MAX_MANUAL_UPSELLS})
                   </label>
                   <input
@@ -162,7 +162,7 @@ export default function ManualUpsellEditor({
                     className="border border-stone-200 px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors w-full sm:w-96 disabled:opacity-50"
                   />
                   {editorSelected.length >= MAX_MANUAL_UPSELLS && (
-                    <p className="text-[10px] text-amber-600 mt-1">Maximum of {MAX_MANUAL_UPSELLS} reached — remove one below to add another.</p>
+                    <p className="text-[10px] text-amber-600 mt-1">Maximum of {MAX_MANUAL_UPSELLS} reached - remove one below to add another.</p>
                   )}
                   {addPickerResults.length > 0 && (
                     <div className="mt-1 border border-stone-200 bg-white w-full sm:w-96 max-h-56 overflow-y-auto">
@@ -181,9 +181,9 @@ export default function ManualUpsellEditor({
                 </div>
 
                 <div className="mb-6">
-                  <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-1.5">Selected upsell products</p>
+                  <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-1.5">Selected upsell products</p>
                   {selectedDetails.length === 0 ? (
-                    <p className="text-xs text-stone-400 italic">None selected — this product will show no upsells once saved.</p>
+                    <p className="text-xs text-stone-500 italic">None selected - this product will show no upsells once saved.</p>
                   ) : (
                     <ul className="space-y-1.5">
                       {selectedDetails.map((d, i) => (
@@ -209,15 +209,15 @@ export default function ManualUpsellEditor({
                 {/* Live preview — mirrors the storefront UpsellCarousel's card styling so this is a realistic preview, not just a list. Same product list both contexts share, only the heading text differs. */}
                 <div className="mb-6 grid sm:grid-cols-2 gap-5">
                   {[
-                    { label: 'Preview — product page', heading: previewHeading },
-                    { label: 'Preview — basket popup', heading: previewBasketHeading },
+                    { label: 'Preview - product page', heading: previewHeading },
+                    { label: 'Preview - basket popup', heading: previewBasketHeading },
                   ].map(({ label, heading }) => (
                     <div key={label}>
-                      <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">{label}</p>
+                      <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">{label}</p>
                       <div className="border border-stone-100 bg-stone-50 p-5">
                         <p className="font-serif text-lg text-stone-800 tracking-wide mb-3">{heading}</p>
                         {selectedDetails.filter(d => d.willDisplay).length === 0 ? (
-                          <p className="text-xs text-stone-400 italic">Nothing will display — add at least one available product above.</p>
+                          <p className="text-xs text-stone-500 italic">Nothing will display - add at least one available product above.</p>
                         ) : (
                           <div className="flex gap-3 overflow-x-auto pb-1">
                             {selectedDetails.filter(d => d.willDisplay && d.product).map(d => (
@@ -251,7 +251,7 @@ export default function ManualUpsellEditor({
                       type="button"
                       onClick={() => handleEditorClear()}
                       disabled={editorClearing}
-                      className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                      className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors disabled:opacity-50"
                     >
                       {editorClearing ? 'Clearing…' : 'Clear Override (revert to CSV)'}
                     </button>
@@ -263,7 +263,7 @@ export default function ManualUpsellEditor({
             {/* Overview of every product with an active manual override */}
             {manualOverrides.length > 0 && (
               <div className="border-t border-stone-100 mt-6 pt-5">
-                <p className="text-[10px] tracking-[0.15em] uppercase text-stone-400 mb-2">
+                <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 mb-2">
                   Manually Configured Products ({manualOverrides.length})
                 </p>
                 <ul className="space-y-1.5">
@@ -272,8 +272,8 @@ export default function ManualUpsellEditor({
                       <span>
                         <span className="font-medium text-stone-700">{productLabel(o.trigger_handle)}</span>
                         {' '}&middot; {o.upsell_handles.length} upsell{o.upsell_handles.length !== 1 ? 's' : ''}
-                        {o.heading && <span className="text-stone-400"> &middot; page: &ldquo;{o.heading}&rdquo;</span>}
-                        {o.basket_heading && <span className="text-stone-400"> &middot; basket: &ldquo;{o.basket_heading}&rdquo;</span>}
+                        {o.heading && <span className="text-stone-500"> &middot; page: &ldquo;{o.heading}&rdquo;</span>}
+                        {o.basket_heading && <span className="text-stone-500"> &middot; basket: &ldquo;{o.basket_heading}&rdquo;</span>}
                       </span>
                       <span className="flex items-center gap-3 shrink-0">
                         <button type="button" onClick={() => selectTriggerProduct(o.trigger_handle)} className="text-[9px] tracking-wider uppercase text-gold-700 hover:text-gold-700 transition-colors">Edit</button>

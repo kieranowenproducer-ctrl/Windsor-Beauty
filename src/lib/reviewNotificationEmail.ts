@@ -1,7 +1,7 @@
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
 
-// INTERNAL mail, so it uses the ops identity rather than the customer-facing one —
+// INTERNAL mail, so it uses the ops identity rather than the customer-facing one ,
 // the same pair the new-order notification uses, for the same reason: internal mail is
 // never opened by the people whose engagement builds the customer-facing address's
 // reputation. Decided in the 31 July 2026 deliverability audit.
@@ -28,7 +28,7 @@ export interface ReviewNotificationParams {
 // approves it, so this email exists to say that out loud the moment it lands.
 // It carries the review in full: the point is to be able to judge it from a
 // phone and only open the admin panel to press the button.
-// Pure message builder — exported so the rendered output can be inspected and
+// Pure message builder , exported so the rendered output can be inspected and
 // tested without sending anything.
 export function buildReviewNotificationEmail(params: ReviewNotificationParams): { subject: string; text: string; html: string } {
   const stars = '★'.repeat(Math.max(0, Math.min(5, params.rating))) + '☆'.repeat(Math.max(0, 5 - params.rating));
@@ -47,7 +47,7 @@ export function buildReviewNotificationEmail(params: ReviewNotificationParams): 
             <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#A9695D">Waiting for Approval</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">New customer review</h1>
 
-            <!-- Action note — what needs doing, in plain language -->
+            <!-- Action note , what needs doing, in plain language -->
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px">
               <tr>
                 <td style="border-left:3px solid #A9695D;background:#fefce8;padding:10px 16px;font-size:12px;color:#57534e;line-height:1.5">

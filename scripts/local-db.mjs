@@ -48,7 +48,7 @@ try {
 }
 
 console.log(`Windsor Beauty local database is running on port ${PORT}.`);
-console.log(`DATABASE_URL=postgres://postgres:postgres@localhost:${PORT}/${DB_NAME}`);
+console.log("Use the local database address saved in .env.local.");
 console.log('Leave this window open while you work. Ctrl+C stops it.');
 
 const stop = async () => {

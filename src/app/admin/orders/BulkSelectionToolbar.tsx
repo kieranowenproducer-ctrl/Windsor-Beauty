@@ -52,7 +52,7 @@ export default function BulkSelectionToolbar({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setSelectedIds(new Set())}
-                    className="text-[9px] tracking-[0.18em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                    className="text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                   >
                     Clear
                   </button>

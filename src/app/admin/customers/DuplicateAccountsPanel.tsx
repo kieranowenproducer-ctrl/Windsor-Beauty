@@ -97,7 +97,7 @@ export default function DuplicateAccountsPanel({
             )}
 
             {finding.offerStatus === 'review' && (
-              <p className="text-[10px] text-stone-600 mt-1.5">Historical review marker only — their discount is not paused.</p>
+              <p className="text-[10px] text-stone-600 mt-1.5">Historical review marker only - their discount is not paused.</p>
             )}
           </li>
         ))}

@@ -76,7 +76,7 @@ export default function OrderFilters({
                 className={`shrink-0 text-[9px] tracking-[0.15em] uppercase px-3 py-1.5 border transition-colors ${
                   multiStatusFilter === null && statusFilter === value
                     ? 'bg-gold-700 text-white border-gold-500'
-                    : 'bg-white border-stone-200 text-stone-400 hover:border-gold-300 hover:text-gold-700'
+                    : 'bg-white border-stone-200 text-stone-500 hover:border-gold-300 hover:text-gold-700'
                 }`}
               >
                 {label}
@@ -149,7 +149,7 @@ export default function OrderFilters({
               <button
                 type="button"
                 onClick={() => { setSearch(''); setDateFrom(''); setDateTo(''); setSort('newest'); }}
-                className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors px-2 py-1"
+                className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors px-2 py-1"
               >
                 Clear
               </button>
@@ -210,7 +210,7 @@ export default function OrderFilters({
                     ) : (
                       <span className="text-stone-500">{word}</span>
                     )}
-                    {' — '}
+                    {' - '}
                     {count === 0 ? 'no orders at all' : count === 1 ? '1 order' : `${count} orders`}
                   </li>
                 ))}

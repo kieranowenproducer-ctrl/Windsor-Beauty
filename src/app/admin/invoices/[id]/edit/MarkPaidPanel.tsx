@@ -28,7 +28,7 @@ export default function MarkPaidPanel({
             <h2 className="text-sm font-semibold text-stone-800 mb-2">Mark as Paid</h2>
             <p className="text-xs text-stone-500 mb-4 leading-relaxed">
               {intendedPaymentMethod === 'paypal'
-                ? 'There is no automatic PayPal confirmation — check the Windsor Beauty PayPal account directly, then confirm here with a note (e.g. the transaction reference).'
+                ? 'There is no automatic PayPal confirmation - check the Windsor Beauty PayPal account directly, then confirm here with a note (e.g. the transaction reference).'
                 : `Confirms this invoice was paid via ${PAYMENT_METHOD_OPTIONS.find((o) => o.value === intendedPaymentMethod)?.label ?? intendedPaymentMethod}. A note is optional.`}
               {' '}This decrements stock and runs whichever automations above are still checked.
             </p>

@@ -67,7 +67,7 @@ export default function DispatchOrderList({
                   className={`text-[9px] tracking-[0.15em] uppercase px-3 py-1.5 border transition-colors ${
                     rmStatusFilter === value
                       ? 'bg-gold-700 text-white border-gold-500'
-                      : 'border-stone-200 text-stone-400 hover:border-gold-300 hover:text-gold-700'
+                      : 'border-stone-200 text-stone-500 hover:border-gold-300 hover:text-gold-700'
                   }`}
                 >
                   {label}
@@ -78,11 +78,11 @@ export default function DispatchOrderList({
             {/* Order list */}
             {rmLoading ? (
               <div className="border border-stone-200 bg-white px-6 py-8 text-center">
-                <p className="text-xs text-stone-400">Loading orders...</p>
+                <p className="text-xs text-stone-500">Loading orders...</p>
               </div>
             ) : filteredRmOrders.length === 0 ? (
               <div className="border border-stone-200 bg-white px-6 py-8 text-center">
-                <p className="text-xs text-stone-400">
+                <p className="text-xs text-stone-500">
                   {rmStatusFilter === 'all' ? 'No orders are waiting to be dispatched.' : 'No orders match this filter.'}
                 </p>
               </div>
@@ -105,13 +105,13 @@ export default function DispatchOrderList({
                           )}
                         </div>
                         <div className="text-xs text-stone-700 mt-0.5">{o.customerName}</div>
-                        <div className="text-[10px] text-stone-400">{o.email} · {formatDate(o.createdAt)}</div>
+                        <div className="text-[10px] text-stone-500">{o.email} · {formatDate(o.createdAt)}</div>
                       </div>
                       <div className="text-right shrink-0">
                         <div className="text-xs font-medium text-stone-700">£{o.total.toFixed(2)}</div>
-                        <div className="text-[10px] text-stone-400">{o.shippingLabel}</div>
+                        <div className="text-[10px] text-stone-500">{o.shippingLabel}</div>
                         {o.parcelWeightGrams != null && (
-                          <div className="text-[10px] text-stone-400">
+                          <div className="text-[10px] text-stone-500">
                             {o.parcelWeightGrams}g{o.parcelPackageFormat ? ` · ${o.parcelPackageFormat}` : ''}
                           </div>
                         )}
@@ -206,7 +206,7 @@ export default function DispatchOrderList({
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirm(null)}
-                                  className="text-[9px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                                  className="text-[9px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                                 >
                                   Cancel
                                 </button>
@@ -214,7 +214,7 @@ export default function DispatchOrderList({
                             ) : (
                               <button
                                 onClick={() => setDeleteConfirm(o.orderNumber)}
-                                className="text-[9px] tracking-[0.15em] uppercase border border-stone-200 text-stone-400 px-3 py-1.5 hover:border-red-300 hover:text-red-500 transition-colors"
+                                className="text-[9px] tracking-[0.15em] uppercase border border-stone-200 text-stone-500 px-3 py-1.5 hover:border-red-300 hover:text-red-500 transition-colors"
                               >
                                 Delete Order
                               </button>
@@ -227,7 +227,7 @@ export default function DispatchOrderList({
                     {o.royalMailLabelStatus === 'pending_postage' && (
                       <div className="mt-2 border border-amber-100 bg-amber-50/60 px-3 py-2.5 space-y-2">
                         <p className="text-[10px] text-amber-700 leading-relaxed">
-                          Royal Mail created {o.royalMailOrderId ? <>order <span className="font-mono">#{o.royalMailOrderId}</span></> : 'this shipment'} in Click &amp; Drop, but won&apos;t release a tracking number until postage is paid manually there. Pay for it in Click &amp; Drop, then press &quot;Check Royal Mail Status&quot; above to pull the tracking number in automatically — or paste it below once you have it.
+                          Royal Mail created {o.royalMailOrderId ? <>order <span className="font-mono">#{o.royalMailOrderId}</span></> : 'this shipment'} in Click &amp; Drop, but won&apos;t release a tracking number until postage is paid manually there. Pay for it in Click &amp; Drop, then press &quot;Check Royal Mail Status&quot; above to pull the tracking number in automatically - or paste it below once you have it.
                         </p>
                         {/* Wraps on a phone (task 1fb77058). The box would not
                             shrink below its placeholder, so Save Tracking Number

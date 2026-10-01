@@ -43,7 +43,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
   const code = typeof body.code === 'string' ? body.code.trim().toUpperCase() : '';
   if (!CODE_PATTERN.test(code)) {
     return NextResponse.json(
-      { error: 'Codes must be 3-32 characters — letters, numbers, and hyphens only.' },
+      { error: 'Codes must be 3-32 characters - letters, numbers, and hyphens only.' },
       { status: 400 }
     );
   }

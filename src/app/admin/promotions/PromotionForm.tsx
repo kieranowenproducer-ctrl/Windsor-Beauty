@@ -48,7 +48,7 @@ export default function PromotionForm({
             </p>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label className="flex flex-col gap-1.5 sm:col-span-2">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Title</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Title</span>
                 <input
                   type="text"
                   value={form.title}
@@ -59,7 +59,7 @@ export default function PromotionForm({
                 />
               </label>
               <label className="flex flex-col gap-1.5 sm:col-span-2">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Description</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Description</span>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
@@ -70,7 +70,7 @@ export default function PromotionForm({
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Button Text (optional)</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Button Text (optional)</span>
                 <input
                   type="text"
                   value={form.buttonText}
@@ -80,14 +80,14 @@ export default function PromotionForm({
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Button Link (optional)</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Button Link (optional)</span>
                 <div className="relative">
                   <select
                     value=""
                     onChange={(e) => {
                       if (e.target.value) setForm(prev => ({ ...prev, buttonLink: e.target.value }));
                     }}
-                    className="w-full appearance-none border border-stone-200 bg-white px-3 py-2.5 text-[10px] tracking-[0.1em] uppercase text-stone-400 focus:outline-none focus:border-gold-400 transition-colors cursor-pointer"
+                    className="w-full appearance-none border border-stone-200 bg-white px-3 py-2.5 text-[10px] tracking-[0.1em] uppercase text-stone-500 focus:outline-none focus:border-gold-400 transition-colors cursor-pointer"
                   >
                     <option value="">Quick pick a page&hellip;</option>
                     {KNOWN_PROMOTION_ROUTES.map(route => (
@@ -102,13 +102,13 @@ export default function PromotionForm({
                   placeholder="/shop"
                   className="border border-stone-200 px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors"
                 />
-                <span className="text-[10px] text-stone-400 normal-case tracking-normal">
+                <span className="text-[10px] text-stone-500 normal-case tracking-normal">
                   Must start with &ldquo;/&rdquo; (a page on this site) or be a full https:// link. Leave blank to
                   send shoppers to the Promotion page.
                 </span>
               </label>
               <label className="flex flex-col gap-1.5 sm:col-span-2">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Promotion Type</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Promotion Type</span>
                 <div className="flex flex-wrap gap-4">
                   <label className="flex items-center gap-2 text-xs text-stone-600 font-normal normal-case tracking-normal">
                     <input
@@ -118,7 +118,7 @@ export default function PromotionForm({
                       onChange={() => setForm(prev => ({ ...prev, promotionType: 'informational' }))}
                       className="accent-gold-500"
                     />
-                    Manual promotion — own images, custom text
+                    Manual promotion - own images, custom text
                   </label>
                   <label className="flex items-center gap-2 text-xs text-stone-600 font-normal normal-case tracking-normal">
                     <input
@@ -128,7 +128,7 @@ export default function PromotionForm({
                       onChange={() => setForm(prev => ({ ...prev, promotionType: 'code' }))}
                       className="accent-gold-500"
                     />
-                    Discount code — customer enters a code at checkout
+                    Discount code - customer enters a code at checkout
                   </label>
                   <label className="flex items-center gap-2 text-xs text-stone-600 font-normal normal-case tracking-normal">
                     <input
@@ -138,22 +138,22 @@ export default function PromotionForm({
                       onChange={() => setForm(prev => ({ ...prev, promotionType: 'percentage' }))}
                       className="accent-gold-500"
                     />
-                    Percentage discount — automatic, linked to products
+                    Percentage discount - automatic, linked to products
                   </label>
                 </div>
               </label>
 
               {form.promotionType === 'percentage' && (
                 <div className="sm:col-span-2 border border-gold-100 bg-gold-50/30 p-4 flex flex-col gap-4">
-                  <p className="text-[10px] text-stone-400 normal-case tracking-normal leading-relaxed">
+                  <p className="text-[10px] text-stone-500 normal-case tracking-normal leading-relaxed">
                     Automatically reduces the price of the selected products/categories across the whole site
                     (shop, product pages, basket, checkout) and shows them on the Special Offers page with a
-                    discount badge — no code for customers to enter. Only one percentage discount promotion can
+                    discount badge - no code for customers to enter. Only one percentage discount promotion can
                     be active at a time; activating this one switches any other off.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label className="flex flex-col gap-1.5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Percentage Off</span>
+                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Percentage Off</span>
                       <input
                         type="number"
                         min={1}
@@ -164,7 +164,7 @@ export default function PromotionForm({
                       />
                     </label>
                     <label className="flex flex-col gap-1.5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Applies To</span>
+                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Applies To</span>
                       <select
                         value={form.discountScopeType}
                         onChange={(e) => setForm(prev => ({ ...prev, discountScopeType: e.target.value as 'all' | 'category' | 'product' }))}
@@ -179,7 +179,7 @@ export default function PromotionForm({
 
                   {form.discountScopeType === 'category' && (
                     <div className="flex flex-col gap-1.5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Categories</span>
+                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Categories</span>
                       <div className="flex flex-wrap gap-x-4 gap-y-2 border border-stone-200 bg-white p-3 max-h-40 overflow-y-auto">
                         {allCategories.map((category) => (
                           <label key={category} className="flex items-center gap-1.5 text-xs text-stone-600 font-normal normal-case tracking-normal">
@@ -203,7 +203,7 @@ export default function PromotionForm({
 
                   {form.discountScopeType === 'product' && (
                     <div className="flex flex-col gap-1.5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Products</span>
+                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Products</span>
                       <div className="flex flex-wrap gap-2">
                         <select
                           value={discountProductCategoryFilter}
@@ -225,7 +225,7 @@ export default function PromotionForm({
                       </div>
                       <div className="flex flex-col gap-1.5 border border-stone-200 bg-white p-3 max-h-48 overflow-y-auto">
                         {discountFilteredProducts.length === 0 ? (
-                          <p className="text-[10px] text-stone-400 py-1">No products match this filter.</p>
+                          <p className="text-[10px] text-stone-500 py-1">No products match this filter.</p>
                         ) : discountFilteredProducts.map((product) => (
                           <label key={product.slug} className="flex items-center gap-1.5 text-xs text-stone-600 font-normal normal-case tracking-normal">
                             <input
@@ -244,7 +244,7 @@ export default function PromotionForm({
                         ))}
                       </div>
                       {form.discountScopeProductSlugs.length > 0 && (
-                        <p className="text-[10px] text-stone-400 normal-case tracking-normal">
+                        <p className="text-[10px] text-stone-500 normal-case tracking-normal">
                           {form.discountScopeProductSlugs.length} product{form.discountScopeProductSlugs.length === 1 ? '' : 's'} selected
                           (selections are kept even when the filter above hides them).
                         </p>
@@ -253,12 +253,12 @@ export default function PromotionForm({
                   )}
 
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">
-                      Preview — {discountPreviewProducts.length} product{discountPreviewProducts.length === 1 ? '' : 's'} included
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">
+                      Preview - {discountPreviewProducts.length} product{discountPreviewProducts.length === 1 ? '' : 's'} included
                     </span>
                     <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
                       {discountPreviewProducts.length === 0 ? (
-                        <p className="text-[10px] text-stone-400">No products match this selection yet.</p>
+                        <p className="text-[10px] text-stone-500">No products match this selection yet.</p>
                       ) : discountPreviewProducts.map((p) => (
                         <span key={p.slug} className="text-[10px] text-stone-500 bg-white border border-stone-200 px-2 py-1">
                           {p.name}
@@ -277,15 +277,15 @@ export default function PromotionForm({
                   label={form.promotionType === 'percentage' ? 'Marketing Images (optional)' : 'Promotion Images (optional)'}
                   onUploadingChange={handleUploadingChange}
                 />
-                <p className="text-[10px] text-stone-400 normal-case tracking-normal mt-1.5">
+                <p className="text-[10px] text-stone-500 normal-case tracking-normal mt-1.5">
                   {form.promotionType === 'percentage'
-                    ? 'Optional — the linked products already show on the Special Offers page automatically. Add an image here only if you also want a marketing banner above them.'
-                    : 'Add one image, or several for a swipeable carousel on the Special Offers page. Drag isn’t supported — use Up/Down to reorder.'}
+                    ? 'Optional - the linked products already show on the Special Offers page automatically. Add an image here only if you also want a marketing banner above them.'
+                    : 'Add one image, or several for a swipeable carousel on the Special Offers page. Drag isn’t supported - use Up/Down to reorder.'}
                 </p>
               </div>
               {form.promotionType !== 'percentage' && (
                 <label className="flex flex-col gap-1.5 sm:col-span-2">
-                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">
+                  <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">
                     Discount Code {form.promotionType === 'code' ? '(required)' : '(optional)'}
                   </span>
                   <input
@@ -295,13 +295,13 @@ export default function PromotionForm({
                     placeholder="SUMMER15"
                     className="border border-stone-200 px-3 py-2.5 text-xs uppercase tracking-wider focus:outline-none focus:border-gold-400 transition-colors"
                   />
-                  <span className="text-[10px] text-stone-400 normal-case tracking-normal">
+                  <span className="text-[10px] text-stone-500 normal-case tracking-normal">
                     Shown on the dedicated /promotion page for customers to copy and use at checkout.
                   </span>
                 </label>
               )}
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Start Date (optional)</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Start Date (optional)</span>
                 <input
                   type="datetime-local"
                   value={form.startDate}
@@ -310,7 +310,7 @@ export default function PromotionForm({
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">End Date (optional)</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">End Date (optional)</span>
                 <input
                   type="datetime-local"
                   value={form.endDate}
@@ -325,7 +325,7 @@ export default function PromotionForm({
                   onChange={(e) => setForm(prev => ({ ...prev, active: e.target.checked }))}
                   className="accent-gold-500"
                 />
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Active</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Active</span>
               </label>
               <div className="sm:col-span-2 flex items-center gap-3">
                 <button
@@ -339,7 +339,7 @@ export default function PromotionForm({
                   <button
                     type="button"
                     onClick={cancelEdit}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                   >
                     Cancel
                   </button>

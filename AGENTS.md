@@ -33,3 +33,11 @@ Read [README.md](README.md) first. The short version:
   once in `tailwind.config.js` by redefining the `gold`, `stone` and `white` scales. `gold-700` is plum, `white` is cream.
   Never hard-code a colour; never bring back Windsor Glow's gold on white.
 - What is left to do is listed in `../CODEX-HANDOVER-2026-10-01/00-START-HERE.md`.
+
+## Current follow-up, 1 October 2026
+
+- Customer PayPal payment-link emails are forbidden, including automatic reminders. Keep the direct payment page, on-screen resume link and staff notice.
+- Retired affiliate, referral, loyalty and old launch routes are blocked in `src/proxy.ts`. Their shared data code is retained. Do not re-enable them.
+- Email colours and the holding screen read the shared Tailwind palette. Print documents and QR backgrounds use true white deliberately.
+- Fena is still unconnected. The owner-only 50p draft is recorded in `docs/OWNER-50P-BANK-TEST.md`; it must never ship or send automatic emails.
+- Before publishing run type check, `npm run check`, production build and the relevant `test-beauty-*` checks. The PayPal test requires the private local database.

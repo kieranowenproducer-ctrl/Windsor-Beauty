@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { findOrderByNumber, isDbConfigured } from '@/lib/db';
-import { sendPaypalInstructionsEmail } from '@/lib/paypalInstructionsEmail';
 import { sendPaymentResumeEmail } from '@/lib/paymentResumeEmail';
 import { reportAutomationFailure } from '@/lib/automationFailure';
 
@@ -17,12 +16,8 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
   const resumeUrl = `${siteUrl}/resume-payment/${order.payment_access_token}`;
-  const sent = order.payment_method === 'paypal'
-    ? await sendPaypalInstructionsEmail({ to: order.email, customerName: order.customer_name, orderNumber: order.order_number,
-        items: order.items, subtotal: Number(order.subtotal), discountCode: order.discount_code,
-        discountAmount: Number(order.discount_amount), ruleDiscountAmount: Number(order.rule_discount_amount),
-        shippingLabel: order.shipping_label, shippingCost: Number(order.shipping_cost), paypalFee: Number(order.paypal_fee), total: Number(order.total) })
-    : await sendPaymentResumeEmail({ to: order.email, customerName: order.customer_name, orderNumber: order.order_number, total: Number(order.total), resumeUrl });
+  if (order.payment_method === 'paypal') return NextResponse.json({ error: 'PayPal is paid on the website. No payment link email is sent.' }, { status: 409 });
+  const sent = await sendPaymentResumeEmail({ to: order.email, customerName: order.customer_name, orderNumber: order.order_number, total: Number(order.total), resumeUrl });
   if (!sent) {
     await reportAutomationFailure('customer_email', `The payment reminder for ${order.order_number} was not sent.`, { orderNumber: order.order_number });
     return NextResponse.json({ error: 'The payment email could not be sent.' }, { status: 500 });

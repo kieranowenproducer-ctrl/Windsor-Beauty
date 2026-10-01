@@ -49,7 +49,7 @@ const STATUS_TONE: Record<InvoiceListRow['status'], string> = {
 };
 
 function formatDate(value: string | null) {
-  if (!value) return '—';
+  if (!value) return '-';
   return new Date(value).toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'short', year: 'numeric' });
 }
 
@@ -288,7 +288,7 @@ export default function AdminInvoicesPage() {
           <div className="flex items-start justify-between gap-4 mb-1">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-1">Invoices</h1>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 Manual invoices for wholesale customers, special orders, and backup payment collection.
               </p>
             </div>
@@ -351,7 +351,7 @@ export default function AdminInvoicesPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setSelectedIds(new Set())}
-                    className="text-[9px] tracking-[0.18em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                    className="text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                   >
                     Clear
                   </button>
@@ -456,7 +456,7 @@ export default function AdminInvoicesPage() {
                 {(q || from || to || sort !== 'newest' || status !== 'all') && (
                   <button
                     onClick={() => { setQ(''); setFrom(''); setTo(''); setSort('newest'); setStatus('all'); }}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors px-2 py-1"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors px-2 py-1"
                   >
                     Clear
                   </button>
@@ -474,7 +474,7 @@ export default function AdminInvoicesPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 border-b border-stone-100">
+                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 border-b border-stone-100">
                     <th className="px-6 py-3 w-8">
                       <input
                         type="checkbox"
@@ -498,7 +498,7 @@ export default function AdminInvoicesPage() {
                 <tbody>
                   {invoices && invoices.length === 0 && (
                     <tr>
-                      <td colSpan={10} className="px-6 py-8 text-center text-stone-400">
+                      <td colSpan={10} className="px-6 py-8 text-center text-stone-500">
                         No invoices yet. Create one using the button above.
                       </td>
                     </tr>
@@ -521,8 +521,8 @@ export default function AdminInvoicesPage() {
                       <td className="px-6 py-3 font-mono text-stone-700">{row.invoice_number}</td>
                       <td className="px-6 py-3 text-stone-600">
                         {row.customer_name}
-                        {row.company_name && <span className="text-stone-400"> · {row.company_name}</span>}
-                        <br /><span className="text-stone-400">{row.email}</span>
+                        {row.company_name && <span className="text-stone-500"> · {row.company_name}</span>}
+                        <br /><span className="text-stone-500">{row.email}</span>
                       </td>
                       <td className="px-6 py-3 text-gold-700 font-semibold">£{Number(row.total).toFixed(2)}</td>
                       <td className="px-6 py-3">
@@ -532,13 +532,13 @@ export default function AdminInvoicesPage() {
                         {editedSinceLastSent(row) && (
                           <span
                             className="block mt-1 text-[9px] tracking-[0.1em] uppercase text-red-600 font-semibold"
-                            title="Edited after last sent — the customer's email still has the old amount until you click Resend Payment Link"
+                            title="Edited after last sent - the customer's email still has the old amount until you click Resend Payment Link"
                           >
                             Needs Resend
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-3 text-stone-500 capitalize">{row.payment_method_used ?? '—'}</td>
+                      <td className="px-6 py-3 text-stone-500 capitalize">{row.payment_method_used ?? '-'}</td>
                       <td className="px-6 py-3 text-stone-500">{formatDate(row.due_date)}</td>
                       <td className="px-6 py-3 text-stone-500">{formatDate(row.created_at)}</td>
                       <td className="px-6 py-3" onClick={(e) => e.stopPropagation()}>
@@ -557,7 +557,7 @@ export default function AdminInvoicesPage() {
                             <span className="font-mono text-[11px] text-stone-600">{row.tracking_number}</span>
                           )
                         ) : (
-                          <span className="text-stone-300">—</span>
+                          <span className="text-stone-300">-</span>
                         )}
                       </td>
                       <td className="px-6 py-3 text-right" onClick={(e) => e.stopPropagation()}>
@@ -575,7 +575,7 @@ export default function AdminInvoicesPage() {
                                 </button>
                                 <button
                                   onClick={() => setResendConfirmId(null)}
-                                  className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                                  className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                                 >
                                   Cancel
                                 </button>
@@ -584,7 +584,7 @@ export default function AdminInvoicesPage() {
                               <button
                                 onClick={() => setResendConfirmId(row.id)}
                                 title="Email this customer their payment link again, with all the invoice details"
-                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase whitespace-nowrap text-stone-400 hover:text-gold-700 transition-colors"
+                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase whitespace-nowrap text-stone-500 hover:text-gold-700 transition-colors"
                               >
                                 Resend Payment Link
                               </button>
@@ -593,7 +593,7 @@ export default function AdminInvoicesPage() {
                           {row.order_number && (
                             <Link
                               href={`/admin/orders?search=${encodeURIComponent(row.order_number)}`}
-                              className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                              className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
                             >
                               Order
                             </Link>
@@ -608,7 +608,7 @@ export default function AdminInvoicesPage() {
                             onClick={() => handleDuplicateOne(row.id)}
                             disabled={duplicatingId === row.id}
                             title="Make a new draft with the same details and a new invoice number. This one is not changed."
-                            className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase whitespace-nowrap text-stone-400 hover:text-gold-700 transition-colors disabled:opacity-50"
+                            className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase whitespace-nowrap text-stone-500 hover:text-gold-700 transition-colors disabled:opacity-50"
                           >
                             {duplicatingId === row.id ? 'Copying…' : 'Duplicate'}
                           </button>
@@ -624,7 +624,7 @@ export default function AdminInvoicesPage() {
                               </button>
                               <button
                                 onClick={() => setDeleteConfirmId(null)}
-                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                                className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                               >
                                 Cancel
                               </button>
@@ -632,7 +632,7 @@ export default function AdminInvoicesPage() {
                           ) : (
                             <button
                               onClick={() => setDeleteConfirmId(row.id)}
-                              className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors"
+                              className="p-2 -m-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors"
                             >
                               Delete
                             </button>

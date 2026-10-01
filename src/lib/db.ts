@@ -2588,6 +2588,7 @@ export async function claimDuePaymentReminders(): Promise<OrderRow[]> {
     WITH due AS (
       SELECT order_number FROM orders
       WHERE status IN ('pending', 'awaiting_payment')
+        AND payment_method IS DISTINCT FROM 'paypal'
         AND payment_access_token IS NOT NULL
         AND reservation_expires_at IS NOT NULL
         AND reservation_expires_at > now()

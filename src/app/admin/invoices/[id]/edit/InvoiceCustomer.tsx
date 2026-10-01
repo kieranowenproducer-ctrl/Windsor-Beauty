@@ -49,16 +49,16 @@ export default function InvoiceCustomer({
                 className={INPUT_CLASS}
               />
             </label>
-            <p className="text-[10px] text-stone-400 mt-1">
+            <p className="text-[10px] text-stone-500 mt-1">
               Pick an existing member or someone who has ordered or been invoiced before to fill in their details automatically.
             </p>
             {customerSearchOpen && customerSearch.trim().length >= 2 && (
               <div className="absolute z-20 left-0 right-0 mt-1 bg-white border border-stone-200 shadow-lg max-h-72 overflow-y-auto">
                 {customerSearching && (
-                  <p className="px-3 py-2.5 text-xs text-stone-400">Searching…</p>
+                  <p className="px-3 py-2.5 text-xs text-stone-500">Searching…</p>
                 )}
                 {!customerSearching && customerResults.length === 0 && (
-                  <p className="px-3 py-2.5 text-xs text-stone-400">No matching customer found. Type the details in below.</p>
+                  <p className="px-3 py-2.5 text-xs text-stone-500">No matching customer found. Type the details in below.</p>
                 )}
                 {customerResults.map((c, i) => (
                   <button
@@ -91,7 +91,7 @@ export default function InvoiceCustomer({
                   <button
                     type="button"
                     onClick={() => { setCustomerSearchOpen(false); setCustomerSearch(''); }}
-                    className="w-full text-left px-3 py-2 text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600"
+                    className="w-full text-left px-3 py-2 text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600"
                   >
                     Close
                   </button>

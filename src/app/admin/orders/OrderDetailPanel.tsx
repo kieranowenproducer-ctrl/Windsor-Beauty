@@ -39,17 +39,17 @@ export default function OrderDetailPanel({
                 <div>
                   <button
                     onClick={() => setSelectedOrder(null)}
-                    className="xl:hidden flex items-center gap-2 -ml-1 mb-4 p-1 text-[10px] tracking-[0.18em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                    className="xl:hidden flex items-center gap-2 -ml-1 mb-4 p-1 text-[10px] tracking-[0.18em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                   >
                     &larr; Back to orders
                   </button>
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <p className="text-xs font-mono font-semibold text-stone-700">{selectedOrder.orderNumber}</p>
-                      <p className="text-[9px] text-stone-400">{formatDate(selectedOrder.createdAt)}</p>
+                      <p className="text-[9px] text-stone-500">{formatDate(selectedOrder.createdAt)}</p>
                     </div>
                     <div className="flex flex-col items-end gap-0.5">
-                      <span className={`text-[8px] tracking-wider uppercase px-2 py-0.5 ${STATUS_STYLES[selectedOrder.status] ?? 'bg-stone-50 text-stone-400'}`}>
+                      <span className={`text-[8px] tracking-wider uppercase px-2 py-0.5 ${STATUS_STYLES[selectedOrder.status] ?? 'bg-stone-50 text-stone-500'}`}>
                         {STATUS_LABELS[selectedOrder.status] ?? selectedOrder.status}
                       </span>
                       {selectedOrder.paymentMethod && (
@@ -85,7 +85,7 @@ export default function OrderDetailPanel({
                         {orderFailures.map(f => (
                           <li key={f.id} className="text-[10px] text-stone-700 leading-relaxed">
                             {f.message}
-                            <span className="text-stone-400"> ({formatDate(f.created_at)})</span>
+                            <span className="text-stone-500"> ({formatDate(f.created_at)})</span>
                           </li>
                         ))}
                       </ul>
@@ -119,30 +119,30 @@ export default function OrderDetailPanel({
                     {(selectedOrder.invoiceMessage || selectedOrder.invoiceInternalNotes || selectedOrder.invoiceCustomerNotes) && (
                       <div className="bg-gold-50/60 border border-gold-200 px-3 py-2.5 space-y-2">
                         <p className="text-[9px] tracking-[0.15em] uppercase text-gold-700">
-                          From invoice{selectedOrder.invoiceSubject ? ` — ${selectedOrder.invoiceSubject}` : ''}
+                          From invoice{selectedOrder.invoiceSubject ? ` - ${selectedOrder.invoiceSubject}` : ''}
                         </p>
                         {selectedOrder.invoiceMessage && (
                           <div>
-                            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-0.5">Message to customer</p>
+                            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-0.5">Message to customer</p>
                             <p className="text-stone-700 whitespace-pre-wrap">{selectedOrder.invoiceMessage}</p>
                           </div>
                         )}
                         {selectedOrder.invoiceCustomerNotes && (
                           <div>
-                            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-0.5">Customer-facing notes</p>
+                            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-0.5">Customer-facing notes</p>
                             <p className="text-stone-700 whitespace-pre-wrap">{selectedOrder.invoiceCustomerNotes}</p>
                           </div>
                         )}
                         {selectedOrder.invoiceInternalNotes && (
                           <div>
-                            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-0.5">Internal admin notes</p>
+                            <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-0.5">Internal admin notes</p>
                             <p className="text-stone-700 whitespace-pre-wrap">{selectedOrder.invoiceInternalNotes}</p>
                           </div>
                         )}
                       </div>
                     )}
                     <div>
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Customer</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Customer</p>
                       <p className="text-stone-700">{selectedOrder.customerName}</p>
                       <p className="text-stone-500">
                         <CustomerEmailButton email={selectedOrder.email} customerName={selectedOrder.customerName} />
@@ -155,8 +155,8 @@ export default function OrderDetailPanel({
                         member. Those two used to look identical from here, which is why nobody
                         could answer the question about order WB-63U39T. */}
                     <div>
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">How they ordered</p>
-                      <span className={`inline-block text-[9px] leading-relaxed px-2 py-0.5 ${ACCOUNT_LINK_STYLES[selectedOrder.accountLink] ?? 'bg-stone-50 text-stone-400'}`}>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">How they ordered</p>
+                      <span className={`inline-block text-[9px] leading-relaxed px-2 py-0.5 ${ACCOUNT_LINK_STYLES[selectedOrder.accountLink] ?? 'bg-stone-50 text-stone-500'}`}>
                         {ACCOUNT_LINK_LABELS[selectedOrder.accountLink] ?? selectedOrder.accountLink}
                       </span>
                       {selectedOrder.accountLink === 'email_match' && (
@@ -170,7 +170,7 @@ export default function OrderDetailPanel({
                         day, and an old order has to keep saying what THAT customer agreed to.
                         An order with nothing here says so plainly rather than looking confirmed. */}
                     <div>
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Confirmed before paying</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Confirmed before paying</p>
                       {selectedOrder.checkoutConfirmations?.statements?.length ? (
                         <>
                           <ul className="space-y-1">
@@ -181,7 +181,7 @@ export default function OrderDetailPanel({
                               </li>
                             ))}
                           </ul>
-                          <p className="text-[9px] text-stone-400 mt-1">
+                          <p className="text-[9px] text-stone-500 mt-1">
                             Ticked {new Date(selectedOrder.checkoutConfirmations.confirmedAt).toLocaleString('en-GB', {
                               day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
                             })}
@@ -195,24 +195,24 @@ export default function OrderDetailPanel({
                       )}
                     </div>
                     <div>
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Items</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Items</p>
                       <ul className="space-y-1">
                         {selectedOrder.items.map((item, idx) => (
                           <li key={idx} className="flex justify-between text-stone-600">
-                            <span>{item.quantity} &times; {item.name} <span className="text-stone-400">({item.variant})</span></span>
+                            <span>{item.quantity} &times; {item.name} <span className="text-stone-500">({item.variant})</span></span>
                             <span className="text-stone-500">&pound;{(item.price * item.quantity).toFixed(2)}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
                     <div>
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Delivery Address</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Delivery Address</p>
                       <p className="text-stone-600 leading-relaxed">{selectedOrder.shippingAddress}</p>
-                      <p className="text-stone-400 mt-0.5">{selectedOrder.shippingLabel}</p>
+                      <p className="text-stone-500 mt-0.5">{selectedOrder.shippingLabel}</p>
                     </div>
                     {selectedOrder.appliedRules.length > 0 && (
                       <div>
-                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Promotions Applied</p>
+                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Promotions Applied</p>
                         <ul className="space-y-1">
                           {selectedOrder.appliedRules.map(rule => (
                             <li key={rule.ruleId} className="flex justify-between text-gold-700 gap-3">
@@ -225,13 +225,13 @@ export default function OrderDetailPanel({
                     )}
                     {selectedOrder.ruleDiscountAmount > 0 && (
                       <div>
-                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Rule Discount</p>
+                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Rule Discount</p>
                         <p className="text-stone-600">&minus;&pound;{selectedOrder.ruleDiscountAmount.toFixed(2)}</p>
                       </div>
                     )}
                     {(selectedOrder.discountCode || selectedOrder.discountAmount > 0) && (
                       <div>
-                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">{selectedOrder.discountCode ? 'Discount Code' : 'Discount'}</p>
+                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">{selectedOrder.discountCode ? 'Discount Code' : 'Discount'}</p>
                         <p className="text-stone-600">
                           {selectedOrder.discountCode && <span className="font-mono">{selectedOrder.discountCode}{' '}</span>}
                           &minus;&pound;{selectedOrder.discountAmount.toFixed(2)}
@@ -239,7 +239,7 @@ export default function OrderDetailPanel({
                       </div>
                     )}
                     <div>
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Referral Source</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Referral Source</p>
                       {selectedOrder.qrCampaignSlug ? (
                         <div>
                           <div className="flex items-center gap-1.5 mb-0.5">
@@ -248,10 +248,10 @@ export default function OrderDetailPanel({
                           </div>
                           <div className="flex flex-wrap gap-2 mt-1">
                             {selectedOrder.qrCampaignType && (
-                              <span className="text-[8px] tracking-wider uppercase text-stone-400 bg-stone-50 border border-stone-100 px-1.5 py-0.5">{selectedOrder.qrCampaignType}</span>
+                              <span className="text-[8px] tracking-wider uppercase text-stone-500 bg-stone-50 border border-stone-100 px-1.5 py-0.5">{selectedOrder.qrCampaignType}</span>
                             )}
                             {selectedOrder.qrPartnerName && (
-                              <span className="text-[8px] text-stone-400">{selectedOrder.qrPartnerName}</span>
+                              <span className="text-[8px] text-stone-500">{selectedOrder.qrPartnerName}</span>
                             )}
                           </div>
                           <p className="text-[8px] text-stone-300 font-mono mt-1">/r/{selectedOrder.qrCampaignSlug}</p>
@@ -259,18 +259,18 @@ export default function OrderDetailPanel({
                       ) : (
                         <div className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-stone-200 shrink-0" />
-                          <p className="text-stone-400 text-xs">Direct / No campaign</p>
+                          <p className="text-stone-500 text-xs">Direct / No campaign</p>
                         </div>
                       )}
                     </div>
                     {selectedOrder.paypalFee > 0 && (
                       <div>
-                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">PayPal Processing Fee (3%)</p>
+                        <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">PayPal Processing Fee (3%)</p>
                         <p className="text-stone-600">&pound;{selectedOrder.paypalFee.toFixed(2)}</p>
                       </div>
                     )}
                     <div>
-                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Order Total</p>
+                      <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Order Total</p>
                       <p className="text-base font-semibold text-gold-700">&pound;{selectedOrder.total.toFixed(2)}</p>
                     </div>
                   </div>

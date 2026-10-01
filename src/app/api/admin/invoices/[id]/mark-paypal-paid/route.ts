@@ -51,14 +51,14 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
   const invoice = await findInvoiceById(id);
   if (!invoice) return NextResponse.json({ error: 'Invoice not found.' }, { status: 404 });
   if (!invoice.order_number) {
-    return NextResponse.json({ error: 'This invoice has not been sent yet — no linked order exists.' }, { status: 409 });
+    return NextResponse.json({ error: 'This invoice has not been sent yet - no linked order exists.' }, { status: 409 });
   }
   if (invoice.status === 'paid') {
     return NextResponse.json({ error: 'This invoice is already marked paid.' }, { status: 409 });
   }
 
   const methodLabel = METHOD_LABELS[paymentMethod];
-  const fullNote = note ? `${methodLabel} — ${note}` : `Marked paid manually (${methodLabel})`;
+  const fullNote = note ? `${methodLabel} - ${note}` : `Marked paid manually (${methodLabel})`;
   const result = await markOrderPaidManually(invoice.order_number, fullNote, paymentMethod);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: result.status });

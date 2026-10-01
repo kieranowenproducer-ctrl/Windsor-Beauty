@@ -37,7 +37,7 @@ export default function RulesTable({
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 border-b border-stone-100">
+                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 border-b border-stone-100">
                     <th className="px-6 py-3">Name</th>
                     <th className="px-6 py-3">Type</th>
                     <th className="px-6 py-3">Status</th>
@@ -49,7 +49,7 @@ export default function RulesTable({
                 <tbody>
                   {rules && rules.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center text-stone-400">
+                      <td colSpan={6} className="px-6 py-8 text-center text-stone-500">
                         No automatic promotion rules yet. Create one using the form above.
                       </td>
                     </tr>
@@ -72,14 +72,14 @@ export default function RulesTable({
                             <button
                               onClick={() => toggleRuleActive(row)}
                               className={`text-[10px] tracking-[0.15em] uppercase transition-colors ${
-                                row.active ? 'text-stone-400 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
+                                row.active ? 'text-stone-500 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
                               }`}
                             >
                               {row.active ? 'Deactivate' : 'Activate'}
                             </button>
                             <button
                               onClick={() => startRuleEdit(row)}
-                              className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                              className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
                             >
                               Edit
                             </button>
@@ -95,7 +95,7 @@ export default function RulesTable({
                                 </button>
                                 <button
                                   onClick={() => setRuleDeleteConfirm(null)}
-                                  className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                                  className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                                 >
                                   Cancel
                                 </button>
@@ -103,7 +103,7 @@ export default function RulesTable({
                             ) : (
                               <button
                                 onClick={() => setRuleDeleteConfirm(row.id)}
-                                className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors"
+                                className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors"
                               >
                                 Delete
                               </button>

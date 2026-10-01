@@ -70,7 +70,7 @@ export interface CampaignGuest {
 
 export const DESTINATION_PRESETS = [
   { label: 'Homepage', value: 'https://www.windsorbeauty.co.uk/' },
-  { label: 'Shop — All Products', value: 'https://www.windsorbeauty.co.uk/shop' },
+  { label: 'Shop - All Products', value: 'https://www.windsorbeauty.co.uk/shop' },
   { label: 'Special Offers', value: 'https://www.windsorbeauty.co.uk/promotion' },
   { label: 'Customer Reviews', value: 'https://www.windsorbeauty.co.uk/reviews' },
   { label: 'Contact', value: 'https://www.windsorbeauty.co.uk/contact' },

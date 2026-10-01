@@ -14,7 +14,7 @@ export default function OrderStageSquare({ order, className = '' }: { order: Ord
     <span
       role="img"
       aria-label={`Stage: ${stage.label}. ${stage.detail}`}
-      title={`${stage.label} — ${stage.detail}`}
+      title={`${stage.label} - ${stage.detail}`}
       className={`inline-block w-3 h-3 border shrink-0 ${stage.swatch} ${className}`}
     />
   );

@@ -31,7 +31,7 @@ const PHONE_PATTERN = /^[+\d][\d\s()-]{6,19}$/;
 const ALREADY_MEMBER_MESSAGE =
   'This email is already registered. Please sign in to your account, or use "Forgot password" on the login page if you need to reset it.';
 const CREATED_MESSAGE =
-  'Your Windsor Beauty member account has been created. Check your email to verify your address — once verified, your unique 10% discount code will be sent to you and you will be able to log in straight away.';
+  'Your Windsor Beauty member account has been created. Check your email to verify your address - once verified, your unique 10% discount code will be sent to you and you will be able to log in straight away.';
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');

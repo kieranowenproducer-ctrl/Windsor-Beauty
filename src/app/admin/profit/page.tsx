@@ -191,8 +191,8 @@ export default function ProfitPage() {
               {purchases.map((p) => (
                 <div key={p.id} className="border border-stone-100 bg-white px-3 py-2 rounded">
                   <span className="font-medium text-stone-700">{p.supplier || 'Supplier'}</span>
-                  <span className="text-stone-400"> · {p.purchase_date ?? 'no date'} · shipping {money(p.shipping_cost)}</span>
-                  <span className="text-stone-400"> · {p.lines.reduce((s, l) => s + l.qty, 0)} units{p.update_inventory ? ' · added to inventory' : ''}</span>
+                  <span className="text-stone-500"> · {p.purchase_date ?? 'no date'} · shipping {money(p.shipping_cost)}</span>
+                  <span className="text-stone-500"> · {p.lines.reduce((s, l) => s + l.qty, 0)} units{p.update_inventory ? ' · added to inventory' : ''}</span>
                   <div className="text-stone-500 mt-0.5">{p.lines.map((l) => `${l.slug} ${l.dosage} ×${l.qty} @ ${money(l.blockCost)}`).join(' · ')}</div>
                 </div>
               ))}
@@ -202,7 +202,7 @@ export default function ProfitPage() {
 
         <h2 className="text-sm font-semibold text-stone-800 mt-8">Cost &amp; margin by product</h2>
         {!loaded ? (
-          <p className="text-xs text-stone-400 mt-4">Loading…</p>
+          <p className="text-xs text-stone-500 mt-4">Loading…</p>
         ) : (
           sections.map(({ section, rows }) => {
             const catMargin = rows.reduce((s, r) => { const t = totalCostOf(r.slug, r.dosage); return t !== null ? s + (r.price - t) : s; }, 0);
@@ -215,7 +215,7 @@ export default function ProfitPage() {
                 </div>
                 <table className="w-full mt-2 text-xs">
                   <thead>
-                    <tr className="text-left text-[9px] uppercase tracking-wider text-stone-400 border-b border-stone-200">
+                    <tr className="text-left text-[9px] uppercase tracking-wider text-stone-500 border-b border-stone-200">
                       <th className="py-2">Product</th><th className="py-2 w-14">Size</th>
                       <th className="py-2 w-20 text-right">Sale</th><th className="py-2 w-16 text-right">Stock</th>
                       <th className="py-2 w-24 text-right">Total cost</th>
@@ -248,10 +248,10 @@ export default function ProfitPage() {
                             </td>
                             <td className="py-2 text-stone-500">{r.dosage}</td>
                             <td className="py-2 text-right tabular-nums text-stone-600">{money(r.price)}</td>
-                            <td className={`py-2 text-right tabular-nums ${stock === 0 ? 'text-red-600' : 'text-stone-600'}`}>{typeof stock === 'number' ? stock : '—'}</td>
-                            <td className="py-2 text-right tabular-nums text-stone-700">{total !== null ? money(total) : '—'}</td>
-                            <td className={`py-2 text-right tabular-nums ${margin !== null && margin < 0 ? 'text-red-600' : 'text-stone-700'}`}>{margin !== null ? money(margin) : '—'}</td>
-                            <td className="py-2 text-right tabular-nums text-stone-500">{pct !== null ? `${pct.toFixed(0)}%` : '—'}</td>
+                            <td className={`py-2 text-right tabular-nums ${stock === 0 ? 'text-red-600' : 'text-stone-600'}`}>{typeof stock === 'number' ? stock : '-'}</td>
+                            <td className="py-2 text-right tabular-nums text-stone-700">{total !== null ? money(total) : '-'}</td>
+                            <td className={`py-2 text-right tabular-nums ${margin !== null && margin < 0 ? 'text-red-600' : 'text-stone-700'}`}>{margin !== null ? money(margin) : '-'}</td>
+                            <td className="py-2 text-right tabular-nums text-stone-500">{pct !== null ? `${pct.toFixed(0)}%` : '-'}</td>
                             <td className="py-2 text-right">
                               <button onClick={() => setOpenKey(open ? null : k)} className="text-[10px] uppercase tracking-wider text-gold-700 hover:text-gold-700 font-semibold">{open ? 'Close' : 'Edit'}</button>
                             </td>
@@ -277,7 +277,7 @@ export default function ProfitPage() {
                                   <div className="text-[10px] text-stone-500">Total cost<div className="text-xs tabular-nums font-semibold text-stone-800 mt-1">{money(Math.round(draftTotal * 100) / 100)}</div></div>
                                   <button onClick={() => saveCost(r.slug, r.dosage)} disabled={savingKey === k} className="text-[10px] uppercase tracking-wider bg-gold-700 text-white px-3 py-1.5 hover:bg-gold-800 disabled:opacity-50">{savingKey === k ? 'Saving…' : 'Save'}</button>
                                 </div>
-                                <p className="text-[9px] text-stone-400 mt-2">Raw unit cost + shipping/unit come from bulk purchases (still editable here). Add box, label and any other costs above.</p>
+                                <p className="text-[9px] text-stone-500 mt-2">Raw unit cost + shipping/unit come from bulk purchases (still editable here). Add box, label and any other costs above.</p>
                               </td>
                             </tr>
                           )}
@@ -353,7 +353,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
         <label className="text-[10px] text-stone-500 flex items-center gap-1 self-end pb-1"><input type="checkbox" checked={updateInventory} onChange={(e) => setUpdateInventory(e.target.checked)} /> Add to product inventory</label>
       </div>
       <table className="w-full mt-3 text-xs">
-        <thead><tr className="text-left text-[9px] uppercase tracking-wider text-stone-400"><th className="py-1">Product</th><th className="py-1 w-24">Qty (units)</th><th className="py-1 w-28">Block cost £</th><th className="py-1 w-16" /></tr></thead>
+        <thead><tr className="text-left text-[9px] uppercase tracking-wider text-stone-500"><th className="py-1">Product</th><th className="py-1 w-24">Qty (units)</th><th className="py-1 w-28">Block cost £</th><th className="py-1 w-16" /></tr></thead>
         <tbody>
           {lines.map((l, i) => (
             <tr key={i}>
@@ -365,7 +365,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
               </td>
               <td className="py-1"><input inputMode="numeric" value={l.qty} onChange={(e) => setLine(i, { qty: e.target.value })} className="w-20 border border-stone-200 px-2 py-1 text-xs tabular-nums" /></td>
               <td className="py-1"><input inputMode="decimal" value={l.blockCost} onChange={(e) => setLine(i, { blockCost: e.target.value })} placeholder="145" className="w-24 border border-stone-200 px-2 py-1 text-xs tabular-nums" /></td>
-              <td className="py-1 text-right">{lines.length > 1 && <button onClick={() => setLines((p) => p.filter((_, idx) => idx !== i))} className="text-[10px] text-stone-400 hover:text-red-500">remove</button>}</td>
+              <td className="py-1 text-right">{lines.length > 1 && <button onClick={() => setLines((p) => p.filter((_, idx) => idx !== i))} className="text-[10px] text-stone-500 hover:text-red-500">remove</button>}</td>
             </tr>
           ))}
         </tbody>

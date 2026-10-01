@@ -72,7 +72,7 @@ for (const file of await walk(ROOT)) {
     const expression = match[1];
     if (expression.includes('emailGreeting')) continue;
     // A plain variable is fine when that variable was itself produced by the one function:
-    // the editable PEARL letter writes "Hi {{NAME}}" and fills it from emailGreetingName.
+    // the editable customer letter writes "Hi {{NAME}}" and fills it from emailGreetingName.
     const variable = expression.trim().match(/^escapeHtml\((\w+)\)$|^(\w+)$/);
     const named = variable?.[1] ?? variable?.[2];
     if (named && new RegExp(`(?:const|let) ${named} = emailGreetingName\\(`).test(source)) continue;

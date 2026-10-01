@@ -87,7 +87,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
   const fields = parseInvoiceInput(body, trialProducts);
   if (!fields) {
     return NextResponse.json(
-      { error: 'Invalid invoice data — check the customer name/email are filled in, and every line item has a name with a valid quantity, price, and discount.' },
+      { error: 'Invalid invoice data - check the customer name/email are filled in, and every line item has a name with a valid quantity, price, and discount.' },
       { status: 400 }
     );
   }
@@ -136,7 +136,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
   if (existing.status === 'paid') {
     if (changedFinancials && !adjustment) {
       return NextResponse.json(
-        { error: 'This invoice is paid — financial fields are locked. Use the adjustment override with a reason to change them.' },
+        { error: 'This invoice is paid - financial fields are locked. Use the adjustment override with a reason to change them.' },
         { status: 409 }
       );
     }
@@ -178,7 +178,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
       if (!syncResult.ok) {
         await logAutomationFailure(
           'invoice_order_sync',
-          'Could not sync edited invoice onto linked order — regenerated Fena link may use a stale total or email',
+          'Could not sync edited invoice onto linked order - regenerated Fena link may use a stale total or email',
           { orderNumber: existing.order_number, detail: syncResult.error }
         );
       }

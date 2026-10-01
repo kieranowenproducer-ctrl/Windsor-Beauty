@@ -270,7 +270,7 @@ export async function listInvoices(filters?: InvoiceListFilters): Promise<Invoic
   const db = requireDb();
   const status = filters?.status && filters.status !== 'all' ? filters.status : null;
 
-  // Multi-word search. Kieran, 2026-09-24: typing "Amber Reta" found nothing, because the old query
+  // Multi-word search: typing a customer and product found nothing, because the old query
   // looked for that whole phrase inside one column at a time. Now every word must appear somewhere
   // on the invoice and they can be in different places, so a customer plus a product works.
   // The words are split by the one shared helper Orders uses, so the two screens cannot drift.

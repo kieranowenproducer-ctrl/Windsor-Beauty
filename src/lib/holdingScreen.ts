@@ -18,6 +18,8 @@
 //      is set on the live host. It is a short code for showing people round, not
 //      a lock: anything that must stay private belongs behind the admin sign-in.
 import { NextResponse } from 'next/server';
+import tailwindConfig from '../../tailwind.config.js';
+const brand = tailwindConfig.theme!.extend!.colors as { white: string; gold: Record<number, string>; stone: Record<number, string> };
 
 export function isHoldingScreenOn(): boolean {
   return process.env.MAINTENANCE_MODE !== 'off' && process.env.NODE_ENV !== 'development';
@@ -44,28 +46,29 @@ const page = (wrongCode: boolean) => `<!doctype html>
   html,body{height:100%}
   body{
     min-height:100vh;display:flex;align-items:center;justify-content:center;
-    padding:32px 20px;background:#FBF7F1;color:#2B2723;
+    padding:32px 20px;background:${brand.stone[50]};color:${brand.stone[900]};
     font-family:"Outfit",system-ui,sans-serif;font-weight:300;
     -webkit-font-smoothing:antialiased;text-align:center;
   }
   main{max-width:440px;width:100%}
+  .logo{display:block;width:240px;max-width:100%;height:auto;margin:0 auto 12px}
   .mark{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:34px;letter-spacing:.04em}
-  .sub{margin-top:6px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#8A8278}
-  .rule{width:48px;height:1px;background:#C7A769;margin:36px auto}
+  .sub{margin-top:6px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:${brand.stone[600]}}
+  .rule{width:48px;height:1px;background:${brand.gold[400]};margin:36px auto}
   h1{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:28px;line-height:1.25}
-  p{margin-top:16px;font-size:15px;line-height:1.7;color:#8A8278}
+  p{margin-top:16px;font-size:15px;line-height:1.7;color:${brand.stone[600]}}
   form{margin-top:44px;display:flex;gap:8px;justify-content:center}
   label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  input{width:150px;padding:11px 12px;border:1px solid #E7DECE;background:#fff;color:#2B2723;font:inherit;font-size:14px;letter-spacing:.2em;text-align:center}
-  input:focus{outline:2px solid #C7A769;outline-offset:1px}
-  button{padding:11px 18px;border:0;background:#2B2723;color:#FBF7F1;font:inherit;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
-  button:hover{background:#AD8E54}
+  input{width:150px;padding:11px 12px;border:1px solid ${brand.gold[200]};background:${brand.white};color:${brand.stone[900]};font:inherit;font-size:14px;letter-spacing:.2em;text-align:center}
+  input:focus{outline:2px solid ${brand.gold[400]};outline-offset:1px}
+  button{padding:11px 18px;border:0;background:${brand.gold[700]};color:${brand.white};font:inherit;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+  button:hover{background:${brand.gold[800]}}
   .err{margin-top:12px;font-size:13px;color:#9A3B2E}
 </style>
 </head>
 <body>
 <main>
-  <div class="mark">Windsor Beauty</div>
+  <img class="logo" src="/images/windsor-beauty-logo-transparent.png" alt="Windsor Beauty">
   <div class="sub">Skincare &middot; London</div>
   <div class="rule"></div>
   <h1>We are making a few improvements</h1>

@@ -60,7 +60,7 @@ function DosagePicker({ review }: { review: CertificateReview }) {
         {options.map((option) => {
           const selected = option.dosage === review.shownDosage;
           const tone = !option.hasCertificate
-            ? 'border-stone-200 bg-white text-stone-400'
+            ? 'border-stone-200 bg-[#ffffff] text-stone-400'
             : option.issueCount > 0
               ? 'border-red-300 bg-red-50 text-red-700'
               : 'border-green-300 bg-green-50 text-green-700';
@@ -286,7 +286,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
       <div className="border border-gold-100 mb-8 text-sm">
         {visibleSpecRows.map((row, i) => (
           <ReviewMark key={row.label} issue={row.key ? findIssue(review, row.key) : undefined}>
-            <div className={`flex ${i % 2 === 1 ? 'bg-gold-50/60' : 'bg-white'} ${i > 0 ? 'border-t border-gold-100' : ''}`}>
+            <div className={`flex ${i % 2 === 1 ? 'bg-gold-50/60' : 'bg-[#ffffff]'} ${i > 0 ? 'border-t border-gold-100' : ''}`}>
               <div className="w-2/5 sm:w-1/3 px-4 py-3 font-medium text-stone-500">{row.label}</div>
               <div className="flex-1 px-4 py-3 text-stone-700 leading-relaxed">
                 {row.value || <span className="text-red-700 font-semibold print:hidden">Not filled in</span>}
@@ -306,7 +306,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
           <div className="border border-gold-100 mb-8 text-sm">
             {(cert.verificationSummary ?? []).map((row, i) => (
               <ReviewMark key={i} issue={summaryRowIssue(row.label)}>
-                <div className={`flex ${i % 2 === 1 ? 'bg-gold-50/60' : 'bg-white'} ${i > 0 ? 'border-t border-gold-100' : ''}`}>
+                <div className={`flex ${i % 2 === 1 ? 'bg-gold-50/60' : 'bg-[#ffffff]'} ${i > 0 ? 'border-t border-gold-100' : ''}`}>
                   <div className="w-2/5 sm:w-1/3 px-4 py-3 font-medium text-stone-500">{row.label || 'N/A'}</div>
                   <div className="flex-1 px-4 py-3 text-stone-700 leading-relaxed">{row.value || 'N/A'}</div>
                 </div>
@@ -331,7 +331,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
             </div>
             {cert.testRows.map((row, i) => (
               <ReviewMark key={i} issue={testRowIssue(row.test)}>
-                <div className={`flex ${i % 2 === 1 ? 'bg-gold-50/40' : 'bg-white'} border-t border-gold-100`}>
+                <div className={`flex ${i % 2 === 1 ? 'bg-gold-50/40' : 'bg-[#ffffff]'} border-t border-gold-100`}>
                   <div className="w-2/5 sm:w-1/3 px-4 py-3 font-medium text-stone-600">{row.test}</div>
                   <div className="w-[30%] px-4 py-3 text-stone-500">{row.specification}</div>
                   <div className="flex-1 px-4 py-3 text-stone-700">
@@ -356,7 +356,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
             {cert.analyticalResults.map((row, i) => (
               <div
                 key={i}
-                className={`flex ${i % 2 === 1 ? 'bg-gold-50/60' : 'bg-white'} ${i > 0 ? 'border-t border-gold-100' : ''}`}
+                className={`flex ${i % 2 === 1 ? 'bg-gold-50/60' : 'bg-[#ffffff]'} ${i > 0 ? 'border-t border-gold-100' : ''}`}
               >
                 <div className="w-2/5 sm:w-1/3 px-4 py-3 font-medium text-stone-500">{row.label || 'N/A'}</div>
                 <div className="flex-1 px-4 py-3 text-stone-700 leading-relaxed">{row.value || 'N/A'}</div>
@@ -374,7 +374,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
       {/* Product image */}
       <div className="flex justify-center">
         {!imageError ? (
-          <div className="relative w-full max-w-xs h-56 rounded-md bg-white">
+          <div className="relative w-full max-w-xs h-56 rounded-md bg-[#ffffff]">
             <Image
               src={imageSrc}
               alt={product.name}
@@ -385,7 +385,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
             />
           </div>
         ) : (
-          <div className="w-full max-w-xs h-56 rounded-md bg-white flex flex-col items-center justify-center gap-1">
+          <div className="w-full max-w-xs h-56 rounded-md bg-[#ffffff] flex flex-col items-center justify-center gap-1">
             <span className="text-[9px] tracking-widest text-gold-700 text-center leading-tight font-semibold">
               WINDSOR&nbsp;BEAUTY
             </span>
@@ -468,9 +468,9 @@ export default function CertificateModal({ open, onClose, product, certificate, 
       <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 print:hidden">
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-        <div {...dialog} className="relative bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl outline-none">
+        <div {...dialog} className="relative bg-[#ffffff] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl outline-none">
           {/* Controls */}
-          <div className="sticky top-0 bg-white border-b border-gold-100 px-6 py-3 flex items-center justify-between z-10">
+          <div className="sticky top-0 bg-[#ffffff] border-b border-gold-100 px-6 py-3 flex items-center justify-between z-10">
             <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700">Product Certificate</p>
             <div className="flex items-center gap-4">
               {/* "Fix these 2" used to be a link to the back-office product editor, which left the

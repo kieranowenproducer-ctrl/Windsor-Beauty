@@ -76,7 +76,7 @@ export default function TrialPage() {
             <button
               key={k}
               onClick={() => setTab(k)}
-              className={`px-4 py-2 text-xs font-semibold -mb-px border-b-2 transition-colors ${tab === k ? 'border-gold-500 text-stone-800' : 'border-transparent text-stone-400 hover:text-stone-600'}`}
+              className={`px-4 py-2 text-xs font-semibold -mb-px border-b-2 transition-colors ${tab === k ? 'border-gold-500 text-stone-800' : 'border-transparent text-stone-500 hover:text-stone-600'}`}
             >
               {label}
             </button>
@@ -85,7 +85,7 @@ export default function TrialPage() {
 
         {error && <p className="text-xs text-red-600 mt-3">{error}</p>}
         {!loaded ? (
-          <p className="text-xs text-stone-400 mt-6">Loading…</p>
+          <p className="text-xs text-stone-500 mt-6">Loading…</p>
         ) : tab === 'products' ? (
           <ProductsTab products={products} onEdit={setEditing} onAdd={() => setEditing({ id: 0, productCode: '', name: '', category: '', variants: [blankVariant()], updated_at: '' })} onDelete={remove} />
         ) : (
@@ -111,12 +111,12 @@ function ProductsTab({ products, onEdit, onAdd, onDelete }: { products: TrialPro
     <div className="mt-5">
       <button onClick={onAdd} className="text-[10px] uppercase tracking-wider bg-gold-700 text-white px-4 py-2 hover:bg-gold-800">+ Add trial product</button>
       {products.length === 0 ? (
-        <p className="text-xs text-stone-400 mt-6">No trial products yet. Add one to get started.</p>
+        <p className="text-xs text-stone-500 mt-6">No trial products yet. Add one to get started.</p>
       ) : (
         <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[760px] text-xs">
           <thead>
-            <tr className="text-left text-[9px] uppercase tracking-wider text-stone-400 border-b border-stone-200">
+            <tr className="text-left text-[9px] uppercase tracking-wider text-stone-500 border-b border-stone-200">
               <th className="py-2">Product</th><th className="py-2 w-28">Category</th>
               <th className="py-2 w-40">Sizes</th><th className="py-2 w-16 text-right">Stock</th>
               {/* Read-only permanent code, assigned on creation. */}
@@ -128,14 +128,14 @@ function ProductsTab({ products, onEdit, onAdd, onDelete }: { products: TrialPro
               <tr key={p.id} className="border-b border-stone-100 align-top">
                 <td className="py-2 text-stone-700 font-medium">{p.name}</td>
                 <td className="py-2 text-stone-500">{p.category}</td>
-                <td className="py-2 text-stone-500">{p.variants.map((v) => `${v.dosage || '—'} (${money(num(v.price))})`).join(', ') || '—'}</td>
+                <td className="py-2 text-stone-500">{p.variants.map((v) => `${v.dosage || '-'} (${money(num(v.price))})`).join(', ') || '-'}</td>
                 <td className="py-2 text-right tabular-nums text-stone-600">{p.variants.reduce((s, v) => s + num(v.stock), 0)}</td>
                 <td className="py-2 pl-6 text-stone-500 whitespace-nowrap" title="Permanent code for this Trial product. It is used as its Royal Mail product name.">
                   {trialRoyalMailRef(p.id, p.productCode)}
                 </td>
                 <td className="py-2 text-right">
                   <button onClick={() => onEdit(p)} className="text-[10px] uppercase tracking-wider text-gold-700 hover:text-gold-700 font-semibold mr-3">Edit</button>
-                  <button onClick={() => onDelete(p.id)} className="text-[10px] uppercase tracking-wider text-stone-400 hover:text-red-500">Delete</button>
+                  <button onClick={() => onDelete(p.id)} className="text-[10px] uppercase tracking-wider text-stone-500 hover:text-red-500">Delete</button>
                 </td>
               </tr>
             ))}
@@ -155,7 +155,7 @@ function ProfitTab({ products }: { products: TrialProduct[] }) {
     return Object.keys(bySec).sort().map((section) => ({ section, rows: bySec[section] }));
   }, [products]);
 
-  if (products.length === 0) return <p className="text-xs text-stone-400 mt-6">No trial products yet. Add products in the first tab to see their profitability here.</p>;
+  if (products.length === 0) return <p className="text-xs text-stone-500 mt-6">No trial products yet. Add products in the first tab to see their profitability here.</p>;
 
   return (
     <div className="mt-5">
@@ -171,7 +171,7 @@ function ProfitTab({ products }: { products: TrialProduct[] }) {
             </div>
             <table className="w-full mt-2 text-xs">
               <thead>
-                <tr className="text-left text-[9px] uppercase tracking-wider text-stone-400 border-b border-stone-200">
+                <tr className="text-left text-[9px] uppercase tracking-wider text-stone-500 border-b border-stone-200">
                   <th className="py-2">Product</th><th className="py-2 w-14">Size</th>
                   <th className="py-2 w-20 text-right">Sale</th><th className="py-2 w-16 text-right">Stock</th>
                   <th className="py-2 w-24 text-right">Total cost</th><th className="py-2 w-24 text-right">Margin</th><th className="py-2 w-14 text-right">%</th>
@@ -185,12 +185,12 @@ function ProfitTab({ products }: { products: TrialProduct[] }) {
                   return (
                     <tr key={i} className="border-b border-stone-100">
                       <td className="py-2 text-stone-700">{r.product}</td>
-                      <td className="py-2 text-stone-500">{r.v.dosage || '—'}</td>
+                      <td className="py-2 text-stone-500">{r.v.dosage || '-'}</td>
                       <td className="py-2 text-right tabular-nums text-stone-600">{money(num(r.v.price))}</td>
                       <td className="py-2 text-right tabular-nums text-stone-600">{num(r.v.stock)}</td>
                       <td className="py-2 text-right tabular-nums text-stone-700">{money(cost)}</td>
                       <td className={`py-2 text-right tabular-nums ${margin < 0 ? 'text-red-600' : 'text-stone-700'}`}>{money(margin)}</td>
-                      <td className="py-2 text-right tabular-nums text-stone-500">{pct !== null ? `${pct.toFixed(0)}%` : '—'}</td>
+                      <td className="py-2 text-right tabular-nums text-stone-500">{pct !== null ? `${pct.toFixed(0)}%` : '-'}</td>
                     </tr>
                   );
                 })}
@@ -245,7 +245,7 @@ function Editor({ initial, onClose, onSaved, onError }: { initial: TrialProduct;
       <div className="h-full w-full max-w-2xl bg-white shadow-2xl flex flex-col overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200 sticky top-0 bg-white">
           <h2 className="text-sm font-semibold text-stone-800">{initial.id ? 'Edit trial product' : 'New trial product'}</h2>
-          <button onClick={onClose} className="text-xs text-stone-400 hover:text-stone-700">Close</button>
+          <button onClick={onClose} className="text-xs text-stone-500 hover:text-stone-700">Close</button>
         </div>
         <div className="px-6 py-5 space-y-4">
           <p className="text-xs text-stone-500">
@@ -263,7 +263,7 @@ function Editor({ initial, onClose, onSaved, onError }: { initial: TrialProduct;
           </div>
 
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Sizes</p>
+            <p className="text-[10px] uppercase tracking-wider text-stone-500 mb-2">Sizes</p>
             <div className="space-y-4">
               {variants.map((v, i) => (
                 <div key={i} className="border border-stone-200 p-3">
@@ -273,13 +273,13 @@ function Editor({ initial, onClose, onSaved, onError }: { initial: TrialProduct;
                     <label className="text-[10px] text-stone-500">Stock<input inputMode="numeric" value={v.stock} onChange={(e) => setV(i, { stock: e.target.value })} className="block w-16 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
                     <label className="text-[10px] text-stone-500">Raw cost £<input inputMode="decimal" value={v.rawCost} onChange={(e) => setV(i, { rawCost: e.target.value })} className="block w-20 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
                     <label className="text-[10px] text-stone-500">Shipping/unit £<input inputMode="decimal" value={v.shipping} onChange={(e) => setV(i, { shipping: e.target.value })} className="block w-20 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
-                    {variants.length > 1 && <button onClick={() => setVariants((p) => p.filter((_, idx) => idx !== i))} className="text-[10px] text-stone-400 hover:text-red-500 pb-1">remove</button>}
+                    {variants.length > 1 && <button onClick={() => setVariants((p) => p.filter((_, idx) => idx !== i))} className="text-[10px] text-stone-500 hover:text-red-500 pb-1">remove</button>}
                   </div>
                   <div className="flex flex-wrap gap-3 mt-2">
                     {v.components.map((c, ci) => (
                       <div key={ci} className="flex items-end gap-1">
-                        <label className="text-[10px] text-stone-400">Cost name<input value={c.label} placeholder={ci === 0 ? 'Box' : ci === 1 ? 'Label' : 'name'} onChange={(e) => setComp(i, ci, { label: e.target.value })} className="block w-24 border border-stone-200 px-2 py-1 text-xs mt-0.5" /></label>
-                        <label className="text-[10px] text-stone-400">£<input inputMode="decimal" value={c.amount} onChange={(e) => setComp(i, ci, { amount: e.target.value })} className="block w-16 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
+                        <label className="text-[10px] text-stone-500">Cost name<input value={c.label} placeholder={ci === 0 ? 'Box' : ci === 1 ? 'Label' : 'name'} onChange={(e) => setComp(i, ci, { label: e.target.value })} className="block w-24 border border-stone-200 px-2 py-1 text-xs mt-0.5" /></label>
+                        <label className="text-[10px] text-stone-500">£<input inputMode="decimal" value={c.amount} onChange={(e) => setComp(i, ci, { amount: e.target.value })} className="block w-16 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
                       </div>
                     ))}
                     <div className="text-[10px] text-stone-500 self-end pb-1">Total cost <span className="text-xs tabular-nums font-semibold text-stone-800">{money(totalCost(v))}</span></div>

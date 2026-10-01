@@ -68,7 +68,7 @@ export default function AccountRegisterPage() {
           </p>}
           {!createdEmailVerified && <p className="text-sm text-stone-600 leading-relaxed mb-5">
             Your Windsor Beauty account has been created. We have sent a verification link to your
-            email address &mdash; click it to confirm your account and unlock your 10% first-order
+            email address - click it to confirm your account and unlock your 10% first-order
             discount code, which we will email to you straight away.
           </p>}
           {!createdEmailVerified && <p className="text-[10px] text-stone-500 leading-relaxed mb-6">

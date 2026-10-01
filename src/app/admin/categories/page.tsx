@@ -201,7 +201,7 @@ export default function AdminCategoriesPage() {
       <main className="flex-1 p-8 overflow-clip">
         <div className="max-w-2xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Categories</h1>
-          <p className="text-xs text-stone-400 mb-8">
+          <p className="text-xs text-stone-500 mb-8">
             Create, rename, reorder, enable/disable, and delete catalogue categories. Disabled categories are
             hidden from the shop&apos;s navigation and filters but stay assigned to their products. A
             category can only be deleted once no products use it.
@@ -297,7 +297,7 @@ export default function AdminCategoriesPage() {
                           <button
                             onClick={cancelEdit}
                             disabled={renaming === row.category}
-                            className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 border border-stone-200 text-stone-400 hover:border-stone-300 transition-colors disabled:opacity-50 shrink-0"
+                            className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 border border-stone-200 text-stone-500 hover:border-stone-300 transition-colors disabled:opacity-50 shrink-0"
                           >
                             Cancel
                           </button>
@@ -318,7 +318,7 @@ export default function AdminCategoriesPage() {
                         </button>
                       </div>
                     )}
-                    <p className="text-[10px] text-stone-400 mt-0.5">
+                    <p className="text-[10px] text-stone-500 mt-0.5">
                       {row.productCount} product{row.productCount !== 1 ? 's' : ''} ·{' '}
                       {row.enabled ? 'Visible in shop navigation and filters' : 'Hidden from shop navigation and filters'}
                       {/* The reason Delete is greyed out, written on the screen. It used to be
@@ -338,7 +338,7 @@ export default function AdminCategoriesPage() {
                       className={`text-[10px] tracking-[0.15em] uppercase px-4 py-2 border transition-colors disabled:opacity-50 ${
                         row.enabled
                           ? 'border-gold-300 text-gold-700 hover:border-gold-500 hover:bg-gold-50'
-                          : 'border-stone-200 text-stone-400 hover:border-stone-300'
+                          : 'border-stone-200 text-stone-500 hover:border-stone-300'
                       }`}
                     >
                       {toggling === row.category ? 'Saving…' : row.enabled ? 'Hide from shop' : 'Show in shop'}
@@ -347,7 +347,7 @@ export default function AdminCategoriesPage() {
                       onClick={() => handleDelete(row)}
                       disabled={row.productCount > 0 || deleting === row.category}
                       title={row.productCount > 0 ? 'Remove this category from all products before deleting it.' : 'Delete category'}
-                      className="text-[10px] tracking-[0.15em] uppercase px-4 py-2 border border-stone-200 text-stone-400 hover:border-red-300 hover:text-red-400 transition-colors disabled:opacity-30 disabled:hover:border-stone-200 disabled:hover:text-stone-400"
+                      className="text-[10px] tracking-[0.15em] uppercase px-4 py-2 border border-stone-200 text-stone-500 hover:border-red-300 hover:text-red-400 transition-colors disabled:opacity-30 disabled:hover:border-stone-200 disabled:hover:text-stone-500"
                     >
                       {deleting === row.category ? 'Deleting…' : 'Delete'}
                     </button>

@@ -37,7 +37,7 @@ export default function PromotionsTable({
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 border-b border-stone-100">
+                  <tr className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-500 border-b border-stone-100">
                     <th className="px-6 py-3">Title</th>
                     <th className="px-6 py-3">Type</th>
                     <th className="px-6 py-3">Status</th>
@@ -49,7 +49,7 @@ export default function PromotionsTable({
                 <tbody>
                   {promotions && promotions.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center text-stone-400">
+                      <td colSpan={6} className="px-6 py-8 text-center text-stone-500">
                         No promotions yet. Create one using the form above.
                       </td>
                     </tr>
@@ -61,7 +61,7 @@ export default function PromotionsTable({
                         <td className="px-6 py-3 text-stone-700 font-medium">{row.title}</td>
                         <td className="px-6 py-3 text-stone-500">
                           {row.promotion_type === 'code'
-                            ? `Code (${row.discount_code ?? '—'})`
+                            ? `Code (${row.discount_code ?? '-'})`
                             : row.promotion_type === 'percentage'
                               ? `Percentage (${row.discount_percent ?? 0}% off)`
                               : 'Manual'}
@@ -78,14 +78,14 @@ export default function PromotionsTable({
                             <button
                               onClick={() => toggleActive(row)}
                               className={`text-[10px] tracking-[0.15em] uppercase transition-colors ${
-                                row.active ? 'text-stone-400 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
+                                row.active ? 'text-stone-500 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
                               }`}
                             >
                               {row.active ? 'Deactivate' : 'Activate'}
                             </button>
                             <button
                               onClick={() => startEdit(row)}
-                              className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-gold-700 transition-colors"
+                              className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-gold-700 transition-colors"
                             >
                               Edit
                             </button>
@@ -101,7 +101,7 @@ export default function PromotionsTable({
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirm(null)}
-                                  className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-stone-600 transition-colors"
+                                  className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-600 transition-colors"
                                 >
                                   Cancel
                                 </button>
@@ -109,7 +109,7 @@ export default function PromotionsTable({
                             ) : (
                               <button
                                 onClick={() => setDeleteConfirm(row.id)}
-                                className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-500 transition-colors"
+                                className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-500 transition-colors"
                               >
                                 Delete
                               </button>

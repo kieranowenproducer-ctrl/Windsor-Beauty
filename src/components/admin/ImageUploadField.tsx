@@ -87,7 +87,7 @@ export default function ImageUploadField({ value, onChange, fallbackSrc, fallbac
 
   return (
     <div>
-      <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-2">{fieldLabel}</label>
+      <label className="block text-[8px] tracking-widest uppercase text-stone-500 mb-2">{fieldLabel}</label>
       <div className="flex items-center gap-3">
         <div className="relative w-16 h-16 border border-stone-200 bg-stone-50 overflow-hidden shrink-0 flex items-center justify-center">
           {previewSrc ? (
@@ -146,7 +146,7 @@ export default function ImageUploadField({ value, onChange, fallbackSrc, fallbac
             </button>
           )}
           {showingFallback && (
-            <p className="text-[9px] text-stone-400 mt-1.5 leading-relaxed">
+            <p className="text-[9px] text-stone-500 mt-1.5 leading-relaxed">
               Showing the existing photo at <span className="font-mono">{fallbackSrc}</span>. Uploading a new one here will replace it on the live site.
             </p>
           )}

@@ -365,7 +365,7 @@ export default function AdminSidebar({ previewMode = false }: { previewMode?: bo
         <nav className="flex-1 px-3 py-3">
           <div className="relative mb-3">
             <label htmlFor="admin-nav-search" className="sr-only">Search admin pages</label>
-            <svg aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <svg aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8">
               <circle cx="8.5" cy="8.5" r="5.25" />
               <path d="m12.5 12.5 4 4" strokeLinecap="round" />
             </svg>
@@ -377,14 +377,14 @@ export default function AdminSidebar({ previewMode = false }: { previewMode?: bo
               onChange={(event) => setNavSearch(event.target.value)}
               placeholder="Find an admin page"
               autoComplete="off"
-              className="h-10 w-full rounded-lg border border-stone-200 bg-stone-50 pl-9 pr-9 text-xs text-stone-800 outline-none transition-colors placeholder:text-stone-400 focus:border-gold-600 focus:bg-white focus:ring-2 focus:ring-gold-200"
+              className="h-10 w-full rounded-lg border border-stone-200 bg-stone-50 pl-9 pr-9 text-xs text-stone-800 outline-none transition-colors placeholder:text-stone-500 focus:border-gold-600 focus:bg-white focus:ring-2 focus:ring-gold-200"
             />
             {navSearch && (
               <button
                 type="button"
                 onClick={() => { setNavSearch(''); searchRef.current?.focus(); }}
                 aria-label="Clear admin search"
-                className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-stone-400 hover:bg-stone-100 hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
+                className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-stone-500 hover:bg-stone-100 hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
               >
                 <span aria-hidden>&times;</span>
               </button>

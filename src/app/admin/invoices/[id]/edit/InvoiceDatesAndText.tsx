@@ -51,7 +51,7 @@ export default function InvoiceDatesAndText({
           </div>
           <label className="flex flex-col gap-1.5 mb-4">
             <span className={LABEL_CLASS}>Subject / Header Text</span>
-            <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Wholesale order — June restock" className={INPUT_CLASS} />
+            <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Wholesale order - June restock" className={INPUT_CLASS} />
           </label>
           <label className="flex flex-col gap-1.5 mb-4">
             <span className={LABEL_CLASS}>Message to Customer</span>

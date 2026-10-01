@@ -40,9 +40,9 @@ function money(value: number) {
 }
 
 function shortDate(value: string | null) {
-  if (!value) return '—';
+  if (!value) return '-';
   const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' });
+  return Number.isNaN(d.getTime()) ? '-' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' });
 }
 
 export default function FindCustomersPage() {
@@ -134,7 +134,7 @@ export default function FindCustomersPage() {
           <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
             <div>
               <h1 className="text-lg font-semibold text-stone-800 mb-0.5">Find Customers</h1>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-500">
                 Pick who you want, tick them, then email or export them.
               </p>
             </div>
@@ -279,13 +279,13 @@ export default function FindCustomersPage() {
 
               {result.products.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-stone-100">
-                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-400 mb-2">
+                  <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">
                     What this group buys
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {result.products.slice(0, 12).map(p => (
                       <span key={p.name} className="text-[10px] border border-stone-200 bg-stone-50 text-stone-600 px-2.5 py-1">
-                        {p.name} <span className="text-stone-400">· {p.units} sold to {p.buyers}</span>
+                        {p.name} <span className="text-stone-500">· {p.units} sold to {p.buyers}</span>
                       </span>
                     ))}
                   </div>
@@ -310,7 +310,7 @@ export default function FindCustomersPage() {
                       />
                     </th>
                     {['Customer', 'Where', 'How they heard', 'Orders', 'Spent', 'Joined'].map(h => (
-                      <th key={h} className="px-4 py-3 text-[9px] tracking-[0.18em] uppercase text-stone-400 font-semibold whitespace-nowrap">
+                      <th key={h} className="px-4 py-3 text-[9px] tracking-[0.18em] uppercase text-stone-500 font-semibold whitespace-nowrap">
                         {h}
                       </th>
                     ))}
@@ -318,10 +318,10 @@ export default function FindCustomersPage() {
                 </thead>
                 <tbody className="divide-y divide-stone-50">
                   {loading && (
-                    <tr><td colSpan={7} className="px-4 py-8 text-xs text-stone-400">Looking...</td></tr>
+                    <tr><td colSpan={7} className="px-4 py-8 text-xs text-stone-500">Looking...</td></tr>
                   )}
                   {!loading && customers.length === 0 && !error && (
-                    <tr><td colSpan={7} className="px-4 py-8 text-xs text-stone-400">
+                    <tr><td colSpan={7} className="px-4 py-8 text-xs text-stone-500">
                       Nobody matches that. Try widening it.
                     </td></tr>
                   )}
@@ -340,22 +340,22 @@ export default function FindCustomersPage() {
                         <Link href={`/admin/customers/${c.id}`} className="text-[11px] font-semibold text-stone-700 hover:text-gold-700 transition-colors">
                           {c.name || c.email}
                         </Link>
-                        <p className="text-[10px] text-stone-400">{c.email}</p>
+                        <p className="text-[10px] text-stone-500">{c.email}</p>
                         {!c.canBeEmailed && (
                           <p className="text-[9px] text-amber-600 mt-0.5">Cannot be emailed</p>
                         )}
                       </td>
                       <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">
-                        {c.town || '—'}
-                        {c.postcode && <span className="text-stone-400"> · {c.postcode}</span>}
+                        {c.town || '-'}
+                        {c.postcode && <span className="text-stone-500"> · {c.postcode}</span>}
                       </td>
                       <td className="px-4 py-3 text-[10px] text-stone-500 max-w-[220px]">
-                        <span className="block truncate">{c.referredBy || '—'}</span>
+                        <span className="block truncate">{c.referredBy || '-'}</span>
                         {c.campaign && <span className="block truncate text-gold-700">{c.campaign}</span>}
                       </td>
                       <td className="px-4 py-3 text-[11px] text-stone-600">{c.orderCount}</td>
                       <td className="px-4 py-3 text-[11px] text-stone-600 whitespace-nowrap">{money(c.totalSpent)}</td>
-                      <td className="px-4 py-3 text-[10px] text-stone-400 whitespace-nowrap">{shortDate(c.createdAt)}</td>
+                      <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">{shortDate(c.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -376,7 +376,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
     <div>
       <label className="block text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-1">{label}</label>
       {children}
-      {hint && <p className="text-[10px] text-stone-400 mt-1 leading-snug">{hint}</p>}
+      {hint && <p className="text-[10px] text-stone-500 mt-1 leading-snug">{hint}</p>}
     </div>
   );
 }

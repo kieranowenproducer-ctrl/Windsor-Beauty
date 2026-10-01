@@ -27,6 +27,29 @@ export interface PaymentLinkEmailParams {
 export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false;
 
+  try {
+    const { id, error } = await sendEmail(buildPaymentLinkEmail(params), {
+      // Filed under the customer automatically (task ce308493). This says which order it is
+      // about and what kind of email it is, so the history reads as English and the orders
+      // screen can find the very email it sent.
+      filing: { orderRef: params.orderNumber, emailType: 'payment_link' },
+    });
+
+    if (error) {
+      console.error('[paymentLinkEmail] Resend error:', error);
+      return false;
+    }
+    if (id) {
+    }
+    return true;
+  } catch (err) {
+    console.error('[paymentLinkEmail] send threw:', err);
+    return false;
+  }
+}
+
+export function buildPaymentLinkEmail(params: PaymentLinkEmailParams) {
+
   const amount = `£${Number(params.total).toFixed(2)}`;
   const subject = `Your payment link for order ${params.orderNumber}`;
 
@@ -40,8 +63,8 @@ export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Prom
     `and we will send you a new one.\n\n` +
     `Thanks,\nWindsor Beauty`;
 
-  try {
-    const { id, error } = await sendEmail({
+
+  return {
       from: FROM_ADDRESS,
       // Replies reach a person. This email is the one a customer is most likely
       // to answer, because they are already stuck.
@@ -84,22 +107,5 @@ export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Prom
           </td>
         </tr>`,
       }),
-    }, {
-      // Filed under the customer automatically (task ce308493). This says which order it is
-      // about and what kind of email it is, so the history reads as English and the orders
-      // screen can find the very email it sent.
-      filing: { orderRef: params.orderNumber, emailType: 'payment_link' },
-    });
-
-    if (error) {
-      console.error('[paymentLinkEmail] Resend error:', error);
-      return false;
-    }
-    if (id) {
-    }
-    return true;
-  } catch (err) {
-    console.error('[paymentLinkEmail] send threw:', err);
-    return false;
-  }
+    };
 }

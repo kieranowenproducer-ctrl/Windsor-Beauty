@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { findOrderByNumber, isDbConfigured, type OrderRow } from '@/lib/db';
 import { createFenaPaymentLink } from '@/lib/fena';
 import { sendPaymentLinkEmail } from '@/lib/paymentLinkEmail';
-import { sendPaypalInstructionsEmail, buildPaypalLink } from '@/lib/paypalInstructionsEmail';
+import { buildPaypalLink } from '@/lib/paypalInstructionsEmail';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,38 +67,8 @@ export async function POST(request: Request, props: { params: Promise<{ orderNum
 
   if (via === 'paypal') {
     const paymentUrl = buildPaypalLink(order.order_number, Number(order.total));
-    const emailSent = await sendPaypalInstructionsEmail({
-      to:                 order.email,
-      customerName:       order.customer_name,
-      orderNumber:        order.order_number,
-      items:              order.items,
-      subtotal:           Number(order.subtotal),
-      discountCode:       order.discount_code,
-      discountAmount:     Number(order.discount_amount),
-      ruleDiscountAmount: Number(order.rule_discount_amount),
-      shippingLabel:      order.shipping_label,
-      shippingCost:       Number(order.shipping_cost),
-      paypalFee:          Number(order.paypal_fee),
-      total:              Number(order.total),
-    }).catch(err => {
-      console.error('[resend-payment-link] PayPal email failed:', err);
-      return false;
-    });
-
-    if (!emailSent) {
-      return NextResponse.json(
-        { error: 'The PayPal instructions would not send. The link below still works, so you can paste it into a reply.', paymentUrl },
-        { status: 502 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      via,
-      paymentUrl,
-      sentTo: order.email,
-      message: `PayPal instructions sent to ${order.email}.`,
-    });
+    if (!paymentUrl) return NextResponse.json({ error: 'PayPal is not connected yet.' }, { status: 503 });
+    return NextResponse.json({ success: true, via, paymentUrl, message: 'Open PayPal to pay. No payment link email was sent.' });
   }
 
   const link = await createFenaPaymentLink(order.order_number);

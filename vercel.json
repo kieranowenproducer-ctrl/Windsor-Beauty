@@ -15,10 +15,6 @@
     {
       "path": "/api/cron/unpaid-orders",
       "schedule": "15 * * * *"
-    },
-    {
-      "path": "/api/cron/affiliate-code-reminders",
-      "schedule": "30 9 * * *"
     }
   ]
 }

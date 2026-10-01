@@ -9,33 +9,24 @@
 // still labels it "Proxy (Middleware)".
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { isWallUp } from '@/lib/launchWindow';
 import { isHoldingScreenOn, holdingResponse, previewAccessCode, PREVIEW_COOKIE } from '@/lib/holdingScreen';
 
 const ADMIN_COOKIE = 'wb_admin_session';
 const CUSTOMER_COOKIE = 'wb_customer_session';
-const LAUNCH_COOKIE = 'wb_launch_access';
+// These inherited features are not part of Windsor Beauty. Keep their shared
+// code intact, but reject every page and action, including staff and demo URLs.
+const RETIRED_ROUTE_PREFIXES = [
+  '/coming-soon', '/api/launch', '/api/admin/launch',
+  '/raf-invite', '/refer', '/glow-card-terms',
+  '/account/glow-card', '/account/affiliate',
+  '/admin/affiliates', '/admin/member-referrals',
+  '/api/admin/affiliates', '/api/admin/member-referrals',
+  '/api/account/affiliate', '/api/account/referrals',
+  '/api/affiliate-invitation', '/api/affiliate-request',
+  '/api/cron/affiliate-code-reminders',
+];
 
-// Temporary pre-launch wall — set while the site is being finished. See
-// /coming-soon and /api/launch/* for the rest of this system. The decision of
-// whether the wall is up lives in lib/launchWindow so this file and the
-// countdown endpoint can never drift apart.
-const LAUNCH_ACCESS_CODE = process.env.LAUNCH_ACCESS_CODE;
-
-// Redirects that carry the launch state must never be cached — by the browser,
-// by Vercel's edge, or by anything in between. A cached "/ -> /coming-soon"
-// would keep a customer walled out long after the site opened, which is the
-// single worst failure this system can produce.
-function uncached(response: NextResponse): NextResponse {
-  response.headers.set('Cache-Control', 'no-store, must-revalidate');
-  return response;
-}
-
-// /account/verify-email and /account/create-password are EMAIL-LINK
-// destinations — they are routinely opened in a browser with no session
-// cookie (different device, fresh profile) and must never bounce to the
-// login page. Second root cause of the "verification link doesn't work"
-// reports (the first was the coming-soon wall, below).
+// Email links and sign-in pages do not need a customer session.
 const ACCOUNT_PUBLIC_PATHS = [
   '/account/login',
   '/account/register',
@@ -45,50 +36,7 @@ const ACCOUNT_PUBLIC_PATHS = [
   '/account/create-password',
 ];
 
-// Pages that must work even while the coming-soon wall is up. Two groups:
-// 1. Email-link destinations — a customer who registers on the coming-soon
-//    page is sent /account/verify-email and /account/reset-password links;
-//    without these exemptions the wall bounced those clicks back to
-//    /coming-soon and the links appeared "broken" (real launch-blocking bug).
-//    /account is included so "Go to my account" after verifying works and
-//    members can log in pre-launch, exactly as the sign-up copy promises.
-// 2. Legal + payment pages — invoice emails point customers at /pay/<token>
-//    and /terms before the site is public; policies must always be readable
-//    before someone pays. These URLs are permanent, so nothing about the
-//    payment/terms flow changes at launch — the wall simply disappears.
-const WALL_EXEMPT_PREFIXES = [
-  '/account',
-  '/raf-invite',
-  // QR campaign short links (/r/<slug>). Printed posters (e.g. Physique Architect
-  // Gyms) are already in the wild — without this exemption the wall bounced
-  // scanners to /coming-soon BEFORE the campaign redirect could fire, so no scan
-  // was recorded, no attribution cookie set, and no bespoke poster shown. The
-  // redirect destination (/account/register) is already exempt, so the full
-  // register-and-redeem flow works pre-launch, exactly like the email links above.
-  '/r',
-  '/pay',
-  '/terms',
-  '/privacy',
-  '/refund-policy',
-  '/returns',
-  '/shipping',
-  '/disclaimer',
-  '/payment-policy',
-  '/contact-policy',
-  '/cookies',
-  '/unsubscribe',
-];
-
-function isWallExempt(pathname: string): boolean {
-  return WALL_EXEMPT_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
-  );
-}
-
-// Anything that looks like a static asset bypasses every gate below — the
-// coming-soon page itself needs its logo/fonts/etc to load, and these were
-// never meant to be routed through page-level auth/wall logic anyway.
-// The only files served to the public while the holding screen is up.
+// Images and fonts used by the holding screen may load before sign-in.
 const HOLDING_SAFE_ASSET_PATTERN = /\.(png|jpg|jpeg|svg|webp|ico|woff2?)$/i;
 
 const STATIC_FILE_PATTERN = /\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|map|txt|xml|woff2?|ttf|otf|json)$/i;
@@ -180,18 +128,14 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  if (!isAdminPath && STATIC_FILE_PATTERN.test(pathname)) {
-    return NextResponse.next();
+  if (RETIRED_ROUTE_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`))) {
+    return new NextResponse('This page is not available.', {
+      status: 404, headers: { 'Cache-Control': 'no-store' },
+    });
   }
 
-  // /coming-soon exists only while the wall is up. Once the site is open it
-  // must not be reachable at all: bookmarks, an open tab that reloads, a link
-  // shared during the pre-launch period and anything holding a stale URL all
-  // land on the live homepage instead. Without this, "the countdown page" stays
-  // servable forever and customers can still end up staring at it after launch.
-  if (pathname === '/coming-soon') {
-    if (isWallUp()) return uncached(NextResponse.next());
-    return uncached(NextResponse.redirect(new URL('/', request.url)));
+  if (!isAdminPath && STATIC_FILE_PATTERN.test(pathname)) {
+    return NextResponse.next();
   }
 
   // Allow login page and the login API through
@@ -235,25 +179,9 @@ export function proxy(request: NextRequest) {
     return withUiHint(request, response);
   }
 
-  // Every other backend/API route (Fena, PayPal, Royal Mail, email, the
-  // launch sign-up/unlock endpoints themselves, etc.) always works,
-  // regardless of the coming-soon wall — it only ever gates pages.
+  // Remaining APIs have passed the holding screen and enforce their own access checks.
   if (pathname.startsWith('/api/')) {
     return NextResponse.next();
-  }
-
-  // Coming-soon wall — active until the go-live instant passes (see isWallUp).
-  // Applies to every remaining public page (home, shop, checkout, account,
-  // etc.); once unlocked the cookie persists so visitors aren't asked again.
-  if (isWallUp() && !isWallExempt(pathname)) {
-    const unlocked = request.cookies.get(LAUNCH_COOKIE);
-    // A logged-in admin is never walled: clicking Shop from the admin panel
-    // should show the shop, not the coming-soon page.
-    const adminToken = process.env.ADMIN_SESSION_TOKEN;
-    const isAdmin = Boolean(adminToken && request.cookies.get(ADMIN_COOKIE)?.value === adminToken);
-    if (unlocked?.value !== LAUNCH_ACCESS_CODE && !isAdmin) {
-      return uncached(NextResponse.redirect(new URL('/coming-soon', request.url)));
-    }
   }
 
   // Customer account area — sign-in/registration stay open, the rest requires a session

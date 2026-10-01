@@ -162,7 +162,7 @@ export default function ProductFilterBar({
             </div>
             {/* Travels with the filters on purpose: a filter that is always on screen has to show
                 its own effect, or you cannot tell a narrow filter from an empty catalogue. */}
-            <span className="text-[10px] text-stone-400 tracking-wider sm:ml-auto shrink-0">
+            <span className="text-[10px] text-stone-500 tracking-wider sm:ml-auto shrink-0">
               {filtered.length} of {products.length} products
             </span>
           </div>

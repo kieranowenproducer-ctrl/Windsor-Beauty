@@ -47,25 +47,25 @@ export default function OrdersTable({
                     </th>
                     {/* The stage square (task 41a3910f). First column after the tick box, because
                         the whole point of it is to be the thing you see without reading. */}
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-2 py-3 w-6">
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-2 py-3 w-6">
                       <span className="sr-only">Stage</span>
                     </th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Order</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Customer</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Total</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Status</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Order</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Customer</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Total</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={6} className="text-center text-xs text-stone-400 py-10">
+                      <td colSpan={6} className="text-center text-xs text-stone-500 py-10">
                         Loading orders…
                       </td>
                     </tr>
                   ) : filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="text-center text-xs text-stone-400 py-10">
+                      <td colSpan={6} className="text-center text-xs text-stone-500 py-10">
                         {orders.length === 0 ? 'No orders have been placed yet.' : 'No orders match your search.'}
                       </td>
                     </tr>
@@ -98,14 +98,14 @@ export default function OrdersTable({
                             </span>
                           )}
                         </div>
-                        <div className="text-[9px] text-stone-400">{formatDate(order.createdAt)}</div>
+                        <div className="text-[9px] text-stone-500">{formatDate(order.createdAt)}</div>
                         <div className="text-[10px] text-stone-500 mt-1 leading-snug" title={summariseItems(order.items)}>
                           {summariseItems(order.items)}
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="text-xs text-stone-700">{order.customerName}</div>
-                        <div className="text-[9px] text-stone-400">
+                        <div className="text-[9px] text-stone-500">
                           <CustomerEmailButton email={order.email} customerName={order.customerName} />
                         </div>
                       </td>
@@ -113,7 +113,7 @@ export default function OrdersTable({
                         &pound;{order.total.toFixed(2)}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`text-[8px] tracking-wider uppercase px-2 py-0.5 ${STATUS_STYLES[order.status] ?? 'bg-stone-50 text-stone-400'}`}>
+                        <span className={`text-[8px] tracking-wider uppercase px-2 py-0.5 ${STATUS_STYLES[order.status] ?? 'bg-stone-50 text-stone-500'}`}>
                           {STATUS_LABELS[order.status] ?? order.status}
                         </span>
                         {(order.paymentMethod === 'paypal' || order.paymentMethod === 'fena') && (

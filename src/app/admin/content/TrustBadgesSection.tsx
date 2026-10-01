@@ -24,7 +24,7 @@ export default function TrustBadgesSection({
             {/* Homepage trust badges */}
             <div id="section-trust-badges" className="bg-white border border-stone-200 p-6">
               <h2 className="text-sm font-semibold text-stone-800 mb-1">Trust Badges</h2>
-              <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
                 Edit the four trust badges shown on the homepage. Each one has a short title and a
                 line underneath. Changes appear on the live site as soon as they&apos;re saved.
               </p>
@@ -33,7 +33,7 @@ export default function TrustBadgesSection({
                 {trustBadges.map((badge, i) => (
                   <div key={i} className="border border-stone-100 p-3 space-y-2">
                     <label className="flex flex-col gap-1.5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Heading</span>
+                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Heading</span>
                       <input
                         type="text"
                         value={badge.title}
@@ -42,7 +42,7 @@ export default function TrustBadgesSection({
                       />
                     </label>
                     <label className="flex flex-col gap-1.5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Description</span>
+                      <span className="text-[10px] tracking-[0.15em] uppercase text-stone-500">Description</span>
                       <input
                         type="text"
                         value={badge.subtitle}
@@ -66,7 +66,7 @@ export default function TrustBadgesSection({
                   <button
                     onClick={handleResetTrustBadges}
                     disabled={trustBadgesSaving}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
                   >
                     Reset to Default
                   </button>

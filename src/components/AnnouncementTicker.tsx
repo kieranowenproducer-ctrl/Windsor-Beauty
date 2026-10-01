@@ -40,7 +40,7 @@ export default function AnnouncementTicker({ text }: { text: string }) {
           <span
             key={i}
             aria-hidden={i > 0}
-            className="text-[9px] tracking-[0.22em] uppercase text-stone-400 shrink-0 pr-16"
+            className="text-[9px] tracking-[0.22em] uppercase text-stone-200 shrink-0 pr-16"
           >
             {text}
           </span>

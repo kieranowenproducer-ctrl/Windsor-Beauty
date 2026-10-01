@@ -21,11 +21,10 @@ export const maxDuration = 60;
 //
 // Protected by CRON_SECRET — Vercel automatically sends
 // `Authorization: Bearer ${CRON_SECRET}` on scheduled invocations once that
-// env var is set. Without it set, this route is reachable by anyone who
-// knows the URL; set CRON_SECRET in Vercel before relying on this in
-// production.
+// env var is set. Missing configuration refuses the request.
 export async function GET(request: Request) {
   const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: 'The tracking job is not configured.' }, { status: 503 });
   if (cronSecret) {
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${cronSecret}`) {

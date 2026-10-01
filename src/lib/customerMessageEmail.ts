@@ -130,7 +130,7 @@ export async function sendCustomerMessage(params: {
     const { error, id } = await sendEmail({
       from: sender.from,
       // When reply capture is on, replies route through the capture address
-      // so the website stores them under the customer (task b2084076) —
+      // so the website stores them under the customer (task b2084076) ,
       // every one is forwarded on to the team's inbox. Off = exactly as before.
       replyTo: getReplyCaptureAddress() ?? sender.replyTo,
       to: params.to,

@@ -48,15 +48,15 @@ export default function ProductTable({
             <table className="w-full min-w-[1020px]">
               <thead className="sticky top-0 z-20">
                 <tr className="border-b border-stone-200 bg-stone-50 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Product</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Categories</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Purity badge</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">From</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Sold</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Stock</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Status</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Certificate</th>
-                  <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Actions</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Product</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Categories</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Purity badge</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">From</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Sold</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Stock</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Status</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Certificate</th>
+                  <th className="text-right text-[9px] tracking-[0.18em] uppercase text-stone-500 px-4 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -89,7 +89,7 @@ export default function ProductTable({
                           </span>
                           <div className="flex items-center gap-1.5">
                             <span className={`w-2 h-2 rounded-full shrink-0 ${hiddenSlugs.has(product.slug) ? 'bg-stone-300' : 'bg-green-500'}`} />
-                            <span className={`text-[8px] tracking-wider uppercase font-medium ${hiddenSlugs.has(product.slug) ? 'text-stone-400' : 'text-green-600'}`}>
+                            <span className={`text-[8px] tracking-wider uppercase font-medium ${hiddenSlugs.has(product.slug) ? 'text-stone-500' : 'text-green-600'}`}>
                               {hiddenSlugs.has(product.slug) ? 'Hidden' : 'Live'}
                             </span>
                             {visibilitySavedSlug === product.slug && (
@@ -141,7 +141,7 @@ export default function ProductTable({
                             className={`p-2 -m-2 text-[9px] tracking-wider uppercase transition-colors disabled:opacity-40 ${
                               hiddenSlugs.has(product.slug)
                                 ? 'text-green-600 hover:text-green-700'
-                                : 'text-stone-400 hover:text-red-400'
+                                : 'text-stone-500 hover:text-red-400'
                             }`}
                           >
                             {togglingSlug === product.slug ? 'Saving…' : hiddenSlugs.has(product.slug) ? 'Unhide' : 'Hide'}
@@ -164,7 +164,7 @@ export default function ProductTable({
                                 ? 'Undoes your edits and puts the original built-in product back. It does not remove the product.'
                                 : 'Permanently deletes this product.'
                             }
-                            className="p-2 -m-2 text-[9px] tracking-wider uppercase text-stone-400 hover:text-red-500 transition-colors disabled:opacity-40"
+                            className="p-2 -m-2 text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-500 transition-colors disabled:opacity-40"
                           >
                             {deletingSlug === product.slug
                               ? 'Working…'

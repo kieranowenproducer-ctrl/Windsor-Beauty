@@ -21,26 +21,26 @@ export default function MembershipSignupStats({
           {/* Membership signup stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
             <div className="bg-white border border-stone-200 p-4">
-              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Codes Issued</p>
+              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Codes Issued</p>
               <p className="text-lg font-semibold text-stone-700">{signupsIssued}</p>
             </div>
             <div className="bg-white border border-stone-200 p-4">
-              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Redeemed</p>
+              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Redeemed</p>
               <p className="text-lg font-semibold text-green-600">{signupsRedeemed}</p>
             </div>
             <div className="bg-white border border-stone-200 p-4">
-              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Unredeemed</p>
+              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Unredeemed</p>
               <p className="text-lg font-semibold text-stone-500">{signupsUnredeemed}</p>
             </div>
             <div className="bg-white border border-stone-200 p-4">
-              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-1">Redemption Rate</p>
+              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Redemption Rate</p>
               <p className="text-lg font-semibold text-gold-700">{redemptionRate}%</p>
             </div>
           </div>
 
           {topReferralSources.length > 0 && (
             <div className="bg-white border border-stone-200 p-4 mb-5">
-              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-400 mb-3">Top Referral Sources</p>
+              <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-3">Top Referral Sources</p>
               <div className="flex flex-wrap gap-2">
                 {topReferralSources.map(({ label, count }) => (
                   <button
