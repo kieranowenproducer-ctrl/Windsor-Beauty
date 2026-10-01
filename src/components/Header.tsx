@@ -103,7 +103,7 @@ export default function Header() {
           <Image
             src="/images/windsor-beauty-logo-transparent.png"
             alt="Windsor Beauty"
-            width={2646}
+            width={2694}
             height={648}
             className="w-auto object-contain"
             style={{ height: '40px' }}
