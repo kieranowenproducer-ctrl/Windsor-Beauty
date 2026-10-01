@@ -10,7 +10,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isWallUp } from '@/lib/launchWindow';
-import { isHoldingScreenOn, holdingResponse } from '@/lib/holdingScreen';
+import { isHoldingScreenOn, holdingResponse, previewAccessCode, PREVIEW_COOKIE } from '@/lib/holdingScreen';
 
 const ADMIN_COOKIE = 'wb_admin_session';
 const CUSTOMER_COOKIE = 'wb_customer_session';
@@ -144,14 +144,33 @@ export function proxy(request: NextRequest) {
 
   /* THE HOLDING SCREEN comes before everything else. While it is on, the only
      people who get past this point are staff: the admin area (which has its own
-     sign-in gate below) and anyone already signed in as admin, who then sees the
-     real shop. Everyone else, on every page and every /api address, gets the
+     sign-in gate below), anyone already signed in as admin, and a browser that
+     has typed the access code on the holding screen. They see the real shop. Everyone else, on every page and every /api address, gets the
      holding screen. Pictures and fonts are let through so the admin sign-in page
      can draw itself; they reveal nothing about the shop. See lib/holdingScreen. */
   if (isHoldingScreenOn() && !isAdminPath) {
     const adminToken = process.env.ADMIN_SESSION_TOKEN;
     const isStaff = Boolean(adminToken && request.cookies.get(ADMIN_COOKIE)?.value === adminToken);
-    if (!isStaff && (pathname.startsWith('/api/') || !HOLDING_SAFE_ASSET_PATTERN.test(pathname))) {
+    // The access code typed into the box on the holding screen arrives as ?access=.
+    // Right code: remember this browser for 30 days and send it on without the
+    // code left in the address bar. Wrong code: the holding screen again, saying so.
+    const typed = request.nextUrl.searchParams.get('access');
+    if (typed !== null && !pathname.startsWith('/api/')) {
+      if (typed.trim() === previewAccessCode()) {
+        const clean = request.nextUrl.clone();
+        clean.searchParams.delete('access');
+        const res = NextResponse.redirect(clean);
+        res.headers.set('Cache-Control', 'no-store');
+        res.cookies.set(PREVIEW_COOKIE, previewAccessCode(), {
+          httpOnly: true, secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax', maxAge: 60 * 60 * 24 * 30, path: '/',
+        });
+        return res;
+      }
+      if (!isStaff) return holdingResponse(pathname, true);
+    }
+    const hasPreview = request.cookies.get(PREVIEW_COOKIE)?.value === previewAccessCode();
+    if (!isStaff && !hasPreview && (pathname.startsWith('/api/') || !HOLDING_SAFE_ASSET_PATTERN.test(pathname))) {
       return holdingResponse(pathname);
     }
   }

@@ -13,13 +13,23 @@
 //   1. `npm run dev` on your own computer always shows the real site.
 //   2. On the live site, sign in at /admin/login. Signed-in staff see the real
 //      shop; everybody else keeps seeing the holding screen.
+//   3. Type the access code into the box on the holding screen. That browser then
+//      sees the real shop for 30 days. The code is 1379 unless PREVIEW_ACCESS_CODE
+//      is set on the live host. It is a short code for showing people round, not
+//      a lock: anything that must stay private belongs behind the admin sign-in.
 import { NextResponse } from 'next/server';
 
 export function isHoldingScreenOn(): boolean {
   return process.env.MAINTENANCE_MODE !== 'off' && process.env.NODE_ENV !== 'development';
 }
 
-const PAGE = `<!doctype html>
+export const PREVIEW_COOKIE = 'wb_preview_access';
+
+export function previewAccessCode(): string {
+  return process.env.PREVIEW_ACCESS_CODE?.trim() || '1379';
+}
+
+const page = (wrongCode: boolean) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -44,6 +54,13 @@ const PAGE = `<!doctype html>
   .rule{width:48px;height:1px;background:#C7A769;margin:36px auto}
   h1{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:28px;line-height:1.25}
   p{margin-top:16px;font-size:15px;line-height:1.7;color:#8A8278}
+  form{margin-top:44px;display:flex;gap:8px;justify-content:center}
+  label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  input{width:150px;padding:11px 12px;border:1px solid #E7DECE;background:#fff;color:#2B2723;font:inherit;font-size:14px;letter-spacing:.2em;text-align:center}
+  input:focus{outline:2px solid #C7A769;outline-offset:1px}
+  button{padding:11px 18px;border:0;background:#2B2723;color:#FBF7F1;font:inherit;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+  button:hover{background:#AD8E54}
+  .err{margin-top:12px;font-size:13px;color:#9A3B2E}
 </style>
 </head>
 <body>
@@ -53,17 +70,23 @@ const PAGE = `<!doctype html>
   <div class="rule"></div>
   <h1>We are making a few improvements</h1>
   <p>Our shop is closed for a short while as we work on the website. Please check back soon.</p>
+  <form method="get" action="/">
+    <label for="access">Access code</label>
+    <input id="access" name="access" type="password" inputmode="numeric" autocomplete="off" placeholder="Access code" required>
+    <button type="submit">Enter</button>
+  </form>
+  ${wrongCode ? '<p class="err" role="alert">That code was not recognised. Please try again.</p>' : ''}
 </main>
 </body>
 </html>`;
 
 // 503 tells search engines the closure is temporary.
-export function holdingResponse(pathname: string): NextResponse {
+export function holdingResponse(pathname: string, wrongCode = false): NextResponse {
   const headers = { 'Retry-After': '86400', 'Cache-Control': 'no-store' };
   if (pathname.startsWith('/api/')) {
     return NextResponse.json({ error: 'Windsor Beauty is not open yet.' }, { status: 503, headers });
   }
-  return new NextResponse(PAGE, {
+  return new NextResponse(page(wrongCode), {
     status: 503,
     headers: { ...headers, 'Content-Type': 'text/html; charset=utf-8' },
   });
