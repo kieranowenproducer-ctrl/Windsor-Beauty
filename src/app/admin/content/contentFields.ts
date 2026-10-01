@@ -18,7 +18,7 @@ export const CONTENT_FIELDS: ContentField[] = [
     label: 'Announcement Bar',
     description: 'Scrolling ticker text shown across the top of every page, beneath the header. Leave empty to use the default text.',
     hasTitle: false,
-    placeholder: 'For Research Use Only  •  Not for Human Consumption  •  18+ Only  •  99% Purity  •  Lab Tested  •  Certificate of Analysis Included  •',
+    placeholder: 'Type the message that scrolls across the top of the shop',
   },
   {
     key: 'terms',
@@ -68,20 +68,6 @@ export const CONTENT_FIELDS: ContentField[] = [
     description: 'Replaces the content of the Product Disclaimer page. Leave empty to use the default page content.',
     hasTitle: true,
     placeholder: 'Enter the full Product Disclaimer text...',
-  },
-  {
-    key: 'research-disclaimer',
-    label: 'Research Use Disclaimer',
-    description: 'Replaces the content of the Research Use Disclaimer page. Leave empty to use the default page content.',
-    hasTitle: true,
-    placeholder: 'Enter the full Research Use Disclaimer text...',
-  },
-  {
-    key: 'age-restriction',
-    label: 'Age Restriction & Access Policy',
-    description: 'Replaces the content of the Age Restriction & Access Policy page. Leave empty to use the default page content.',
-    hasTitle: true,
-    placeholder: 'Enter the full Age Restriction & Access Policy text...',
   },
   {
     key: 'payment-policy',

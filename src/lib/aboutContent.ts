@@ -29,20 +29,20 @@ export interface AboutContent {
 export const DEFAULT_ABOUT_CONTENT: AboutContent = {
   eyebrow: 'Our Story',
   heading: 'About Windsor Beauty',
-  tagline: 'Regenerate • Renew • Revitalise',
+  tagline: 'Premium skincare, made simple',
   paragraphs: [
-    'Windsor Beauty is a premium supplier of high-purity research peptides and compounds, operating as part of the C&S Holdings Group. We are committed to providing the scientific community with the highest quality research materials, supported by comprehensive quality assurance and full documentation.',
-    'All products supplied by Windsor Beauty are manufactured to the highest standards, independently tested for purity, and accompanied by a full certificate of analysis. Our catalogue covers a range of research compounds including GLP-1 receptor agonists, peptide complexes, growth hormone peptides, and other advanced research materials.',
-    'We are dedicated to the responsible supply of research materials. Every product in our catalogue is supplied strictly for laboratory and in vitro research purposes. We do not make any therapeutic, diagnostic, or medical claims regarding our products.',
+    'Windsor Beauty is a premium UK skincare shop, operating as part of the C&S Holdings Group. We believe good skincare should feel simple, considered and a pleasure to use.',
+    'Our range covers serums, moisturisers, cleansers and SPF, with collections for men and women and a few extras. Every product page shows the size, the price and how to use and store it.',
+    'Our products are cosmetics, not medicines, and we do not make medical claims about them. If you have a question about a product, our team is happy to help.',
   ],
   values: [
-    { label: 'Purity', desc: 'Every product independently verified to 99% purity. Full certificate of analysis included with every order.' },
-    { label: 'Integrity', desc: 'Transparent sourcing, honest product documentation, and responsible supply practices throughout.' },
-    { label: 'Precision', desc: 'Accurate labelling, verified dosages, and consistent quality maintained across every production batch.' },
+    { label: 'Simplicity', desc: 'A focused range that fits into a daily routine without fuss.' },
+    { label: 'Honesty', desc: 'Plain product descriptions, with no promises we cannot keep.' },
+    { label: 'Care', desc: 'Clear sizes, clear prices and help from our team whenever you need it.' },
   ],
   groupEyebrow: 'Part of',
   groupHeading: 'C&S Holdings Group',
-  groupBody: 'Windsor Beauty operates under the C&S Holdings Group, ensuring high standards of corporate governance, compliance, and operational excellence across all supply activities.',
+  groupBody: 'Windsor Beauty operates under the C&S Holdings Group.',
   imageUrl: null,
   format: 'markdown',
 };

@@ -39,22 +39,22 @@ const STATUS_BADGE_LABELS: Record<AdminOrderPaymentStatus, string> = {
 function resolvePaymentStatusNote(paymentMethod: string, paymentStatus: AdminOrderPaymentStatus): string {
   if (paymentStatus === 'awaiting_verification') {
     if (paymentMethod === 'paypal') {
-      return 'Order confirmed via PayPal — go check your PayPal account now to see if they have actually paid you. Match the order number and price summary below against your PayPal activity, then mark it paid in admin once confirmed.';
+      return 'Order placed with PayPal. Check your PayPal account now to see whether the payment has arrived. Match the order number and price summary below against your PayPal activity, then mark it paid in admin once confirmed.';
     }
     const methodLabel = PAYMENT_METHOD_LABELS[paymentMethod] ?? paymentMethod;
-    return `Order placed — payment method ${methodLabel}. Check the account for this payment, then mark it paid in admin once confirmed.`;
+    return `Order placed. Payment method: ${methodLabel}. Check the account for this payment, then mark it paid in admin once confirmed.`;
   }
   if (paymentStatus === 'paid_manually') {
     if (paymentMethod === 'paypal') {
-      return 'PayPal payment verified and marked paid by admin — no further action needed.';
+      return 'PayPal payment verified and marked paid by admin. No further action needed.';
     }
-    return 'Marked paid manually by admin — no further action needed.';
+    return 'Marked paid manually by admin. No further action needed.';
   }
   // 'confirmed'
   if (paymentMethod === 'fena') {
-    return 'Paid via Fena — funds should already be in the business bank account.';
+    return 'Paid via Fena. Funds should already be in the business bank account.';
   }
-  return 'Payment confirmed — no further action needed.';
+  return 'Payment confirmed. No further action needed.';
 }
 
 export interface AdminOrderNotificationParams {
@@ -150,7 +150,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
             <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:20px">
               <tr>
                 <td style="border:1px solid #fca5a5;background:#fef2f2;padding:12px 16px;font-size:12px;color:#991b1b;line-height:1.5;font-weight:bold">
-                  AMOUNT MISMATCH &mdash; ${escapeHtml(params.amountMismatchNote)} Check this order before treating it as fully paid.
+                  AMOUNT MISMATCH: ${escapeHtml(params.amountMismatchNote)} Check this order before treating it as fully paid.
                 </td>
               </tr>
             </table>
@@ -184,7 +184,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
               </tr>
               <tr>
                 <td style="padding:4px 0;font-size:12px;color:#a8a29e">Phone</td>
-                <td style="padding:4px 0;font-size:13px;color:#57534e">${params.phone ? escapeHtml(params.phone) : '&mdash;'}</td>
+                <td style="padding:4px 0;font-size:13px;color:#57534e">${params.phone ? escapeHtml(params.phone) : 'Not given'}</td>
               </tr>
               <tr>
                 <td style="padding:4px 0;font-size:12px;color:#a8a29e">Payment Method</td>
@@ -235,7 +235,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
         </tr>`;
 
   const html = emailDocument({
-    title: `New order — ${params.orderNumber}`,
+    title: `New order ${params.orderNumber}`,
     headerLabel: 'New Order Received',
     bodyHtml,
     footerText: 'Internal Order Notification',
@@ -249,7 +249,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
     params.paymentMethod === 'bank_transfer' ? 'Bank transfer ' :
     params.paymentMethod === 'cash' ? 'Cash ' :
     params.paymentMethod === 'manual' ? 'Manual ' : '';
-  const subject = `${params.amountMismatchNote ? 'AMOUNT MISMATCH — ' : ''}New ${subjectMethodWord}order — ${params.orderNumber} (£${Number(params.total).toFixed(2)}) — ${statusBadgeLabel}`;
+  const subject = `${params.amountMismatchNote ? 'AMOUNT MISMATCH: ' : ''}New ${subjectMethodWord}order ${params.orderNumber} (£${Number(params.total).toFixed(2)}), ${statusBadgeLabel}`;
   const text =
     (params.amountMismatchNote ? `AMOUNT MISMATCH: ${params.amountMismatchNote} Check this order before treating it as fully paid.\n\n` : '') +
     `New order received.\n\n` +
@@ -258,10 +258,10 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
     `Email: ${params.email}\n` +
     `Phone: ${params.phone ?? '-'}\n` +
     `Payment method: ${paymentMethodLabel}\n` +
-    `Status: ${statusBadgeLabel} — ${statusNote}\n` +
+    `Status: ${statusBadgeLabel}. ${statusNote}\n` +
     `Date: ${orderDate}\n\n` +
     `Items:\n` +
-    visibleItems.map(i => `  ${i.name}${i.variant ? ` (${i.variant})` : ''} x${i.quantity} — £${(Number(i.price) * i.quantity).toFixed(2)}`).join('\n') +
+    visibleItems.map(i => `  ${i.name}${i.variant ? ` (${i.variant})` : ''} x${i.quantity}, £${(Number(i.price) * i.quantity).toFixed(2)}`).join('\n') +
     `\n\nOrder value: £${Number(params.total).toFixed(2)}\n\n` +
     `Shipping address:\n${params.shippingAddress}`;
 
@@ -280,7 +280,7 @@ export async function sendAdminOrderNotificationEmail(params: AdminOrderNotifica
       subject,
       text,
       html,
-    }, { internal: true }); /* Internal post, so no research-use line. */
+    }, { internal: true }); /* Internal post: not filed under a customer. */
 
     if (error) {
       console.error('[adminOrderNotificationEmail] Resend error:', error);

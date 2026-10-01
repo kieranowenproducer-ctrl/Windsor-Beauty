@@ -28,7 +28,7 @@ export interface CustomerFilters {
   referredBy?: string | null;
   /** Any text inside that field, which is where a name like "PAG Jim" ends up. */
   referredByContains?: string | null;
-  /** The campaign or partner who brought them in, e.g. "Physique Architect Gyms". */
+  /** The campaign or partner who brought them in, e.g. "Riverside Spa". */
   campaign?: string | null;
   /** Their town, exactly as they typed it. */
   town?: string | null;

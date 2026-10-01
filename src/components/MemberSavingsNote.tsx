@@ -32,7 +32,7 @@ export default function MemberSavingsNote({ context = 'basket', showGuest = fals
   // Samuel, 26 Sept 2026 (video): the one-line note was too small and read past,
   // because people look at the total and the button and nothing else. The saving
   // is now a gold card with the figure set as large as the total beside it, in the
-  // Glow Card's gradient. The slow gold shimmer on the figure is the house one from
+  // Beauty Card's gradient. The slow gold shimmer on the figure is the house one from
   // the Coming Soon page; it draws the eye once and stops under reduced motion.
   if (isMember) {
     return (

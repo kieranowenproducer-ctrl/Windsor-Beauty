@@ -2,19 +2,11 @@ import type { PackageFormat } from './products';
 
 // Category-level shipping weight/format defaults for Royal Mail labels, used
 // by the "Apply category defaults" button on the bulk shipping weights admin
-// page. These are reasonable estimates (2ml glass vial + box for peptides,
-// pre-filled injector pen, bottled bacteriostatic water): Kieran should
-// spot-check against real packaged weights once applied.
-export const CATEGORY_SHIPPING_DEFAULTS: Record<string, { weightGrams: number; packageFormat: PackageFormat }> = {
-  Peptides: { weightGrams: 25, packageFormat: 'largeLetter' },
-  Pens: { weightGrams: 150, packageFormat: 'parcel' },
-  'BAC Water': { weightGrams: 60, packageFormat: 'largeLetter' },
-};
+// page. Deliberately empty: nobody has weighed the packaged skincare products
+// yet, and a guessed weight would end up on a real postage label. Add one row
+// per category (for example Serums) once real packaged weights are known.
+export const CATEGORY_SHIPPING_DEFAULTS: Record<string, { weightGrams: number; packageFormat: PackageFormat }> = {};
 
-// Per-variant overrides where dosage materially changes the default weight.
-export const VARIANT_SHIPPING_OVERRIDES: Record<string, Record<string, { weightGrams: number }>> = {
-  'bac-water': {
-    '10ml': { weightGrams: 50 },
-    '30ml': { weightGrams: 90 },
-  },
-};
+// Per-size overrides where the size materially changes the default weight,
+// as product slug -> size label -> weight. Empty for the same reason as above.
+export const VARIANT_SHIPPING_OVERRIDES: Record<string, Record<string, { weightGrams: number }>> = {};

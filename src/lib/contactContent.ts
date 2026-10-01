@@ -25,13 +25,11 @@ export interface ContactContent {
 export const DEFAULT_CONTACT_CONTENT: ContactContent = {
   eyebrow: 'Get in Touch',
   heading: 'Contact',
-  intro: 'For product enquiries, order support, verification issues, or general questions, use the form below and our team will assist you as soon as possible.',
+  intro: 'For product questions, help with an order or anything else, use the form below and our team will get back to you.',
   subjects: [
-    { value: 'general', label: 'General Inquiry' },
+    { value: 'general', label: 'General Enquiry' },
     { value: 'order', label: 'Order Enquiry' },
     { value: 'product', label: 'Product Information' },
-    { value: 'verify', label: 'Verification Issue' },
-    { value: 'coa', label: 'Certificate of Analysis' },
     { value: 'returns', label: 'Returns and Refunds' },
     { value: 'other', label: 'Other' },
   ],

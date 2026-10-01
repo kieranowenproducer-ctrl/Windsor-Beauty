@@ -13,10 +13,9 @@
  * the sign-up route re-checks it (a form is a courtesy, the route is the gate), and the admin
  * report groups by it. Three copies of a list is three lists waiting to disagree.
  *
- * WHAT IS DELIBERATELY KEPT. The old box suggested gyms and personal referrals, and real members
- * have been answering with them: "Energie Fitness", "David Lloyd Windsor", "Friend John Smith".
- * A list of social channels alone would have thrown that away. Those answers keep a place, and a
- * follow-up box catches the detail, so the report gains the channel without losing the name.
+ * WHAT IS DELIBERATELY KEPT. The old box invited business and personal referrals, and a list of
+ * social channels alone would have thrown those away. Those answers keep a place, and a follow-up
+ * box catches the detail, so the report gains the channel without losing the name.
  */
 
 export interface ReferralSource {
@@ -45,8 +44,8 @@ export const REFERRAL_SOURCES: ReferralSource[] = [
     detailLabel: 'Who told you about us?',
   },
   {
-    value: 'A gym, clinic or partner',
-    label: 'A gym, clinic or partner',
+    value: 'A business or partner',
+    label: 'A business or partner',
     detailLabel: 'Which one?',
   },
   {
@@ -54,37 +53,9 @@ export const REFERRAL_SOURCES: ReferralSource[] = [
     label: 'Another website or forum',
     detailLabel: 'Which one?',
   },
-  /**
-   * Added 6 September 2026 for the airline crew tracking link (/r/aircrew), at
-   * Kieran's request, so somebody arriving on that link has an answer that
-   * matches how the link itself is recorded.
-   *
-   * The link already tags every sign-up automatically as its campaign, with no
-   * action from the customer. This is the OTHER half: the self-reported answer
-   * they choose. Before this, an airline crew member had nothing better than
-   * "A friend or word of mouth", so the two records disagreed on the same
-   * customer. The value is spelled exactly as the campaign is named, because
-   * matching is the entire point of it existing.
-   */
-  { value: 'Airline crew friends and family', label: 'Airline crew friends and family' },
-  /**
-   * Added 7 September 2026 for Ross McCarthy's affiliate link (/r/ross), at
-   * Kieran's request, for the same reason as the airline crew entry above.
-   *
-   * Spelled exactly as the campaign is named, because matching is the point: the
-   * link already tags every arrival "Ross McCarthy" on its own, and this is the
-   * other half, the answer somebody picks. Without it the nearest choice is
-   * "A friend or word of mouth", so the two records disagree about the same
-   * customer and his referrals scatter into a general bucket.
-   *
-   * NOTE FOR THE NEXT AFFILIATE: this list is people-facing on a public sign-up
-   * form. One named person per affiliate reads fine at two; if it grows to a
-   * dozen, the list stops being a list and becomes a directory, and the better
-   * shape is one "An affiliate or ambassador" entry with a follow-up box for the
-   * name. Worth raising with Kieran before adding a third.
-   */
-  { value: 'Ross McCarthy', label: 'Ross McCarthy' },
-  { value: 'RAF affiliate', label: 'Raf' },
+  // Offered only to somebody who arrives with a private affiliate invitation. The stored value is
+  // matched by the sign-up form and the sign-up route, so it keeps its original spelling.
+  { value: 'RAF affiliate', label: 'A partner invitation' },
   { value: 'Other', label: 'Something else', detailLabel: 'Where did you hear about us?' },
 ];
 
@@ -122,9 +93,9 @@ export function cleanSocialProfile(value: unknown): string | null {
 /**
  * The one string saved against the member.
  *
- * "Instagram" on its own, so every Instagram sign-up counts as the same thing. "A gym, clinic or
- * partner: Energie Fitness" where there is a detail, so the channel still groups while the name
- * of the gym survives. The separator is a colon rather than a dash on purpose: house style bans
+ * "Instagram" on its own, so every Instagram sign-up counts as the same thing. "A business or
+ * partner: Example Studio" where there is a detail, so the channel still groups while the name
+ * of the business survives. The separator is a colon rather than a dash on purpose: house style bans
  * em dashes in anything a person reads, and this string is shown on the member's own account page.
  */
 export function composeReferral(source: string, detail: string): string {

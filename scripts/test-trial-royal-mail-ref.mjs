@@ -31,12 +31,12 @@ function royalMailContents(invoiceLines) {
 }
 
 const trialLine = (id, name, extra = {}) => ({
-  type: 'trial', slug: `trial:${id}`, name, description: '50mg',
+  type: 'trial', slug: `trial:${id}`, name, description: '50ml',
   quantity: 1, unitPrice: 45, discount: 0, lineTotal: 45, ...extra,
 });
 const realLine = () => ({
-  type: 'product', slug: 'retatrutide', name: 'Retatrutide', description: '30mg',
-  quantity: 1, unitPrice: 220, discount: 0, lineTotal: 220,
+  type: 'product', slug: 'hydra-veil-serum', name: 'Hydra Veil Serum', description: '30ml',
+  quantity: 1, unitPrice: 38, discount: 0, lineTotal: 38,
 });
 
 test('1. an existing trial product gets a neutral reference', () => {
@@ -48,7 +48,7 @@ test('1. an existing trial product gets a neutral reference', () => {
 
 test('2. a second existing trial product gets a DIFFERENT reference', () => {
   const a = royalMailContents([trialLine(8, '501')]).contents[0].name;
-  const b = royalMailContents([trialLine(31, 'CLENna 40MG 100S')]).contents[0].name;
+  const b = royalMailContents([trialLine(31, 'Trial Cream B')]).contents[0].name;
   assert.match(b, /^Product \d+$/);
   assert.notEqual(a, b);
 });
@@ -74,29 +74,29 @@ test('4. many orders of the same trial product all use the same reference', () =
 });
 
 test('5. one order containing several different trial products keeps them apart', () => {
-  const { contents } = royalMailContents([trialLine(8, '501'), trialLine(13, 'ANADR'), trialLine(31, 'CLENna')]);
+  const { contents } = royalMailContents([trialLine(8, '501'), trialLine(13, 'Trial Serum A'), trialLine(31, 'Trial Cream B')]);
   const names = contents.map((c) => c.name);
   assert.equal(names.length, 3);
   assert.equal(new Set(names).size, 3, `references must differ, got ${names.join(', ')}`);
   assert.deepEqual(names, [trialRoyalMailRef(8), trialRoyalMailRef(13), trialRoyalMailRef(31)]);
 });
 
-test('6. a normal non-trial product is completely unchanged', () => {
+test('6. a normal product is sent under its own name', () => {
   const { contents } = royalMailContents([realLine()]);
   assert.equal(contents.length, 1);
-  // Its existing generic name, exactly as before this task.
-  assert.equal(contents[0].name, 'Sculpt Ampoule');
-  assert.equal(contents[0].sku, 'WB-2808D892');
+  // No catalogue is passed in here, so the name comes from the order line, with its size.
+  assert.equal(contents[0].name, 'Hydra Veil Serum (30ml)');
+  assert.equal(contents[0].sku, 'hydra-veil-serum');
   assert.ok(!/^Product \d+$/.test(contents[0].name), 'a real product must not be given a trial reference');
 });
 
 test('7. the Royal Mail payload itself: only the neutral name, never the trial name', () => {
-  const REAL_NAMES = ['501', 'ANADR 50MG  60S', 'CLENna 40MG 100S', 'TRN E 250'];
+  const REAL_NAMES = ['501', 'Trial Serum A', 'Trial Cream B', 'Trial Balm C'];
   const lines = [
     trialLine(8, '501'),
-    trialLine(13, 'ANADR 50MG  60S'),
-    trialLine(31, 'CLENna 40MG 100S'),
-    trialLine(9, 'TRN E 250'),
+    trialLine(13, 'Trial Serum A'),
+    trialLine(31, 'Trial Cream B'),
+    trialLine(9, 'Trial Balm C'),
     realLine(),
   ];
   const { orderItems, contents } = royalMailContents(lines);
@@ -106,8 +106,8 @@ test('7. the Royal Mail payload itself: only the neutral name, never the trial n
   for (const real of REAL_NAMES) {
     assert.ok(!payload.includes(real), `the trial name "${real}" must never appear in the Royal Mail payload`);
   }
-  // And no dosage, which names it almost as precisely.
-  assert.ok(!payload.includes('50mg'), 'no dosage in the payload either');
+  // And no trial size, which would help to identify it.
+  assert.ok(!payload.includes('50ml'), 'no trial size in the payload either');
 
   const trialNames = contents.filter((c) => /^Product \d+$/.test(c.name)).map((c) => c.name);
   assert.equal(trialNames.length, 4, 'all four trial lines carry a Product reference');
@@ -189,14 +189,15 @@ test('the same id always gives the same number, run after run', () => {
 
 test('the trial id is read only from a real trial slug', () => {
   assert.equal(trialIdFromSlug('trial:8'), 8);
-  assert.equal(trialIdFromSlug('retatrutide'), null);
+  assert.equal(trialIdFromSlug('hydra-veil-serum'), null);
   assert.equal(trialIdFromSlug(undefined), null);
   assert.equal(trialIdFromSlug('trial:abc'), null);
 });
 
-test('a bespoke line with no slug is untouched, as before', () => {
+test('a bespoke line with no slug is sent under the name written on it', () => {
   const { contents } = royalMailContents([
     { type: 'custom', name: 'Bespoke item', quantity: 1, unitPrice: 10, discount: 0, lineTotal: 10 },
   ]);
-  assert.equal(contents[0].name, 'Cosmetic Item');
+  assert.equal(contents[0].name, 'Bespoke item');
+  assert.equal(contents[0].sku, undefined);
 });

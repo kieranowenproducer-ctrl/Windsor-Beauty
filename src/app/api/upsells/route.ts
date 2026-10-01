@@ -11,7 +11,6 @@ import {
 import { mergeProducts, PRODUCTS } from '@/data/products';
 import {
   buildCategoryFallbackRules,
-  buildReconstitutionRules,
   buildEffectiveRules,
   computeUpsellRecommendations,
   coveredTriggerSlugs,
@@ -88,12 +87,9 @@ export async function GET(request: Request) {
     // never silently renders empty — see buildCategoryFallbackRules.
     const effectiveRules = buildEffectiveRules(basketSlugs, csvRules, manualOverrides);
     const fallbackRules = buildCategoryFallbackRules(basketSlugs, catalogue, coveredTriggerSlugs(csvRules, manualOverrides));
-    // Bacteriostatic water is not curated and cannot be curated away: a vial of dry powder cannot
-    // be used without it. Added on top of whatever else this product has, and ranked first.
-    const reconstitutionRules = buildReconstitutionRules(basketSlugs, catalogue);
     const recommendations = computeUpsellRecommendations({
       basketSlugs,
-      rules: [...reconstitutionRules, ...effectiveRules, ...fallbackRules],
+      rules: [...effectiveRules, ...fallbackRules],
       catalogue, hiddenSlugs, stockMap, today,
     });
 

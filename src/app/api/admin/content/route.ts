@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 const VALID_KEYS = [
   'announcement-bar', 'terms', 'privacy', 'shipping-policy', 'returns-policy', 'refund-policy', 'about', 'contact',
-  'cookies', 'disclaimer', 'research-disclaimer', 'age-restriction', 'payment-policy', 'contact-policy',
+  'cookies', 'disclaimer', 'payment-policy', 'contact-policy',
   'storage-instructions-default', 'homepage-trust-badges', 'footer-content',
   // ISO datetime the coming-soon page counts down to (task 4c8541df); empty = no countdown shown.
   'launch-countdown',
@@ -89,7 +89,7 @@ export async function PATCH(request: Request) {
   }
 
   // Footer content (description, contact emails, nav links, legal links,
-  // research disclaimer, copyright/bottom-right text). Same fixed-length,
+  // disclaimer, copyright/bottom-right text). Same fixed-length,
   // positionally-mapped array pattern as homepage trust badges above, so an
   // admin can edit every link's label/URL without ever ending up with a
   // missing or duplicated footer column.

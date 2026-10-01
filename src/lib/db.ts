@@ -1,6 +1,5 @@
 ﻿import { mergeInvoiceCustomers, type InvoiceCustomerMatch, type InvoiceCustomerRow } from './invoiceCustomerMerge';
-import { PRODUCTS, mergeProducts, type Product } from '@/data/products';
-import { genericNameFor, assignReserveName, mappedGenericNames } from './genericNames';
+import type { Product } from '@/data/products';
 import type { AppliedRuleSummary } from './promotionRules';
 import { buildTrackingUrl } from './royalMail';
 import { sql, isDbConfigured, requireDb } from './db/client';
@@ -2019,67 +2018,19 @@ export async function listCustomProductsUpdatedAt(): Promise<Record<string, stri
   return map;
 }
 
-// Saves a product override. Every admin path that writes a product — create
-// (POST /api/admin/products/catalogue) and edit (PUT .../catalogue/[slug]) —
-// funnels through here, which is why the outbound-name assignment lives here
-// rather than in either route: a future third path gets it for free.
+// Saves a product override. Every admin path that writes a product, create
+// (POST /api/admin/products/catalogue) and edit (PUT .../catalogue/[slug]),
+// funnels through here. The product is saved exactly as given: the name sent to
+// Royal Mail and the payment provider is the product's own name, or the
+// "Shipping description" typed for it (see src/lib/genericNames.ts).
 export async function upsertCustomProduct(product: Product): Promise<void> {
   const db = requireDb();
-  const toSave = await withOutboundName(product);
-  const data = JSON.stringify(toSave);
+  const data = JSON.stringify(product);
   await db`
     INSERT INTO custom_products (slug, data, updated_at)
-    VALUES (${toSave.slug}, ${data}, now())
+    VALUES (${product.slug}, ${data}, now())
     ON CONFLICT (slug) DO UPDATE SET data = ${data}, updated_at = now()
   `;
-}
-
-// Gives a product a unique outbound shipping description if it doesn't resolve
-// to one already. Without this a new product ships to Royal Mail and Fena as
-// "Cosmetic Item" — safe (it can never leak the real name) but not unique, so
-// three new products would be indistinguishable on the manifest.
-//
-// Only fills the gap. If the product already has a genericName, or its slug is
-// in the code's SLUG_GENERIC map (the original 75), it is left completely alone
-// — otherwise editing "Retatrutide" in the admin would quietly overwrite its
-// mapped "Sculpt Ampoule" with a pool name.
-//
-// Never throws and never blocks a save: a failure here means the product simply
-// keeps falling back to the safe default, which is a naming problem, not a leak.
-async function withOutboundName(product: Product): Promise<Product> {
-  try {
-    const { source } = genericNameFor(product, product.slug);
-    if (source === 'product.genericName' || source === 'slug-map') return product;
-
-    const overrides = await listCustomProducts();
-    const taken = new Set<string>(allKnownGenericNamesInUse(overrides));
-    const assigned = assignReserveName(product.name, product.categories ?? [], taken);
-
-    if (!assigned) {
-      // Loud on purpose. Silence here is how "every product is unique" quietly
-      // stops being true — the admin surfaces this as a warning too.
-      console.error(
-        `[generic-names] RESERVE POOL EXHAUSTED — "${product.name}" (${product.slug}) has no unique ` +
-        `outbound name and will ship as the generic default. Add more names to RESERVE_POOL in src/lib/genericNames.ts.`
-      );
-      return product;
-    }
-    console.info(`[generic-names] assigned "${assigned}" to new product ${product.slug}`);
-    return { ...product, genericName: assigned };
-  } catch (err) {
-    console.error('[generic-names] could not auto-assign an outbound name; product saved without one', err);
-    return product;
-  }
-}
-
-// Every outbound name currently spoken for: the code map plus anything already
-// assigned to a product. Reserve names are only handed out from what's left.
-function allKnownGenericNamesInUse(overrides: Record<string, Product>): string[] {
-  const merged = mergeProducts(PRODUCTS, overrides);
-  return [
-    ...mappedGenericNames(),
-    ...merged.map((p) => p.genericName?.trim()).filter((n): n is string => !!n),
-  ];
 }
 
 // Removes the override row for a slug. For a slug that only ever existed as

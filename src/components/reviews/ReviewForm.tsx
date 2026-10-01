@@ -97,13 +97,13 @@ export default function ReviewForm({
           "Before submitting your review" and has to be read before typing, not
           found afterwards. One place in the code, so it shows on the Reviews
           page and on every product page, which is where this form appears.
-          THE WORDING IS HIS AND IS A COMPLIANCE NOTICE. Do not reword it. */}
+          Reworded for the skincare shop on 1 October 2026; the old notice was about a different shop. */}
       <div className="border-l-2 border-gold-300 bg-gold-50/40 pl-4 pr-3 py-3">
         <p className="text-xs font-semibold text-stone-800 mb-1">Before submitting your review</p>
         <p className="text-xs leading-relaxed text-stone-600">
-          Please review your experience with Windsor Beauty&rsquo;s products and service. Do not
-          include descriptions of human or animal use, dosing, administration methods or medical
-          claims. Reviews may be moderated to ensure compliance with our Research Use Only policy.
+          Please review your experience with Windsor Beauty&rsquo;s products and service. Please
+          do not include medical claims or personal details. Reviews may be moderated before they
+          are shown.
         </p>
       </div>
 

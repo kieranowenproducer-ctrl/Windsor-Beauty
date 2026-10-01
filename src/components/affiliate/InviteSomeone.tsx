@@ -32,9 +32,9 @@ const shortDate = (value: string) => new Date(value).toLocaleDateString('en-GB',
 const longDate = (value: string) => new Date(value).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 
 /**
- * Raf's invitation panel. He types the person's email and presses Send: Windsor Beauty emails them
+ * The affiliate's invitation panel. They type the person's email and press Send: Windsor Beauty emails them
  * from info@windsorbeauty.co.uk. Whatever happens to that email, the same link comes straight back with
- * WhatsApp, text-message and copy buttons, so he can always send it from his own phone.
+ * WhatsApp, text-message and copy buttons, so they can always send it from their own phone.
  */
 export default function InviteSomeone({ preview, invitations, onChanged }: {
   preview: boolean;

@@ -148,13 +148,10 @@ function LaunchCountdown() {
       {/* Launch announcement */}
       <div className="max-w-md mx-auto mb-8">
         <p className="text-sm text-stone-500 leading-relaxed mb-4">
-          Following a successful soft launch with our affiliate partners and researchers,
-          we are proud to officially open <span className="font-semibold text-stone-700">windsorbeauty.co.uk</span>.
+          We are proud to open <span className="font-semibold text-stone-700">windsorbeauty.co.uk</span>.
         </p>
         <p className="text-sm text-stone-500 leading-relaxed mb-5">
-          Windsor Beauty thanks everyone who took part in the soft launch campaign that began
-          in May. Your feedback and comments have helped us create a smooth experience for
-          all our current and future customers.
+          Thank you to everyone who signed up early. We look forward to welcoming you.
         </p>
         <p className="font-serif text-2xl text-stone-800 tracking-wide">
           Welcome to <span className="text-gold-700">Windsor Beauty</span>
@@ -391,7 +388,7 @@ export default function ComingSoonPage() {
                 <div className="flex gap-3 items-start">
                   <span className="shrink-0 w-6 h-6 rounded-full bg-gold-700 text-white text-[11px] font-bold flex items-center justify-center mt-0.5">1</span>
                   <p className="text-sm text-stone-600 leading-relaxed">
-                    <span className="font-semibold text-stone-800">Check your inbox now</span> — and
+                    <span className="font-semibold text-stone-800">Check your inbox now</span>, and
                     your spam or junk folder if you cannot see it.
                   </p>
                 </div>
@@ -583,7 +580,7 @@ export default function ComingSoonPage() {
                   <li className="flex gap-2">
                     <span className="text-gold-700 font-semibold shrink-0">2.</span>
                     <span>
-                      You must click it to activate your account — the link expires in{' '}
+                      You must click it to activate your account. The link expires in{' '}
                       <span className="font-semibold">48 hours</span>.
                     </span>
                   </li>

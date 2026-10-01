@@ -2,7 +2,7 @@ import Link from 'next/link';
 import FloatingPill from '@/components/FloatingPill';
 
 // Top-of-page link back to the homepage, used on standalone tool/info pages
-// that sit outside the main shop navigation (dosage guide, calculator, verify,
+// that sit outside the main shop navigation (policy pages, reviews,
 // reviews, promotion, shop, about, contact, account). Carries its own
 // max-w-6xl/px wrapper (matching the header's container) so it lands in the
 // exact same on-screen position on every page, regardless of that page's own

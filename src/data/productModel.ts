@@ -13,9 +13,8 @@ export interface ProductVariant {
   /** Per-variant product photo. Falls back to product.image, then /images/products/{slug}.jpg, when absent. */
   image?: string;
   /**
-   * Per-dosage Certificate of Analysis. A COA is per product PER dosage — each
-   * dosage is a separate batch with its own lab report. When set, this is the
-   * certificate for THIS dosage; when absent, the product-level
+   * Per-size product certificate. Each size can carry its own certificate.
+   * When set, this is the certificate for THIS size; when absent, the product-level
    * `product.certificate` is used as the fallback (so existing single-certificate
    * products keep working unchanged). Use `certificateForDosage()` to resolve it.
    */
@@ -30,18 +29,18 @@ export function activeVariants(product: Product): ProductVariant[] {
   return sorted.length > 0 ? sorted : sortVariantsByStrength(product.variants);
 }
 
-// Orders variants lowest-strength-first (e.g. 5mg before 10mg, 30mg before
-// 60mg) using the numeric amount in each dosage label, not alphabetical
-// order — so "10mg" sorts after "5mg" rather than before it.
+// Orders variants smallest-size-first (e.g. 30ml before 50ml, 50ml before
+// 100ml) using the numeric amount in each size label, not alphabetical
+// order, so "100ml" sorts after "50ml" rather than before it.
 export function sortVariantsByStrength(variants: ProductVariant[]): ProductVariant[] {
   return [...variants].sort((a, b) => parseFloat(a.dosage) - parseFloat(b.dosage));
 }
 
-// Resolve the Certificate of Analysis for a specific dosage (Option A). A COA is
-// per product per dosage: prefer the certificate stored on that dosage's variant,
-// and fall back to the product-level certificate when the variant has none — so a
-// product that has only ever had one shared certificate keeps showing it on every
-// dosage exactly as before, and a product with per-dosage COAs shows the right one.
+// Resolve the product certificate for a specific size. Prefer the certificate
+// stored on that size's variant, and fall back to the product-level certificate
+// when the variant has none, so a product with one shared certificate keeps
+// showing it on every size, and a product with per-size certificates shows the
+// right one.
 export function certificateForDosage(product: Product, dosage?: string): ProductCertificate | undefined {
   if (dosage) {
     const variant = product.variants.find(v => v.dosage === dosage);
@@ -50,16 +49,16 @@ export function certificateForDosage(product: Product, dosage?: string): Product
   return product.certificate;
 }
 
-// True when this product keeps a distinct certificate on at least one dosage —
-// i.e. it uses the per-dosage model rather than a single shared certificate.
+// True when this product keeps a distinct document on at least one size,
+// rather than a single shared one.
 export function hasPerDosageCertificates(product: Product): boolean {
   return product.variants.some(v => Boolean(v.certificate));
 }
 
 // The thumbnail shown on shop/category cards before a customer clicks in.
-// For multi-dosage products with per-variant photos (e.g. pre-dosed pens),
-// shows the largest-dosage variant's image — the more premium option —
-// rather than always defaulting to the product image or first variant.
+// For products with more than one size and per-size photos, shows the
+// largest size's image rather than always defaulting to the product image
+// or first variant.
 export function cardImage(product: Product): string | undefined {
   const withImages = activeVariants(product).filter(v => v.image);
   if (withImages.length === 0) return product.image;
@@ -132,9 +131,9 @@ export interface ProductShipping {
 export const AVAILABILITY_STATUSES = ['available', 'out_of_stock', 'coming_soon'] as const;
 export type AvailabilityStatus = typeof AVAILABILITY_STATUSES[number];
 
-// The Form/Storage/Usage/CoA rows of the product specs block, each of which
-// can be individually hidden via Product.hiddenSpecs. Purity is not included
-// here — it's a required core field and always shown.
+// The optional rows of the product details block, each of which can be
+// individually hidden via Product.hiddenSpecs. The 'coa' key is kept for
+// saved data; see productSpecs() for what customers actually see.
 export const SPEC_ROW_KEYS = ['form', 'storage', 'usage', 'coa'] as const;
 export type SpecRowKey = typeof SPEC_ROW_KEYS[number];
 
@@ -151,7 +150,7 @@ export interface Product {
   fullDescription?: string;
   /** When 'html', fullDescription is sanitized rich text (legacy Tiptap editor) and renders via RichTextContent. When 'markdown', fullDescription is plain lite-markdown source text (see src/lib/markdownLite.ts) rendered via markdownLiteToHtml + RichTextContent. Defaults to plain text. */
   fullDescriptionFormat?: 'text' | 'html' | 'markdown';
-  /** Optional — the "Purity" badge/spec row is omitted entirely when blank. */
+  /** Legacy field kept for saved data. Not shown on the storefront. */
   purity?: string;
   variants: ProductVariant[];
   badge?: string;
@@ -162,7 +161,7 @@ export interface Product {
   image?: string;
   /** Weight, dimensions, package format and customs data used for Royal Mail label creation. Optional — falls back to global shipping settings when absent. */
   shipping?: ProductShipping;
-  /** Brand or pen name shown on the product's packaging, used for display and search. */
+  /** Brand or range name shown on the product's packaging, used for display and search. */
   brand?: string;
   /**
    * The bland description sent to third parties (Royal Mail shipment contents,
@@ -185,11 +184,11 @@ export interface Product {
   storage?: string;
   /** Per-product override for the "Usage" row in the product specs block. Falls back to DEFAULT_PRODUCT_SPECS.usage when absent. */
   usage?: string;
-  /** Per-product override for the "CoA" row in the product specs block. Falls back to DEFAULT_PRODUCT_SPECS.coa when absent. */
+  /** Optional per-product "Documents" row in the product details block. Not shown when blank. */
   coa?: string;
-  /** Which rows of the "Product specs" block to omit entirely on this product's page (e.g. ["coa"] to remove the CoA row). */
+  /** Which rows of the product details block to omit entirely on this product's page (e.g. ["usage"]). */
   hiddenSpecs?: SpecRowKey[];
-  /** Admin-editable Certificate of Analysis, shown via a "Show Certificate" button on the product page when enabled. */
+  /** Admin-editable product certificate, shown via a "Show Certificate" button on the product page when enabled. */
   certificate?: ProductCertificate;
   /** Controls the "Storage Instructions" button/popup on the product page. Defaults to the site-wide default content when absent or mode is 'global'. */
   storageInstructions?: ProductInfoSection;
@@ -211,8 +210,8 @@ export interface ProductInfoSection {
   format?: 'html' | 'markdown';
 }
 
-// A single row in the certificate's test results table (e.g. Appearance,
-// Purity (HPLC), TFA Content).
+// A single row in the certificate's test results table (test name,
+// specification, result), typed from the real document.
 export interface CertificateTestRow {
   test: string;
   specification: string;
@@ -221,19 +220,19 @@ export interface CertificateTestRow {
 
 // A single label/value row for the Verification Summary and Analytical
 // Results sections — generic rather than typed per-field, so any
-// certificate can carry whatever metadata its lab report actually includes
-// (e.g. Issue Date, Batch/Lot, Instrument, Main Peak) without the schema
-// needing to anticipate every possible field name in advance.
+// certificate can carry whatever details its source document actually includes
+// (e.g. Issue Date, Batch/Lot) without the schema needing to anticipate every
+// possible field name in advance.
 export interface CertificateInfoRow {
   label: string;
   value: string;
 }
 
-// Admin-entered Certificate of Analysis data for a single product. All
-// fields are filled in manually by the admin from real batch/lab data —
-// nothing here is auto-generated.
+// Admin-entered product certificate data for a single product. All fields are
+// filled in manually by the admin from the real document. Nothing here is
+// auto-generated.
 export interface ProductCertificate {
-  /** Shows the "Show Certificate" button on the product page when true. */
+  /** Shows the "View document" button on the product page when true. */
   enabled: boolean;
   /** Batch/certificate reference code, e.g. "WB-AM191". */
   certificateId: string;
@@ -254,9 +253,9 @@ export interface ProductCertificate {
   mode?: 'template' | 'external';
   /** Ordered Blob URLs for admin-uploaded certificate page images (e.g. a supplier-branded PDF exported as one image per page). Only used when mode is 'external'. */
   externalImages?: string[];
-  /** Optional extra section for mass-spec/lab-verification style certificates — e.g. Issue Date, Batch/Lot, Sample, Customer, Instrument. Rendered as its own labelled block between Product Specifications and Test Results, omitted entirely when empty. */
+  /** Optional extra section for identifying details, e.g. Issue Date, Batch/Lot. Rendered as its own labelled block between Product Specifications and Test Results, omitted entirely when empty. */
   verificationSummary?: CertificateInfoRow[];
-  /** Optional extra section alongside or instead of testRows, for analytical-report fields that don't fit the test/specification/result shape — e.g. Main Peak, Total Peaks, MS Verification, Detection wavelength. Omitted entirely when empty. */
+  /** Optional extra section alongside or instead of testRows, for extra fields that don't fit the test/specification/result shape. Omitted entirely when empty. */
   analyticalResults?: CertificateInfoRow[];
   /**
    * Workflow status set by an admin in the temporary "Certificate Filler" tool
@@ -275,10 +274,10 @@ export interface ProductCertificate {
 export const CERTIFICATE_FILLER_STATUSES = ['in_progress', 'needs_review', 'complete', 'blocked'] as const;
 export type CertificateFillerStatus = typeof CERTIFICATE_FILLER_STATUSES[number];
 
-// Default research-use caution shown on the certificate when no per-product
-// override is set, consistent with the disclaimer on the product page.
+// Default note shown at the foot of the certificate when no per-product
+// override is set. It states no test result and makes no claim.
 export const DEFAULT_CERTIFICATE_CAUTION =
-  'All compounds sold by Windsor Beauty are strictly intended for in vitro scientific research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals.';
+  'This certificate applies only to the batch shown above. For external use only. Please read the product label before use.';
 
 // Built-in fallback content for the "Storage Instructions" popup, used when
 // no admin override exists in the database yet (e.g. before the global
@@ -301,22 +300,24 @@ export const DEFAULT_PRODUCT_SPECS = {
   form: 'Skincare',
   storage: 'Store in a cool, dry place away from direct sunlight.',
   usage: 'For external use only. Patch test before first use.',
-  coa: 'Certificate available on request.',
+  coa: '',
 };
 
-// The "Product specs" rows shown on a product page — purity always comes
-// from the product itself, the rest fall back to DEFAULT_PRODUCT_SPECS
-// unless an admin has set a per-product override.
+// The product details rows shown on a product page. Form, Storage and Usage
+// fall back to DEFAULT_PRODUCT_SPECS unless an admin has set a per-product
+// override. The Documents row only appears when a product has its own text
+// for it, so the shop never promises a document it may not hold. The legacy
+// `purity` field is never shown.
 export function productSpecs(product: Product): { label: string; value: string }[] {
   const hidden = product.hiddenSpecs ?? [];
   const rows: { key?: SpecRowKey; label: string; value: string }[] = [
-    ...(product.purity ? [{ label: 'Purity', value: product.purity }] : []),
     { key: 'form', label: 'Form', value: product.form ?? DEFAULT_PRODUCT_SPECS.form },
     { key: 'storage', label: 'Storage', value: product.storage ?? DEFAULT_PRODUCT_SPECS.storage },
     { key: 'usage', label: 'Usage', value: product.usage ?? DEFAULT_PRODUCT_SPECS.usage },
-    { key: 'coa', label: 'CoA', value: product.coa ?? DEFAULT_PRODUCT_SPECS.coa },
+    { key: 'coa', label: 'Documents', value: (product.coa ?? DEFAULT_PRODUCT_SPECS.coa).trim() },
   ];
   return rows
+    .filter((row) => row.value !== '')
     .filter((row) => !row.key || !hidden.includes(row.key))
     .map(({ label, value }) => ({ label, value }));
 }
@@ -336,16 +337,17 @@ export function isOrderable(product: Product, stock?: number): boolean {
   return effectiveAvailability(product, stock) === 'available';
 }
 
-// ─── Per-dosage sold-out rules ─────────────────────────────────────────────
-// Stock is counted per dosage, so "sold out" is a question about a strength,
-// not about a product. These two are the single definition of that, shared by
-// the product page and the product card: the opening dosage, the dosage chip,
-// the Add button and the stamp across the photo all read from here, so none of
-// them can tell a customer something another one denies.
+// ─── Per-size sold-out rules ───────────────────────────────────────────────
+// Stock is counted per size (the `dosage` field in code), so "sold out" is a
+// question about a size, not about a product. These two are the single
+// definition of that, shared by the product page and the product card: the
+// opening size, the size chip, the Add button and the stamp across the photo
+// all read from here, so none of them can tell a customer something another
+// one denies.
 //
-// `variantStock` is one product's dosage -> quantity map (from
-// getProductVariantStockMap). A dosage with no entry is untracked, which has
-// always meant unlimited here, so a strength nobody has counted yet stays
+// `variantStock` is one product's size -> quantity map (from
+// getProductVariantStockMap). A size with no entry is untracked, which has
+// always meant unlimited here, so a size nobody has counted yet stays
 // buyable rather than silently reading as gone.
 
 export function dosageSoldOut(
@@ -362,9 +364,9 @@ export function dosageSoldOut(
 }
 
 // True only when there is genuinely nothing left of this product to buy, in
-// any strength. This is what the OUT OF STOCK stamp across the product
-// photograph is allowed to speak for: one dosage running out says nothing
-// about the photo, because the other strengths are still there.
+// any size. This is what the OUT OF STOCK stamp across the product
+// photograph is allowed to speak for: one size running out says nothing
+// about the photo, because the other sizes are still there.
 export function allDosagesSoldOut(
   product: Product,
   variantStock: Record<string, number> | undefined,
@@ -374,7 +376,7 @@ export function allDosagesSoldOut(
 }
 
 // Flattened, lowercased text used for shop search — covers everything the
-// brief asks for (name, brand, description, category, dosage, aliases)
+// brief asks for (name, brand, description, category, size, aliases)
 // without the search filter needing to know the product shape.
 export function searchableText(product: Product): string {
   return [
@@ -391,44 +393,27 @@ export function searchableText(product: Product): string {
     .toLowerCase();
 }
 
-// Pens and vials have meaningfully different parcel weights/dimensions, so
-// bulk shipping tools split products into these two physical formats. Read
-// from the description/name rather than the "Pens" category tag, since that
-// tag can be missed on a new listing — this stays correct even if it is.
-const PEN_WORD_RE = /\bpens?\b/i;
-export function detectProductFormat(product: Pick<Product, 'name' | 'shortDescription' | 'fullDescription'>): 'pen' | 'vial' {
-  const text = `${product.name} ${product.shortDescription ?? ''} ${product.fullDescription ?? ''}`;
-  return PEN_WORD_RE.test(text) ? 'pen' : 'vial';
+// The old shop split products into two physical formats for the bulk shipping
+// tool. Skincare has no such split, so every product now reports the one
+// standard format. The return type and its two keys are unchanged because the
+// bulk shipping tool still reads them; 'vial' now simply means "standard item".
+export function detectProductFormat(_product: Pick<Product, 'name' | 'shortDescription' | 'fullDescription'>): 'pen' | 'vial' {
+  return 'vial';
 }
 
-// Pre multi-category rework, custom_products rows were saved with a single
-// `category` ('Peptides' | 'Pens' | 'Bac Water') plus an optional peptide-only
-// `subcategory`. Map those onto the new categories[] taxonomy so admin
-// overrides saved before this change don't crash the storefront.
-const LEGACY_CATEGORY_MAP: Record<string, Category> = {
-  Peptides: 'Peptides',
-  Pens: 'Pens',
-  'Bac Water': 'BAC Water',
-};
-const LEGACY_SUBCATEGORY_MAP: Record<string, Category> = {
-  'Fat Loss': 'Fat Loss',
-  Performance: 'Muscle / Growth',
-  Recovery: 'Beauty / Healing / Repair / Recovery',
-  Wellness: 'Sleep & Relaxation',
-  Research: 'Brain / Mood / Cognitive',
-};
+// Very old custom_products rows were saved with a single `category` instead of
+// a categories[] list. None of the old category names exist in this shop, so a
+// row like that is filed under 'Extras' rather than crashing the storefront.
+const LEGACY_FALLBACK_CATEGORY: Category = 'Extras';
 
 // Normalises a product loaded from the database, filling in `categories`
-// from the legacy `category`/`subcategory` fields if it predates them.
+// from the legacy `category` field if it predates them.
 function normalizeProduct(product: Product): Product {
   if (Array.isArray(product.categories) && product.categories.length > 0) return product;
 
-  const legacy = product as unknown as { category?: string; subcategory?: string };
-  const categories: Category[] = [];
-  const primary = legacy.category ? LEGACY_CATEGORY_MAP[legacy.category] : undefined;
-  categories.push(primary ?? 'Peptides');
-  const secondary = legacy.subcategory ? LEGACY_SUBCATEGORY_MAP[legacy.subcategory] : undefined;
-  if (secondary && !categories.includes(secondary)) categories.push(secondary);
+  const legacy = product as unknown as { category?: string };
+  const known = (ALL_CATEGORIES as readonly string[]).includes(legacy.category ?? '');
+  const categories: Category[] = [known ? (legacy.category as string) : LEGACY_FALLBACK_CATEGORY];
 
   return { ...product, categories };
 }

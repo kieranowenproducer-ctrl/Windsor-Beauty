@@ -51,7 +51,7 @@ export default function ProductCardList({
                     {product.badge && (
                       <span className="text-[7px] tracking-wider bg-gold-100 text-gold-700 px-1.5 py-0.5 uppercase">{product.badge}</span>
                     )}
-                    <div className="text-[10px] text-stone-400 mt-0.5">{product.categories.join(', ')} &middot; {product.purity}</div>
+                    <div className="text-[10px] text-stone-400 mt-0.5">{product.categories.join(', ')}{product.purity ? <> &middot; {product.purity}</> : null}</div>
                   </div>
                   <div className="text-right shrink-0">
                     <div className="text-xs font-semibold text-stone-700">
@@ -73,7 +73,7 @@ export default function ProductCardList({
                   </div>
                   {(() => {
                     const { status, issue } = evaluateCertificate(product);
-                    // Per-dosage coverage (Option A): the exact dosages with no live COA.
+                    // Per-size coverage: the exact sizes with no live certificate.
                     const missingDosages = product.variants.length >= 2 ? dosagesMissingCertificate(product) : [];
                     return (
                       <div className="flex items-center gap-1.5">
@@ -83,10 +83,10 @@ export default function ProductCardList({
                         {missingDosages.length > 0 && (
                           <button
                             onClick={() => editCertificateFor(product)}
-                            title={`No live Certificate of Analysis for: ${missingDosages.join(', ')}. Each dosage is a separate batch needing its own COA — open the certificate section and pick that dosage to add it.`}
+                            title={`Other sizes of this product show a certificate, but these do not: ${missingDosages.join(', ')}. Open the certificate section and pick that size to add one.`}
                             className="inline-flex items-center gap-1 text-[8px] tracking-wider uppercase px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-200"
                           >
-                            COA missing: {missingDosages.join(', ')}
+                            Certificate missing: {missingDosages.join(', ')}
                           </button>
                         )}
                       </div>
@@ -95,7 +95,7 @@ export default function ProductCardList({
                 </div>
 
                 <div className="mb-3">
-                  <p className="text-[8px] tracking-widest uppercase text-stone-300 mb-1.5">Stock by Dosage</p>
+                  <p className="text-[8px] tracking-widest uppercase text-stone-300 mb-1.5">Stock by Size</p>
                   {renderStockEditor(product)}
                 </div>
 

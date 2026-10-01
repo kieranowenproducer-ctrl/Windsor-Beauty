@@ -33,10 +33,10 @@ const statusText: Record<string, string> = {
 };
 
 function GlowCardExplainer({ onClose }: { onClose: () => void }) {
-  return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-950/70 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label="Glow Card explainer" onMouseDown={event => { if (event.currentTarget === event.target) onClose(); }}>
+  return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-950/70 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label="Beauty Card explainer" onMouseDown={event => { if (event.currentTarget === event.target) onClose(); }}>
     <div className="relative max-h-[94vh] max-w-2xl overflow-y-auto bg-[#fffdf8] p-3 shadow-2xl">
-      <button type="button" onClick={onClose} className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center border border-gold-700 bg-white text-xl text-gold-900" aria-label="Close Glow Card explainer">×</button>
-      <Image src="/images/glow-card-explainer-poster-v1.png" alt="Glow Card: points, referrals, rewards and half-price standard UK delivery" width={1122} height={1404} sizes="(max-width: 672px) 100vw, 672px" className="h-auto w-full" />
+      <button type="button" onClick={onClose} className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center border border-gold-700 bg-white text-xl text-gold-900" aria-label="Close Beauty Card explainer">×</button>
+      <Image src="/images/glow-card-explainer-poster-v1.png" alt="Beauty Card: points, referrals, rewards and half-price standard UK delivery" width={1122} height={1404} sizes="(max-width: 672px) 100vw, 672px" className="h-auto w-full" />
     </div>
   </div>;
 }
@@ -54,7 +54,7 @@ export default function GlowCardPage() {
     const response = await fetch('/api/account/referrals', { cache: 'no-store' });
     const data = await response.json().catch(() => null);
     if (!response.ok) {
-      setError(data?.error || 'Your Glow Card could not be loaded.');
+      setError(data?.error || 'Your Beauty Card could not be loaded.');
       return;
     }
     setCard(data);
@@ -142,15 +142,15 @@ export default function GlowCardPage() {
     const link = typeof window !== 'undefined' ? `${window.location.origin}/refer/${card.code}` : '';
     return <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-16">
       <Link href="/account" className="inline-flex min-h-10 items-center border border-gold-500 bg-white px-4 py-2 text-[10px] font-medium uppercase tracking-[0.18em] text-gold-800">Back to my account</Link>
-      <header className="mt-8 max-w-2xl"><p className="text-[10px] uppercase tracking-[0.26em] text-gold-700">Member rewards</p><h1 className="mt-2 font-serif text-5xl text-stone-900">Your Glow Card</h1><p className="mt-5 text-sm leading-relaxed text-stone-600">Earn one Glow Point on every paid member order with £30 or more of products. Invite a friend and, once they complete their first paid signed-in £30+ product order, you both receive a separate bonus point.</p></header>
-      <button type="button" onClick={() => setShowHowItWorks(true)} className="mt-6 inline-flex min-h-12 items-center gap-3 border border-gold-800 bg-gold-800 px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-white shadow-sm hover:bg-gold-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700"><span>What is the Glow Card?</span><span className="text-base leading-none" aria-hidden="true">↓</span></button>
+      <header className="mt-8 max-w-2xl"><p className="text-[10px] uppercase tracking-[0.26em] text-gold-700">Member rewards</p><h1 className="mt-2 font-serif text-5xl text-stone-900">Your Beauty Card</h1><p className="mt-5 text-sm leading-relaxed text-stone-600">Earn one Beauty Point on every paid member order with £30 or more of products. Invite a friend and, once they complete their first paid signed-in £30+ product order, you both receive a separate bonus point.</p></header>
+      <button type="button" onClick={() => setShowHowItWorks(true)} className="mt-6 inline-flex min-h-12 items-center gap-3 border border-gold-800 bg-gold-800 px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-white shadow-sm hover:bg-gold-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700"><span>What is the Beauty Card?</span><span className="text-base leading-none" aria-hidden="true">↓</span></button>
       {error && <p role="alert" className="mt-6 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">{error}</p>}
       <section className="mt-8 grid gap-4 md:grid-cols-3">{rewards.map((stage, index) => { const ready = points >= stage.milestone && !stage.current; const code = stage.current?.status === 'claimed' ? stage.current.code : null; return <article key={stage.milestone} className={`relative overflow-hidden border p-5 shadow-[0_8px_22px_rgba(111,88,35,0.07)] sm:p-6 ${index === 2 ? 'border-[#cfb45f] bg-[linear-gradient(145deg,#f8edcb,#ead393)]' : index === 1 ? 'border-[#d8c483] bg-[linear-gradient(145deg,#fffaf0,#f2e5bf)]' : 'border-[#dfd3ad] bg-[linear-gradient(145deg,#ffffff,#f8f2e4)]'}`}><Image src="/images/windsor-beauty-mark.png" alt="" width={258} height={239} aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-auto w-[78%] -translate-x-1/2 -translate-y-1/2 select-none opacity-[0.065] mix-blend-multiply" /><div className="relative"><p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold-800">Stage {index + 1} · {stage.milestone} points</p><p className="mt-4 font-serif text-4xl leading-tight text-stone-900">£{stage.amount} off</p><p className="mt-1 text-xs font-semibold text-gold-900">Plus half-price standard UK delivery</p><div className="mt-5 grid grid-cols-5 gap-2">{Array.from({ length: 5 }, (_, offset) => { const point = index * 5 + offset; return <span key={point} className={`flex aspect-square items-center justify-center rounded-full border text-xs font-semibold ${point < points ? 'border-gold-700 bg-[linear-gradient(145deg,#b58b27,#87630f)] text-white shadow-sm' : 'border-gold-400/75 bg-white/70 text-gold-900'}`}>{point + 1}</span>; })}</div><p className="mt-4 text-xs leading-relaxed text-stone-600">{stage.milestone === 15 ? 'Claiming this top reward starts your next card at zero.' : 'Claiming this reward keeps your current card and progress.'}</p>{code ? <div className="mt-5"><code className="block break-all border border-gold-200 bg-white/80 p-3 text-xs text-stone-800">{code}</code><button type="button" onClick={() => copyRewardCode(code)} className="mt-3 text-xs font-semibold text-gold-800 underline">{copiedRewardCode === code ? 'Code copied' : 'Copy code'}</button></div> : <button type="button" disabled={busy || !ready} onClick={() => claimLoyalty(stage.milestone)} className="mt-5 min-h-11 w-full border border-gold-800 bg-gold-800 px-3 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:cursor-not-allowed disabled:opacity-40">{checkingStage === stage.milestone ? 'Claiming...' : ready ? 'Claim reward' : `${Math.max(stage.milestone - points, 0)} to go`}</button>}</div></article>; })}</section>
       {carriedRewards.length > 0 && <section className="mt-7 border border-gold-300 bg-gold-50 p-5"><p className="text-[10px] uppercase tracking-[0.2em] text-gold-700">Rewards saved from earlier cards</p><h2 className="mt-2 font-serif text-3xl text-stone-900">Your rewards stay yours</h2><p className="mt-2 text-sm leading-relaxed text-stone-600">Starting a new card after claiming £30 never removes an earlier £10 or £20 reward. Claim or copy it here whenever you are ready.</p><div className="mt-5 grid gap-3 sm:grid-cols-2">{carriedRewards.map(reward => { const code = reward.status === 'claimed' ? reward.code : null; return <article key={`${reward.cycle}-${reward.milestone}`} className="border border-gold-200 bg-white p-4"><p className="text-[10px] uppercase tracking-[0.16em] text-gold-700">Card {reward.cycle} · {reward.milestone} points</p><p className="mt-1 font-serif text-3xl text-stone-900">£{reward.amount} off</p>{code ? <><code className="mt-3 block break-all border border-gold-200 bg-gold-50 p-3 text-xs text-stone-800">{code}</code><button type="button" onClick={() => copyRewardCode(code)} className="mt-3 text-xs font-semibold text-gold-800 underline">{copiedRewardCode === code ? 'Code copied' : 'Copy code'}</button></> : <button type="button" disabled={busy} onClick={() => claimLoyalty(reward.milestone as 5 | 10 | 15, reward.cycle)} className="mt-4 min-h-10 border border-gold-800 bg-gold-800 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-40">{checkingStage === reward.milestone ? 'Claiming...' : 'Claim reward'}</button>}</article>; })}</div></section>}
-      <section className="mt-8 border border-gold-200 bg-white p-5"><p className="text-[10px] uppercase tracking-[0.2em] text-gold-700">Referral bonus</p><h2 className="mt-2 font-serif text-3xl text-stone-900">Invite a friend</h2><p className="mt-2 text-sm leading-relaxed text-stone-600">This is separate from spending. Your friend must join through your link, sign in and complete their first paid order with £30 or more in products. Then you both receive one referral bonus Glow Point.</p><input readOnly value={link} onFocus={event => event.target.select()} className="mt-4 w-full border border-stone-300 px-3 py-2.5 text-sm" /><button type="button" onClick={() => copyLink(link)} className="mt-3 border border-gold-700 px-4 py-2 text-xs text-gold-800">{copied ? 'Link copied' : 'Copy invitation link'}</button></section>
+      <section className="mt-8 border border-gold-200 bg-white p-5"><p className="text-[10px] uppercase tracking-[0.2em] text-gold-700">Referral bonus</p><h2 className="mt-2 font-serif text-3xl text-stone-900">Invite a friend</h2><p className="mt-2 text-sm leading-relaxed text-stone-600">This is separate from spending. Your friend must join through your link, sign in and complete their first paid order with £30 or more in products. Then you both receive one referral bonus Beauty Point.</p><input readOnly value={link} onFocus={event => event.target.select()} className="mt-4 w-full border border-stone-300 px-3 py-2.5 text-sm" /><button type="button" onClick={() => copyLink(link)} className="mt-3 border border-gold-700 px-4 py-2 text-xs text-gold-800">{copied ? 'Link copied' : 'Copy invitation link'}</button></section>
       {showHowItWorks && <GlowCardExplainer onClose={() => setShowHowItWorks(false)} />}
       <section className="mt-8 border-t border-gold-200 pt-5 text-sm text-stone-600"><p className="text-[10px] uppercase tracking-[0.2em] text-gold-700">Your card history</p><p className="mt-2">You are on card {card.cycle ?? 1}. Completed cards are recorded here as you claim a £30 reward.</p></section>
-      <Link href="/glow-card-terms" className="mt-6 inline-block text-xs text-gold-800 underline underline-offset-4">Read the Glow Card terms</Link>
+      <Link href="/glow-card-terms" className="mt-6 inline-block text-xs text-gold-800 underline underline-offset-4">Read the Beauty Card terms</Link>
     </main>;
   }
 
@@ -164,13 +164,13 @@ export default function GlowCardPage() {
       </Link>
       <div className="mt-8 mb-8">
         <p className="text-[10px] tracking-[0.26em] uppercase text-gold-700">Member rewards</p>
-        <h1 className="font-serif text-5xl sm:text-6xl text-stone-900 mt-2 leading-none">Your Glow Card</h1>
+        <h1 className="font-serif text-5xl sm:text-6xl text-stone-900 mt-2 leading-none">Your Beauty Card</h1>
         <p className="text-sm sm:text-base text-stone-600 leading-relaxed mt-5 max-w-2xl">
           Share your personal link. When a new member makes a first paid product order of £30 or more,
           you both earn one stamp after dispatch and checks. Delivery does not count towards the £30, and repeat orders do not earn extra stamps.
         </p>
         <button type="button" onClick={() => setShowHowItWorks(true)} className="mt-5 inline-flex min-h-11 items-center gap-3 border border-gold-700 bg-gold-50 px-5 py-3 text-xs font-semibold uppercase tracking-[0.13em] text-gold-900 transition-colors hover:bg-gold-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700">
-          <span>What is the Glow Card?</span><span className="text-base leading-none" aria-hidden="true">↓</span>
+          <span>What is the Beauty Card?</span><span className="text-base leading-none" aria-hidden="true">↓</span>
         </button>
       </div>
 
@@ -209,7 +209,7 @@ export default function GlowCardPage() {
             <div><Image src="/images/logo-transparent.png" alt="Windsor Beauty" width={130} height={86} className="w-28 h-auto"/><p className="text-[10px] uppercase tracking-[0.3em] text-gold-700 mt-5">Collector's Folio</p><h2 className="font-serif text-4xl text-stone-900 mt-2">A record of your stamps</h2></div>
             <div className="mt-8 flex flex-wrap items-end gap-6"><p className="font-serif text-8xl text-gold-800 leading-none">{card.availableStamps}</p><div className="flex-1 min-w-40"><p className="text-xs uppercase tracking-[0.15em] text-stone-700">Available stamps</p><div className="h-2 bg-stone-200 mt-3" role="img" aria-label={`${card.availableStamps} of 15 stamps available`}><div className="h-full bg-gold-700" style={{width: `${card.availableStamps / 15 * 100}%`}}/></div><p className="text-xs text-stone-600 mt-2">Up to 15 on this page</p></div></div>
           </div>
-        </section> : <section className="relative mb-9 overflow-hidden border border-[#dbc88e] bg-[linear-gradient(145deg,#fffefb,#f7f0df)] p-4 shadow-[0_20px_55px_rgba(111,88,35,0.13)] sm:p-7 lg:p-9" aria-label="Your Glow Card reward stages">
+        </section> : <section className="relative mb-9 overflow-hidden border border-[#dbc88e] bg-[linear-gradient(145deg,#fffefb,#f7f0df)] p-4 shadow-[0_20px_55px_rgba(111,88,35,0.13)] sm:p-7 lg:p-9" aria-label="Your Beauty Card reward stages">
           <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#ead79c]/35 blur-3xl" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-40 -left-24 h-80 w-80 rounded-full bg-white/80 blur-3xl" aria-hidden="true" />
           <div className="relative">
@@ -271,7 +271,7 @@ export default function GlowCardPage() {
               })}
             </div>
             <p className="mt-5 text-xs leading-relaxed text-stone-600">{card.demo ? 'These are demonstration rewards and cannot be used at checkout. The live system will check every supporting invitation again before creating a code.' : 'Rewards are for your account on product orders of £30 or more, excluding delivery. They expire after 12 months and cannot be combined with another manual code.'}</p>
-            <Link href={card.demo ? '/account/glow-card/terms' : '/glow-card-terms'} className="mt-3 inline-block text-xs text-gold-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700">Read the Glow Card terms</Link>
+            <Link href={card.demo ? '/account/glow-card/terms' : '/glow-card-terms'} className="mt-3 inline-block text-xs text-gold-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700">Read the Beauty Card terms</Link>
           </div>
         </section>}
 
@@ -291,7 +291,7 @@ export default function GlowCardPage() {
             ))}
           </div>
           <p className="text-xs text-stone-600 mt-4">{card.demo ? 'Demo reward codes are examples for testing this design and cannot be used at checkout.' : 'Reward codes are for your own account, on product orders of £30 or more, excluding delivery. They expire after 12 months and cannot be combined with another code.'}</p>
-          <Link href={card.demo ? '/account/glow-card/terms' : '/glow-card-terms'} className="inline-block text-xs text-gold-700 underline underline-offset-4 mt-3">Read the Glow Card terms</Link>
+          <Link href={card.demo ? '/account/glow-card/terms' : '/glow-card-terms'} className="inline-block text-xs text-gold-700 underline underline-offset-4 mt-3">Read the Beauty Card terms</Link>
         </section>}
 
         {card.vouchers.length > 0 && <section className="mb-8">

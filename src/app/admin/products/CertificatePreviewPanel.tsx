@@ -33,9 +33,8 @@ export default function CertificatePreviewPanel({
   onClose: () => void;
 }) {
   const cert = useMemo(() => certificateDraftToPayload(draft), [draft]);
-  // A shared certificate is checked against the first dosage it would actually be shown for,
-  // because the content rule ("10.2mg must beat the 10mg on the label") needs a figure to compare
-  // against. Named on screen so nobody wonders which dosage the marks refer to.
+  // A shared certificate is checked against the first size it would actually be shown for.
+  // Named on screen so nobody wonders which size the marks refer to.
   const checkedDosage = dosage || product.variants.find(v => v.enabled !== false)?.dosage || '';
   const issues = useMemo(() => certificateIssuesFor(cert, checkedDosage), [cert, checkedDosage]);
 

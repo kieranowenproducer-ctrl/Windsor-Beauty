@@ -28,8 +28,8 @@ export default function FooterContentSection({
             <div id="section-footer-content" className="bg-white border border-stone-200 p-6">
               <h2 className="text-sm font-semibold text-stone-800 mb-1">Footer &amp; Navigation</h2>
               <p className="text-xs text-stone-400 mb-4 leading-relaxed">
-                Edit the text and links shown in the site footer — the brand description, contact emails, the
-                Navigation and Legal link columns, the research disclaimer, and the copyright line. Changes appear
+                Edit the text and links shown in the site footer: the brand description, contact emails, the
+                Navigation and Legal link columns, the footer note, and the copyright line. Changes appear
                 on the live site as soon as they&apos;re saved.
               </p>
 
@@ -128,7 +128,7 @@ export default function FooterContentSection({
               </div>
 
               <label className="flex flex-col gap-1.5 mb-4">
-                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Research Disclaimer</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-stone-400">Footer note</span>
                 <textarea
                   value={footerContent.disclaimer}
                   onChange={(e) => updateFooterField({ disclaimer: e.target.value })}

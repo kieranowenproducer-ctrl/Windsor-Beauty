@@ -10,10 +10,10 @@ export interface TrustBadge {
 }
 
 export const DEFAULT_TRUST_BADGES: TrustBadge[] = [
-  { title: '99% Purity', subtitle: 'Independently tested' },
-  { title: 'CoA Included', subtitle: 'Certificate of analysis' },
+  { title: 'Premium Skincare', subtitle: 'For your daily routine' },
+  { title: 'Clear Sizes', subtitle: 'Shown on every product' },
   { title: 'UK Supplier', subtitle: 'C&S Holdings Group' },
-  { title: 'Lab Tested', subtitle: 'HPLC verified batches' },
+  { title: 'Customer Reviews', subtitle: 'Read before you buy' },
 ];
 
 interface TrustBadgesSource {

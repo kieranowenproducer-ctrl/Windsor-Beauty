@@ -137,7 +137,7 @@ export default function AdminInvoiceEditPage() {
   const [batchPool, setBatchPool] = useState<string[]>([]);
 
   // Stock, so a product can be picked for an invoice knowing what is left. Per dosage, because an
-  // invoice line is for one dosage; `stock` is the per-product total of those. Read from the
+  // invoice line is for one size; `stock` is the per-product total of those. Read from the
   // PUBLIC read-only endpoint on purpose: /api/admin/products/stock seeds missing rows as a side
   // effect of being read, and an invoice screen has no business writing stock rows.
   const [variantStock, setVariantStock] = useState<Record<string, Record<string, number>>>({});

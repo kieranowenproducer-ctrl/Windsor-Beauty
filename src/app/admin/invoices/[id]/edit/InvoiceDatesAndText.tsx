@@ -58,8 +58,8 @@ export default function InvoiceDatesAndText({
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={3} className={`${INPUT_CLASS} resize-y`} />
           </label>
           <label className="flex flex-col gap-1.5 mb-4">
-            <span className={LABEL_CLASS}>Footer / Disclaimer Text</span>
-            <input type="text" value={footerText} onChange={(e) => setFooterText(e.target.value)} placeholder="All products are supplied strictly for research purposes only. Not for human use." className={INPUT_CLASS} />
+            <span className={LABEL_CLASS}>Footer Text</span>
+            <input type="text" value={footerText} onChange={(e) => setFooterText(e.target.value)} placeholder="Optional line printed at the foot of the invoice" className={INPUT_CLASS} />
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="flex flex-col gap-1.5">

@@ -2,7 +2,7 @@
 // GET  -> all recorded purchases (newest first).
 // POST -> record one { supplier, purchaseDate, shippingCost, updateInventory, lines:[{slug,dosage,qty,blockCost}] }.
 //         Recording a purchase also folds its costs into each product's cost basis
-//         (raw = blockCost/qty; shipping allocated evenly per vial across the order).
+//         (raw = blockCost/qty; shipping allocated evenly per unit across the order).
 // Protected by the /api/admin middleware guard.
 import { NextResponse } from 'next/server';
 import { isDbConfigured, listSupplierPurchases, recordSupplierPurchase, deleteSupplierPurchase } from '@/lib/db';

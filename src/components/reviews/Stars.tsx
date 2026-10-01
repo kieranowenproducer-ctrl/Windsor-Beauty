@@ -3,7 +3,7 @@ const GOLD = '#B8902A';
 const STONE_LIGHT = '#f5f5f4';
 
 // Each star sits inside a small square box — Trustpilot-inspired but in Windsor
-// Glow's gold/white palette. Full stars: gold box + white star. Empty: stone box
+// Beauty's gold/white palette. Full stars: gold box + white star. Empty: stone box
 // + muted star. Half: split gold|stone gradient box + white star on top.
 function StarBox({
   fill,

@@ -15,7 +15,7 @@ section('Valid example CSV');
 
 section('Missing required columns');
 {
-  const result = parseUpsellCsv('foo,bar\nretatrutide,bac-water-10ml');
+  const result = parseUpsellCsv('foo,bar\nhydra-veil-serum,gentle-cleanser');
   console.log('fatal:', result.fatalError);
   console.assert(result.fatalError !== null, 'expected a fatal error');
 }
@@ -23,7 +23,7 @@ section('Missing required columns');
 section('Self-upsell rejected');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active
-retatrutide,retatrutide,1,TRUE`;
+hydra-veil-serum,hydra-veil-serum,1,TRUE`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'errors:', result.errors);
   console.assert(result.rows.length === 0, 'self-upsell row should be rejected');
@@ -33,8 +33,8 @@ retatrutide,retatrutide,1,TRUE`;
 section('Duplicate relationship within file');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active
-retatrutide,bac-water-10ml,1,TRUE
-retatrutide,bac-water-10ml,2,TRUE`;
+hydra-veil-serum,gentle-cleanser,1,TRUE
+hydra-veil-serum,gentle-cleanser,2,TRUE`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'errors:', result.errors);
   console.assert(result.rows.length === 1, 'expected only the first occurrence to be kept');
@@ -44,9 +44,9 @@ retatrutide,bac-water-10ml,2,TRUE`;
 section('Invalid priority');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active
-retatrutide,bac-water-10ml,abc,TRUE
-retatrutide,insulin-syringes,0,TRUE
-retatrutide,alcohol-wipes,-1,TRUE`;
+hydra-veil-serum,gentle-cleanser,abc,TRUE
+hydra-veil-serum,day-cream,0,TRUE
+hydra-veil-serum,cotton-pads,-1,TRUE`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'errors:', result.errors.length);
   console.assert(result.rows.length === 0, 'expected all 3 rows to be rejected (non-numeric, zero, negative)');
@@ -56,7 +56,7 @@ retatrutide,alcohol-wipes,-1,TRUE`;
 section('Invalid active flag');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active
-retatrutide,bac-water-10ml,1,MAYBE`;
+hydra-veil-serum,gentle-cleanser,1,MAYBE`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'errors:', result.errors);
   console.assert(result.rows.length === 0, 'expected row rejected');
@@ -66,7 +66,7 @@ retatrutide,bac-water-10ml,1,MAYBE`;
 section('active = FALSE is stored, not rejected');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active
-retatrutide,bac-water-10ml,1,FALSE`;
+hydra-veil-serum,gentle-cleanser,1,FALSE`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'active:', result.rows[0]?.active);
   console.assert(result.rows.length === 1, 'expected the row to be imported');
@@ -76,7 +76,7 @@ retatrutide,bac-water-10ml,1,FALSE`;
 section('Missing column values (blank handle)');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active
-,bac-water-10ml,1,TRUE`;
+,gentle-cleanser,1,TRUE`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'errors:', result.errors);
   console.assert(result.rows.length === 0, 'expected row rejected');
@@ -85,7 +85,7 @@ section('Missing column values (blank handle)');
 section('Quoted custom_message containing a comma');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,custom_message,active
-retatrutide,bac-water-10ml,1,"Great value, buy together",TRUE`;
+hydra-veil-serum,gentle-cleanser,1,"Great value, buy together",TRUE`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'message:', result.rows[0]?.customMessage);
   console.assert(result.rows[0]?.customMessage === 'Great value, buy together', 'expected quoted comma to be preserved');
@@ -94,18 +94,18 @@ retatrutide,bac-water-10ml,1,"Great value, buy together",TRUE`;
 section('Handles normalised to lowercase/trimmed');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active
- Retatrutide , BAC-Water-10ML ,1,TRUE`;
+ Hydra-Veil-Serum , GENTLE-Cleanser ,1,TRUE`;
   const result = parseUpsellCsv(csv);
   console.log('trigger:', result.rows[0]?.triggerHandle, 'upsell:', result.rows[0]?.upsellHandle);
-  console.assert(result.rows[0]?.triggerHandle === 'retatrutide', 'expected lowercase trimmed trigger');
-  console.assert(result.rows[0]?.upsellHandle === 'bac-water-10ml', 'expected lowercase trimmed upsell');
+  console.assert(result.rows[0]?.triggerHandle === 'hydra-veil-serum', 'expected lowercase trimmed trigger');
+  console.assert(result.rows[0]?.upsellHandle === 'gentle-cleanser', 'expected lowercase trimmed upsell');
 }
 
 section('Future start_date/end_date columns');
 {
   const csv = `trigger_product_handle,upsell_product_handle,priority,active,start_date,end_date
-retatrutide,bac-water-10ml,1,TRUE,2026-01-01,2026-12-31
-retatrutide,insulin-syringes,2,TRUE,not-a-date,`;
+hydra-veil-serum,gentle-cleanser,1,TRUE,2026-01-01,2026-12-31
+hydra-veil-serum,day-cream,2,TRUE,not-a-date,`;
   const result = parseUpsellCsv(csv);
   console.log('rows:', result.rows.length, 'errors:', result.errors);
   console.assert(result.rows.length === 1, 'expected 1 valid row, 1 rejected for bad date');

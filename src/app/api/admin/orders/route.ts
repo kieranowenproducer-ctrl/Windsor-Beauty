@@ -19,9 +19,8 @@ export async function GET() {
     royalMailConfigured: isRoyalMailConfigured(),
     royalMailLiveMode: isRoyalMailLiveMode(),
     royalMailStats,
-    // The product short names, so typing "Reta" finds Retatrutide and the other way round. Sent
-    // with the orders rather than built into the page: the list is PEARL's, and PEARL's terminology
-    // file is 60KB of records and sources that has no business being downloaded by a browser.
+    // Words the search should treat as the same word (see src/lib/searchAliases.ts). Sent with
+    // the orders because Orders search in the browser. The list is empty for now.
     searchAliases: SEARCH_ALIAS_GROUPS,
     orders: orders.map(o => ({
       orderNumber: o.order_number,

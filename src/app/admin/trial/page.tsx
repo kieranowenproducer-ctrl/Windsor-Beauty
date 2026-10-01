@@ -118,7 +118,7 @@ function ProductsTab({ products, onEdit, onAdd, onDelete }: { products: TrialPro
           <thead>
             <tr className="text-left text-[9px] uppercase tracking-wider text-stone-400 border-b border-stone-200">
               <th className="py-2">Product</th><th className="py-2 w-28">Category</th>
-              <th className="py-2 w-40">Dosages</th><th className="py-2 w-16 text-right">Stock</th>
+              <th className="py-2 w-40">Sizes</th><th className="py-2 w-16 text-right">Stock</th>
               {/* Read-only permanent code, assigned on creation. */}
               <th className="py-2 w-32 pl-6">Product code</th><th className="py-2 w-24" />
             </tr>
@@ -172,7 +172,7 @@ function ProfitTab({ products }: { products: TrialProduct[] }) {
             <table className="w-full mt-2 text-xs">
               <thead>
                 <tr className="text-left text-[9px] uppercase tracking-wider text-stone-400 border-b border-stone-200">
-                  <th className="py-2">Product</th><th className="py-2 w-14">Dosage</th>
+                  <th className="py-2">Product</th><th className="py-2 w-14">Size</th>
                   <th className="py-2 w-20 text-right">Sale</th><th className="py-2 w-16 text-right">Stock</th>
                   <th className="py-2 w-24 text-right">Total cost</th><th className="py-2 w-24 text-right">Margin</th><th className="py-2 w-14 text-right">%</th>
                 </tr>
@@ -258,17 +258,17 @@ function Editor({ initial, onClose, onSaved, onError }: { initial: TrialProduct;
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Trial product name" className="block w-64 border border-stone-200 px-2 py-1.5 text-sm mt-0.5" />
             </label>
             <label className="text-[10px] text-stone-500">Category
-              <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Peptides" className="block w-48 border border-stone-200 px-2 py-1.5 text-sm mt-0.5" />
+              <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Serums" className="block w-48 border border-stone-200 px-2 py-1.5 text-sm mt-0.5" />
             </label>
           </div>
 
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Dosages</p>
+            <p className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Sizes</p>
             <div className="space-y-4">
               {variants.map((v, i) => (
                 <div key={i} className="border border-stone-200 p-3">
                   <div className="flex flex-wrap items-end gap-3">
-                    <label className="text-[10px] text-stone-500">Dosage<input value={v.dosage} onChange={(e) => setV(i, { dosage: e.target.value })} placeholder="10mg" className="block w-20 border border-stone-200 px-2 py-1 text-xs mt-0.5" /></label>
+                    <label className="text-[10px] text-stone-500">Size<input value={v.dosage} onChange={(e) => setV(i, { dosage: e.target.value })} placeholder="30ml" className="block w-20 border border-stone-200 px-2 py-1 text-xs mt-0.5" /></label>
                     <label className="text-[10px] text-stone-500">Sale £<input inputMode="decimal" value={v.price} onChange={(e) => setV(i, { price: e.target.value })} className="block w-20 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
                     <label className="text-[10px] text-stone-500">Stock<input inputMode="numeric" value={v.stock} onChange={(e) => setV(i, { stock: e.target.value })} className="block w-16 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
                     <label className="text-[10px] text-stone-500">Raw cost £<input inputMode="decimal" value={v.rawCost} onChange={(e) => setV(i, { rawCost: e.target.value })} className="block w-20 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" /></label>
@@ -287,7 +287,7 @@ function Editor({ initial, onClose, onSaved, onError }: { initial: TrialProduct;
                 </div>
               ))}
             </div>
-            <button onClick={() => setVariants((p) => [...p, blankVariant()])} className="text-[10px] uppercase tracking-wider text-stone-500 hover:text-gold-700 mt-3">+ Add dosage</button>
+            <button onClick={() => setVariants((p) => [...p, blankVariant()])} className="text-[10px] uppercase tracking-wider text-stone-500 hover:text-gold-700 mt-3">+ Add size</button>
           </div>
         </div>
         <div className="mt-auto px-6 py-4 border-t border-stone-200 sticky bottom-0 bg-white flex gap-3">

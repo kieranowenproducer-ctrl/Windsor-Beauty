@@ -4,15 +4,10 @@ import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { emailGreeting } from './email/greeting';
 
-// FROM_ADDRESS/footer below say "Windsor Beauty" despite this living in the
-// Windsor Beauty codebase and being sent to real Windsor Beauty PayPal customers
-// (see src/app/api/payment/paypal/instructions/route.ts) — a pre-existing
-// brand mismatch noted in invoiceEmail.ts, flagged again in the 2026-06-28
-// email audit but deliberately not changed here, since the sending domain
-// is tied to a separately-verified Resend API key/domain
-// (RESEND_API_KEY_PAYPAL) that may only be authorised for windsorbeauty.co.uk
-// — swapping the brand name without confirming deliverability for the new
-// domain is a business decision, not a styling fix.
+// Sent to customers who chose PayPal at checkout
+// (see src/app/api/payment/paypal/instructions/route.ts). It can use its own
+// Resend key (RESEND_API_KEY_PAYPAL), so do not change the sending address
+// without confirming that key is authorised for it.
 const FROM_ADDRESS = 'Windsor Beauty <sales@windsorbeauty.co.uk>';
 
 export interface PaypalInstructionsParams {
@@ -62,8 +57,7 @@ export function buildPaypalLink(orderNumber: string, total: number): string {
   return '';
 }
 
-// This email is sent from the windsorbeauty.co.uk domain (a separate Resend
-// account/domain from windsorbeauty.co.uk), so it uses its own API key.
+// Uses its own API key when one is set, and the main key otherwise.
 const RESEND_API_KEY = process.env.RESEND_API_KEY_PAYPAL || process.env.RESEND_API_KEY;
 
 export async function sendPaypalInstructionsEmail(params: PaypalInstructionsParams): Promise<boolean> {
@@ -221,8 +215,7 @@ export async function sendPaypalInstructionsEmail(params: PaypalInstructionsPara
             </p>
 
             <p style="margin:0 0 32px;font-size:12px;color:#a8a29e;line-height:1.6">
-              Any questions, just reply to this email.
-              For any questions about your order, contact
+              Any questions, just reply to this email, or contact
               <a href="mailto:sales@windsorbeauty.co.uk" style="color:#b8902a;text-decoration:none">sales@windsorbeauty.co.uk</a>
               and include your order reference <strong style="color:#78716c">${escapeHtml(params.orderNumber)}</strong>.
             </p>
@@ -230,12 +223,9 @@ export async function sendPaypalInstructionsEmail(params: PaypalInstructionsPara
         </tr>`;
 
   const html = emailDocument({
-    title: `Complete your payment — ${params.orderNumber}`,
+    title: `Complete your payment for order ${params.orderNumber}`,
     headerLabel: 'Complete Your Payment',
     bodyHtml,
-    // Keeps the footer self-consistent with the still-unresolved Windsor
-    // Beauty FROM_ADDRESS above, rather than introducing a new "Windsor
-    // Glow" vs. "Windsor Beauty" mismatch within this one email.
     footerBrandLine: 'Windsor Beauty',
   });
 
@@ -247,7 +237,7 @@ export async function sendPaypalInstructionsEmail(params: PaypalInstructionsPara
       // filters associate with phishing (invoice junk-folder diagnosis, 31 July 2026).
       replyTo: SUPPORT_REPLY_TO,
       to: params.to,
-      subject: `Complete your Windsor Beauty payment — ${params.orderNumber}`,
+      subject: `Complete your Windsor Beauty payment for order ${params.orderNumber}`,
       text:
         `${emailGreeting(params.customerName)}\n\n` +
         `Your Windsor Beauty order ${params.orderNumber} has been reserved.\n\n` +
@@ -258,8 +248,7 @@ export async function sendPaypalInstructionsEmail(params: PaypalInstructionsPara
         `Items:\n` +
         params.items.map(i => `  ${i.name}${i.variant ? ` (${i.variant})` : ''} x${i.quantity}`).join('\n') +
         `\n\nYour order will be confirmed once payment is received.\n\n` +
-        `Any questions, just reply to this email.\n` +
-        `For any questions about your order, contact sales@windsorbeauty.co.uk and include your order reference ${params.orderNumber}.`,
+        `Any questions, just reply to this email, or contact sales@windsorbeauty.co.uk and include your order reference ${params.orderNumber}.`,
       html,
     }, {
       apiKey: RESEND_API_KEY,

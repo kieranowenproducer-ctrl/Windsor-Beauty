@@ -241,10 +241,11 @@ export default function EditProductDrawer({
             />
           </div>
           <div>
-            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Purity</label>
+            <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Purity badge (optional)</label>
             <input
               value={editForm.purity || ''}
               onChange={e => setEditForm(p => ({ ...p, purity: e.target.value }))}
+              placeholder="Leave blank to show no badge"
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
             />
           </div>
@@ -253,23 +254,22 @@ export default function EditProductDrawer({
             <input
               value={editForm.brand || ''}
               onChange={e => setEditForm(p => ({ ...p, brand: e.target.value }))}
-              placeholder="e.g. Remedium Research"
+              placeholder="e.g. Windsor Beauty"
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
             />
           </div>
-          {/* The real product name is never sent to Royal Mail or Fena — this is
-              what goes in its place. Left blank, a new product is given a name
-              automatically from the reserve pool on save (see genericNames.ts). */}
+          {/* What Royal Mail and the payment provider are told this product is.
+              Left blank, the product's own name is used (see genericNames.ts). */}
           <div>
             <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Shipping description</label>
             <input
               value={editForm.genericName || ''}
               onChange={e => setEditForm(p => ({ ...p, genericName: e.target.value }))}
-              placeholder="Assigned automatically when left blank"
+              placeholder="Leave blank to use the product name"
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
             />
             <p className="text-[9px] text-stone-400 mt-1 leading-snug">
-              What Royal Mail and Fena are told this product is. The real name and dosage are never sent to them.
+              What Royal Mail and the payment provider are told this product is. Leave it blank to send the product name.
               Customs descriptions are separate and unaffected.
               {!editForm.genericName?.trim() && editForm.slug && (
                 <>
@@ -353,7 +353,7 @@ export default function EditProductDrawer({
             value={editForm.image}
             onChange={url => setEditForm(p => ({ ...p, image: url }))}
             fallbackSrc={editingProduct ? `/images/products/${editingProduct.slug}.jpg` : undefined}
-            fallbackHint="No photo uploaded yet — the storefront is showing a placeholder."
+            fallbackHint="No photo uploaded yet. The shop is showing a placeholder."
             onUploadingChange={handleUploadingChange}
           />
         </div>
@@ -385,7 +385,7 @@ export default function EditProductDrawer({
               { key: 'form' as SpecRowKey, label: 'Form', value: editForm.form, field: 'form' as const },
               { key: 'storage' as SpecRowKey, label: 'Storage', value: editForm.storage, field: 'storage' as const },
               { key: 'usage' as SpecRowKey, label: 'Usage', value: editForm.usage, field: 'usage' as const },
-              { key: 'coa' as SpecRowKey, label: 'CoA', value: editForm.coa, field: 'coa' as const },
+              { key: 'coa' as SpecRowKey, label: 'Certificate', value: editForm.coa, field: 'coa' as const },
             ]).map(row => {
               const hidden = (editForm.hiddenSpecs ?? []).includes(row.key);
               return (
@@ -433,12 +433,11 @@ export default function EditProductDrawer({
           >
             {certPreviewOpen ? 'Hide the certificate preview' : 'Show the certificate, with anything wrong marked in red'}
           </button>
-          {/* Is this a vial or a pen? Pressing one fills in that format's
-              storage and appearance wording, so a pen never keeps a vial's
-              powder wording just because nobody remembered to change it. */}
+          {/* Which storage line the certificate shows: the product's usual one,
+              or wording typed for this certificate. */}
           <div className="mb-3 border border-stone-200 bg-stone-50 p-2.5">
             <p className="text-[10px] tracking-[0.15em] uppercase text-stone-500 font-semibold mb-2">
-              What is this product?
+              Storage line on the certificate
             </p>
             <div className="flex flex-wrap items-center gap-2">
               {(['vial', 'pen'] as const).map(format => (
@@ -459,14 +458,11 @@ export default function EditProductDrawer({
               <p className="text-[10px] text-stone-500 leading-snug">{FORMAT_STANDARDS[certFormat].description}</p>
             </div>
             <p className="text-[10px] text-stone-400 mt-2 leading-relaxed">
-              Pressing one of these sets the storage line and the appearance wording below to the
-              standard for that format. Anything you have typed yourself is left as it is, and no
-              measured result is ever changed.
+              Neither button changes anything you have typed, and no result is ever changed.
             </p>
             {certFormatChanged.length > 0 && (
               <p className="text-[10px] text-gold-700 mt-1.5 leading-relaxed">
-                Updated to the {FORMAT_STANDARDS[certFormat].label.toLowerCase()} standard:{' '}
-                {certFormatChanged.join(', ')}. Nothing is saved until you press Save Changes, so
+                Changed: {certFormatChanged.join(', ')}. Nothing is saved until you press Save Changes, so
                 press Cancel if that was not what you wanted.
               </p>
             )}
@@ -481,21 +477,19 @@ export default function EditProductDrawer({
                 onChange={e => setCertTarget(e.target.value)}
                 className="w-full border border-gold-300 bg-white px-2 py-1.5 text-xs text-stone-700 focus:border-gold-500 outline-none"
               >
-                <option value="">All dosages (shared certificate)</option>
+                <option value="">All sizes (shared certificate)</option>
                 {sortVariantsByStrength(editVariants.map(v => ({ dosage: v.dosage, price: 0 } as ProductVariant))).map(v => {
                   const hasOwn = certDrafts[v.dosage] && certificatePayloadHasContent(certificateDraftToPayload(certDrafts[v.dosage]));
                   return (
                     <option key={v.dosage} value={v.dosage}>
-                      {v.dosage} — {hasOwn ? 'has its own certificate' : 'uses the shared certificate'}
+                      {v.dosage}: {hasOwn ? 'has its own certificate' : 'uses the shared certificate'}
                     </option>
                   );
                 })}
               </select>
               <p className="text-[10px] text-stone-500 mt-1.5 leading-relaxed">
-                A certificate is per dosage — each dosage is a separate batch with its own lab report.
-                Pick a dosage to give it its own certificate; leave it on the shared one to reuse the
-                product-level certificate for that dosage. The customer sees the certificate for the
-                dosage they select.
+                Each size can have its own certificate. Pick a size to give it one, or leave it on
+                the shared certificate. The customer sees the certificate for the size they choose.
               </p>
             </div>
           )}
@@ -507,8 +501,8 @@ export default function EditProductDrawer({
               className="accent-gold-500"
             />
             {certTarget
-              ? `Certificate of Analysis for ${certTarget} — shown when the customer selects ${certTarget}`
-              : 'Certificate of Analysis (shared) — show a “Show Certificate” button on this product’s page'}
+              ? `Product certificate for ${certTarget}. Shown when the customer chooses ${certTarget}`
+              : 'Product certificate (shared). Show a “Show Certificate” button on this product’s page'}
           </label>
 
           <div className="flex gap-4 mb-3">
@@ -520,7 +514,7 @@ export default function EditProductDrawer({
                 onChange={() => setEditCertificate(p => ({ ...p, mode: 'template' }))}
                 className="accent-gold-500"
               />
-              Use Template Certificate
+              Type the certificate details
             </label>
             <label className="flex items-center gap-2 text-xs text-stone-600 font-normal">
               <input
@@ -530,7 +524,7 @@ export default function EditProductDrawer({
                 onChange={() => setEditCertificate(p => ({ ...p, mode: 'external' }))}
                 className="accent-gold-500"
               />
-              Provide External Certificate
+              Upload the certificate as images
             </label>
           </div>
 
@@ -538,11 +532,11 @@ export default function EditProductDrawer({
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Certificate ID</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Certificate number</label>
                   <input
                     value={editCertificate.certificateId}
                     onChange={e => setEditCertificate(p => ({ ...p, certificateId: e.target.value }))}
-                    placeholder="e.g. WB-AM191"
+                    placeholder="The number on the certificate"
                     className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                   />
                 </div>
@@ -556,7 +550,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">CAS Number</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">CAS Number (optional)</label>
                   <input
                     value={editCertificate.casNumber}
                     onChange={e => setEditCertificate(p => ({ ...p, casNumber: e.target.value }))}
@@ -564,7 +558,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">PubChem CID</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">PubChem CID (optional)</label>
                   <input
                     value={editCertificate.pubchemCid}
                     onChange={e => setEditCertificate(p => ({ ...p, pubchemCid: e.target.value }))}
@@ -572,7 +566,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Molecular Formula</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Molecular Formula (optional)</label>
                   <input
                     value={editCertificate.molecularFormula}
                     onChange={e => setEditCertificate(p => ({ ...p, molecularFormula: e.target.value }))}
@@ -580,7 +574,7 @@ export default function EditProductDrawer({
                   />
                 </div>
                 <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Molecular Weight</label>
+                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Molecular Weight (optional)</label>
                   <input
                     value={editCertificate.molecularWeight}
                     onChange={e => setEditCertificate(p => ({ ...p, molecularWeight: e.target.value }))}
@@ -598,23 +592,20 @@ export default function EditProductDrawer({
                 </div>
               </div>
 
-              {/* The rows every certificate must carry. Their names are fixed,
-                  the standard wording is chosen from a list, and only the
-                  measured column is typed by hand. */}
+              {/* The rows every certificate must carry: the batch and the date.
+                  Their names are fixed and the value is typed by hand. */}
               <div className="mb-3 border border-gold-200 bg-gold-50/40 p-2.5">
                 <p className="text-[10px] tracking-[0.15em] uppercase text-gold-700 font-semibold mb-1">
-                  Standard rows — always on the certificate
+                  Standard rows, always on the certificate
                 </p>
                 <p className="text-[10px] text-stone-500 mb-3 leading-relaxed">
-                  These five are on every certificate and their names cannot change. The middle
-                  column is the standard the batch is measured against, and it is filled in for you.
-                  The right-hand column is the real figure from this batch&apos;s lab report — type
-                  only what the report actually says, and leave it blank until you have it.
+                  These rows are on every certificate and their names cannot change. Type only
+                  what the real certificate says, and leave a box blank until you have it.
                 </p>
                 <div className="hidden sm:grid grid-cols-[110px_1fr_1fr] gap-2 mb-1">
                   <span className="text-[8px] tracking-widest uppercase text-stone-400">Row</span>
-                  <span className="text-[8px] tracking-widest uppercase text-stone-400">Standard</span>
-                  <span className="text-[8px] tracking-widest uppercase text-stone-400">Measured result</span>
+                  <span className="text-[8px] tracking-widest uppercase text-stone-400">Where it comes from</span>
+                  <span className="text-[8px] tracking-widest uppercase text-stone-400">Value</span>
                 </div>
                 {STANDARD_TEST_ROWS.map(row => {
                   const spec = standardTestSpec(editCertificate.testRows, row);
@@ -627,21 +618,21 @@ export default function EditProductDrawer({
                           value={spec}
                           options={APPEARANCE_OPTIONS}
                           onChange={value => setStandardTest(row, 'specification', value)}
-                          label="Appearance standard"
+                          label="Standard wording"
                         />
                       ) : row.key === 'purity' ? (
                         <StandardWordingPicker
                           value={spec}
                           options={PURITY_OPTIONS}
                           onChange={value => setStandardTest(row, 'specification', value)}
-                          label="Purity standard"
+                          label="Standard wording"
                         />
                       ) : (
                         <input
                           value={spec}
                           onChange={e => setStandardTest(row, 'specification', e.target.value)}
-                          placeholder="e.g. 10mg (label claim)"
-                          aria-label="Content standard"
+                          placeholder="Specification"
+                          aria-label="Specification"
                           className={cellClass}
                         />
                       )}
@@ -649,7 +640,7 @@ export default function EditProductDrawer({
                         value={result}
                         onChange={e => setStandardTest(row, 'result', e.target.value)}
                         placeholder={row.placeholder}
-                        aria-label={`${row.name} measured result`}
+                        aria-label={`${row.name} result`}
                         className={cellClass}
                       />
                     </div>
@@ -658,7 +649,7 @@ export default function EditProductDrawer({
                 {STANDARD_SUMMARY_ROWS.map(row => (
                   <div key={row.key} className="grid grid-cols-1 sm:grid-cols-[110px_1fr_1fr] gap-2 mb-1.5 sm:items-center">
                     <span className="text-xs text-stone-600 font-medium">{row.name}</span>
-                    <span className="hidden sm:block text-[10px] text-stone-400 py-1.5">From the lab report</span>
+                    <span className="hidden sm:block text-[10px] text-stone-400 py-1.5">From the certificate</span>
                     <input
                       value={standardSummaryValue(editCertificate.verificationSummary, row)}
                       onChange={e => setStandardSummary(row, e.target.value)}
@@ -670,16 +661,16 @@ export default function EditProductDrawer({
                 ))}
                 <p className="text-[10px] text-stone-400 mt-2 leading-relaxed">
                   A row you leave completely blank is not saved and does not appear on the printed
-                  certificate — nothing empty is ever shown to a customer.
+                  certificate. Nothing empty is ever shown to a customer.
                 </p>
               </div>
 
-              {/* Anything beyond the standard rows — sterility, endotoxin, a
-                  blend's per-component purity — still lives here. */}
+              {/* Every test row on the certificate is typed here. */}
               <div className="mb-3">
-                <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Other Test Rows</label>
+                <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1.5">Test Rows</label>
                 <p className="text-[10px] text-stone-400 mb-2 leading-relaxed">
-                  Only for tests beyond the standard five above, e.g. Sterility / Sterile / Conforms
+                  One row for each test listed on the certificate. Copy the test name, the
+                  specification and the result exactly as they are printed.
                 </p>
                 {extraTestRows(editCertificate.testRows).map(({ row, index }) => (
                   <div key={index} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto] gap-2 mb-1.5 sm:items-center">
@@ -719,17 +710,16 @@ export default function EditProductDrawer({
                 </button>
               </div>
 
-              {/* Verification Summary / Analytical Results — optional, generic
-                  label/value sections for certificates whose source data (issue
-                  date, batch/lot, instrument, mass-spec peaks, etc.) doesn't fit
-                  the Product Specifications / Test Results shapes above. Empty
+              {/* Certificate Details / Additional Information: optional, generic
+                  label/value sections for anything on the certificate that doesn't
+                  fit the Product Specifications / Test Results shapes above. Empty
                   by default and omitted from the certificate entirely when no
                   rows are filled in. */}
               {([
-                { section: 'verificationSummary' as const, title: 'Other Verification Rows', hint: 'Beyond Batch / Lot and Test Date above, e.g. Laboratory / Janoshik Analytical' },
-                { section: 'analyticalResults' as const, title: 'Analytical Results', hint: 'e.g. Main Peak / #1 @ 6.261 min' },
+                { section: 'verificationSummary' as const, title: 'Other Certificate Details', hint: 'Anything beyond Batch / Lot and Certificate Date above, for example who issued the certificate.' },
+                { section: 'analyticalResults' as const, title: 'Additional Information', hint: 'Any other label and value printed on the certificate.' },
               ]).map(({ section, title, hint }) => {
-                // Batch / Lot and Test Date are edited in the standard block
+                // Batch / Lot and Certificate Date are edited in the standard block
                 // above, so they are filtered out here rather than shown twice.
                 // The original index is kept so the existing edit and remove
                 // handlers still address the right row.
@@ -775,7 +765,7 @@ export default function EditProductDrawer({
               })}
 
               <div className="mb-3">
-                <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Caution / Disclaimer</label>
+                <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Note at the foot of the certificate</label>
                 <textarea
                   value={editCertificate.caution}
                   onChange={e => setEditCertificate(p => ({ ...p, caution: e.target.value }))}
@@ -798,8 +788,8 @@ export default function EditProductDrawer({
             <div>
               <p className="text-[10px] text-stone-400 mb-2.5 leading-relaxed">
                 Upload the supplier&apos;s own certificate as one image per page, in order. The &ldquo;Show
-                Certificate&rdquo; button on the product page will display these pages instead of the generated
-                template above.
+                Certificate&rdquo; button on the product page will show these pages instead of typed
+                details.
               </p>
               <MultiImageUploadField
                 value={editCertificate.externalImages}
@@ -814,7 +804,7 @@ export default function EditProductDrawer({
 
         <div id="edit-section-storage" className="mb-3 border border-gold-100 p-3">
           <label className="block text-xs text-stone-600 font-medium mb-3">
-            Storage Instructions — shown via a &ldquo;Storage Instructions&rdquo; button on this product&apos;s page
+            Storage Instructions, shown via a &ldquo;Storage Instructions&rdquo; button on this product&apos;s page
           </label>
 
           <div className="mb-3">

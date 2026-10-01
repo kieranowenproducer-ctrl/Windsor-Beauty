@@ -15,7 +15,9 @@ interface Row {
   productShipping?: ProductShipping;
 }
 
-const FORMAT_LABELS: Record<Row['format'], string> = { pen: 'Pen', vial: 'Vial' };
+// The two-way format split came with the copied codebase. It is no longer shown on this
+// page (the filter stays on 'all'); the labels are kept neutral in case it is ever reached.
+const FORMAT_LABELS: Record<Row['format'], string> = { pen: 'Item', vial: 'Item' };
 
 // Editable fields exposed for bulk weight/dimension management. Other
 // shipping/customs fields remain editable per-variant on the Products page.
@@ -107,7 +109,7 @@ export default function AdminBulkWeightsPage() {
 
   // Filtering narrows which rows "Apply to All", "Apply Category Defaults"
   // and the header "select all" checkbox act on — lets you e.g. switch to
-  // "Pens" then bulk-apply a pen-specific weight to just those variants.
+  // one category then bulk-apply a weight to just those variants.
   const filteredRows = useMemo(() => {
     if (!rows) return [];
     const term = search.trim().toLowerCase();
@@ -142,8 +144,8 @@ export default function AdminBulkWeightsPage() {
   const hasBulkDraftValues = bulkDraftFields.length > 0;
 
   // Colour-codes the "New Values" box and its scope chip to match the
-  // current Format filter — gold for Pens, stone for Vials, neutral/amber
-  // (a nudge to narrow the scope) when nothing is selected.
+  // current filter. With the Format filter hidden this is always the
+  // neutral "all variants" style.
   const scopeBoxClasses =
     formatFilter === 'pen' ? 'bg-gold-50/30 border-gold-200' : formatFilter === 'vial' ? 'bg-stone-100/50 border-stone-200' : 'border-stone-200';
   const scopeChipClasses =
@@ -159,7 +161,7 @@ export default function AdminBulkWeightsPage() {
   const scopeTitle =
     formatFilter !== 'all'
       ? `Values entered below are written only to the ${filteredRows.length} ${FORMAT_LABELS[formatFilter].toLowerCase()} variant${filteredRows.length === 1 ? '' : 's'} shown below when you click an Apply button — other products are left untouched. Switch the Format dropdown above to do the other format next.`
-      : `Values entered below are written to every one of the ${filteredRows.length} variants currently shown, pens and vials together, when you click an Apply button. Pick "Pens" or "Vials" in the Format dropdown above first if you want a different weight/size for each.`;
+      : `Values entered below are written to every one of the ${filteredRows.length} variants currently shown when you click an Apply button. Use the search box above first if you only want to change some of them.`;
 
   // Applies every non-blank field in bulkDraft (weight, length, width, height,
   // package format) to every target row in one click — matches the same
@@ -311,7 +313,7 @@ export default function AdminBulkWeightsPage() {
         <div className="max-w-6xl">
           <h1 className="text-lg font-semibold text-stone-800 mb-1">Bulk Shipping Weights</h1>
           <p className="text-xs text-stone-400 mb-6">
-            Set parcel weight, dimensions and package format across multiple dosage variants at once. Only the
+            Set parcel weight, dimensions and package format across multiple size variants at once. Only the
             fields you change here are updated — other shipping and customs data set on the Products page is
             preserved. Leave a field blank to keep its current value.
           </p>
@@ -377,23 +379,12 @@ export default function AdminBulkWeightsPage() {
                     type="text"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    placeholder="e.g. retatrutide, peptides…"
+                    placeholder="e.g. hydra veil, serums…"
                     className="w-full max-w-sm border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                   />
                 </div>
-                <div>
-                  <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Format</label>
-                  <select
-                    value={formatFilter}
-                    onChange={e => setFormatFilter(e.target.value as 'all' | Row['format'])}
-                    className="border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none bg-white"
-                    title="Pens and vials have different parcel weights/sizes — narrow to one format before a bulk apply."
-                  >
-                    <option value="all">All Formats</option>
-                    <option value="pen">Pens</option>
-                    <option value="vial">Vials</option>
-                  </select>
-                </div>
+                {/* The old two-way Format filter is not shown: this shop has one kind of
+                    product. The filter state stays on 'all', so every row is listed. */}
                 {(search.trim() || formatFilter !== 'all') && (
                   <button
                     type="button"
@@ -601,12 +592,10 @@ export default function AdminBulkWeightsPage() {
                     <div>
                       <p className="text-xs font-medium text-stone-700 flex items-center gap-2">
                         {group.productName}
-                        <span className={`text-[8px] tracking-widest uppercase px-1.5 py-0.5 border ${group.format === 'pen' ? 'border-gold-300 text-gold-700 bg-gold-50' : 'border-stone-200 text-stone-400'}`}>
-                          {FORMAT_LABELS[group.format]}
-                        </span>
+
                       </p>
                       <p className="text-[9px] text-stone-400">
-                        {group.categories.join(', ')} · {group.variants.length} dosage{group.variants.length === 1 ? '' : 's'}
+                        {group.categories.join(', ')} · {group.variants.length} size{group.variants.length === 1 ? '' : 's'}
                       </p>
                     </div>
                   </div>

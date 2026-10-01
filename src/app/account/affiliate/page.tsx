@@ -105,15 +105,15 @@ export function AffiliateDashboard({ forcePreview = false }: { forcePreview?: bo
             <h1 className="font-serif text-4xl tracking-wide text-stone-800">{String(p.display_name)}</h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-stone-600">
               Track the customers you refer and the commission they earn you. You earn on orders
-              where they use their personal Raf code, not on their 10% welcome code.
-              Your own purchases, deliveries and Glow Card stay in your normal member account.
+              where they use their personal partner code, not on their 10% welcome code.
+              Your own purchases, deliveries and Beauty Card stay in your normal member account.
             </p>
           </div>
           <Link
             href="/account"
             className="shrink-0 border border-stone-200 px-4 py-2.5 text-[9px] uppercase tracking-[0.18em] text-stone-500 transition-colors hover:border-stone-400 hover:text-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700"
           >
-            My orders and Glow Card
+            My orders and Beauty Card
           </Link>
         </header>
 

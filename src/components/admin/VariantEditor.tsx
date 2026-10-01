@@ -31,7 +31,7 @@ interface Props {
 export default function VariantEditor({ variants, onChange, onAdd, onRemove, onUploadingChange }: Props) {
   return (
     <div>
-      <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-2">Dosage Options &amp; Pricing</label>
+      <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-2">Size Options &amp; Pricing</label>
       <div className="space-y-2">
         {variants.map((variant, i) => (
           <div key={i} className="border border-stone-100 p-2 space-y-2">
@@ -39,7 +39,7 @@ export default function VariantEditor({ variants, onChange, onAdd, onRemove, onU
               <input
                 value={variant.dosage}
                 onChange={e => onChange(i, 'dosage', e.target.value)}
-                placeholder="e.g. 5mg"
+                placeholder="e.g. 30ml"
                 className="flex-1 min-w-[100px] border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
               />
               <div className="relative">
@@ -77,14 +77,14 @@ export default function VariantEditor({ variants, onChange, onAdd, onRemove, onU
             <ImageUploadField
               value={variant.image || undefined}
               onChange={url => onChange(i, 'image', url ?? '')}
-              label={`Photo for ${variant.dosage || 'this dosage'} (optional)`}
-              fallbackHint="Leave blank to use the product-level photo. Upload here to show a different image when this dosage is selected."
+              label={`Photo for ${variant.dosage || 'this size'} (optional)`}
+              fallbackHint="Leave blank to use the product-level photo. Upload here to show a different image when this size is selected."
               onUploadingChange={onUploadingChange}
             />
             <ShippingFields
               draft={variant.shipping}
               onChange={shipping => onChange(i, 'shipping', shipping)}
-              label={`Shipping override for ${variant.dosage || 'this dosage'} (optional — falls back to product/global defaults)`}
+              label={`Shipping override for ${variant.dosage || 'this size'} (optional — falls back to product/global defaults)`}
             />
           </div>
         ))}
@@ -94,7 +94,7 @@ export default function VariantEditor({ variants, onChange, onAdd, onRemove, onU
         onClick={onAdd}
         className="mt-2 text-[9px] tracking-wider uppercase text-gold-700 hover:text-gold-700 transition-colors"
       >
-        + Add dosage option
+        + Add size option
       </button>
     </div>
   );

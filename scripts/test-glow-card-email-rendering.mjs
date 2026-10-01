@@ -50,7 +50,7 @@ const sample = buildOrderConfirmationEmail({
   to: 'sample@example.test',
   customerName: 'Sample Customer',
   orderNumber: 'WB-EMAIL-TEST',
-  items: [{ name: 'Sample product', variant: '30mg', quantity: 1, price: 35, slug: 'sample' }],
+  items: [{ name: 'Sample product', variant: '30ml', quantity: 1, price: 35, slug: 'sample' }],
   subtotal: 35,
   shippingLabel: 'Standard UK delivery',
   shippingCost: 10,
@@ -67,7 +67,8 @@ const sample = buildOrderConfirmationEmail({
   },
 });
 
-assert.match(sample.html, /You earned another Glow Point/);
+assert.match(sample.html, /You earned another Beauty Point/);
+assert.doesNotMatch(sample.html + sample.text, /Glow (?:Card|Point)/);
 assert.match(sample.html, /4 of 5 stamps on this reward card/);
 assert.match(sample.html, /1 more point until £10 off and half-price standard UK delivery/);
 assert.match(sample.text, /You have 4 of 5 stamps on your £10 reward card/);
@@ -80,4 +81,4 @@ assert.equal(await sendGlowCardMilestoneEmail({
 }), false);
 if (previousResendKey !== undefined) process.env.RESEND_API_KEY = previousResendKey;
 
-console.log(`Glow Card email rendering passed ${cases.length} stage-boundary cases, malformed input checks, the fourth-order example, and safe email-provider failure checks.`);
+console.log(`Beauty Card email rendering passed ${cases.length} stage-boundary cases, malformed input checks, the fourth-order example, and safe email-provider failure checks.`);

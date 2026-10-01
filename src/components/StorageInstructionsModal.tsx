@@ -54,7 +54,7 @@ export default function StorageInstructionsModal({ open, onClose, content }: Sto
         </div>
 
         <div className="p-6 sm:p-8">
-          <h3 id="storage-modal-title" className="font-serif text-xl text-stone-800 font-semibold mb-4">Reconstruction and Storage</h3>
+          <h3 id="storage-modal-title" className="font-serif text-xl text-stone-800 font-semibold mb-4">How to Store Your Product</h3>
           <RichTextContent html={content} className="text-sm text-stone-600 leading-relaxed" />
         </div>
       </div>

@@ -5,7 +5,7 @@ import { listRetiredVariants, retireVariant, unretireVariant } from '@/lib/retir
 export const dynamic = 'force-dynamic';
 
 // Retired products (task 3378ea2d + revision). Retiring takes a
-// product-and-dosage off the shop AND off the low-stock warning — a retired
+// product-and-size off the shop AND off the low-stock warning — a retired
 // product must never sit on the shop saying "Sold out". Un-retiring puts it
 // back the way the admin chooses: sellable with real stock, or visible as
 // "Coming soon" while stock is awaited.

@@ -117,7 +117,7 @@ export default function CertificateExportPage() {
                   <li key={s.key} className="text-xs text-stone-600">
                     <span className="text-stone-500 mr-2">{i + 1}.</span>
                     {s.product.name}
-                    {s.dosage ? ` — ${s.dosage}` : ''}
+                    {s.dosage ? `, ${s.dosage}` : ''}
                     {s.cert.certificateId ? (
                       <span className="text-stone-500"> · {s.cert.certificateId}</span>
                     ) : null}

@@ -35,7 +35,7 @@ function csvField(value: string): string {
 }
 
 function exportCertificatesCsv(rows: ReturnType<typeof buildRows>) {
-  const header = ['Product', 'Brand', 'Format', 'Dosage', 'Storage', 'Certificate Assigned', 'Live', 'Last Updated', 'Warnings'].join(',');
+  const header = ['Product', 'Brand', 'Category', 'Sizes', 'Storage', 'Certificate Assigned', 'Live', 'Last Updated', 'Warnings'].join(',');
   const lines = rows.map(r => [
     csvField(r.product.name),
     csvField(r.product.brand ?? ''),
@@ -67,7 +67,7 @@ function combinedStatus(product: Product): { status: CertificateStatus; issue?: 
   if (per.every(s => s.status === 'live')) return { status: 'live' };
   if (per.every(s => s.status === 'missing')) return { status: 'missing' };
   const firstIssue = per.find(s => s.status !== 'live');
-  return { status: 'warning', issue: firstIssue?.issue ?? 'Some dosages are not live yet.' };
+  return { status: 'warning', issue: firstIssue?.issue ?? 'Some sizes do not show a certificate yet.' };
 }
 
 // The first dosage-resolved certificate that has content — used for View/Storage
@@ -81,10 +81,8 @@ function firstResolvedCert(product: Product) {
   return product.certificate;
 }
 
-// The dosage the viewer opens on. Was "the first one that has a certificate", which is how a
-// product with 21 problems on its 20mg certificate opened its clean 10mg one and marked nothing
-// (task f5c8da12). Now it is the dosage with the most to fix, and every dosage can be reached
-// from the picker inside the viewer.
+// The size the viewer opens on: the one with the most to fix (task f5c8da12). Every size can be
+// reached from the picker inside the viewer.
 function firstResolvedDosage(product: Product): string {
   return dosageWorthOpening(product);
 }
@@ -198,6 +196,8 @@ export default function AdminCertificatesPage() {
     return Array.from(set).sort();
   }, [rows]);
 
+  const formats = useMemo(() => Array.from(new Set(rows.map(r => r.format))).sort(), [rows]);
+
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return rows.filter(r => {
@@ -239,7 +239,7 @@ export default function AdminCertificatesPage() {
             <div>
               <h1 className="font-serif text-2xl text-stone-800 tracking-wide">Certificates</h1>
               <p className="text-xs text-stone-400 mt-1">
-                Review every product's Certificate of Analysis in one place — search, filter, and spot likely mismatches before a customer does.
+                See every product certificate in one place. Search, filter and spot anything missing before a customer does. A certificate is optional, so a product with none is not marked as a problem.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -267,7 +267,7 @@ export default function AdminCertificatesPage() {
                       setImportResult({ processed: 0, updated: 0, unchanged: 0, added: 0, skipped: 0, errors: [data?.error ?? 'Import failed'] });
                     }
                   } catch {
-                    setImportResult({ processed: 0, updated: 0, unchanged: 0, added: 0, skipped: 0, errors: ['Network error — could not reach the server'] });
+                    setImportResult({ processed: 0, updated: 0, unchanged: 0, added: 0, skipped: 0, errors: ['Could not reach the server. Please try again.'] });
                   } finally {
                     setImporting(false);
                     if (importInputRef.current) importInputRef.current.value = '';
@@ -337,7 +337,7 @@ export default function AdminCertificatesPage() {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search product, brand, or slug…"
+              placeholder="Search by product or brand…"
               className="flex-1 min-w-[160px] border border-stone-200 px-3 py-2 text-xs text-stone-600 focus:border-gold-400 outline-none"
             />
             <select
@@ -354,7 +354,7 @@ export default function AdminCertificatesPage() {
               onChange={e => setFormatFilter(e.target.value as 'All' | ProductFormat)}
               className="border border-stone-200 px-2 py-2 text-xs text-stone-600 bg-white focus:border-gold-400 outline-none"
             >
-              {['All', 'Pen', 'Vial', 'Water', 'Other'].map(f => <option key={f} value={f}>{f === 'All' ? 'All Formats' : f}</option>)}
+              {['All', ...formats].map(f => <option key={f} value={f}>{f === 'All' ? 'All Categories' : f}</option>)}
             </select>
             <select
               value={brandFilter}
@@ -389,7 +389,7 @@ export default function AdminCertificatesPage() {
                 <span className={`mt-1 w-1.5 h-1.5 rounded-full shrink-0 ${STATUS_CONFIG[status].dot}`} />
                 <span className="text-[11px] text-stone-600 leading-snug">
                   <span className="font-semibold">{CERTIFICATE_STATUS_WORDS[status].label}</span>
-                  {' — '}{CERTIFICATE_STATUS_WORDS[status].meaning}
+                  {': '}{CERTIFICATE_STATUS_WORDS[status].meaning}
                 </span>
               </div>
             ))}
@@ -474,7 +474,7 @@ export default function AdminCertificatesPage() {
                   <tr className="border-b border-stone-100 bg-stone-50">
                     <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Product</th>
                     <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Brand</th>
-                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Format</th>
+                    <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Category</th>
                     <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Storage</th>
                     <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Certificate</th>
                     <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Last Updated</th>
@@ -531,22 +531,21 @@ export default function AdminCertificatesPage() {
                                   ))}
                                 </div>
                               )}
-                              {/* Exactly what is missing or wrong, per dosage, with a worked
-                                  example for each — so it can be fixed straight away. */}
+                              {/* Exactly what is missing, per size, so it can be fixed straight away. */}
                               {Array.from(new Set(row.issues.map(i => i.dosage))).map(dosage => {
                                 const forDose = row.issues.filter(i => i.dosage === dosage);
                                 return (
                                   <div key={dosage} className="border-l-2 border-red-500 bg-red-50 px-2 py-1.5">
                                     <p className="text-[9px] font-bold tracking-wider uppercase text-red-600">
-                                      {dosage} — {forDose.length} to fix
+                                      {dosage}: {forDose.length} to fix
                                     </p>
                                     <ul className="mt-0.5 space-y-0.5">
                                       {forDose.map((i, idx) => (
                                         <li key={idx} className="text-[10px] leading-snug text-red-700">
                                           {i.kind === 'missing' ? (
-                                            <>Missing <span className="font-semibold">{i.field}</span> <span className="text-red-500">— e.g. {i.example}</span></>
+                                            <>Missing <span className="font-semibold">{i.field}</span> <span className="text-red-500">(needs {i.example})</span></>
                                           ) : (
-                                            <><span className="font-semibold">{i.field}</span>: {i.reason} <span className="text-red-500">— should be e.g. {i.example}</span></>
+                                            <><span className="font-semibold">{i.field}</span>: {i.reason} <span className="text-red-500">(needs {i.example})</span></>
                                           )}
                                         </li>
                                       ))}
@@ -572,7 +571,7 @@ export default function AdminCertificatesPage() {
                               {!row.firstCert
                                 ? 'None to view'
                                 : row.shownIssues.length > 0
-                                  ? `View — ${row.shownIssues.length} marked`
+                                  ? `View (${row.shownIssues.length} marked)`
                                   : 'View'}
                             </button>
                             <Link

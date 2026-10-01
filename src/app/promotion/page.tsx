@@ -41,7 +41,7 @@ export default async function PromotionPage() {
 
   const hiddenSlugs = isDbConfigured() ? await getHiddenProductSlugs().catch(() => [] as string[]) : [];
   const stockMap = isDbConfigured() ? await getProductStockMap().catch(() => ({} as Record<string, number>)) : {};
-  // See the homepage: the stamp on a photograph needs per-dosage numbers, not a total.
+  // See the homepage: the stamp on a photograph needs per-size numbers, not a total.
   const variantStockMap = isDbConfigured()
     ? await getProductVariantStockMap().catch(() => ({} as Record<string, Record<string, number>>))
     : {};
@@ -54,7 +54,7 @@ export default async function PromotionPage() {
   const discountedProducts = catalogue.filter(p => effectiveSalePercent(saleConfig, p) > 0);
   const offerEyebrow = saleConfig.scopeType === 'all' ? 'Site-Wide Sale' : 'On Sale Now';
   // Prefers the percentage promotion's own admin-set title (e.g. "10% Off
-  // Selected Peptides") so the carousel heading reflects exactly what the
+  // Selected Serums") so the carousel heading reflects exactly what the
   // admin typed, falling back to a generic computed label if left blank.
   const offerTitle = percentagePromo?.title?.trim()
     || `${saleConfig.percent}% Off ${saleConfig.scopeType === 'all' ? 'Everything' : 'These Products'}`;
@@ -125,13 +125,13 @@ export default async function PromotionPage() {
         <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700 mb-3">Ready When You Are</p>
         <h3 className="font-serif text-2xl text-stone-800 mb-3">Browse the Full Range</h3>
         <p className="text-sm text-stone-500 leading-relaxed max-w-md mx-auto mb-7">
-          Explore our research peptides and accessories, then apply your code at checkout if you have one.
+          Explore our skincare range, then apply your code at checkout if you have one.
         </p>
         <Link
           href={promo?.button_link || '/shop'}
           className="inline-block bg-gold-700 text-white text-[10px] tracking-[0.22em] uppercase px-9 py-4 hover:bg-gold-800 transition-colors"
         >
-          {promo?.button_text || 'Shop Peptides'}
+          {promo?.button_text || 'Shop Skincare'}
         </Link>
       </div>
       </div>

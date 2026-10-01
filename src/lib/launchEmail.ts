@@ -25,8 +25,8 @@ function icon(name: string, size: number, alt = '') {
 
 const TRUST_BADGES = [
   { icon: 'ribbon', label: 'Premium<br/>Quality' },
-  { icon: 'shieldCheck', label: 'Lab Tested<br/>Products' },
-  { icon: 'truck', label: 'Discreet<br/>Shipping' },
+  { icon: 'shieldCheck', label: 'Secure<br/>Checkout' },
+  { icon: 'truck', label: 'UK<br/>Delivery' },
   { icon: 'headset', label: 'Dedicated<br/>Support' },
 ];
 
@@ -75,7 +75,7 @@ function renderLaunchEmailHtml(discountCode: string | null, sender?: MarketingSe
                     <tr>
                       <td style="vertical-align:top; padding-right:12px;">${icon('shieldLock', 22, 'Secure')}</td>
                       <td style="font-size:12px; color:#57534e; line-height:1.6; text-align:left;">
-                        Thank you for being part of the Windsor Beauty community.<br/>We're excited to have you with us.
+                        Thank you for being part of the Windsor Beauty community.<br/>We are delighted to have you with us.
                       </td>
                     </tr>
                   </table>
@@ -101,7 +101,7 @@ ${discountBlock}
               <tr>
                 <td bgcolor="#b8902a" style="background:#b8902a; border-radius:4px;">
                   <a href="${SITE_URL}" style="display:inline-block;padding:14px 36px;font-size:11px;font-weight:bold;letter-spacing:0.2em;text-transform:uppercase;color:#ffffff;text-decoration:none;">
-                    Visit Windsor Beauty&nbsp;&nbsp;›
+                    Visit Windsor Beauty
                   </a>
                 </td>
               </tr>
@@ -122,7 +122,9 @@ ${discountBlock}
     title: LAUNCH_EMAIL_SUBJECT,
     headerLabel: 'We Are Live',
     bodyHtml,
-    preheader: "Windsor Beauty is now live — here's your 10% first-order code.",
+    preheader: discountCode
+      ? 'Windsor Beauty is now live. Here is your 10% first-order code.'
+      : 'Windsor Beauty is now live. The full range is ready to order.',
     senderNotice: resolveMarketingSender(sender).notice,
     extraHeadHtml: `<style>
   @media only screen and (max-width: 480px) {

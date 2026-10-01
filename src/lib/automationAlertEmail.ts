@@ -97,7 +97,7 @@ export async function sendAutomationAlertEmail(params: AutomationAlertParams): P
       subject,
       text,
       html,
-    }, { internal: true }); /* Internal post, so no research-use line. */
+    }, { internal: true }); /* Internal post: not filed under a customer. */
     if (error) {
       console.error('Resend error (automation alert):', error);
       return false;

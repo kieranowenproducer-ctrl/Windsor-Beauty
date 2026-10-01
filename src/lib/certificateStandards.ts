@@ -1,33 +1,36 @@
-// The house standard for every Certificate of Analysis: the rows that are
-// always on one, the approved wording for each, and the two product formats
-// (vial and pen) that decide which wording applies.
+// The house standard for a product certificate: the rows the product editor
+// always offers on one.
 //
-// This exists because the certificate section of the product editor started
-// completely blank, so the same four rows had to be typed by hand on every new
-// product — and a pen would quietly keep a vial's powder wording because
-// nobody remembered to change it.
+// This shop sells skincare. A certificate here is whatever document the owner
+// holds for a product, so this file assumes nothing about what was tested. The
+// only rows offered on every certificate are the two that identify it: the
+// batch it covers and the date on it. Every other row is typed by hand under
+// "Other test rows" in the editor.
 //
-// The rule this file must never break: only the ROW NAMES and the
-// SPECIFICATION (the standard the batch is measured against) are ever filled
-// in automatically. Every measured value — a purity result, a content result,
-// a batch number, a test date — is the lab's, and stays blank until a person
-// types the real one in. Pre-filling one of those would be inventing a lab
-// result.
+// The rule this file must never break: nothing that belongs to the real
+// certificate (a batch number, a date, a result) is ever filled in
+// automatically. Those stay blank until a person types the real one in.
+// Filling one in would be inventing a certificate value.
 import type { CertificateTestRow, CertificateInfoRow } from '@/data/products';
 
+// The two names are historic and are kept because the product editor refers
+// to them. Read them as 'vial' = the standard storage line, 'pen' = the
+// product's own storage wording.
 export type CertificateFormat = 'vial' | 'pen';
 
 // ─────────────────────────────────────────────────────────── standard rows ──
 // `match` finds the row on a certificate that already exists under a slightly
-// different name (e.g. "Purity" vs "Purity (HPLC)") so the standard block
-// edits that row instead of adding a second one beside it.
+// different name (e.g. "Batch" vs "Batch / Lot") so the standard block edits
+// that row instead of adding a second one beside it.
 
 export interface StandardTestRow {
+  // The three keys are historic. No standard test row is defined any more,
+  // but the product editor still switches on these names.
   key: 'appearance' | 'purity' | 'content';
   /** The fixed name printed on the certificate. Never editable. */
   name: string;
   match: RegExp;
-  /** Example of a real measured result, shown as a placeholder only. */
+  /** Example of a real result, shown as a placeholder only. */
   placeholder: string;
 }
 
@@ -38,32 +41,31 @@ export interface StandardSummaryRow {
   placeholder: string;
 }
 
-export const STANDARD_TEST_ROWS: StandardTestRow[] = [
-  { key: 'appearance', name: 'Appearance', match: /appear/i, placeholder: 'e.g. Conforms' },
-  { key: 'purity', name: 'Purity (HPLC)', match: /purit/i, placeholder: 'e.g. 99.2%' },
-  { key: 'content', name: 'Content', match: /content|assay/i, placeholder: 'e.g. 10.15mg' },
-];
+/** Matches the row that carries the batch or lot number, whatever it was called. */
+export const BATCH_ROW_MATCH = /batch|lot/i;
+/** Matches the row that carries the certificate's date, whatever it was called. */
+export const DATE_ROW_MATCH = /certificate.?date|issue.?date|date.?issued|date of issue|test.?date|date.?test|^date$|tested/i;
+
+/**
+ * Test rows that are on every certificate. There are none: what a skincare
+ * certificate lists is up to the document itself, so every test row is typed
+ * by hand. Kept as an (empty) list so the product editor still compiles and
+ * simply shows no fixed test rows.
+ */
+export const STANDARD_TEST_ROWS: StandardTestRow[] = [];
 
 export const STANDARD_SUMMARY_ROWS: StandardSummaryRow[] = [
-  { key: 'batch', name: 'Batch / Lot', match: /batch|lot/i, placeholder: 'e.g. WG240115' },
-  { key: 'testDate', name: 'Test Date', match: /test.?date|date.?test|^date$|tested/i, placeholder: 'e.g. 15/01/2026' },
+  { key: 'batch', name: 'Batch / Lot', match: BATCH_ROW_MATCH, placeholder: 'The batch code on the certificate' },
+  { key: 'testDate', name: 'Certificate Date', match: DATE_ROW_MATCH, placeholder: 'e.g. 15/01/2026' },
 ];
 
 // ──────────────────────────────────────────────────────── approved wording ──
 
-/** Appearance specifications offered in the dropdown, most common first. */
-export const APPEARANCE_OPTIONS = [
-  'White to off-white lyophilised powder',
-  'Pre-mixed solution in a pre-filled pen',
-  'Clear, colourless sterile solution',
-] as const;
+/** Standard wordings offered for a fixed test row. None, because there are no fixed test rows. */
+export const APPEARANCE_OPTIONS: readonly string[] = [];
 
-/**
- * Purity specifications offered in the dropdown. Windsor Beauty advertises above
- * 99% on every research compound, so 99% is the floor — see MIN_PURITY in
- * src/lib/certificateAudit.ts, which fails any certificate that claims less.
- */
-export const PURITY_OPTIONS = ['≥ 99%', '≥ 99.5%'] as const;
+/** Kept for the product editor's imports. None, because there are no fixed test rows. */
+export const PURITY_OPTIONS: readonly string[] = [];
 
 interface FormatStandard {
   label: string;
@@ -73,43 +75,37 @@ interface FormatStandard {
   appearance: string;
 }
 
-// Both storage sentences are the wording already used elsewhere on the site:
-// the vial one is DEFAULT_PRODUCT_SPECS.storage (src/data/productModel.ts) and
-// the pen one is the storage line already carried by the pen products in
-// src/data/certReference.ts. They are repeated here rather than imported so
-// this file stays the single place the certificate defaults are decided.
+// Neither choice writes anything into the certificate. A certificate with a
+// blank storage box already shows the product's own storage line, or failing
+// that the shop's standard one (DEFAULT_PRODUCT_SPECS.storage in
+// src/data/productModel.ts). Copying that sentence onto the certificate would
+// only leave a stale copy behind the day the product's storage line changes.
+// The `storage` and `appearance` values are therefore empty; the two entries
+// remain because the product editor shows a button for each.
+const STANDARD_STORAGE_LINE = 'Store in a cool, dry place away from direct sunlight.';
+
 export const FORMAT_STANDARDS: Record<CertificateFormat, FormatStandard> = {
   vial: {
-    label: 'Vial',
-    description: 'Powder in a vial: store at -20°C, protect from light.',
-    storage: 'Store at -20°C. Protect from light.',
-    appearance: 'White to off-white lyophilised powder',
+    label: 'Standard storage',
+    description: 'Leave the storage box blank and the certificate shows the storage line already set on the product.',
+    storage: '',
+    appearance: '',
   },
   pen: {
-    label: 'Pen',
-    description: 'Pre-filled pen: store at 2-8°C, do not freeze.',
-    storage: 'Store at 2-8°C. Do not freeze. Protect from light.',
-    appearance: 'Pre-mixed solution in a pre-filled pen',
+    label: 'Own wording',
+    description: 'Type this product’s own storage wording in the storage box below.',
+    storage: '',
+    appearance: '',
   },
 };
 
-/** Every storage sentence this file may have written, in any format. */
-const MANAGED_STORAGE = Object.values(FORMAT_STANDARDS).map((f) => f.storage);
-/** Every appearance wording the dropdown offers, in any format. */
-const MANAGED_APPEARANCE: string[] = [...APPEARANCE_OPTIONS];
-
-// Much of the catalogue was typed with the American "lyophilized" while the
-// house wording is "lyophilised". They are the same wording, so a one-letter
-// spelling difference must not make a standard row look like a one-off.
-const normalise = (value: string) =>
-  value.trim().toLowerCase().replace(/lyophili[sz]ed/g, 'lyophilised').replace(/\s+/g, ' ');
+const normalise = (value: string) => value.trim().toLowerCase().replace(/\s+/g, ' ');
 const sameText = (a: string, b: string) => normalise(a) === normalise(b);
-const isOneOf = (value: string, list: string[]) => list.some((entry) => sameText(value, entry));
 
 /**
- * The list entry a saved value corresponds to, ignoring that spelling
- * difference — or undefined when it really is a one-off wording. Used by the
- * dropdown so the standard wording shows as chosen rather than as "type my own".
+ * The list entry a saved value corresponds to, ignoring case and spacing, or
+ * undefined when it really is a one-off wording. Used by the dropdown so the
+ * standard wording shows as chosen rather than as "type my own".
  */
 export function matchingOption(value: string, options: readonly string[]): string | undefined {
   return options.find((option) => sameText(option, value));
@@ -160,7 +156,7 @@ export function setStandardSummaryRow(
   return [...next, { label: row.name, value }];
 }
 
-/** Rows that are not one of the standard ones — shown in their own editor so nothing is hidden. */
+/** Rows that are not one of the standard ones, shown in their own editor so nothing is hidden. */
 export const extraTestRows = (rows: CertificateTestRow[]) =>
   rows.map((r, i) => ({ row: r, index: i })).filter(({ row }) => !STANDARD_TEST_ROWS.some((s) => s.match.test(row.test)));
 export const extraSummaryRows = (rows: CertificateInfoRow[]) =>
@@ -170,22 +166,19 @@ export const extraSummaryRows = (rows: CertificateInfoRow[]) =>
 
 /**
  * True for a standard test row that is only there because it was filled in
- * automatically: no measured result, and a specification that is either blank
- * or one of the standard wordings. Those rows are dropped on save so an
- * untouched certificate is stored exactly as it was before this block existed —
- * otherwise every product would gain empty rows that print on the customer's
- * certificate, and a dosage with no certificate of its own would stop falling
- * back to the shared one.
+ * automatically: no result, and no specification typed. Those rows are dropped
+ * on save so an untouched certificate is stored exactly as it was. With no
+ * standard test rows defined this is always false, which is correct: every
+ * test row on a certificate is one somebody typed.
  */
 export function isUntouchedStandardTestRow(row: CertificateTestRow): boolean {
   const standard = STANDARD_TEST_ROWS.find((s) => s.match.test(row.test));
   if (!standard) return false;
   if (row.result.trim()) return false;
-  const spec = row.specification.trim();
-  return !spec || isOneOf(spec, MANAGED_APPEARANCE) || isOneOf(spec, [...PURITY_OPTIONS]);
+  return !row.specification.trim();
 }
 
-/** The same, for Batch / Lot and Test Date: no value typed means nothing to save. */
+/** The same, for Batch / Lot and Certificate Date: no value typed means nothing to save. */
 export function isUntouchedStandardSummaryRow(row: CertificateInfoRow): boolean {
   const standard = STANDARD_SUMMARY_ROWS.find((s) => s.match.test(row.label));
   if (!standard) return false;
@@ -195,19 +188,18 @@ export function isUntouchedStandardSummaryRow(row: CertificateInfoRow): boolean 
 // ──────────────────────────────────────────────────────────────── the format ──
 
 /**
- * Which format a certificate is currently set up for. The product's own
- * category decides it first; failing that, the storage sentence already saved
- * on the certificate does — so pressing "Pen" and saving keeps it on Pen the
- * next time the drawer opens, even for a pen that is not in the Pens category.
+ * Which of the two storage choices a certificate is currently on. A product
+ * (or certificate) with a storage line of its own that is not the shop's
+ * standard sentence is on "own wording"; everything else is on the standard.
+ * The product's categories no longer decide anything and are ignored.
  */
 export function detectFormat(
   categories: readonly string[] | undefined,
   storage: string | undefined,
 ): CertificateFormat {
-  if ((categories ?? []).includes('Pens')) return 'pen';
+  void categories;
   const text = (storage ?? '').trim();
-  if (text && sameText(text, FORMAT_STANDARDS.pen.storage)) return 'pen';
-  if (text && /pre-?filled pen|pre-?mixed pen|do not freeze/i.test(text)) return 'pen';
+  if (text && !sameText(text, STANDARD_STORAGE_LINE)) return 'pen';
   return 'vial';
 }
 
@@ -221,49 +213,13 @@ export interface FormatApplyResult extends FormatApplyTarget {
   changed: string[];
 }
 
-// Wording that plainly belongs to the OTHER format. Rewriting it is the whole
-// point of the buttons: a pen carrying a vial's "-20°C, lyophilised powder"
-// wording is the exact mistake the certificate warnings flag.
-const WRONG_FOR_PEN = /lyophili[sz]ed|powder|\bvial\b|-\s?20\s?°?c|reconstitut/i;
-const WRONG_FOR_VIAL = /pre-?filled pen|pre-?mixed|do not freeze/i;
-
-const shouldReplace = (current: string, managed: string[], wrongForThisFormat: RegExp): boolean =>
-  !current.trim() || isOneOf(current, managed) || wrongForThisFormat.test(current);
-
 /**
- * Apply a format's standard wording to a certificate. It rewrites a field that
- * is blank, that still holds one of the standard wordings this file manages, or
- * that plainly describes the other format. Anything else typed by hand is left
- * exactly as it is, and a measured result is never touched at all. Nothing is
- * saved until the admin presses Save Changes, so a press that rewrites more
- * than intended can be undone by cancelling the drawer.
+ * Apply a storage choice to a certificate. It deliberately rewrites nothing:
+ * there is no standard wording to fill in any more (see FORMAT_STANDARDS), so
+ * the storage line and every test row come back exactly as they went in and
+ * `changed` is always empty. Kept so the product editor's calls still work.
  */
 export function applyFormatStandards(target: FormatApplyTarget, format: CertificateFormat): FormatApplyResult {
-  const standard = FORMAT_STANDARDS[format];
-  const wrong = format === 'pen' ? WRONG_FOR_PEN : WRONG_FOR_VIAL;
-  const changed: string[] = [];
-
-  let storage = target.storage;
-  if (shouldReplace(storage, MANAGED_STORAGE, wrong) && !sameText(storage, standard.storage)) {
-    storage = standard.storage;
-    changed.push('Storage');
-  }
-
-  const appearanceRow = STANDARD_TEST_ROWS[0];
-  const currentAppearance = standardTestSpec(target.testRows, appearanceRow);
-  let testRows = target.testRows;
-  if (shouldReplace(currentAppearance, MANAGED_APPEARANCE, wrong) && !sameText(currentAppearance, standard.appearance)) {
-    testRows = setStandardTestRow(testRows, appearanceRow, 'specification', standard.appearance);
-    changed.push('Appearance');
-  }
-
-  // The purity standard is the same whatever the format, but a brand-new
-  // certificate has nothing in it, so fill the floor in here too.
-  const purityRow = STANDARD_TEST_ROWS[1];
-  if (!standardTestSpec(testRows, purityRow).trim()) {
-    testRows = setStandardTestRow(testRows, purityRow, 'specification', PURITY_OPTIONS[0]);
-    changed.push('Purity');
-  }
-
-  return { storage, testRows, changed };
+  void format;
+  return { storage: target.storage, testRows: target.testRows, changed: [] };
 }

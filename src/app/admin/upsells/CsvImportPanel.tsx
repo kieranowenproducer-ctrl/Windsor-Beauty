@@ -23,13 +23,11 @@ interface Props {
   handleImport: () => void;
   importing: boolean;
   importResult: ImportResult | null;
-  handleGenerate: () => void;
-  generateMessage: string;
   manualOverrideMap: Map<string, ManualOverride>;
 }
 
 export default function CsvImportPanel({
-  mode, setMode, fileName, csvText, dragActive, setDragActive, onDrop, readFile, fileInputRef, handlePreview, previewing, preview, setPreview, handleImport, importing, importResult, handleGenerate, generateMessage, manualOverrideMap,
+  mode, setMode, fileName, csvText, dragActive, setDragActive, onDrop, readFile, fileInputRef, handlePreview, previewing, preview, setPreview, handleImport, importing, importResult, manualOverrideMap,
 }: Props) {
   return (
     <>
@@ -56,16 +54,7 @@ export default function CsvImportPanel({
               >
                 Download Example CSV
               </button>
-              <button
-                type="button"
-                onClick={handleGenerate}
-                title="Auto-generates a ready-to-import CSV from your real, live catalogue: every peptide vial recommended BAC Water for reconstitution. No editing needed."
-                className="text-[10px] tracking-[0.15em] uppercase text-gold-700 hover:text-gold-700 transition-colors"
-              >
-                Generate Upsell Rules CSV (from real catalogue)
-              </button>
             </div>
-            {generateMessage && <p className="text-[10px] text-stone-500 mb-4">{generateMessage}</p>}
 
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <label className="flex items-center gap-2 text-xs text-stone-600 cursor-pointer">

@@ -79,13 +79,13 @@ export function buildLowStockAlertEmail(items: LowStockEmailItem[], threshold: n
   const soldOutCount = items.filter((i) => i.quantity === 0).length;
   const subject =
     items.length === 1
-      ? `Stock low — ${items[0].name} ${items[0].dosage} has ${items[0].quantity === 0 ? 'sold out' : `${items[0].quantity} left`}`
-      : `Stock low — ${items.length} products need reordering${soldOutCount ? ` (${soldOutCount} sold out)` : ''}`;
+      ? `Stock low: ${items[0].name} ${items[0].dosage} has ${items[0].quantity === 0 ? 'sold out' : `${items[0].quantity} left`}`
+      : `Stock low: ${items.length} products need reordering${soldOutCount ? ` (${soldOutCount} sold out)` : ''}`;
 
   const text =
     `Stock is running low.\n\n` +
     `${items.length === 1 ? 'This product has' : 'These products have'} fewer than ${threshold} units left:\n\n` +
-    items.map((i) => `  ${i.name} (${i.dosage}) — ${i.quantity === 0 ? 'SOLD OUT' : `${i.quantity} left`}`).join('\n') +
+    items.map((i) => `  ${i.name} (${i.dosage}): ${i.quantity === 0 ? 'SOLD OUT' : `${i.quantity} left`}`).join('\n') +
     `\n\nUpdate stock: ${SITE_URL}/admin/products\n\n` +
     `You will not get another email about ${items.length === 1 ? 'this product' : 'these products'} until the stock is set back to ${threshold} or more and then runs low again.`;
 
@@ -105,7 +105,7 @@ export async function sendLowStockAlertEmail(items: LowStockEmailItem[], thresho
       subject,
       text,
       html,
-    }, { internal: true }); /* Internal post, so no research-use line. */
+    }, { internal: true }); /* Internal post: not filed under a customer. */
 
     if (error) {
       console.error('[lowStockAlertEmail] Resend error:', error);

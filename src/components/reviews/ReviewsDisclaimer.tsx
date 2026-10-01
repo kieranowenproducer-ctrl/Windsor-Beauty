@@ -2,18 +2,17 @@
 // reads customer reviews: the Reviews page, the reviews section on a product
 // page, and the carousel on the home page (task 62253915).
 //
-// THE WORDING IS KIERAN'S, SUPPLIED VERBATIM, AND IS A COMPLIANCE STATEMENT.
-// Do not reword it, shorten it, or add to it. The only change made to what he
-// wrote is the full stop at the end of the sentence. If it ever needs to change,
-// change it HERE — the whole point of this component is that three copies of a
-// compliance sentence cannot drift apart.
+// Reworded for the skincare shop on 1 October 2026: the first sentence is the
+// original, the second replaced a line that was about a different shop. If it
+// ever needs to change, change it HERE. The whole point of this component is
+// that three copies of the same sentence cannot drift apart.
 
 export const REVIEWS_DISCLAIMER_HEADING = 'Reviews Disclaimer';
 
 export const REVIEWS_DISCLAIMER_TEXT =
   'Customer reviews reflect the personal opinions of individual reviewers and do not represent ' +
-  'the views or claims of Windsor Beauty. All products are supplied strictly for laboratory and ' +
-  'in vitro research purposes only.';
+  'the views or claims of Windsor Beauty. Our products are cosmetics, and results vary from ' +
+  'person to person.';
 
 /**
  * `compact` drops the panel border for places that already sit inside one

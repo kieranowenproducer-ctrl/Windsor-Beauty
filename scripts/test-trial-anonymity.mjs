@@ -48,13 +48,13 @@ try {
   // A saved trial invoice keeps the product's fixed code, including the
   // sequence-assigned codes used for new trial products.
   const lines = [
-    { type: 'trial', slug: 'trial:8', name: '501', description: '501mg',
+    { type: 'trial', slug: 'trial:8', name: '501', description: '501ml',
       quantity: 1, unitPrice: 45, discount: 3, lineTotal: 42, batchCodes: ['B-1234'] },
-    { type: 'product', slug: 'retatrutide', name: 'Retatrutide', description: '10mg',
+    { type: 'product', slug: 'hydra-veil-serum', name: 'Hydra Veil Serum', description: '30ml',
       quantity: 2, unitPrice: 100, discount: 0, lineTotal: 200 },
-    { type: 'trial', slug: 'trial:13', name: 'ANADR 50MG 60S', description: '50MG',
+    { type: 'trial', slug: 'trial:13', name: 'Trial Serum A', description: '50ML',
       quantity: 1, unitPrice: 35, discount: 0, lineTotal: 35 },
-    { type: 'custom', name: 'Pens customised', quantity: 1, unitPrice: 10, discount: 0, lineTotal: 10 },
+    { type: 'custom', name: 'Gift wrap', quantity: 1, unitPrice: 10, discount: 0, lineTotal: 10 },
   ];
 
   const out = anonymiseTrialLines(lines);
@@ -70,15 +70,15 @@ try {
   console.log('\nNothing that names the product survives');
   check('the name is gone', !asText.includes('501') || !out.some(i => i.name === '501'));
   check('the second trial name is gone', !asText.includes('ANADR'));
-  check('the dosage is gone', !asText.includes('50MG') && !asText.includes('501mg'));
+  check('the size is gone', !asText.includes('50ML') && !asText.includes('501ml'));
   check('the batch code is gone', !asText.includes('B-1234'));
   check('the trial reference is gone', !asText.includes('trial:'));
 
   console.log('\nEverything else is left completely alone');
-  check('a catalogue product keeps its name', out[1].name === 'Retatrutide');
-  check('and its dosage', out[1].description === '10mg');
+  check('a catalogue product keeps its name', out[1].name === 'Hydra Veil Serum');
+  check('and its size', out[1].description === '30ml');
   check('and its price', out[1].unitPrice === 100 && out[1].lineTotal === 200);
-  check('a bespoke line keeps its name', out[3].name === 'Pens customised');
+  check('a bespoke line keeps its name', out[3].name === 'Gift wrap');
 
   console.log('\nPermanent references');
   check('the second trial has its own fixed code', out[2].name === 'Product 892' && out[2].fulfilmentRef === out[2].name, out[2].name);
@@ -100,7 +100,7 @@ try {
   console.log('\nRecognising a trial line');
   check('by its type', isTrialLine({ type: 'trial' }));
   check('or by its reference, if the type was lost', isTrialLine({ type: 'custom', slug: 'trial:8' }));
-  check('a normal product is not one', !isTrialLine({ type: 'product', slug: 'retatrutide' }));
+  check('a normal product is not one', !isTrialLine({ type: 'product', slug: 'hydra-veil-serum' }));
   check('an invoice with a trial line is spotted', hasTrialLines(lines));
   check('one without is not', !hasTrialLines([lines[1], lines[3]]));
 

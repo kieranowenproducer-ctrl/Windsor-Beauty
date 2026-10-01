@@ -3,23 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import CarouselArrowButton from '@/components/CarouselArrowButton';
 
-const TESTIMONIALS = [
-  {
-    src: '/testimonials/customer-testimonial-1.mp4',
-    label: 'Customer testimonial one',
-    duration: '0:12',
-  },
-  {
-    src: '/testimonials/customer-testimonial-2.mp4',
-    label: 'Customer testimonial two',
-    duration: '0:23',
-  },
-  {
-    src: '/testimonials/customer-testimonial-3.mp4',
-    label: "Reece's customer testimonial",
-    duration: '0:17',
-  },
-] as const;
+interface Testimonial {
+  src: string;
+  label: string;
+  duration: string;
+}
+
+// Deliberately empty. The videos this section used to play belonged to a
+// different shop, so they are no longer referenced. While the list is empty the
+// whole section renders nothing. Add real Windsor Beauty customer videos here
+// (src, a short label, and the running time) and it appears again.
+const TESTIMONIALS: Testimonial[] = [];
 
 export type TestimonialLayout = 'spotlight' | 'editorial' | 'duet';
 
@@ -107,6 +101,8 @@ export default function VideoTestimonials({ layout = 'spotlight', heading = true
       ? 'spotlight-right'
       : 'spotlight-left';
   };
+
+  if (TESTIMONIALS.length === 0) return null;
 
   return (
     <section id="video-testimonials" ref={sectionRef} aria-labelledby="video-testimonials-title" className={className}>

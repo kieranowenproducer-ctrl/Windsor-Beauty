@@ -149,7 +149,7 @@ export async function sendReviewNotificationEmail(params: ReviewNotificationPara
       subject,
       text,
       html,
-    }, { internal: true }); /* Internal post, so no research-use line. */
+    }, { internal: true }); /* Internal post: not filed under a customer. */
 
     if (error) {
       console.error('[reviewNotificationEmail] Resend error:', error);

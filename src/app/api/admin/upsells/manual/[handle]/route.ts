@@ -14,7 +14,6 @@ import {
 import { mergeProducts, PRODUCTS } from '@/data/products';
 import {
   buildCategoryFallbackRules,
-  buildReconstitutionRules,
   buildEffectiveRules,
   computeUpsellRecommendations,
   coveredTriggerSlugs,
@@ -54,12 +53,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ han
 
     const effectiveRules = buildEffectiveRules([handle], csvRules, manualOverrides);
     const fallbackRules = buildCategoryFallbackRules([handle], catalogue, coveredTriggerSlugs(csvRules, manualOverrides));
-    // Same standing water rule the storefront applies, so this preview shows what a customer
-    // will really be offered rather than the curated list on its own.
-    const reconstitutionRules = buildReconstitutionRules([handle], catalogue);
     const recommendations = computeUpsellRecommendations({
       basketSlugs: [handle],
-      rules: [...reconstitutionRules, ...effectiveRules, ...fallbackRules],
+      rules: [...effectiveRules, ...fallbackRules],
       catalogue, hiddenSlugs, stockMap, today,
     });
     const heading = resolveUpsellHeading(handle, manualOverrides, 'product');

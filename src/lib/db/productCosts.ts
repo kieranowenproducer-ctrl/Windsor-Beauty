@@ -1,15 +1,15 @@
 import { isDbConfigured, requireDb } from './client';
 
 // Cost basis per product+dosage variant (task 66a6a137 + revision). The true cost
-// "to achieve the bottle" = raw vial cost (unit_cost) + named components (box, label,
-// anything the owner defines) + this vial's allocated share of a bulk order's shipping.
+// "to achieve the bottle" = raw item cost (unit_cost) + named components (box, label,
+// anything the owner defines) + this item's allocated share of a bulk order's shipping.
 
 export interface CostComponent { label: string; amount: number; }
 
 export interface ProductCostRow {
   product_slug: string;
   dosage: string;
-  unit_cost: number;          // RAW vial cost
+  unit_cost: number;          // RAW item cost
   components: CostComponent[]; // extra named costs (box, label, ...)
   shipping_per_unit: number;   // allocated share of bulk-order shipping
   supplier: string | null;
@@ -118,9 +118,9 @@ export async function listSupplierPurchases(): Promise<SupplierPurchaseRow[]> {
 }
 
 // Record a bulk order AND fold its costs into each product's cost basis:
-//  - raw vial cost   = blockCost / qty
-//  - shipping/unit   = (order shipping / total vials in the order), allocated evenly
-// (Even per-vial split is the honest default; weight-based needs per-product weights
+//  - raw item cost   = blockCost / qty
+//  - shipping/unit   = (order shipping / total items in the order), allocated evenly
+// (Even per-item split is the honest default; weight-based needs per-product weights
 // we don't hold yet. Both raw + shipping are still editable on the Profitability page.)
 export async function recordSupplierPurchase(input: {
   supplier: string;
@@ -144,12 +144,12 @@ export async function recordSupplierPurchase(input: {
     .filter((l) => l.slug && l.qty > 0);
   const shippingCost = Math.max(0, Number(input.shippingCost) || 0);
   const adhocCost = Math.max(0, Number(input.adhocCost) || 0);
-  // Shipping AND any ad-hoc/extra costs are both allocated evenly across the vials
+  // Shipping AND any ad-hoc/extra costs are both allocated evenly across the items
   // and folded into each product's cost basis (Kieran, task c5842838). Stored
-  // together in shipping_cost so the per-vial allocation and the record match.
+  // together in shipping_cost so the per-item allocation and the record match.
   const allocatable = Math.round((shippingCost + adhocCost) * 100) / 100;
-  const totalVials = lines.reduce((s, l) => s + l.qty, 0);
-  const shipPerVial = totalVials > 0 ? Math.round((allocatable / totalVials) * 100) / 100 : 0;
+  const totalUnits = lines.reduce((s, l) => s + l.qty, 0);
+  const shipPerUnit = totalUnits > 0 ? Math.round((allocatable / totalUnits) * 100) / 100 : 0;
 
   const [row] = await db`
     INSERT INTO supplier_purchases (supplier, purchase_date, shipping_cost, update_inventory, lines, created_at)
@@ -162,14 +162,14 @@ export async function recordSupplierPurchase(input: {
     const supplier = input.supplier?.trim() || null;
     await db`
       INSERT INTO product_costs (product_slug, dosage, unit_cost, shipping_per_unit, supplier, updated_at)
-      VALUES (${l.slug}, ${l.dosage}, ${rawCost}, ${shipPerVial}, ${supplier}, now())
+      VALUES (${l.slug}, ${l.dosage}, ${rawCost}, ${shipPerUnit}, ${supplier}, now())
       ON CONFLICT (product_slug, dosage)
-      DO UPDATE SET unit_cost = ${rawCost}, shipping_per_unit = ${shipPerVial}, supplier = ${supplier}, updated_at = now()
+      DO UPDATE SET unit_cost = ${rawCost}, shipping_per_unit = ${shipPerUnit}, supplier = ${supplier}, updated_at = now()
     `;
   }
-  // The whole point of the tick box (task c9aa1323): the vials that arrived
+  // The whole point of the tick box (task c9aa1323): the items that arrived
   // go INTO stock. Until now the flag was stored and then nothing happened —
-  // Kieran recorded 40 vials, saw "Saved", and the shop still said 0.
+  // Kieran recorded 40 items, saw "Saved", and the shop still said 0.
   // Existing tracked variant: quantity += qty. Untracked variant: adding
   // stock explicitly starts tracking it at qty.
   const restockedProductSlugs: string[] = [];

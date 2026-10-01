@@ -66,9 +66,6 @@ export async function POST(request: Request) {
   const marketingConsent = body?.marketingConsent === true;
   // Mandatory sign-up confirmations (task 3933725e). This route creates a full
   // member account, so it enforces the same gate as /api/account/register.
-  const ageConfirmed = body?.ageConfirmed === true;
-  const researchUseConfirmed = body?.researchUseConfirmed === true;
-  const lawfulUseConfirmed = body?.lawfulUseConfirmed === true;
   const termsAccepted = body?.termsAccepted === true;
   const visitId = typeof body?.visit_id === 'string' ? body.visit_id.trim().slice(0, 100) : null;
 
@@ -123,15 +120,9 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  if (!ageConfirmed || !researchUseConfirmed || !lawfulUseConfirmed) {
-    return NextResponse.json(
-      { status: 'error', message: COMPLIANCE_CONFIRMATIONS_ERROR },
-      { status: 400 }
-    );
-  }
   if (!termsAccepted) {
     return NextResponse.json(
-      { status: 'error', message: 'Please read and accept the Terms and Conditions to create your account.' },
+      { status: 'error', message: COMPLIANCE_CONFIRMATIONS_ERROR },
       { status: 400 }
     );
   }

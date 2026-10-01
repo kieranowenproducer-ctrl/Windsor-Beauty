@@ -56,9 +56,9 @@ export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolea
 
   const subject = isReminder
     ? 'Reminder: confirm your email to activate your Windsor Beauty account'
-    : 'Confirm your email address — Windsor Beauty';
+    : 'Confirm your email address for Windsor Beauty';
   const preheader = isReminder
-    ? `Final reminder — your new verification link is valid for ${hours} hours.`
+    ? `Final reminder. Your new verification link is valid for ${hours} hours.`
     : `One click to activate your account. Your link is valid for ${hours} hours.`;
 
   const introText = isReminder

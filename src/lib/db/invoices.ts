@@ -49,7 +49,7 @@ export interface InvoiceLineItem {
   lineTotal: number;
   /** Only meaningful for custom (non-catalogue) items — optional per-line weight override. */
   weightGrams?: number;
-  /** Batch identifying code(s) allocated to this product, shown on the invoice. Stored in JSONB — no schema change. A line can carry more than one (e.g. two vials from two batches). */
+  /** Batch identifying code(s) allocated to this product, shown on the invoice. Stored in JSONB — no schema change. A line can carry more than one (e.g. two items from two batches). */
   batchCodes?: string[];
   /**
    * Set by anonymiseTrialLines on a trial line only: the fixed neutral name that trial product
@@ -275,9 +275,9 @@ export async function listInvoices(filters?: InvoiceListFilters): Promise<Invoic
   // on the invoice and they can be in different places, so a customer plus a product works.
   // The words are split by the one shared helper Orders uses, so the two screens cannot drift.
   //
-  // Each word arrives as a LIST: the word itself plus its short names, so "retatrutide" also finds
-  // an invoice written down as "Reta 30mg". One of each list has to be found, and every list has
-  // to be satisfied. src/lib/searchAliases.ts says where the short names come from.
+  // Each word arrives as a LIST: the word itself plus any words that mean the same thing. One of
+  // each list has to be found, and every list has to be satisfied. src/lib/searchAliases.ts holds
+  // the words that mean the same thing, and is empty for now.
   const groups = parseSearchGroups(filters?.q ?? '', SEARCH_ALIAS_GROUPS);
   const groupsJson = groups.length > 0 ? JSON.stringify(groups.map(g => g.any)) : null;
 

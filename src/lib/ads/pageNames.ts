@@ -1,7 +1,7 @@
 // Plain-English names for the pages people land on.
 //
 // The after-the-click tables used to print the raw web address ("/account/
-// verify-email", "/shop/retatrutide-pen"). Kieran reads these tables to decide
+// verify-email", "/shop/hydra-veil-serum"). Kieran reads these tables to decide
 // where to spend money, and a list of slugs is not something you can read at a
 // glance. Every page now gets the name a person would use for it, with the
 // address kept underneath in small type so a row is still traceable.
@@ -54,8 +54,6 @@ const SMALL_PRINT: Record<string, string> = {
   '/terms': 'Terms and conditions',
   '/cookies': 'Cookie policy',
   '/disclaimer': 'Disclaimer',
-  '/research-disclaimer': 'Research disclaimer',
-  '/age-restriction': 'Age restriction notice',
   '/shipping': 'Delivery information',
   '/returns': 'Returns information',
   '/refund-policy': 'Refund policy',
@@ -65,23 +63,22 @@ const SMALL_PRINT: Record<string, string> = {
 
 // Abbreviations that must keep their capitals when an address is tidied into
 // words. A general "short word" rule cannot do this: "why" is three letters and
-// is not an abbreviation, "dsip" is four and is. So it is a list, and adding to
+// is not an abbreviation, "spf" is three and is. So it is a list, and adding to
 // it is the whole maintenance cost.
 const SHOUTED = new Set([
-  'bpc', 'tb', 'kpv', 'ghk', 'cu', 'aod', 'dsip', 'nad', 'mots', 'ghrp', 'igf', 'cjc', 'hcg',
-  'mt', 'pt', 'hgh', 'gh', 'epo', 'bac', 'spf', 'gdf', 'ss', 'ipa', 'coa', 'ai', 'uk', 'usa', 'qc',
+  'spf', 'uv', 'uva', 'uvb', 'aha', 'bha', 'pha', 'ai', 'uk', 'usa',
 ]);
 
-/** "recovery-pen-windsor-beauty-bpc-157" -> "Recovery Pen Windsor Beauty BPC 157". */
+/** "daily-defence-spf-50" -> "Daily Defence SPF 50". */
 export function prettifySlug(slug: string): string {
   const words = slug.split(/[-_]/).filter(Boolean);
   if (words.length === 0) return slug;
   return words
     .map((w) => {
       const lower = w.toLowerCase();
-      if (/^\d+(mg|ml|mcg|iu|g|kg)?$/i.test(w)) return lower;            // 157, 10mg
-      if (SHOUTED.has(lower)) return lower.toUpperCase();                 // BPC, KPV
-      if (/^[a-z]{2,4}\d+$/i.test(w)) return lower.toUpperCase();         // TB500, SR9009, LL37
+      if (/^\d+(mg|ml|mcg|iu|g|kg)?$/i.test(w)) return lower;            // 50, 30ml
+      if (SHOUTED.has(lower)) return lower.toUpperCase();                 // SPF, AHA
+      if (/^[a-z]{2,4}\d+$/i.test(w)) return lower.toUpperCase();         // B5, Q10
       return w.charAt(0).toUpperCase() + w.slice(1);
     })
     .join(' ');

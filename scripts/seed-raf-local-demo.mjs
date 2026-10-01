@@ -1,12 +1,12 @@
-// Seed an invented affiliate only in the existing isolated Raf test database.
-// This is never a production setup or a live Raf account change.
+// Seed an invented affiliate only in the existing isolated affiliate test database.
+// This is never a production setup or a live affiliate account change.
 import { randomBytes } from 'node:crypto';
 
 const raw = process.env.DATABASE_URL;
 if (!raw) throw new Error('No test DATABASE_URL was provided.');
 const url = new URL(raw);
 if (decodeURIComponent(url.pathname) !== '/windsor_beauty_affiliate_test' || !url.hostname.startsWith('ep-round-cloud-')) {
-  throw new Error('Refusing a connection outside the existing Raf test database and branch.');
+  throw new Error('Refusing a connection outside the existing affiliate test database and branch.');
 }
 const { neon } = await import('@neondatabase/serverless');
 const sql = neon(raw);
@@ -27,9 +27,9 @@ const email = 'raf-demo@example.test';
 const password = `RafDemo-${randomBytes(9).toString('base64url')}!`;
 const [customer] = await sql`
   INSERT INTO customers (email, password_hash, first_name, last_name, email_verified)
-  VALUES (${email}, ${hashPassword(password)}, 'Raf', 'Demo', TRUE)
+  VALUES (${email}, ${hashPassword(password)}, 'Demo', 'Partner', TRUE)
   RETURNING id
 `;
-await createAffiliateProfile({ customerId: Number(customer.id), displayName: 'Raf', referralCode: 'RAF', durationDays: 183 });
+await createAffiliateProfile({ customerId: Number(customer.id), displayName: 'Demo Partner', referralCode: 'PARTNER', durationDays: 183 });
 console.log(`Isolated demo affiliate ready. Login: ${email}`);
 console.log(`One-time test password: ${password}`);

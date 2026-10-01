@@ -46,7 +46,7 @@ fs.writeFileSync(TSCONFIG, JSON.stringify({
     baseUrl: ROOT,
     paths: { '@/*': ['src/*'] },
   },
-  files: ['src/lib/email/archive.ts', 'src/lib/email/researchNotice.ts', 'src/lib/email/send.ts'],
+  files: ['src/lib/email/archive.ts', 'src/lib/email/send.ts'],
 }, null, 2));
 
 try {

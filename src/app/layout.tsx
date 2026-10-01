@@ -13,20 +13,12 @@ import PromoBanner from '@/components/PromoBanner';
 import StickyHeaderStack from '@/components/StickyHeaderStack';
 import SiteChrome from '@/components/SiteChrome';
 import { CartProvider } from '@/contexts/CartContext';
-import { PRODUCTS } from '@/data/products';
-import { getSiteContent, isDbConfigured } from '@/lib/db';
 import { CUSTOMER_SESSION_COOKIE } from '@/lib/auth';
 
-// Worked out here, on the server, and handed to the basket drawer as a short
-// list of slugs. The drawer used to import the whole catalogue itself, which
-// put every product into the client bundle of every page on the site just to
-// decide whether to show the needle disclaimer. See CartDrawer.tsx.
-const PEN_SLUGS = PRODUCTS.filter((p) => p.categories.includes('Pens')).map((p) => p.slug);
-
 export const metadata: Metadata = {
-  title: 'Windsor Beauty | Premium Research Compounds',
+  title: 'Windsor Beauty | Premium Skincare',
   description:
-    'Windsor Beauty supplies high-purity research peptides and compounds for scientific and laboratory use only. 99% purity, lab tested, certificate of analysis with every order.',
+    'Windsor Beauty is a premium UK skincare shop. Serums, moisturisers, cleansers and SPF for a simple daily routine.',
   // Short label shown under the icon when added to an iPhone home screen —
   // without this, iOS falls back to the full <title> above and truncates it.
   appleWebApp: {
@@ -36,10 +28,6 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const pageChildren = Children.toArray(children);
-  const termsContent = isDbConfigured() ? await getSiteContent('terms').catch(() => null) : null;
-  const termsOverride = termsContent?.body?.trim()
-    ? { title: termsContent.title, body: termsContent.body, format: termsContent.format }
-    : null;
 
   // Don't pitch membership to someone who already has a customer session —
   // presence of the (httpOnly) cookie is enough for this UX nicety, no DB lookup needed.
@@ -60,7 +48,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen flex flex-col">
         <CartProvider>
           <SiteChrome
-            termsOverride={termsOverride}
             headerStack={
               <StickyHeaderStack
                 key="site-header-stack"
@@ -69,7 +56,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 announcementBar={<AnnouncementBar key="announcement-bar" />}
               />
             }
-            cartDrawer={<CartDrawer key="cart-drawer" penSlugs={PEN_SLUGS} />}
+            cartDrawer={<CartDrawer key="cart-drawer" />}
             discountPopup={isLoggedInCustomer ? null : <DiscountPopup key="discount-popup" />}
             footer={<Footer key="site-footer" />}
           >

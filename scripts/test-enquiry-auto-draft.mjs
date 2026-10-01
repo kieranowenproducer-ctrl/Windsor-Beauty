@@ -12,8 +12,9 @@ assert.equal(looksLikeOrderStatusQuestion('order', 'Where is my order?', 'WB-ABC
 assert.equal(looksLikeOrderStatusQuestion('order', 'Please cancel my order', 'WB-ABCD12'), false);
 assert.equal(enquiryNeedsHumanAction('The item arrived damaged and I need help'), true);
 assert.equal(enquiryNeedsHumanAction('Can you clear my second order? I only need one.'), true);
-assert.equal(enquiryNeedsPersonalAdvice('Should I swap to this to manage my weight?'), true);
-assert.equal(enquiryNeedsPersonalAdvice('What is the weekly dosage listed by your sources?'), false);
+assert.equal(enquiryNeedsPersonalAdvice('Should I swap to this serum? Is it right for my skin?'), true);
+assert.equal(enquiryNeedsPersonalAdvice('What size is the moisturiser?'), false);
+assert.match(orderStatusEmailCopy({ order_number: 'WB-ABCD12', status: 'paid', tracking_number: null, tracking_url: null }), /Warm regards,\nWindsor Beauty$/);
 const orderReply = orderStatusEmailCopy({
   order_number: 'WB-ABCD12',
   status: 'dispatched',

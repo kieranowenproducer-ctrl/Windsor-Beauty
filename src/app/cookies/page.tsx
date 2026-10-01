@@ -1,5 +1,16 @@
+import type { Metadata } from 'next';
 import PolicyPage from '@/components/PolicyPage';
 import { PolicySection } from '@/components/PolicyLayout';
+import { SITE_URL } from '../robots';
+
+const DESCRIPTION = 'The cookies and browser storage the Windsor Beauty skincare shop uses, what they are '
+  + 'for, and how you can manage them.';
+
+export const metadata: Metadata = {
+  title: 'Cookie Policy | Windsor Beauty',
+  description: DESCRIPTION,
+  alternates: { canonical: `${SITE_URL}/cookies` },
+};
 
 export default function CookiePolicyPage() {
   return (
@@ -10,43 +21,42 @@ export default function CookiePolicyPage() {
     >
       <PolicySection heading="What Cookies Are">
         <p>
-          Cookies are small text files placed on your device when you visit a website. They help the site remember
-          information about your visit, such as your preferences and the contents of your basket, and can also help
-          us understand how the site is used so that we can improve it.
+          Cookies are small text files placed on your device when you visit a website. Websites can also keep small
+          amounts of information in your browser&rsquo;s own storage. Both help a site remember things about your
+          visit, such as the contents of your basket.
         </p>
       </PolicySection>
 
-      <PolicySection heading="How We Use Cookies and Local Storage">
-        <p>We use cookies and similar browser storage for purposes including:</p>
+      <PolicySection heading="How We Use Cookies and Browser Storage">
+        <p>We use cookies and browser storage for the following purposes:</p>
         <ul className="list-disc list-outside pl-5 space-y-1.5">
-          <li><span className="text-stone-600 font-medium">Essential functions</span> — remembering the contents of your shopping basket, keeping you signed in, and recording that you have confirmed our entry requirements (including age confirmation and acceptance of our Terms and Conditions) so that you are not asked again during the same session.</li>
-          <li><span className="text-stone-600 font-medium">Preferences</span> — remembering choices you make on the site, such as dismissing a pop-up, so your experience is smoother on return visits.</li>
-          <li><span className="text-stone-600 font-medium">Performance and analytics</span> — helping us understand how visitors use the site so we can identify and fix issues and improve the overall experience.</li>
-          <li><span className="text-stone-600 font-medium">Marketing</span> — where you have given consent, helping us measure the effectiveness of offers such as discount codes and tailoring communications accordingly.</li>
+          <li><span className="text-stone-600 font-medium">Essential functions:</span> remembering the contents of your shopping basket, keeping you signed in to your account, and keeping track of an order while you complete payment.</li>
+          <li><span className="text-stone-600 font-medium">Preferences:</span> remembering choices you make on the site, such as closing a pop-up or a notice you have already seen, so you are not shown it again.</li>
+          <li><span className="text-stone-600 font-medium">Our own visit measurement:</span> we record visits and shop actions, such as viewing a product or adding it to your basket, so we can understand how the shop is used and improve it. This is done by our own website rather than by an outside analytics company.</li>
+          <li><span className="text-stone-600 font-medium">Referrals and campaigns:</span> if you arrive through a referral link or a QR code, a cookie remembers this for up to 12 months so the right person or campaign can be credited.</li>
         </ul>
       </PolicySection>
 
       <PolicySection heading="Managing Cookies">
         <p>
           Most browsers allow you to view, manage, delete and block cookies for a website. Please be aware that if
-          you choose to block essential cookies, parts of this site — such as the shopping basket or entry
-          requirements check — may not work as intended. You can find instructions for managing cookies in your
-          particular browser&rsquo;s help documentation.
+          you block essential cookies or browser storage, parts of this site, such as the shopping basket or signing
+          in, may not work as intended. You can find instructions in your browser&rsquo;s help pages.
         </p>
       </PolicySection>
 
       <PolicySection heading="Third-Party Cookies">
         <p>
-          Some features of this site — such as payment processing, marketing tools, or embedded content — may set
-          their own cookies provided by trusted third parties. These third parties are responsible for their own
-          cookie practices, and we encourage you to review their respective policies for further information.
+          At the time of writing, this site does not set advertising or analytics cookies from other companies. When
+          you pay, you are taken to the secure pages of your bank or payment provider, which may set their own
+          cookies under their own policies.
         </p>
       </PolicySection>
 
       <PolicySection heading="Changes to This Policy">
         <p>
           We may update this Cookie Policy from time to time to reflect changes in the technologies we use or in
-          relevant law. Please check back here periodically to stay informed.
+          relevant law. If we start using new kinds of cookies, we will update this page.
         </p>
       </PolicySection>
     </PolicyPage>

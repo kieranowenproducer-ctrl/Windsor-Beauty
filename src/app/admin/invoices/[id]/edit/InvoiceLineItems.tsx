@@ -22,7 +22,7 @@ function StockNote({ dosage, dose, total, quantity }: {
   return (
     <p className={`text-[10px] mt-1.5 ${short ? 'text-amber-700 font-semibold' : 'text-stone-500'}`}>
       {dosage ? `${dosage}: ${stockWord(dose)}` : stockWord(dose)}
-      {total !== null ? ` · ${total} in stock across all dosages` : ''}
+      {total !== null ? ` · ${total} in stock across all sizes` : ''}
       {short ? ` · this line is for ${quantity}, which is more than is left` : ''}
     </p>
   );
@@ -78,10 +78,10 @@ interface Props {
   trialProducts: TrialPick[];
   batchPool: string[];
   financialsDisabled: boolean;
-  /** Per dosage: variantStock[slug][dosage]. A slug or dosage with no entry is untracked, which
+  /** Per dosage: variantStock[slug][dosage]. A slug or size with no entry is untracked, which
    *  is not the same as none left, so it is never shown as a zero. */
   variantStock: Record<string, Record<string, number>>;
-  /** Per product, the total across its dosages. Same untracked rule. */
+  /** Per product, the total across its sizes. Same untracked rule. */
   productStock: Record<string, number>;
 }
 
@@ -284,12 +284,12 @@ export default function InvoiceLineItems({
                       batchCodes: e.target.value.split(',').map((c) => c.trim()).filter(Boolean),
                     })}
                     disabled={financialsDisabled}
-                    placeholder="Pick or type a code — separate several with commas"
+                    placeholder="Pick or type a code. Separate several with commas"
                     className={`${INPUT_CLASS} font-mono`}
                   />
                   <span className="text-[9px] text-stone-400">
                     Shown on the invoice so the customer knows which verified batch their product came from.
-                    {' '}Use several for a mixed line (e.g. two vials from two batches).
+                    {' '}Use several for a mixed line (e.g. two items from two batches).
                   </span>
                 </label>
               </div>

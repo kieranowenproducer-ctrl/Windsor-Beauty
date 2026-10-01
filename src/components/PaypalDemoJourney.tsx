@@ -10,10 +10,10 @@ interface PaypalDemoJourneyProps {
 const DEMO_TOTAL = 62.10;
 
 export default function PaypalDemoJourney({ paymentUrl, initiallyConfirmed = false }: PaypalDemoJourneyProps) {
-  const [researchConfirmed, setResearchConfirmed] = useState(initiallyConfirmed);
+  const [detailsConfirmed, setDetailsConfirmed] = useState(initiallyConfirmed);
   const [termsConfirmed, setTermsConfirmed] = useState(initiallyConfirmed);
 
-  const canContinue = researchConfirmed && termsConfirmed;
+  const canContinue = detailsConfirmed && termsConfirmed;
 
   return (
     <main className="min-h-screen bg-[#fbfaf7] px-4 py-10 sm:px-6 sm:py-16">
@@ -42,8 +42,8 @@ export default function PaypalDemoJourney({ paymentUrl, initiallyConfirmed = fal
             <div className="mt-7 border border-[#e8d9b8] bg-[#fffdf8] p-5">
               <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-stone-500">Before you pay</p>
               <label className="mt-4 flex min-h-11 cursor-pointer items-start gap-3 text-xs leading-relaxed text-stone-600">
-                <input type="checkbox" checked={researchConfirmed} onChange={event => setResearchConfirmed(event.target.checked)} className="mt-0.5 h-4 w-4 accent-[#8b6a2d]" />
-                <span>I confirm this order is for lawful research use and I am over 18.</span>
+                <input type="checkbox" checked={detailsConfirmed} onChange={event => setDetailsConfirmed(event.target.checked)} className="mt-0.5 h-4 w-4 accent-[#8b6a2d]" />
+                <span>I confirm my order details are correct.</span>
               </label>
               <label className="mt-2 flex min-h-11 cursor-pointer items-start gap-3 text-xs leading-relaxed text-stone-600">
                 <input type="checkbox" checked={termsConfirmed} onChange={event => setTermsConfirmed(event.target.checked)} className="mt-0.5 h-4 w-4 accent-[#8b6a2d]" />
@@ -65,7 +65,7 @@ export default function PaypalDemoJourney({ paymentUrl, initiallyConfirmed = fal
           <aside className="h-fit border border-stone-200 bg-white p-6">
             <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-stone-500">Demo order</p>
             <div className="mt-5 space-y-3 border-b border-stone-100 pb-5 text-xs">
-              <div className="flex justify-between gap-4"><span className="text-stone-500">Research order</span><span>£50.00</span></div>
+              <div className="flex justify-between gap-4"><span className="text-stone-500">Skincare order</span><span>£50.00</span></div>
               <div className="flex justify-between gap-4"><span className="text-stone-500">UK delivery</span><span>£10.00</span></div>
               <div className="flex justify-between gap-4"><span className="text-stone-500">PayPal fee</span><span>£2.10</span></div>
             </div>

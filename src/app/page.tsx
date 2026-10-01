@@ -41,16 +41,15 @@ export const dynamic = 'force-dynamic';
  * inherited the layout's. The title and description below are deliberately the layout's own
  * words, unchanged: the fault was three missing tags, not the wording.
  */
-const DESCRIPTION = 'Windsor Beauty supplies high-purity research peptides and compounds for '
-  + 'scientific and laboratory use only. 99% purity, lab tested, certificate of analysis with '
-  + 'every order.';
+const DESCRIPTION = 'Windsor Beauty is a premium UK skincare shop. Serums, moisturisers, '
+  + 'cleansers and SPF for a simple daily routine.';
 
 export const metadata: Metadata = {
-  title: 'Windsor Beauty | Premium Research Compounds',
+  title: 'Windsor Beauty | Premium Skincare',
   description: DESCRIPTION,
   alternates: { canonical: `${SITE_URL}/` },
   openGraph: {
-    title: 'Windsor Beauty | Premium Research Compounds',
+    title: 'Windsor Beauty | Premium Skincare',
     description: DESCRIPTION,
     type: 'website',
     url: `${SITE_URL}/`,
@@ -94,16 +93,16 @@ function organizationJsonLd() {
 }
 
 const QUICK_LINKS = [
-  { label: 'Shop Peptides', href: '/shop', gold: true },
+  { label: 'Shop Skincare', href: '/shop', gold: true },
   { label: 'Reviews', href: '/reviews', gold: true },
 ];
 
 export default async function HomePage() {
   const hiddenSlugs = isDbConfigured() ? await getHiddenProductSlugs().catch(() => [] as string[]) : [];
   const stockMap = isDbConfigured() ? await getProductStockMap().catch(() => ({} as Record<string, number>)) : {};
-  // Per-dosage numbers as well as the summed total: a card may only stamp OUT OF STOCK
-  // across the photograph when every strength is gone, and the total cannot tell that
-  // apart from one strength running out.
+  // Per-size numbers as well as the summed total: a card may only stamp OUT OF STOCK
+  // across the photograph when every size is gone, and the total cannot tell that
+  // apart from one size running out.
   const variantStockMap = isDbConfigured()
     ? await getProductVariantStockMap().catch(() => ({} as Record<string, Record<string, number>>))
     : {};
@@ -181,7 +180,7 @@ export default async function HomePage() {
                 above, without touching desktop or the overall premium feel.
                 ROLLBACK: change each `mb-6 sm:mb-8` back to `mb-8`. */}
             <p className="text-[9px] tracking-[0.45em] uppercase text-gold-700 mb-6 sm:mb-8">
-              Premium Research Compounds
+              Premium Skincare
             </p>
 
             <div className="flex justify-center mb-6 sm:mb-8">
@@ -251,7 +250,7 @@ export default async function HomePage() {
               room to spare). Below that it wraps naturally, centred, because forcing one line
               on a phone would run off the screen. */}
           <p className="text-sm text-stone-500 leading-relaxed tracking-wide max-w-5xl mx-auto mb-6 sm:mb-8 lg:whitespace-nowrap">
-            High-purity peptide compounds for advanced laboratory research. Every product independently verified to 99% purity with a certificate of analysis.
+            Serums, moisturisers, cleansers and SPF, chosen for a simple daily routine and skin that feels cared for.
           </p>
 
           {/* Quick links — visible immediately on every device, centred under the hero.
@@ -292,7 +291,7 @@ export default async function HomePage() {
               button above already does this job on small screens. */}
           <div className="hidden md:flex justify-center mt-8">
             <a
-              href="#video-testimonials"
+              href="#customer-reviews"
               className="inline-flex items-center gap-2 text-sm font-bold tracking-[0.12em] uppercase underline decoration-2 underline-offset-4 text-gold-700 hover:text-gold-800 transition-colors"
             >
               See what our customers say
@@ -327,13 +326,13 @@ export default async function HomePage() {
       <NewInCarousel products={newInProducts} stockMap={stockMap} variantStockMap={variantStockMap} reviewStats={reviewStats} saleConfig={saleConfig} />
 
       {/* Featured products */}
-      <ProductCarousel eyebrow="Featured" title="Research Compounds" products={featured} stockMap={stockMap} variantStockMap={variantStockMap} reviewStats={reviewStats} saleConfig={saleConfig}>
+      <ProductCarousel eyebrow="Featured" title="Our Skincare" products={featured} stockMap={stockMap} variantStockMap={variantStockMap} reviewStats={reviewStats} saleConfig={saleConfig}>
         <div className="text-center mt-10">
           <Link
             href="/shop"
             className="inline-block border border-gold-300 text-gold-700 text-[10px] tracking-[0.22em] uppercase px-8 py-3.5 hover:border-gold-500 hover:bg-gold-50 transition-colors"
           >
-            Browse Catalogue
+            Shop All Skincare
           </Link>
         </div>
       </ProductCarousel>
@@ -343,18 +342,18 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-2">
-              Our Standards
+              Shopping With Us
             </p>
             <h2 className="font-serif text-3xl sm:text-4xl text-stone-800 tracking-wide">
-              Why Researchers Choose Windsor Beauty
+              Skincare, Made Simple
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[
               {
-                title: 'HPLC Verified',
-                desc: 'Independent third-party testing on every batch, with a certificate of analysis included with every order.',
+                title: 'A Focused Range',
+                desc: 'Serums, moisturisers, cleansers and SPF, with collections for men and women. Browse by category to find what suits you.',
                 icon: (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3h6M10 3v6L6.5 18h11L14 9V3M8.5 14.5h7" />
@@ -362,8 +361,8 @@ export default async function HomePage() {
                 ),
               },
               {
-                title: 'Pharma Grade',
-                desc: 'Synthesised to pharmaceutical specifications, for consistent potency across every single batch.',
+                title: 'Clear Sizes and Prices',
+                desc: 'Every product page shows the size, the price and how to use and store it, so you know what you are buying.',
                 icon: (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <rect x="3" y="9" width="18" height="6" rx="3" strokeWidth={1.5} />
@@ -372,8 +371,8 @@ export default async function HomePage() {
                 ),
               },
               {
-                title: '48hr Dispatch',
-                desc: 'Orders are processed and dispatched within 48 hours of payment confirmation, always in discreet, unmarked packaging.',
+                title: 'Delivery Shown at Checkout',
+                desc: 'Delivery options and costs are shown before you pay, so there are no surprises.',
                 icon: (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <rect x="6" y="6" width="13" height="13" rx="1.5" strokeWidth={1.5} />
@@ -383,8 +382,8 @@ export default async function HomePage() {
                 ),
               },
               {
-                title: 'QR Authenticated',
-                desc: 'Every vial carries a unique verification code linked to its full lab report, checkable in seconds.',
+                title: 'Honest Reviews',
+                desc: 'Read what other customers think before you buy, and share your own view afterwards.',
                 icon: (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <rect x="3" y="3" width="7" height="7" rx="1.5" strokeWidth={1.5} />
@@ -412,21 +411,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Safety/disclaimer section */}
+      {/* Closing note */}
       <section className="py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[9px] tracking-[0.38em] uppercase text-gold-700 mb-3">
-            Important Notice
+            Here to Help
           </p>
           <h2 className="font-serif text-2xl text-stone-700 tracking-wide mb-6">
-            For Research Use Only
+            Questions About a Product?
           </h2>
           <p className="text-sm text-stone-500 leading-relaxed mb-4">
-            All compounds sold by Windsor Beauty are strictly intended for in vitro scientific research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals.
+            Our team is happy to help you choose. Our products are cosmetics for external use only. Patch test before first use.
           </p>
-          <p className="text-sm text-stone-500 leading-relaxed">
-            By purchasing from Windsor Beauty, customers confirm they are operating within all applicable laws and regulations in their jurisdiction. Windsor Beauty assumes no responsibility for misuse.
-          </p>
+          <Link
+            href="/contact"
+            className="inline-block border border-gold-300 text-gold-700 text-[10px] tracking-[0.22em] uppercase px-8 py-3.5 hover:border-gold-500 hover:bg-gold-50 transition-colors"
+          >
+            Contact Us
+          </Link>
         </div>
       </section>
     </>

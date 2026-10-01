@@ -6,7 +6,7 @@
   (4032x3024). Every screen used to force that into a fixed box with
   object-cover, which crops. On the homepage carousel a portrait photo was
   rendered into a 302x144 slot, so roughly 36% of the picture survived and the
-  vial in it was beheaded top and bottom.
+  product in it was beheaded top and bottom.
 
   The rule, and the reason this is a component rather than a class string
   copied around: a review photo is always shown WHOLE, and always inset from

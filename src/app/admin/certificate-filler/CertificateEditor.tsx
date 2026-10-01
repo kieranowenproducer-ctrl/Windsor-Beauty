@@ -1,16 +1,15 @@
 'use client';
 
-// The on-certificate editor: the Certificate of Analysis rendered in its real
+// The on-certificate editor: the product certificate rendered in its real
 // customer-facing layout (mirrors CertificateModal's CertificateBody), with
 // every value editable IN PLACE and auto-saved through the filler's existing
-// debounced save. Part of the TEMPORARY Certificate Filler tool — deleting
-// the certificate-filler folder removes it.
+// debounced save.
 import { useEffect, useMemo, type ReactNode } from 'react';
 import Image from 'next/image';
 import { DEFAULT_CERTIFICATE_CAUTION, DEFAULT_PRODUCT_SPECS } from '@/data/products';
 import {
-  type Draft, type RowMeta, TEST_KEYS, VS_KEYS, rowResult, rowSpec, vsValue,
-  setTestRow, setVsRow, requiredMissing, autoStatus, STATUS_META, draftToCert,
+  type Draft, type RowMeta, VS_KEYS, vsValue,
+  setVsRow, requiredMissing, autoStatus, STATUS_META, draftToCert,
 } from './shared';
 import { certificateIssuesFor, type CertificateFieldIssue, type CertificateFieldKey } from '@/lib/certificateAudit';
 import type { CertificateFillerStatus } from '@/data/products';
@@ -27,6 +26,8 @@ interface Props {
   onEdit: (patch: Partial<Draft> | ((d: Draft) => Partial<Draft>)) => void;
   onClose: () => void;
 }
+
+const OPTIONAL_HINT = 'Optional. Leave blank if it is not on the certificate.';
 
 // An input that dresses as certificate text. Amber when a required value is
 // still empty, invisible-until-hover otherwise, gold ring while typing.
@@ -55,8 +56,8 @@ function cellCls(empty: boolean, required: boolean) {
 /** The one-line correction shown under a marked box. Same wording as the viewer. */
 function issueNote(issue: CertificateFieldIssue) {
   return issue.kind === 'missing'
-    ? `Missing — this needs the real value, e.g. ${issue.example}`
-    : `${issue.reason}. It should be something like ${issue.example}`;
+    ? `Not filled in. This needs ${issue.example}.`
+    : `${issue.reason}. This needs ${issue.example}.`;
 }
 
 /** Wraps a row of the certificate so a problem with it is impossible to miss. */
@@ -101,48 +102,27 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
     [d],
   );
   const issueFor = (key: CertificateFieldKey) => issues.find((i) => i.key === key);
-  // A blend, bacteriostatic water or an externally-made pen has no Appearance / Purity / Content
-  // boxes on this editor, so those three cannot be marked on a box here. Saying "marked below"
-  // about something with nothing to mark would send someone hunting, so they are named separately.
-  const unboxed = meta.special
-    ? issues.filter((i) => i.key === 'appearance' || i.key === 'purity' || i.key === 'content')
-    : [];
-  const boxed = issues.filter((i) => !unboxed.includes(i));
   const canComplete = miss.length === 0 && !duplicate;
   const canShow = status === 'complete' && !duplicate;
   const setStatus = (s?: CertificateFillerStatus) => onEdit({ fillerStatus: s });
 
-  const setTest = (k: keyof typeof TEST_KEYS, field: 'result' | 'specification', v: string) =>
-    onEdit((cur) => ({ testRows: setTestRow(cur.testRows, k, field, v) }));
   const setVs = (k: keyof typeof VS_KEYS, v: string) =>
     onEdit((cur) => ({ verificationSummary: setVsRow(cur.verificationSummary, k, v) }));
 
   // Ordered spec rows — same order as the customer certificate.
-  // `audit` names the rule this row answers to, where there is one. Product Name and Storage are
-  // not checked (both fall back to the product's own value), so they carry no mark.
+  // None of these is required. Product Name and Storage fall back to the product's own value, and
+  // the four reference rows only appear on the certificate when something is typed in them.
   const specRows: Array<{ label: string; value: string; key: keyof Draft; placeholder: string; audit?: CertificateFieldKey }> = [
     { label: 'Product Name', value: d.productName, key: 'productName', placeholder: meta.product.name },
-    { label: 'CAS Number', value: d.casNumber, key: 'casNumber', placeholder: meta.ref?.verify?.cas || 'e.g. 137525-51-0', audit: 'casNumber' },
-    { label: 'PubChem CID', value: d.pubchemCid, key: 'pubchemCid', placeholder: meta.ref?.verify?.cid || 'e.g. 9941957', audit: 'pubchemCid' },
-    { label: 'Molecular Formula', value: d.molecularFormula, key: 'molecularFormula', placeholder: meta.ref?.verify?.formula || 'e.g. C62H98N16O22', audit: 'molecularFormula' },
-    { label: 'Molecular Weight', value: d.molecularWeight, key: 'molecularWeight', placeholder: meta.ref?.verify?.mw || 'e.g. 1419.55 g/mol', audit: 'molecularWeight' },
+    { label: 'CAS Number', value: d.casNumber, key: 'casNumber', placeholder: meta.ref?.verify?.cas || OPTIONAL_HINT, audit: 'casNumber' },
+    { label: 'PubChem CID', value: d.pubchemCid, key: 'pubchemCid', placeholder: meta.ref?.verify?.cid || OPTIONAL_HINT, audit: 'pubchemCid' },
+    { label: 'Molecular Formula', value: d.molecularFormula, key: 'molecularFormula', placeholder: meta.ref?.verify?.formula || OPTIONAL_HINT, audit: 'molecularFormula' },
+    { label: 'Molecular Weight', value: d.molecularWeight, key: 'molecularWeight', placeholder: meta.ref?.verify?.mw || OPTIONAL_HINT, audit: 'molecularWeight' },
     { label: 'Storage', value: d.storage, key: 'storage', placeholder: meta.product.storage || DEFAULT_PRODUCT_SPECS.storage },
   ];
 
-  // The three labelled test rows first (in certificate order), then any others.
-  const labelledTests: Array<{ k: keyof typeof TEST_KEYS; required: boolean }> = meta.special ? [] : [
-    { k: 'appearance', required: true },
-    { k: 'purity', required: true },
-    { k: 'content', required: true },
-  ];
-  const labelledIdx = new Set<number>();
-  if (!meta.special) {
-    for (const { k } of labelledTests) {
-      const i = d.testRows.findIndex((r) => TEST_KEYS[k].re.test(r.test));
-      if (i >= 0) labelledIdx.add(i);
-    }
-  }
-  const extraTests = d.testRows.map((r, i) => ({ r, i })).filter(({ i }) => !labelledIdx.has(i));
+  // No test row is fixed. Every one is typed by hand from the real document.
+  const extraTests = d.testRows.map((r, i) => ({ r, i }));
 
   return (
     <div
@@ -156,7 +136,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
         <div className="sticky top-0 bg-white border-b border-gold-100 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 z-10">
           <div className="min-w-0">
             <p className="text-[9px] tracking-[0.3em] uppercase text-gold-400">Editing certificate</p>
-            <p className="text-[11px] text-stone-500 truncate">{meta.product.name} · {d.dosage}</p>
+            <p className="text-[11px] text-stone-500 truncate">{meta.product.name}{d.dosage ? ` · ${d.dosage}` : ''}</p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <span className="text-[11px] min-w-[70px] text-right" aria-live="polite">
@@ -175,8 +155,8 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
 
         {/* compliance strip */}
         <div className="px-4 sm:px-6 py-2.5 bg-amber-50 border-b border-amber-100 text-[11px] text-amber-800 leading-snug">
-          Type only the real measured values from this batch&apos;s lab report. Never invent a purity, batch number
-          or test date — leave a box blank until you have the real value. Every change saves on its own.
+          Type only what is printed on the real certificate for this product. Never make up a batch number,
+          a date or a result. Leave a box blank until you have the real value. Every change saves on its own.
         </div>
 
         {external ? (
@@ -200,24 +180,14 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                   {issues.map((issue, i) => (
                     <li key={i} className="text-xs leading-snug text-red-700">
                       <span className="font-semibold">{issue.field}</span>
-                      {issue.kind === 'missing' ? ' is not filled in' : ` — ${issue.reason}`}
+                      {issue.kind === 'missing' ? ' is not filled in' : `: ${issue.reason}`}
                     </li>
                   ))}
                 </ul>
-                {boxed.length > 0 && (
-                  <p className="text-xs text-red-700">
-                    {unboxed.length > 0 ? 'Most are' : 'Each one is'} marked in red below, on the box
-                    that fixes it. Type the real value and the mark goes.
-                  </p>
-                )}
-                {unboxed.length > 0 && (
-                  <p className="mt-1 text-xs text-red-700">
-                    {unboxed.map((i) => i.field).join(', ')}{' '}
-                    {unboxed.length === 1 ? 'has' : 'have'} no box on this certificate. Add{' '}
-                    {unboxed.length === 1 ? 'it' : 'them'} with &ldquo;Add a test row&rdquo; under
-                    Test Results.
-                  </p>
-                )}
+                <p className="text-xs text-red-700">
+                  Each one is marked in red below, on the box that fixes it. Type the real value and
+                  the mark goes.
+                </p>
               </div>
             ) : (
               <div className="mb-6 border-2 border-green-600 bg-green-50 px-5 py-4">
@@ -237,11 +207,11 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                 gold-400 is worse; this pair is 7.64:1 falling to 5.09:1, so the heading
                 stays readable across the whole width of the bar. */}
             <div className="bg-gradient-to-r from-gold-800 to-gold-700 text-white px-5 py-4 flex flex-wrap items-center justify-between gap-3 mb-2">
-              <span className="font-serif text-xl sm:text-2xl tracking-wide">Certificate of Analysis</span>
+              <span className="font-serif text-xl sm:text-2xl tracking-wide">Product Certificate</span>
               <input
                 value={d.certificateId}
                 onChange={(e) => onEdit({ certificateId: e.target.value })}
-                placeholder="CERTIFICATE №"
+                placeholder="CERTIFICATE NUMBER"
                 aria-label="Certificate number"
                 className={`text-xs sm:text-sm tracking-[0.18em] uppercase font-bold text-right rounded-sm px-2 py-1 outline-none w-44 sm:w-56 transition-colors ${
                   duplicate ? 'bg-rose-100 text-rose-700 border border-rose-300'
@@ -251,7 +221,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
               />
             </div>
             {duplicate && (
-              <p className="text-[11px] text-rose-600 mb-4">This certificate number is already used on another dosage — every product + dosage needs its own.</p>
+              <p className="text-[11px] text-rose-600 mb-4">This certificate number is already used on another product or size. Each one needs its own.</p>
             )}
             {issueFor('certificateId') && (
               <p className="mb-4 border-l-4 border-red-500 bg-red-50 px-4 py-2 text-xs font-medium text-red-700">
@@ -283,8 +253,8 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
               })}
             </div>
 
-            {/* verification summary — labelled rows first, then any extras, then add */}
-            <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Verification Summary</h3>
+            {/* certificate details: labelled rows first, then any extras, then add */}
+            <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Certificate Details</h3>
             <div className="border border-gold-100 mb-2 text-sm">
               {([
                 { k: 'batch' as const, required: true },
@@ -294,7 +264,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                 { k: 'laboratory' as const, required: false },
               ]).map(({ k, required }, i) => {
                 const v = vsValue(d.verificationSummary, VS_KEYS[k].re);
-                // Batch / Lot and Test Date are the two rows the audit checks here.
+                // Batch / Lot and Certificate Date are the two rows the audit checks here.
                 const issue = k === 'batch' || k === 'testDate' ? issueFor(k) : undefined;
                 return (
                   <MarkedRow key={k} issue={issue}>
@@ -302,7 +272,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                       <div className={`w-2/5 sm:w-1/3 px-4 py-3 font-medium ${issue ? 'text-red-700' : 'text-stone-500'}`}>{VS_KEYS[k].name}{!required && <span className="text-stone-300"> (optional)</span>}</div>
                       <div className="flex-1 px-3 py-2 flex items-center">
                         <input className={cellCls(!v.trim(), required)} value={v} aria-label={VS_KEYS[k].name}
-                          placeholder={k === 'batch' ? 'e.g. WG240115' : k === 'laboratory' ? 'e.g. Janoshik Analytical' : 'e.g. 15/01/2026'}
+                          placeholder={k === 'batch' ? 'The batch code on the certificate' : k === 'laboratory' ? 'Who issued the certificate' : 'e.g. 15/01/2026'}
                           onChange={(e) => setVs(k, e.target.value)} />
                       </div>
                     </div>
@@ -313,11 +283,11 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
               {d.verificationSummary.map((r, i) => (Object.values(VS_KEYS).some((cfg) => cfg.re.test(r.label)) ? null : (
                 <div key={`x${i}`} className="flex border-t border-gold-100 bg-white">
                   <div className="w-2/5 sm:w-1/3 px-3 py-2 flex items-center">
-                    <input className={cellCls(false, false)} value={r.label} placeholder="Label" aria-label="Extra summary label"
+                    <input className={cellCls(false, false)} value={r.label} placeholder="Label" aria-label="Extra detail label"
                       onChange={(e) => onEdit((cur) => { const t = cur.verificationSummary.map((x) => ({ ...x })); t[i].label = e.target.value; return { verificationSummary: t }; })} />
                   </div>
                   <div className="flex-1 px-3 py-2 flex items-center">
-                    <input className={cellCls(false, false)} value={r.value} placeholder="Value" aria-label="Extra summary value"
+                    <input className={cellCls(false, false)} value={r.value} placeholder="Value" aria-label="Extra detail value"
                       onChange={(e) => onEdit((cur) => { const t = cur.verificationSummary.map((x) => ({ ...x })); t[i].value = e.target.value; return { verificationSummary: t }; })} />
                   </div>
                 </div>
@@ -325,7 +295,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
             </div>
             <button type="button" className="text-[11px] text-gold-700 hover:text-gold-700 mb-8"
               onClick={() => onEdit((cur) => ({ verificationSummary: [...cur.verificationSummary, { label: '', value: '' }] }))}>
-              + Add a summary row
+              + Add a details row
             </button>
 
             {/* test results */}
@@ -336,33 +306,10 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                 <div className="w-[30%] px-4 py-3">Specification</div>
                 <div className="flex-1 px-4 py-3">Result</div>
               </div>
-              {labelledTests.map(({ k, required }, i) => {
-                const res = rowResult(d.testRows, TEST_KEYS[k].re);
-                const spec = rowSpec(d.testRows, TEST_KEYS[k].re) || TEST_KEYS[k].spec || (k === 'content' ? `${d.dosage} (label claim)` : '');
-                // Appearance, Purity and Content are checked by name here, and the audit's key for
-                // each is the same word, so a marked row is the row that fixes it.
-                const issue = issueFor(k);
-                return (
-                  <MarkedRow key={k} issue={issue}>
-                    <div className={`flex ${issue ? '' : i % 2 === 1 ? 'bg-gold-50/40' : 'bg-white'} border-t border-gold-100 first:border-t-0`}>
-                      <div className={`w-2/5 sm:w-1/3 px-4 py-3 font-medium ${issue ? 'text-red-700' : 'text-stone-600'}`}>{TEST_KEYS[k].name}</div>
-                      <div className="w-[30%] px-3 py-2 flex items-center">
-                        <input className={cellCls(false, false)} value={rowSpec(d.testRows, TEST_KEYS[k].re)} placeholder={spec} aria-label={`${TEST_KEYS[k].name} specification`}
-                          onChange={(e) => setTest(k, 'specification', e.target.value)} />
-                      </div>
-                      <div className="flex-1 px-3 py-2 flex items-center">
-                        <input className={cellCls(!res.trim(), required)} value={res} aria-label={`${TEST_KEYS[k].name} result`}
-                          placeholder={k === 'purity' ? 'e.g. 99.2%' : k === 'content' ? 'e.g. 10.15mg' : 'e.g. Conforms'}
-                          onChange={(e) => setTest(k, 'result', e.target.value)} />
-                      </div>
-                    </div>
-                  </MarkedRow>
-                );
-              })}
               {extraTests.map(({ r, i }) => (
                 <div key={`t${i}`} className="flex border-t border-gold-100 bg-white">
                   <div className="w-2/5 sm:w-1/3 px-3 py-2 flex items-center">
-                    <input className={cellCls(!r.test.trim(), meta.special)} value={r.test} placeholder="Test" aria-label="Test name"
+                    <input className={cellCls(false, false)} value={r.test} placeholder="Test" aria-label="Test name"
                       onChange={(e) => onEdit((cur) => { const t = cur.testRows.map((x) => ({ ...x })); t[i].test = e.target.value; return { testRows: t }; })} />
                   </div>
                   <div className="w-[30%] px-3 py-2 flex items-center">
@@ -381,19 +328,19 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
               + Add a test row
             </button>
 
-            {/* analytical results */}
+            {/* additional information */}
             {(d.analyticalResults.length > 0) && (
               <>
-                <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Analytical Results</h3>
+                <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Additional Information</h3>
                 <div className="border border-gold-100 mb-2 text-sm">
                   {d.analyticalResults.map((r, i) => (
                     <div key={i} className={`flex ${i % 2 === 1 ? 'bg-gold-50/60' : 'bg-white'} ${i > 0 ? 'border-t border-gold-100' : ''}`}>
                       <div className="w-2/5 sm:w-1/3 px-3 py-2 flex items-center">
-                        <input className={cellCls(false, false)} value={r.label} placeholder="Label" aria-label="Analytical label"
+                        <input className={cellCls(false, false)} value={r.label} placeholder="Label" aria-label="Additional information label"
                           onChange={(e) => onEdit((cur) => { const t = cur.analyticalResults.map((x) => ({ ...x })); t[i].label = e.target.value; return { analyticalResults: t }; })} />
                       </div>
                       <div className="flex-1 px-3 py-2 flex items-center">
-                        <input className={cellCls(false, false)} value={r.value} placeholder="Value" aria-label="Analytical value"
+                        <input className={cellCls(false, false)} value={r.value} placeholder="Value" aria-label="Additional information value"
                           onChange={(e) => onEdit((cur) => { const t = cur.analyticalResults.map((x) => ({ ...x })); t[i].value = e.target.value; return { analyticalResults: t }; })} />
                       </div>
                     </div>
@@ -403,20 +350,20 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
             )}
             <button type="button" className="text-[11px] text-gold-700 hover:text-gold-700 mb-8"
               onClick={() => onEdit((cur) => ({ analyticalResults: [...cur.analyticalResults, { label: '', value: '' }] }))}>
-              + Add an analytical row
+              + Add an additional information row
             </button>
 
             {/* caution */}
             <div className="mb-2">
-              <span className="text-xs font-bold uppercase tracking-wide text-stone-800">Caution:</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-stone-800">Note:</span>
               <textarea
                 className="w-full mt-1 text-xs font-bold uppercase tracking-wide text-stone-800 leading-relaxed bg-transparent border border-transparent hover:border-stone-200 focus:border-gold-400 focus:ring-1 focus:ring-gold-200 focus:bg-white rounded-sm px-1.5 py-1 outline-none h-24 resize-y placeholder:font-normal placeholder:normal-case placeholder:text-stone-300"
                 value={d.caution}
                 placeholder={DEFAULT_CERTIFICATE_CAUTION}
-                aria-label="Caution text"
+                aria-label="Note text"
                 onChange={(e) => onEdit({ caution: e.target.value })}
               />
-              <p className="text-[10px] text-stone-400">Leave blank to print the standard caution text.</p>
+              <p className="text-[10px] text-stone-400">Leave blank to print the standard note.</p>
             </div>
           </div>
         )}

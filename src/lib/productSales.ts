@@ -46,7 +46,7 @@ export interface ProductSalesRow {
   slug: string | null;
   units: number;
   orders: number;
-  /** Distinct people, so ten vials on one order is one customer, not ten. */
+  /** Distinct people, so ten items on one order is one customer, not ten. */
   customers: number;
   revenue: number;
   firstBought: string | null;

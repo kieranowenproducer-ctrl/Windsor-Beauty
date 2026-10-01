@@ -69,7 +69,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
       <td>${escapeHtml(item.name)}${item.description ? `<br><span style="font-size:11px;color:#888">${escapeHtml(item.description)}</span>` : ''}${batch}</td>
       <td style="text-align:center">${item.quantity}</td>
       <td style="text-align:right">£${item.unitPrice.toFixed(2)}</td>
-      <td style="text-align:right">${item.discount > 0 ? `−£${item.discount.toFixed(2)}` : '—'}</td>
+      <td style="text-align:right">${item.discount > 0 ? `-£${item.discount.toFixed(2)}` : ''}</td>
       <td style="text-align:right">£${item.lineTotal.toFixed(2)}</td>
     </tr>
   `;
@@ -120,7 +120,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   <div class="header">
     <div>
       <div class="brand">Windsor Beauty</div>
-      <div class="brand-sub">Research Peptides &amp; Compounds</div>
+      <div class="brand-sub">Skincare</div>
     </div>
     <div class="ref">
       <h2>Invoice</h2>
@@ -182,8 +182,8 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   ${invoice.customer_notes ? `<div class="notes"><strong>Notes:</strong><br>${escapeHtml(invoice.customer_notes)}</div>` : ''}
 
   <div class="footer">
-    <p>Windsor Beauty — windsorbeauty.co.uk — sales@windsorbeauty.co.uk</p>
-    <p style="margin-top:6px">${escapeHtml(invoice.footer_text || 'All products are supplied strictly for research purposes only. Not for human use.')}</p>
+    <p>Windsor Beauty, windsorbeauty.co.uk, sales@windsorbeauty.co.uk</p>
+    ${invoice.footer_text && invoice.footer_text.trim() ? `<p style="margin-top:6px">${escapeHtml(invoice.footer_text)}</p>` : ''}
   </div>
 
   <div class="no-print" style="text-align:center;margin-top:24px">

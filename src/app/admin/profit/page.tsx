@@ -1,14 +1,14 @@
 'use client';
 
 // Profitability (task 66a6a137 + revision).
-// The true cost "to achieve the bottle" = raw vial cost + named cost components you
-// define (box, label, anything) + this vial's allocated share of a bulk order's
-// shipping. Record bulk purchases (per-order shipping is split across the vials in
+// The true cost "to achieve the bottle" = raw unit cost + named cost components you
+// define (box, label, anything) + this unit's allocated share of a bulk order's
+// shipping. Record bulk purchases (per-order shipping is split across the units in
 // that order) and the raw cost + shipping/unit are filled in for you; add box/label
 // etc. yourself. Margin = catalogue sale price - total unit cost, per product and category.
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
-import { PRODUCTS, mergeProducts, sortVariantsByStrength, type Category, type Product } from '@/data/products';
+import { ALL_CATEGORIES, PRODUCTS, mergeProducts, sortVariantsByStrength, type Category, type Product } from '@/data/products';
 import type { StockReportRow } from '@/app/api/admin/products/stock-report/route';
 
 interface CostComponent { label: string; amount: number | string; }
@@ -26,17 +26,19 @@ const money = (n: number) => `£${n.toFixed(2)}`;
 const keyOf = (slug: string, dosage: string) => `${slug}::${dosage}`;
 const emptyComponents = (): CostComponent[] => [{ label: 'Box', amount: 0 }, { label: 'Label', amount: 0 }, { label: '', amount: 0 }, { label: '', amount: 0 }];
 
-// Kieran's three profitability sections (his words across the task videos):
-// pens stay in Pens, all peptides in one alphabetical Peptides list, and both
-// bacteriostatic water AND AA water (Acetic Acid, which has no category set) sit
-// together in the water section. Rendered in this fixed order.
-type Section = 'BAC Water' | 'Pens' | 'Peptides';
-const SECTION_ORDER: Section[] = ['BAC Water', 'Pens', 'Peptides'];
-function sectionOf(slug: string, name: string, categories: Category[]): Section {
-  if (categories.includes('Pens')) return 'Pens';
-  const n = name.toLowerCase();
-  if (slug === 'bac-water' || slug === 'acetic-acid-06-10ml' || categories.includes('BAC Water') || /water/.test(n) || /acetic/.test(n)) return 'BAC Water';
-  return 'Peptides';
+// Profitability sections follow the shop's own categories: a product is listed
+// under the first category it belongs to, and one with no category goes under
+// "Other". Sections are shown in catalogue order, then any admin-made
+// categories alphabetically, then "Other".
+type Section = string;
+const NO_CATEGORY_SECTION = 'Other';
+function sectionOf(categories: Category[]): Section {
+  return categories[0] || NO_CATEGORY_SECTION;
+}
+function orderSections(names: string[]): Section[] {
+  const known = (ALL_CATEGORIES as readonly string[]).filter((c) => names.includes(c));
+  const extra = names.filter((n) => !known.includes(n) && n !== NO_CATEGORY_SECTION).sort((a, b) => a.localeCompare(b));
+  return [...known, ...extra, ...(names.includes(NO_CATEGORY_SECTION) ? [NO_CATEGORY_SECTION] : [])];
 }
 
 type Variant = { slug: string; name: string; dosage: string; price: number; section: string; onShop: boolean };
@@ -46,13 +48,13 @@ type Variant = { slug: string; name: string; dosage: string; price: number; sect
 // overrides) — the same source the shop and every other admin page use. Reading
 // the static PRODUCTS alone showed this page a stale catalogue: prices the admin
 // had set appeared as £0, renamed products kept their old names, and variants
-// that had been removed (e.g. BAC Water 30ml) or added (e.g. AA Water 3ml) were
+// that had been removed or added were
 // wrong. Profitability must mirror the shop.
 //
 // Every variant is returned, switched-off ones included, each tagged with
 // `onShop`. activeVariants() is deliberately NOT used here: it drops
-// `enabled: false` variants outright, which is how AA Water 10ml — £13, ten
-// units on the shelf — vanished from this page entirely while the stock list
+// `enabled: false` variants outright, which is how a size with ten
+// units on the shelf vanished from this page entirely while the stock list
 // still showed it. Whether a variant is for sale and whether Kieran owns stock
 // of it are different questions, and this page answers the second one. The
 // filter in `sections` below decides what that means for display.
@@ -60,7 +62,7 @@ function buildVariants(overrides: Record<string, Product>): Variant[] {
   return mergeProducts(PRODUCTS, overrides).flatMap((p) =>
     sortVariantsByStrength(p.variants).map((v) => ({
       slug: p.slug, name: p.name, dosage: v.dosage, price: v.price,
-      section: sectionOf(p.slug, p.name, p.categories),
+      section: sectionOf(p.categories),
       onShop: v.enabled !== false,
     }))
   );
@@ -147,13 +149,13 @@ export default function ProfitPage() {
   // Only products that are live on the shop OR have been sold (Kieran's rule:
   // "only live products or products I have sold, not disabled"). Until the stock
   // report has loaded, nothing is marked disabled so everything shows. Grouped
-  // into the three sections and sorted alphabetically by name then dosage.
+  // into category sections and sorted alphabetically by name then size.
   const sections = useMemo(() => {
     const visible = VARIANTS.filter((v) => {
       // A switched-off SIZE still appears when there is stock of it — that stock
       // is money on a shelf, and a page that silently omits it is lying about the
       // inventory. With none, it stays hidden (a size that isn't sold and isn't
-      // held is noise here — e.g. Retatrutide 5mg/10mg, task c5842838).
+      // held is noise here, task c5842838).
       if (!v.onShop && !((stockByKey[keyOf(v.slug, v.dosage)] ?? 0) > 0)) return false;
       // A switched-off PRODUCT appears only if it has sales history to account for.
       return statusBySlug[v.slug] === 'disabled' ? (soldBySlug[v.slug] ?? 0) > 0 : true;
@@ -163,7 +165,7 @@ export default function ProfitPage() {
     for (const k of Object.keys(bySec)) {
       bySec[k].sort((a, b) => a.name.localeCompare(b.name) || (parseFloat(a.dosage) - parseFloat(b.dosage)));
     }
-    return SECTION_ORDER.filter((s) => bySec[s]?.length).map((s) => ({ section: s, rows: bySec[s] }));
+    return orderSections(Object.keys(bySec)).map((s) => ({ section: s, rows: bySec[s] }));
   }, [VARIANTS, statusBySlug, soldBySlug, stockByKey]);
 
   const visibleVariants = useMemo(() => sections.flatMap((s) => s.rows), [sections]);
@@ -174,7 +176,7 @@ export default function ProfitPage() {
       <main className="flex-1 px-6 py-8 max-w-5xl overflow-clip">
         <h1 className="text-lg font-semibold text-stone-800">Profitability</h1>
         <p className="text-xs text-stone-500 mt-1 max-w-2xl">
-          Record bulk purchases and the per-vial cost + a share of that order&apos;s shipping is
+          Record bulk purchases and the cost per unit + a share of that order&apos;s shipping is
           worked out for you. Add box, label and any other costs to get the true cost of each
           bottle. Margin is the catalogue sale price minus that total. Only products that are live
           on the shop or have been sold are listed, with their current stock alongside.
@@ -190,7 +192,7 @@ export default function ProfitPage() {
                 <div key={p.id} className="border border-stone-100 bg-white px-3 py-2 rounded">
                   <span className="font-medium text-stone-700">{p.supplier || 'Supplier'}</span>
                   <span className="text-stone-400"> · {p.purchase_date ?? 'no date'} · shipping {money(p.shipping_cost)}</span>
-                  <span className="text-stone-400"> · {p.lines.reduce((s, l) => s + l.qty, 0)} vials{p.update_inventory ? ' · added to inventory' : ''}</span>
+                  <span className="text-stone-400"> · {p.lines.reduce((s, l) => s + l.qty, 0)} units{p.update_inventory ? ' · added to inventory' : ''}</span>
                   <div className="text-stone-500 mt-0.5">{p.lines.map((l) => `${l.slug} ${l.dosage} ×${l.qty} @ ${money(l.blockCost)}`).join(' · ')}</div>
                 </div>
               ))}
@@ -214,7 +216,7 @@ export default function ProfitPage() {
                 <table className="w-full mt-2 text-xs">
                   <thead>
                     <tr className="text-left text-[9px] uppercase tracking-wider text-stone-400 border-b border-stone-200">
-                      <th className="py-2">Product</th><th className="py-2 w-14">Dosage</th>
+                      <th className="py-2">Product</th><th className="py-2 w-14">Size</th>
                       <th className="py-2 w-20 text-right">Sale</th><th className="py-2 w-16 text-right">Stock</th>
                       <th className="py-2 w-24 text-right">Total cost</th>
                       <th className="py-2 w-24 text-right">Margin</th><th className="py-2 w-14 text-right">%</th><th className="py-2 w-16" />
@@ -258,7 +260,7 @@ export default function ProfitPage() {
                             <tr className="bg-stone-50 border-b border-stone-100">
                               <td colSpan={8} className="py-3 px-2">
                                 <div className="flex flex-wrap items-end gap-3">
-                                  <label className="text-[10px] text-stone-500">Raw vial £
+                                  <label className="text-[10px] text-stone-500">Raw unit £
                                     <input inputMode="decimal" value={d.unitCost} onChange={(e) => setDraft(r.slug, r.dosage, { unitCost: e.target.value })} className="block w-20 border border-stone-200 px-2 py-1 text-xs tabular-nums mt-0.5" />
                                   </label>
                                   {d.components.map((c, i) => (
@@ -275,7 +277,7 @@ export default function ProfitPage() {
                                   <div className="text-[10px] text-stone-500">Total cost<div className="text-xs tabular-nums font-semibold text-stone-800 mt-1">{money(Math.round(draftTotal * 100) / 100)}</div></div>
                                   <button onClick={() => saveCost(r.slug, r.dosage)} disabled={savingKey === k} className="text-[10px] uppercase tracking-wider bg-gold-700 text-white px-3 py-1.5 hover:bg-gold-800 disabled:opacity-50">{savingKey === k ? 'Saving…' : 'Save'}</button>
                                 </div>
-                                <p className="text-[9px] text-stone-400 mt-2">Raw vial + shipping/unit come from bulk purchases (still editable here). Add box, label and any other costs above.</p>
+                                <p className="text-[9px] text-stone-400 mt-2">Raw unit cost + shipping/unit come from bulk purchases (still editable here). Add box, label and any other costs above.</p>
                               </td>
                             </tr>
                           )}
@@ -327,11 +329,11 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
       const data = await res.json();
       if (res.ok) {
         // Say what actually happened to stock, so a ticked box that added 40
-        // vials reads differently from a save that touched costs only
+        // units reads differently from a save that touched costs only
         // (task c9aa1323).
         const added = Number(data.addedToStock) || 0;
         setMsg(added > 0
-          ? `Saved. Costs updated and ${added} vial${added === 1 ? '' : 's'} added to stock.`
+          ? `Saved. Costs updated and ${added} unit${added === 1 ? '' : 's'} added to stock.`
           : 'Saved. Costs updated.');
         setSupplier(''); setDate(''); setShipping(''); setAdhoc(''); setUpdateInventory(false); setLines([{ key: '', qty: '10', blockCost: '' }]); onSaved();
       }
@@ -342,7 +344,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
   return (
     <div className="mt-5 border border-stone-200 bg-white rounded p-4">
       <h2 className="text-sm font-semibold text-stone-800">Record a bulk purchase</h2>
-      <p className="text-[11px] text-stone-500 mt-0.5">The order&apos;s shipping and any extra / ad-hoc costs are split evenly across every vial in it and folded into each product&apos;s cost. Raw vial cost = block price ÷ quantity.</p>
+      <p className="text-[11px] text-stone-500 mt-0.5">The order&apos;s shipping and any extra / ad-hoc costs are split evenly across every unit in it and folded into each product&apos;s cost. Raw unit cost = block price ÷ quantity.</p>
       <div className="flex flex-wrap gap-3 mt-3">
         <label className="text-[10px] text-stone-500">Supplier<input value={supplier} onChange={(e) => setSupplier(e.target.value)} placeholder="Vendor 1" className="block w-40 border border-stone-200 px-2 py-1 text-xs mt-0.5" /></label>
         <label className="text-[10px] text-stone-500">Date<input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="block w-36 border border-stone-200 px-2 py-1 text-xs mt-0.5" /></label>
@@ -351,7 +353,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
         <label className="text-[10px] text-stone-500 flex items-center gap-1 self-end pb-1"><input type="checkbox" checked={updateInventory} onChange={(e) => setUpdateInventory(e.target.checked)} /> Add to product inventory</label>
       </div>
       <table className="w-full mt-3 text-xs">
-        <thead><tr className="text-left text-[9px] uppercase tracking-wider text-stone-400"><th className="py-1">Product</th><th className="py-1 w-24">Qty (vials)</th><th className="py-1 w-28">Block cost £</th><th className="py-1 w-16" /></tr></thead>
+        <thead><tr className="text-left text-[9px] uppercase tracking-wider text-stone-400"><th className="py-1">Product</th><th className="py-1 w-24">Qty (units)</th><th className="py-1 w-28">Block cost £</th><th className="py-1 w-16" /></tr></thead>
         <tbody>
           {lines.map((l, i) => (
             <tr key={i}>

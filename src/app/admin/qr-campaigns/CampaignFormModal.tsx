@@ -91,7 +91,7 @@ export default function CampaignFormModal({
                   <input
                     value={form.bespoke_title}
                     onChange={e => setForm(f => ({ ...f, bespoke_title: e.target.value }))}
-                    placeholder="e.g. Exclusive for PAG Gym Members"
+                    placeholder="e.g. Exclusive for salon guests"
                     className="w-full border border-stone-200 px-3 py-2 text-xs text-stone-700 focus:border-gold-400 outline-none"
                   />
                   <p className="text-[8px] text-stone-400 mt-1">

@@ -97,7 +97,7 @@ export function useAddProduct({ products, uploadingCount, setOverrides }: UseAdd
       const dosage = draft.dosage.trim();
       const price = Number(draft.price);
       if (!dosage || !Number.isFinite(price) || price < 0) {
-        setAddError('Each dosage option needs a label and a price of zero or more.');
+        setAddError('Each size option needs a label and a price of zero or more.');
         return;
       }
       variants.push({ dosage, price: roundMoney(price), enabled: draft.enabled, image: draft.image.trim() || undefined, shipping: shippingDraftToPayload(draft.shipping) });

@@ -1,9 +1,10 @@
 // Shared certificate-quality checks for the admin Products table and the
 // dedicated Certificates review page (src/app/admin/certificates/page.tsx) —
 // kept in one place so both views agree on what "live", "missing", and
-// "needs review" mean for a product's Certificate of Analysis.
+// "needs review" mean for a product's certificate.
 import type { Product } from '@/data/products';
 import { certificateForDosage } from '@/data/products';
+import { BATCH_ROW_MATCH, DATE_ROW_MATCH } from '@/lib/certificateStandards';
 
 export type CertificateStatus = 'live' | 'warning' | 'missing';
 
@@ -46,17 +47,17 @@ function evaluateCert(cert: Product['certificate']): { status: CertificateStatus
 
   const hasDisplayableContent = cert.mode === 'external'
     ? (cert.externalImages?.length ?? 0) > 0
-    : cert.testRows.length > 0;
+    : cert.testRows.length > 0 || (cert.verificationSummary?.length ?? 0) > 0 || (cert.analyticalResults?.length ?? 0) > 0;
 
   if (!cert.enabled) {
-    return { status: 'warning', issue: 'Certificate data exists but is not enabled, so the "Show Certificate" button is hidden on the product page.' };
+    return { status: 'warning', issue: 'A certificate has been filled in but is switched off, so the "Show Certificate" button is hidden on the product page.' };
   }
   if (!hasDisplayableContent) {
     return {
       status: 'warning',
       issue: cert.mode === 'external'
-        ? 'Certificate is enabled in external mode but has no uploaded pages.'
-        : 'Certificate is enabled but has no test result rows, so the certificate page would show almost nothing.',
+        ? 'The certificate is switched on as an uploaded document, but no pages have been uploaded.'
+        : 'The certificate is switched on but has no rows typed in, so it would show almost nothing.',
     };
   }
   return { status: 'live' };
@@ -81,86 +82,25 @@ export function dosageCertificateCoverage(product: Product): { dosage: string; s
   return product.variants.map((v) => ({ dosage: v.dosage, status: evaluateCertificateForDosage(product, v.dosage).status }));
 }
 
-export type ProductFormat = 'Pen' | 'Water' | 'Vial' | 'Other';
+// What the Certificates page groups products by. This shop sells skincare, so
+// it is simply the product's first category ("Serums", "Cleansers" and so on).
+// The type and function names are historic and kept for the pages that use them.
+export type ProductFormat = string;
 
-// A simple, honest classification — not a precise lab taxonomy. "Pen" and
-// "Water" are the two formats this catalogue actually distinguishes by
-// category; everything else defaults to "Vial" (the vast majority of the
-// catalogue: lyophilised powder peptides), which is intentionally broad
-// rather than guessing at sub-types (powder vial vs liquid vial) the product
-// data doesn't actually record anywhere.
 export function classifyProductFormat(product: Product): ProductFormat {
-  if (product.categories.includes('Pens')) return 'Pen';
-  if (/water|bac.?water/i.test(product.slug) || /water/i.test(product.name)) return 'Water';
-  if (product.categories.length === 0) return 'Other';
-  return 'Vial';
+  return product.categories[0] ?? 'Other';
 }
 
-const POWDER_VIAL_WORDING = /lyophili[sz]ed powder|\bvial\b|reconstitut/i;
-
-// The exact bug this whole audit was built to catch: a pen product (already
-// pre-mixed, never sold as a powder) whose certificate or storage text still
-// describes it as a powder/vial — almost always copy-pasted from a vial
-// product's certificate when the pen listing was first created.
-function hasPenFormatIssue(product: Product): boolean {
-  if (classifyProductFormat(product) !== 'Pen') return false;
-  const cert = product.certificate;
-  if (!cert) return false;
-  const fields = [
-    cert.storage,
-    ...(cert.testRows ?? []).flatMap(r => [r.specification, r.result]),
-  ].filter(Boolean) as string[];
-  return fields.some(f => POWDER_VIAL_WORDING.test(f));
-}
-
-// Known pen brands sold across this catalogue — used only to flag when a
-// product's certificate text mentions a *different* one of these brands
-// than the product's own assigned brand, the exact mix-up this audit was
-// built to catch (e.g. a Slimfinity pen's certificate text naming
-// Remedium). Deliberately conservative: this only looks at plain-text
-// certificate fields (template mode), never at uploaded certificate images,
-// since image content can't be verified by reading text.
-const KNOWN_PEN_BRANDS = ['Remedium Research', 'Remedium', 'Slimfinity', 'Synedica', 'Lean Luxe'];
-
-function hasBrandMismatch(product: Product): boolean {
-  const cert = product.certificate;
-  if (!cert || cert.mode === 'external') return false;
-  const ownBrand = product.brand?.trim();
-  const textFields = [cert.productName, cert.caution, cert.certificateId].filter(Boolean) as string[];
-  const haystack = textFields.join(' ');
-  return KNOWN_PEN_BRANDS.some(brand => {
-    if (ownBrand && brand.toLowerCase().startsWith(ownBrand.toLowerCase().slice(0, 6))) return false;
-    return new RegExp(`\\b${brand}\\b`, 'i').test(haystack);
-  });
-}
-
-// A certificate of analysis is per product PER DOSAGE — Melanotan 10mg and 20mg
-// are separate batches that each need their own COA (Option A). Now that a product
-// can hold a certificate per dosage, this returns exactly which of a multi-dosage
-// product's dosages currently have NO live certificate (their own or the shared
-// fallback), so the product can be flagged precisely — "certificate missing for
-// 20mg" — instead of a blanket "check this product". A single-dosage product
-// returns nothing here (its coverage is the ordinary product-level status).
+// The sizes of a product that have no live certificate, reported only when the
+// product shows a certificate on at least one other size. A product with no
+// certificate at all is not flagged: a certificate is optional here, and the
+// status column already says "None yet". A single-size product returns nothing.
 export function dosagesMissingCertificate(product: Product): string[] {
   if (product.variants.length < 2) return [];
-  return product.variants
-    .filter((v) => evaluateCertificateForDosage(product, v.dosage).status !== 'live')
-    .map((v) => v.dosage);
-}
-
-function hasMissingStorage(product: Product): boolean {
-  const cert = product.certificate;
-  if (!cert || !cert.enabled) return false;
-  // An explicit storage line anywhere means there is nothing to chase.
-  if (cert.storage || product.storage) return false;
-  // Nothing explicit, so the page falls back to the site-wide default, which is
-  // the VIAL sentence (DEFAULT_PRODUCT_SPECS.storage, byte-identical to
-  // FORMAT_STANDARDS.vial.storage). For a vial that fallback is already the
-  // correct wording and it is what the operator sees on the certificate, so
-  // calling it "missing" sent someone hunting for a field that was already
-  // filled in — the same false alarm Batch/Lot and Test Date used to raise.
-  // It stays a warning only where the vial sentence would actually be wrong.
-  return classifyProductFormat(product) !== 'Vial';
+  const sold = product.variants.filter((v) => v.enabled !== false);
+  const live = sold.filter((v) => evaluateCertificateForDosage(product, v.dosage).status === 'live');
+  if (live.length === 0) return [];
+  return sold.filter((v) => !live.includes(v)).map((v) => v.dosage);
 }
 
 // Cross-product duplicate detection: two *different* products sharing the
@@ -192,9 +132,9 @@ export function findDuplicateCertificateSlugs(catalogue: Product[]): Set<string>
 }
 
 // ─── Field-level certificate issues ──────────────────────────────────────────
-// A precise, per-dosage list of exactly WHICH certificate fields are missing or
-// wrong, each with a worked example — so the admin can fix it immediately
-// instead of being told only that "some fields are missing".
+// A precise, per-size list of exactly WHICH certificate fields are missing, so
+// the admin can fix it straight away. Several keys below are historic (the
+// certificate still has those boxes) and are never reported as a problem.
 /**
  * Which part of a certificate an issue belongs to. Lets the certificate viewer
  * mark the offending row itself instead of only listing the problem elsewhere,
@@ -217,9 +157,9 @@ export interface CertificateFieldIssue {
   dosage: string;
   /** Which row of the certificate this is about. */
   key: CertificateFieldKey;
-  /** The field's human name, e.g. "Purity (HPLC) result". */
+  /** The field's human name, e.g. "Batch / Lot". */
   field: string;
-  /** What a correct value looks like, e.g. "99.2%". */
+  /** A plain hint for what belongs here. Never a made-up value. */
   example: string;
   /** 'missing' = nothing entered; 'invalid' = entered but fails the rule. */
   kind: 'missing' | 'invalid';
@@ -227,94 +167,51 @@ export interface CertificateFieldIssue {
   reason?: string;
 }
 
-/** First number in a string ("10.2mg" -> 10.2, "36 IU" -> 36). Null if none. */
-function firstNumber(value: string | undefined): number | null {
-  const m = String(value ?? '').replace(/,/g, '').match(/-?\d+(?:\.\d+)?/);
-  return m ? parseFloat(m[0]) : null;
-}
 const rowResult = (cert: Product['certificate'], re: RegExp): string =>
   (cert?.testRows ?? []).find((r) => re.test(r.test))?.result?.trim() ?? '';
 const infoValue = (cert: Product['certificate'], re: RegExp): string =>
   (cert?.verificationSummary ?? []).find((r) => re.test(r.label))?.value?.trim() ?? '';
 
-// The minimum purity Windsor Beauty advertises on every research compound.
-const MIN_PURITY = 99;
-
 /**
- * Every certificate problem on a product, dosage by dosage. Covers both blanks
- * and values that break the house rules:
- *   • purity must be above 99%
- *   • measured content must exceed the dosage on the label (10mg -> e.g. 10.2mg)
- * External (uploaded-document) certificates are skipped — there are no typed
- * fields to check on them.
+ * Every certificate gap on a product, size by size. The checks are deliberately
+ * light: a typed certificate needs a certificate number, a batch or lot, and a
+ * date, and nothing else. No value is judged, because what a skincare
+ * certificate lists is up to the document itself. A size with no certificate
+ * is not a problem, and an uploaded document is skipped because it has no
+ * typed fields to check.
  */
 export function certificateFieldIssues(product: Product): CertificateFieldIssue[] {
   const issues: CertificateFieldIssue[] = [];
   for (const variant of product.variants) {
-    if (variant.enabled === false) continue; // not sold — not a live certificate
+    if (variant.enabled === false) continue; // not sold, so not a live certificate
     issues.push(...certificateIssuesFor(certificateForDosage(product, variant.dosage), variant.dosage));
   }
   return issues;
 }
 
 /**
- * The same checks, run against ONE certificate on its own.
- *
- * Split out (task f5c8da12) so the certificate being TYPED — which is not saved anywhere yet and so
- * belongs to no product — can be checked as it is typed, and the problems marked on a live preview
- * beside the fields. Before this, the only way to see what was wrong with a certificate was to save
- * it and then go and look at it somewhere else.
- *
- * The rules live here and only here. The preview cannot drift from the Certificates screen, because
- * both call this.
+ * The same checks, run against ONE certificate on its own, so the certificate
+ * being typed can be checked as it is typed and the gaps marked beside the
+ * fields. The rules live here and only here, so the editor cannot drift from
+ * the Certificates screen: both call this.
  */
 export function certificateIssuesFor(
   cert: Product['certificate'] | undefined,
   dosage: string,
 ): CertificateFieldIssue[] {
   const issues: CertificateFieldIssue[] = [];
-  {
-    if (!cert || cert.mode === 'external') {
-      if (!cert) issues.push({ dosage, key: 'certificate', field: 'Certificate', example: 'Add one in Certificate Filler', kind: 'missing' });
-      return issues;
-    }
-    const need = (key: CertificateFieldKey, field: string, example: string, value: string) => {
-      if (!value) issues.push({ dosage, key, field, example, kind: 'missing' });
-    };
-    need('certificateId', 'Certificate number', 'WB-BPC157-10MG', cert.certificateId?.trim() ?? '');
-    need('casNumber', 'CAS number', '137525-51-0', cert.casNumber?.trim() ?? '');
-    need('molecularFormula', 'Molecular formula', 'C62H98N16O22', cert.molecularFormula?.trim() ?? '');
-    need('molecularWeight', 'Molecular weight', '1419.55 g/mol', cert.molecularWeight?.trim() ?? '');
-    need('pubchemCid', 'PubChem CID', '9941957', cert.pubchemCid?.trim() ?? '');
-
-    const appearance = rowResult(cert, /appear/i);
-    const purity = rowResult(cert, /purit/i);
-    const content = rowResult(cert, /content|assay/i);
-    // Batch / Lot and Test Date belong in the Verification Summary, but some
-    // certificates were typed with them as Test Results rows instead. The value
-    // is plainly on the certificate either way, so reporting it missing sent
-    // someone hunting for a field that was already filled in.
-    const batch = infoValue(cert, /batch|lot/i) || rowResult(cert, /batch|lot/i);
-    const tested = infoValue(cert, /test.?date|date.?test|^date$|tested/i) || rowResult(cert, /test.?date|date.?test|^date$|tested/i);
-    need('appearance', 'Appearance result', 'Conforms', appearance);
-    need('purity', 'Purity (HPLC) result', '99.2%', purity);
-    need('content', 'Content result', `${dosage} or more, e.g. ${(firstNumber(dosage) ?? 10) + 0.2}mg`, content);
-    need('batch', 'Batch / Lot', 'WG240115', batch);
-    need('testDate', 'Test date', '15/01/2026', tested);
-
-    // Purity must be ABOVE 99%.
-    const purityNum = firstNumber(purity);
-    if (purity && purityNum !== null && purityNum <= MIN_PURITY) {
-      issues.push({ dosage, key: 'purity', field: 'Purity (HPLC) result', example: '99.2%', kind: 'invalid', reason: `${purity} is not above ${MIN_PURITY}%` });
-    }
-    // Measured content must EXCEED the label dosage (single-number dosages only —
-    // blends like "5mg + 5mg" have no single figure to compare against).
-    const doseNum = /\+/.test(dosage) ? null : firstNumber(dosage);
-    const contentNum = firstNumber(content);
-    if (content && doseNum !== null && contentNum !== null && contentNum <= doseNum) {
-      issues.push({ dosage, key: 'content', field: 'Content result', example: `${(doseNum + 0.2).toFixed(1)}mg`, kind: 'invalid', reason: `${content} is not above the ${dosage} label claim` });
-    }
-  }
+  if (!cert || cert.mode === 'external') return issues;
+  const need = (key: CertificateFieldKey, field: string, example: string, value: string) => {
+    if (!value) issues.push({ dosage, key, field, example, kind: 'missing' });
+  };
+  need('certificateId', 'Certificate number', 'the number printed on the certificate', cert.certificateId?.trim() ?? '');
+  // Batch / Lot and the date belong in the details block, but some certificates
+  // were typed with them as test rows instead. The value is on the certificate
+  // either way, so it counts.
+  const batch = infoValue(cert, BATCH_ROW_MATCH) || rowResult(cert, BATCH_ROW_MATCH);
+  const dated = infoValue(cert, DATE_ROW_MATCH) || rowResult(cert, DATE_ROW_MATCH);
+  need('batch', 'Batch / Lot', 'the batch code printed on the certificate', batch);
+  need('testDate', 'Certificate date', 'the date printed on the certificate', dated);
   return issues;
 }
 
@@ -359,31 +256,15 @@ export interface CertificateWarning {
 // only for the duplicate check, which is inherently cross-product).
 export function getCertificateWarnings(product: Product, duplicateSlugs: Set<string>): CertificateWarning[] {
   const warnings: CertificateWarning[] = [];
-  if (hasPenFormatIssue(product)) {
-    warnings.push({ label: 'Pen labelled as powder', detail: 'This pen’s certificate or storage text still uses powder/vial/reconstitution wording.' });
-  }
-  if (hasBrandMismatch(product)) {
-    warnings.push({ label: 'Brand mismatch', detail: 'Certificate text mentions a different pen brand than this product’s own assigned brand.' });
-  }
-  if (hasMissingStorage(product)) {
-    warnings.push({ label: 'Missing storage', detail: 'This product is not a vial, but no storage line is set on the certificate or the product, so it is showing the vial default (-20°C, protect from light). Set the right storage line for this format.' });
-  }
-  // Single-dosage products: the simple product-level "missing" flag.
-  if (product.variants.length < 2 && evaluateCertificate(product).status === 'missing') {
-    warnings.push({ label: 'No certificate uploaded', detail: 'No certificate data has been entered for this product yet.' });
-  }
-  // Multi-dosage products (Option A): flag exactly which dosages have no live
-  // certificate of their own or via the shared fallback, so the gap can be filled
-  // for that specific dosage.
-  const missingDosages = dosagesMissingCertificate(product);
-  if (missingDosages.length > 0) {
+  const missingSizes = dosagesMissingCertificate(product);
+  if (missingSizes.length > 0) {
     warnings.push({
-      label: `Certificate missing: ${missingDosages.join(', ')}`,
-      detail: `These dosages have no live Certificate of Analysis (their own or a shared one): ${missingDosages.join(', ')}. Each dosage is a separate batch that needs its own COA — add one under the certificate section for that dosage.`,
+      label: `Certificate missing: ${missingSizes.join(', ')}`,
+      detail: `Other sizes of this product show a certificate, but these do not: ${missingSizes.join(', ')}. Add one in the certificate section for that size, or share one certificate across all sizes.`,
     });
   }
   if (duplicateSlugs.has(product.slug)) {
-    warnings.push({ label: 'Possible duplicate', detail: 'Shares an uploaded certificate or certificate ID with at least one other product.' });
+    warnings.push({ label: 'Possible duplicate', detail: 'Shares an uploaded certificate or certificate number with at least one other product.' });
   }
   return warnings;
 }

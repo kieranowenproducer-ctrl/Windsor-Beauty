@@ -12,8 +12,8 @@ interface Props {
   productName: string;
   variants: PickableVariant[];
   /**
-   * Dosages with none left. Shown, labelled and refused rather than hidden, so
-   * a customer can see the strength exists and is simply out, and cannot put it
+   * Sizes with none left. Shown, labelled and refused rather than hidden, so
+   * a customer can see the size exists and is simply out, and cannot put it
    * in the basket for checkout to turn down later. Omitted = nothing is sold out.
    */
   soldOutDosages?: string[];
@@ -22,7 +22,7 @@ interface Props {
 }
 
 // Shared by every "quick add" surface (shop/homepage product cards, the
-// frequently-bought-with carousel) that needs to ask which dosage/size the
+// frequently-bought-with carousel) that needs to ask which size the
 // customer wants before adding to the basket, instead of silently adding
 // the cheapest/first-listed variant. Tapping an option both selects and adds
 // it in one action — there's no separate confirm step, since that's the
@@ -48,7 +48,7 @@ export default function VariantPickerModal({ productName, variants, soldOutDosag
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
       <div className="relative bg-white border border-gold-200 shadow-2xl w-full max-w-sm px-6 pt-7 pb-6 sm:px-7">
-        <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700 mb-2">Choose an Option</p>
+        <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700 mb-2">Choose a Size</p>
         <h2 className="font-serif text-2xl text-stone-800 tracking-wide leading-snug mb-5">
           {productName}
         </h2>

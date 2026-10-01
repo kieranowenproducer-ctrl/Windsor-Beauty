@@ -1,4 +1,3 @@
-import { RECONSTITUTION_MESSAGE, RECONSTITUTION_TARGET_SLUG, needsReconstitution } from '@/lib/upsells';
 import { UPSELL_CSV_EXAMPLE } from '@/lib/upsellCsv';
 import type { Product } from '@/data/products';
 
@@ -97,26 +96,6 @@ export function downloadExampleCsv() {
 }
 
 export const MAX_MANUAL_UPSELLS = 8;
-
-export function generateUpsellRulesCsv(products: Product[], hiddenSlugs: Set<string>): number | null {
-  const target = products.find(p => p.slug === RECONSTITUTION_TARGET_SLUG);
-  if (!target || hiddenSlugs.has(RECONSTITUTION_TARGET_SLUG)) return null;
-  const header = 'trigger_product_handle,upsell_product_handle,priority,custom_message,active,start_date,end_date';
-  // The same test the storefront applies, from the one place it is defined, so this file and the
-  // live shop can never disagree about which products need water.
-  const lines = products
-    .filter(p => !hiddenSlugs.has(p.slug) && needsReconstitution(p))
-    .map(p => `${p.slug},${RECONSTITUTION_TARGET_SLUG},1,${RECONSTITUTION_MESSAGE},TRUE,,`);
-
-  const blob = new Blob([[header, ...lines].join('\n')], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `upsell-rules-auto-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  return lines.length;
-}
 
 export function startingPrice(p: Product): number {
   return Math.min(...p.variants.map(v => v.price));

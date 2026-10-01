@@ -82,8 +82,8 @@ export default function ProductPage({ params, initial }: {
   const [isMember, setIsMember] = useState(initial?.isMember ?? false);
 
   // Inline stock editing from the admin readout below — lets an admin change a
-  // dosage's stock without leaving the shop for the Products tab. Keyed by
-  // dosage (the readout only ever shows the one product on this page). The
+  // size's stock without leaving the shop for the Products tab. Keyed by
+  // size (the readout only ever shows the one product on this page). The
   // write goes to the same admin-gated endpoint the Products tab uses.
   const [editingDosage, setEditingDosage] = useState<string | null>(null);
   const [stockDraft, setStockDraft] = useState('');
@@ -91,9 +91,9 @@ export default function ProductPage({ params, initial }: {
   const [stockError, setStockError] = useState<string | null>(null);
 
   // Full variant management from the shop (task a5b6aa85): price edits, new
-  // dosages, enable/disable and removal all save through the same admin
+  // sizes, enable/disable and removal all save through the same admin
   // catalogue endpoint the dashboard Products tab uses — the dashboard is no
-  // longer required for day-to-day dosage changes. Only admins ever see this
+  // longer required for day-to-day size changes. Only admins ever see this
   // (staff cookie for the UI, admin session for the API).
   const [editingPriceDosage, setEditingPriceDosage] = useState<string | null>(null);
   const [priceDraft, setPriceDraft] = useState('');
@@ -121,7 +121,7 @@ export default function ProductPage({ params, initial }: {
       // Serve the saved product immediately, exactly as the storefront will.
       const saved = data.product as Product;
       setOverrides(prev => ({ ...prev, [current.slug]: saved }));
-      // If the dosage being viewed was just hidden or removed, fall back to
+      // If the size being viewed was just hidden or removed, fall back to
       // the first available one rather than keep showing a stale selection.
       setSelectedVariant(prev =>
         prev && !saved.variants.some(v => v.dosage === prev.dosage && v.enabled !== false) ? null : prev
@@ -148,15 +148,15 @@ export default function ProductPage({ params, initial }: {
   async function addDosage(current: Product) {
     const dosage = newDosage.trim();
     const price = Number(newPrice);
-    if (!dosage) { setVariantError('Enter a dosage label, e.g. 10mg'); return; }
+    if (!dosage) { setVariantError('Enter a size label, e.g. 30ml'); return; }
     if (current.variants.some(v => v.dosage.toLowerCase() === dosage.toLowerCase())) {
-      setVariantError('That dosage already exists on this product');
+      setVariantError('That size already exists on this product');
       return;
     }
     if (!Number.isFinite(price) || price < 0) { setVariantError('Enter a valid price'); return; }
     const next = [...current.variants, { dosage, price: Math.round(price * 100) / 100, enabled: true }];
     if (!(await saveVariants(current, next))) return;
-    // Optional opening stock for the new dosage, tracked from day one.
+    // Optional opening stock for the new size, tracked from day one.
     const stock = Math.round(Number(newStock));
     if (newStock.trim() !== '' && Number.isFinite(stock) && stock >= 0) {
       await fetch('/api/admin/products/stock', {
@@ -178,7 +178,7 @@ export default function ProductPage({ params, initial }: {
     if (!target) return;
     const activeCount = current.variants.filter(v => v.enabled !== false).length;
     if (target.enabled !== false && activeCount <= 1) {
-      setVariantError('At least one dosage must stay available to customers');
+      setVariantError('At least one size must stay available to customers');
       return;
     }
     const next = current.variants.map(v => v.dosage === dosage ? { ...v, enabled: v.enabled === false } : v);
@@ -187,11 +187,11 @@ export default function ProductPage({ params, initial }: {
 
   async function removeDosage(current: Product, dosage: string) {
     if (current.variants.length <= 1) {
-      setVariantError('A product needs at least one dosage. Edit it instead, or delete the product from the dashboard.');
+      setVariantError('A product needs at least one size. Edit it instead, or delete the product from the dashboard.');
       return;
     }
     const ok = window.confirm(
-      `Remove the ${dosage} dosage from ${current.name}? Customers will no longer be able to buy it, and any certificate attached to this dosage goes with it.`
+      `Remove the ${dosage} size from ${current.name}? Customers will no longer be able to buy it, and any certificate attached to this size goes with it.`
     );
     if (!ok) return;
     const next = current.variants.filter(v => v.dosage !== dosage);
@@ -317,7 +317,7 @@ export default function ProductPage({ params, initial }: {
   // Wait for catalogue overrides to load before rendering anything: a slug
   // that exists only as an admin-created product won't be found yet, and an
   // existing product that's been edited would briefly render with the stale
-  // static dosage/image data before the override replaces it (the "old value
+  // static size/image data before the override replaces it (the "old value
   // flashes before correcting itself" bug). A short spinner beats showing
   // wrong data and self-correcting.
   if (!overridesLoaded) {
@@ -334,17 +334,17 @@ export default function ProductPage({ params, initial }: {
   const product = found;
   const variants = activeVariants(product);
 
-  // Which dosage the page opens on.
+  // Which size the page opens on.
   //
-  // It used to be variants[0], the lowest strength, whatever its stock. SLU-PP-332 has the
-  // 5mg sold out and nine of the 10mg, so the page opened on the 5mg: a big OUT OF STOCK
-  // banner across the product photo, no Add button, and a back-in-stock form. A customer
-  // reads that as "this product is gone" and leaves, when the 10mg was there to buy all
-  // along. Bac Water had exactly the same problem, 3ml sold out and 73 of the 10ml.
+  // It used to be variants[0], the smallest size, whatever its stock. If the smallest size
+  // was sold out and a larger one was not, the page opened on the sold-out one: a big OUT OF
+  // STOCK banner across the product photo, no Add button, and a back-in-stock form. A
+  // customer reads that as "this product is gone" and leaves, when another size was there
+  // to buy all along.
   //
-  // So the opening dosage is now the first one that is ACTUALLY AVAILABLE, still lowest
-  // strength first among those. Three things this deliberately does NOT do:
-  //   * it does not hide anything. A sold-out dosage stays in the selector with its own
+  // So the opening size is now the first one that is ACTUALLY AVAILABLE, still smallest
+  // first among those. Three things this deliberately does NOT do:
+  //   * it does not hide anything. A sold-out size stays in the selector with its own
   //     "Out of Stock" label, and choosing it still shows the banner and refuses the sale.
   //   * it does not override the customer. selectedVariant wins the moment they click.
   //   * it does not special-case a product. It reads stock, so it covers every product now
@@ -354,22 +354,22 @@ export default function ProductPage({ params, initial }: {
   // /api/products/stock AFTER first paint: picking a default at mount would be picking it
   // before there is anything to pick it from.
   const slugStockNow = variantStockMap[product.slug];
-  // "Is this dosage gone" is answered in one place, src/data/products.ts, and read from
-  // there by the opening choice, the dosage chip, the photo stamp and the shop card, so
+  // "Is this size gone" is answered in one place, src/data/products.ts, and read from
+  // there by the opening choice, the size chip, the photo stamp and the shop card, so
   // none of them can tell the customer something another one denies.
   const firstAvailable = variants.find((v) => !dosageSoldOut(product, slugStockNow, v.dosage));
-  // Every dosage sold out: fall back to the lowest strength and let the page show Out of
+  // Every size sold out: fall back to the smallest size and let the page show Out of
   // Stock exactly as it did before. Nothing about that path changes.
   const variant = selectedVariant ?? firstAvailable ?? variants[0];
-  // The Certificate of Analysis is resolved for the SELECTED dosage — each dosage
-  // is a separate batch. Falls back to the product-level certificate when this
-  // dosage has none, so single-certificate products are unaffected.
+  // The product certificate is resolved for the SELECTED size. Falls back to the
+  // product-level certificate when this size has none, so single-certificate
+  // products are unaffected.
   const activeCertificate = certificateForDosage(product, variant.dosage);
-  // Stock is per dosage now — selecting a different variant looks up that
-  // variant's own number, so one dosage selling out never affects the others.
+  // Stock is per size: selecting a different variant looks up that
+  // variant's own number, so one size selling out never affects the others.
   const stock = variantStockMap[product.slug]?.[variant.dosage];
-  // A product-level alert must be visible on arrival, even when another dosage
-  // is selected first. Keep the dosage named so the urgency never misrepresents
+  // A product-level alert must be visible on arrival, even when another size
+  // is selected first. Keep the size named so the urgency never misrepresents
   // the stock available for the other variants.
   const lowStockVariants = variants.filter((item) => slugStockNow?.[item.dosage] === 2);
   const availability = effectiveAvailability(product, stock);
@@ -377,14 +377,14 @@ export default function ProductPage({ params, initial }: {
   // The stamp on the product photo speaks for the PRODUCT, so it is only allowed to appear
   // when there is genuinely nothing left to buy.
   //
-  // It used to follow the SELECTED dosage. Landing on an in-stock dosage fixed what a
-  // customer sees on arrival, but the moment they tapped the 5mg of SLU-PP-332 the photo
+  // It used to follow the SELECTED size. Landing on an in-stock size fixed what a
+  // customer sees on arrival, but the moment they tapped a sold-out size the photo
   // stamped itself OUT OF STOCK, and that reads as "the product is gone" rather than "not
-  // this strength" — with nine of the 10mg sitting there. The dosage chip already carries
+  // this size", with other sizes still there to buy. The size chip already carries
   // its own Out of Stock label and the button still refuses the sale, so the truth is told
   // where it belongs, next to the thing it is true about.
   //
-  // Untracked stock counts as available, so this can only be true when every dosage is
+  // Untracked stock counts as available, so this can only be true when every size is
   // genuinely at zero, or the whole product is marked out of stock in the admin. While the
   // stock map is still loading nothing is known to be zero, so the stamp cannot flash.
   const everyDosageSoldOut = allDosagesSoldOut(product, slugStockNow);
@@ -474,20 +474,20 @@ export default function ProductPage({ params, initial }: {
             <div>
               <div className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.28em] text-gold-300">
                 <span aria-hidden="true" className="h-3 w-3 flex-none rounded-full bg-red-500 ring-4 ring-red-500/20" />
-                <span>High demand</span>
+                <span>Low stock</span>
               </div>
               <p className="mt-3 font-serif text-3xl font-bold leading-[1.02] tracking-tight text-white sm:text-5xl">
-                Stock running low <span className="whitespace-nowrap text-gold-300">— only 2 left</span>
+                Stock running low, <span className="whitespace-nowrap text-gold-300">only 2 left</span>
               </p>
             </div>
             <div className="border-t border-stone-600 pt-5 lg:border-l lg:border-t-0 lg:py-2 lg:pl-8">
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-gold-300">
-                {lowStockVariants.length === 1 ? `${lowStockVariants[0].dosage} dosage` : 'Limited dosages'}
+                {lowStockVariants.length === 1 ? `${lowStockVariants[0].dosage} size` : 'Selected sizes'}
               </p>
               <p className="mt-2 text-sm font-semibold leading-relaxed text-stone-100">
                 {lowStockVariants.length === 1
-                  ? `Only 2 of the ${lowStockVariants[0].dosage} dosage remain. Order before it sells out.`
-                  : `Only 2 remain in each of these dosages: ${lowStockVariants.map((item) => item.dosage).join(', ')}.`}
+                  ? `Only 2 of the ${lowStockVariants[0].dosage} size remain.`
+                  : `Only 2 remain in each of these sizes: ${lowStockVariants.map((item) => item.dosage).join(', ')}.`}
               </p>
             </div>
           </div>
@@ -537,29 +537,6 @@ export default function ProductPage({ params, initial }: {
             </button>
           )}
 
-          <div className="flex items-center gap-3 mb-4">
-            {product.purity && (
-              <span className="text-[9px] tracking-[0.15em] uppercase border border-gold-200 text-gold-700 px-2 py-0.5">
-                {product.purity} Purity
-              </span>
-            )}
-            <span className="text-[9px] tracking-[0.15em] uppercase border border-gold-200 text-gold-700 px-2 py-0.5">
-              Lab Tested
-            </span>
-            {/* The badge follows the same switch as the CoA row in the specs block below, and it
-                did not before: `hiddenSpecs: ['coa']` removed the row and left this claiming a
-                certificate anyway. BAC Water and Acetic Acid have no certificate at all and both
-                pages still badged "CoA Included", which is a promise the shop cannot keep on those
-                two. One control now governs both places, so turning it off in the admin turns it
-                off everywhere a customer looks. Every peptide keeps it, as it should: 51 of the 55
-                product and dosage rows have a real certificate behind the button. */}
-            {!(product.hiddenSpecs ?? []).includes('coa') && (
-              <span className="text-[9px] tracking-[0.15em] uppercase border border-gold-200 text-gold-700 px-2 py-0.5">
-                CoA Included
-              </span>
-            )}
-          </div>
-
           {!product.fullDescription ? null : product.fullDescriptionFormat === 'html' ? (
             <RichTextContent html={product.fullDescription} className="text-sm text-stone-500 leading-relaxed mb-6" />
           ) : product.fullDescriptionFormat === 'markdown' ? (
@@ -573,11 +550,11 @@ export default function ProductPage({ params, initial }: {
           {/* Variant selector */}
           <div className="mb-5">
             <label className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-2">
-              Select Dosage
+              Select Size
             </label>
             <div className="flex flex-wrap gap-2">
               {variants.map(v => {
-                // Same rule as the opening dosage and the photo stamp — one definition of
+                // Same rule as the opening size and the photo stamp — one definition of
                 // "gone", so the chip can never say something the rest of the page denies.
                 const vOutOfStock = dosageSoldOut(product, slugStockNow, v.dosage);
                 return (
@@ -691,10 +668,10 @@ export default function ProductPage({ params, initial }: {
         <StorageInstructionsModal open={storageOpen} onClose={() => setStorageOpen(false)} content={storageContent} />
       )}
 
-      {/* Research use disclaimer */}
+      {/* Usage note */}
       <div className="border border-gold-200 bg-gold-50/30 p-5 mb-12 text-center">
         <p className="text-[10px] text-gold-700 leading-relaxed">
-          This product is strictly for in vitro research and laboratory use only by qualified professionals. Not for human or animal consumption. Not for therapeutic, diagnostic, or medicinal use.
+          For external use only. Patch test before first use. If irritation occurs, stop using the product.
         </p>
       </div>
 
@@ -710,7 +687,7 @@ export default function ProductPage({ params, initial }: {
         onStats={setReviewSummary}
       />
 
-      {/* Further reading & research — related blog articles for this product
+      {/* Further reading: related blog articles for this product
           (task 41068697). Terms = product name/keywords/category. */}
     </div>
   );

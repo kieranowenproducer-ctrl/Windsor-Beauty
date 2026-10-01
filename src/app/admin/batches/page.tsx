@@ -15,7 +15,7 @@ interface BatchRow {
 
 // Product suggestions for the batch "Product" field. A native <datalist> gives a
 // dropdown of every catalogue product AND still lets you type anything freely —
-// exactly "a pull-down bar OR type it in manually". Deduped "Name Dosage" labels.
+// exactly "a pull-down bar OR type it in manually". Deduped "Name Size" labels.
 const PRODUCT_OPTIONS = Array.from(
   new Set(PRODUCTS.flatMap((p) => activeVariants(p).map((v) => `${p.name} ${v.dosage}`.trim())))
 ).sort((a, b) => a.localeCompare(b));
@@ -193,7 +193,7 @@ export default function AdminBatchesPage() {
                   type="text"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  placeholder="e.g. 99.2% purity"
+                  placeholder="Anything worth noting about this batch"
                   className="border border-stone-200 px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors"
                 />
               </label>

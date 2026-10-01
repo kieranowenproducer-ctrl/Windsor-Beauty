@@ -17,7 +17,7 @@ export default function ProductDocuments({
 }: Props) {
   return (
     <>
-          {/* Certificate of Analysis / Storage Instructions */}
+          {/* Product document / Storage Instructions */}
           {(activeCertificate?.enabled || showStorageButton) && (
             <div className="border-t border-gold-100 pt-5 flex flex-col sm:flex-row gap-3">
               {activeCertificate?.enabled && (

@@ -35,15 +35,15 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// `items[].name` carries a GENERIC description, never the real product name or
-// dosage — see src/lib/genericNames.ts. `productsBySlug` is the merged catalogue;
-// a slug missing from it is safe (it falls back to a generic default, never the
-// real name), which is why an empty map is an acceptable argument.
+// `items[].name` carries the product's name, or a trial product's neutral
+// reference. See src/lib/genericNames.ts. `productsBySlug` is the merged
+// catalogue; a slug missing from it falls back to the name on the order line,
+// which is why an empty map is an acceptable argument.
 export function buildFenaPayload(order: OrderRow, siteUrl: string, productsBySlug: Map<string, Product>) {
   const audits: GenericNameAudit[] = [];
   const items = order.items.map(i => {
-    // A missing slug is normal — bespoke invoice lines have no catalogue entry.
-    // Falls back to the generic default, never the real name.
+    // A missing slug is normal: bespoke invoice lines have no catalogue entry.
+    // Such a line is sent under the name written on it.
     const { name, audit } = outboundItemName(i.slug ? productsBySlug.get(i.slug) : undefined, {
       slug: i.slug ?? '(bespoke/no-slug)',
       realName: `${i.name}${i.variant ? ` (${i.variant})` : ''}`,

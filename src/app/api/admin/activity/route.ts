@@ -134,7 +134,7 @@ export async function GET() {
         items: orderItems.slice(0, 6).map((it) => ({
           name: String(it?.name ?? '').trim() || 'Unnamed item',
           // Real orders carry an empty variant ("Pens customised"), so keep the
-          // difference between "no dosage recorded" and one we simply have not read.
+          // difference between "no size recorded" and one we simply have not read.
           variant: String(it?.variant ?? '').trim() || null,
           quantity: Number(it?.quantity ?? 0),
           price: Number(it?.price ?? 0),

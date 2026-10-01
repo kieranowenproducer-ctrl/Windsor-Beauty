@@ -15,8 +15,8 @@ import { checkLowStockAndAlert } from '@/lib/lowStock';
 // this any more — but I still have to sell what is left." So retiring:
 //   1. marks it retired at once — off the low-stock warning and its emails,
 //      no reorder prompts ever again;
-//   2. LEAVES it on the shop, buyable, while any stock remains (his MT2 test
-//      lost the sale of his last two pens when v1 removed it immediately);
+//   2. LEAVES it on the shop, buyable, while any stock remains (an early test
+//      lost the sale of the last two in stock when v1 removed it immediately);
 //   3. the moment its stock reaches zero — the last one sells, or the number
 //      is set to zero — it comes off the shop automatically: the dosage is
 //      disabled and the whole product is hidden once no sellable dosage
@@ -144,7 +144,7 @@ export async function unretireVariant(
   // "Coming soon" is a whole-product switch (there is no per-dosage version),
   // so on a product whose other dosages are still selling it would block
   // every one of them — found the hard way in testing, when marking a
-  // retired 5mg "coming soon" made the live 10mg unbuyable.
+  // retired 30ml "coming soon" made the live 50ml unbuyable.
   if (mode === 'coming_soon' && product) {
     const othersActive = product.variants.some((v) => v.dosage !== dosage && v.enabled !== false);
     if (othersActive) {

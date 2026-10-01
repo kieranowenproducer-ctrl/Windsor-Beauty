@@ -11,7 +11,6 @@ import ImportedRulesSummary from './ImportedRulesSummary';
 import { useConfirm } from '@/components/admin/ConfirmProvider';
 import {
   MAX_MANUAL_UPSELLS,
-  generateUpsellRulesCsv,
   type UpsellRule,
   type ManualOverride,
   type UpsellSettings,
@@ -30,7 +29,6 @@ export default function AdminUpsellsPage() {
   const [settings, setSettings] = useState<UpsellSettings>({ enabled: true, lastImport: null });
   const [loadError, setLoadError] = useState('');
   const [togglingEnabled, setTogglingEnabled] = useState(false);
-  const [generateMessage, setGenerateMessage] = useState('');
 
   const [mode, setMode] = useState<'replace' | 'append'>('replace');
   const [fileName, setFileName] = useState('');
@@ -118,15 +116,6 @@ export default function AdminUpsellsPage() {
     } finally {
       setTogglingEnabled(false);
     }
-  }
-
-  function handleGenerate() {
-    const count = generateUpsellRulesCsv(catalogue, hiddenSlugs);
-    setGenerateMessage(
-      count === null
-        ? 'BAC Water (bac-water) is missing or hidden — could not generate rules.'
-        : `Downloaded ${count} rule${count !== 1 ? 's' : ''}. Choose it as your file below, then Preview Import.`
-    );
   }
 
   async function readFile(file: File) {
@@ -491,8 +480,6 @@ export default function AdminUpsellsPage() {
             handleImport={handleImport}
             importing={importing}
             importResult={importResult}
-            handleGenerate={handleGenerate}
-            generateMessage={generateMessage}
             manualOverrideMap={manualOverrideMap}
           />
 

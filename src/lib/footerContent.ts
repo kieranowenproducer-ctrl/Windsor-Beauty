@@ -27,7 +27,7 @@ export interface FooterContent {
 
 export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   description:
-    'Premium research compounds supplied by Windsor Beauty, part of the C&S Holdings Group. All products are independently lab-tested and supplied strictly for scientific research use only.',
+    'Premium skincare from Windsor Beauty, part of the C&S Holdings Group. Serums, moisturisers, cleansers and SPF for a simple daily routine.',
   emails: [
     { address: 'info@windsorbeauty.co.uk', label: 'general enquiries' },
     { address: 'sales@windsorbeauty.co.uk', label: 'sales & orders' },
@@ -49,13 +49,11 @@ export const DEFAULT_FOOTER_CONTENT: FooterContent = {
     { label: 'Payment Policy', href: '/payment-policy' },
     { label: 'Contact Policy', href: '/contact-policy' },
     { label: 'Product Disclaimer', href: '/disclaimer' },
-    { label: 'Research Use Disclaimer', href: '/research-disclaimer' },
-    { label: 'Age Restriction Policy', href: '/age-restriction' },
   ],
   disclaimer:
-    'All products sold by Windsor Beauty are intended strictly for in vitro research and laboratory use by qualified professionals. They are not approved for therapeutic, diagnostic, or any other use in humans or animals. Windsor Beauty assumes no liability for any misuse of these compounds.',
+    'Our products are cosmetics for external use only. They are not medicines and are not intended to diagnose, treat or prevent any condition. Always patch test before first use and stop using a product if irritation occurs.',
   copyrightSuffix: 'Windsor Beauty. Part of the C&S Holdings Group. All rights reserved.',
-  bottomRightText: 'Not for human consumption. Research use only.',
+  bottomRightText: 'For external use only.',
 };
 
 function sanitizeLinks(value: unknown, fallback: FooterLink[]): FooterLink[] {

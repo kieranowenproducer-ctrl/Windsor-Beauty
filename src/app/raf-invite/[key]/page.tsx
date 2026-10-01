@@ -11,7 +11,7 @@ export default async function AffiliateRequestPage({ params, searchParams }: { p
   const { preview } = await searchParams;
   const isPreview = process.env.NODE_ENV !== 'production' && preview === '1' && key === 'a'.repeat(32);
   if (!isPreview && !affiliatesEnabled()) notFound();
-  const profile = isPreview ? { display_name: 'Raf' } : await findAffiliateRequestProfile(key).catch(() => null);
+  const profile = isPreview ? { display_name: 'our partner' } : await findAffiliateRequestProfile(key).catch(() => null);
   if (!profile) notFound();
   return <div className="mx-auto max-w-2xl px-5 py-16 sm:py-24">
     <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold-700">Windsor Beauty</p>

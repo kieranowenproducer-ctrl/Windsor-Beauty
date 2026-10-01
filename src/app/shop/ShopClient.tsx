@@ -100,7 +100,7 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') ?? '');
   const [hiddenSlugs, setHiddenSlugs] = useState<Set<string>>(new Set(initial?.hidden ?? []));
   const [stockMap, setStockMap] = useState<Record<string, number>>(initial?.stock ?? {});
-  // Per-dosage stock + staff flag, for the admin-only inline stock editor on each
+  // Per-size stock + staff flag, for the admin-only inline stock editor on each
   // card (task 6dc6c2ec) — same data + endpoint the product page uses.
   const [variantStockMap, setVariantStockMap] = useState<Record<string, Record<string, number>>>(
     initial?.variantStock ?? {});
@@ -234,18 +234,11 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
         {/* The category's own name on its own page, and the shop's name on the shop. The name is
             the one the site already shows in the dropdown, never a reworded version of it. */}
         <h1 className="font-serif text-4xl sm:text-5xl text-stone-800 tracking-wide mb-4">
-          {lockedCategory ?? 'Research Compounds'}
+          {lockedCategory ?? 'Shop Skincare'}
         </h1>
         <p className="text-sm text-stone-500 max-w-lg mx-auto leading-relaxed">
-          High-purity peptides, pens and reconstitution supplies for advanced laboratory and in vitro research.
-          All peptide products supplied with certificate of analysis.
-        </p>
-      </div>
-
-      {/* Compliance banner */}
-      <div className="border border-gold-200 bg-gold-50 py-3 px-4 mb-10 text-center">
-        <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700">
-          Research Use Only &bull; Not for Human Consumption &bull; 99% Purity &bull; Lab Tested &bull; CoA Available
+          Serums, moisturisers, cleansers and SPF for a simple daily routine.
+          Browse the full range or choose a category.
         </p>
       </div>
 
@@ -307,7 +300,7 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
       </div>
 
       {/* Product grid — waits for catalogue overrides to load so edited/new
-          products don't briefly render with stale static dosage/image data
+          products don't briefly render with stale static size/image data
           before snapping to the real value. */}
       {!overridesLoaded ? (
         <div className="flex items-center justify-center py-24">
@@ -328,10 +321,10 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
         </div>
       )}
 
-      {/* Bottom disclaimer */}
+      {/* Bottom note */}
       <div className="mt-16 border-t border-gold-100 pt-10 text-center">
         <p className="text-xs text-stone-500 max-w-xl mx-auto leading-relaxed">
-          All products listed are for research use only and must be handled by qualified personnel in appropriate laboratory conditions. Windsor Beauty makes no therapeutic or medical claims.
+          Our products are cosmetics for external use only. Patch test before first use. Windsor Beauty makes no medical claims.
         </p>
       </div>
       </div>

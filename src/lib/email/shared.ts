@@ -102,12 +102,10 @@ export function emailHeaderHtml(label: string): string {
 </tr>`;
 }
 
-// Shared footer band — `footerText` overrides the default research-use
-// disclaimer (e.g. the internal admin notification email has no need for
-// it). `brandLine` overrides the "Windsor Beauty — windsorbeauty.co.uk" line —
-// only used by paypalInstructionsEmail.ts, which sends under the
-// still-unresolved "Windsor Beauty" brand mismatch (see that file) and would
-// otherwise show a self-contradictory footer. `senderNotice` is the
+// Shared footer band. `footerText` is an optional extra line under the brand
+// line (an invoice's own footer, or "Internal Stock Alert" on staff post);
+// with none supplied the footer is the brand line alone. `brandLine`
+// overrides the "Windsor Beauty, windsorbeauty.co.uk" line. `senderNotice` is the
 // do-not-reply line marketing broadcasts carry when they go out from the
 // unmonitored no-reply address (task 286b1863); it sits above the brand line
 // and is absent from every transactional email, which IS reply-able.
@@ -119,8 +117,8 @@ export function emailFooterHtml(
   return `<tr>
   <td bgcolor="${EMAIL_COLORS.pageBg}" style="background:${EMAIL_COLORS.pageBg};padding:20px 40px;text-align:center;border-top:1px solid ${EMAIL_COLORS.border}">
     ${senderNotice ? `<p style="margin:0 0 8px;font-size:10px;line-height:1.6;color:${EMAIL_COLORS.muted}">${escapeHtml(senderNotice)}</p>` : ''}
-    <p style="margin:0 0 4px;font-size:10px;color:${EMAIL_COLORS.muted}">${brandLine || 'Windsor Beauty &mdash; windsorbeauty.co.uk'}</p>
-    <p style="margin:0;font-size:10px;color:#d4cfc9">${escapeHtml(footerText || 'All products are supplied strictly for research purposes only. Not for human use.')}</p>
+    <p style="margin:0 0 4px;font-size:10px;color:${EMAIL_COLORS.muted}">${brandLine || 'Windsor Beauty, windsorbeauty.co.uk'}</p>
+    ${footerText && footerText.trim() ? `<p style="margin:0;font-size:10px;color:#d4cfc9">${escapeHtml(footerText)}</p>` : ''}
   </td>
 </tr>`;
 }

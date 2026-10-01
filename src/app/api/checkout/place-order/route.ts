@@ -43,7 +43,7 @@ import {
   type AppliedRuleSummary,
 } from '@/lib/promotionRules';
 import { generateOrderNumber, resolveCustomerFromRequest } from '@/lib/auth';
-import { checkoutConfirmationRecord } from '@/lib/complianceConfirmations';
+import { checkoutConfirmationRecord, CHECKOUT_CONFIRMATIONS_ERROR } from '@/lib/complianceConfirmations';
 import { mergeProducts, PRODUCTS, effectiveAvailability, type Product } from '@/data/products';
 import {
   finishSignupOfferReservation,
@@ -159,15 +159,10 @@ export async function POST(request: Request) {
 
   /* WHAT THEY CONFIRMED BEFORE PAYING, CHECKED HERE AND NOT ONLY ON THE SCREEN.
    *
-   * Checkout greys out the Pay button until both boxes are ticked, and a grey button is a
-   * courtesy, not a control: this endpoint is a plain POST and anything can call it. A
-   * compliance record that only exists when the browser cooperates is worth nothing at the
-   * moment somebody actually asks for it, which is exactly when it will be asked for.
-   *
-   * So the order is REFUSED without both, rather than saved with a blank record. An order that
-   * exists but cannot say what its customer confirmed is the situation this whole change was
-   * made to prevent. */
-  const confirmedResearchUse = body?.confirmations?.researchUse === true;
+   * Checkout greys out the Pay button until the Terms and Privacy box is ticked, and a grey
+   * button is a courtesy, not a control: this endpoint is a plain POST and anything can call it.
+   * So the order is REFUSED without it, rather than saved with a blank record. There is exactly
+   * one confirmation; nothing else is required here. */
   const confirmedTerms = body?.confirmations?.terms === true;
 
 
@@ -175,9 +170,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Your order details are incomplete. Please review and try again.' }, { status: 400 });
   }
 
-  if (!confirmedResearchUse || !confirmedTerms) {
+  if (!confirmedTerms) {
     return NextResponse.json({
-      error: 'Please confirm both statements above before paying.',
+      error: CHECKOUT_CONFIRMATIONS_ERROR,
     }, { status: 400 });
   }
 

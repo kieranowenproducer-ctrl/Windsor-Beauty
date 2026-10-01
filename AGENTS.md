@@ -8,12 +8,20 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Rules that catch people out
+# Windsor Beauty: rules that catch people out
 
-The full list is in [README.md](README.md) under "Things that will catch you out". The short version:
+Read [README.md](README.md) first. The short version:
 
-- Never edit `src/components/account/ResearchDesk.tsx`. Standing rule.
+- **The shop is closed on purpose.** The holding screen (`src/lib/holdingScreen.ts`, top of
+  `src/proxy.ts`) stays on until Kieran says launch. Never set `MAINTENANCE_MODE=off`, never weaken
+  the gate, and never publish this branch, without his clear word.
+- **Windsor Beauty and Windsor Glow share nothing.** Never put a Windsor Glow database address,
+  key, token or password in this project. Never copy data between the two.
+- **BRIAN owns** PEARL, the AI assistant, verification logs, email marketing, ad results and tasks.
+  Do not rebuild them here.
 - Never invent, alter or vary a lab value or a certificate.
 - Both `/api/admin/login` and `/api/account/login` accept the admin credentials. Change one, change the other.
-- `src/lib/costs/*` is byte-compared with the Social Engine's copy by `npm run check:costs`. Edit both or neither.
-- Run `npm run check:journeys` before any change to an overlay, a modal, the header or global CSS goes live.
+- Products live in the database. `src/data/products.ts` is empty on purpose.
+- A database address on `localhost` uses the stand-in in `src/lib/db/localClient.ts`; a hosted one uses Neon's driver.
+- Never run `next build` while `next dev` is running in this folder.
+- Plain English in everything a person reads, including emails and admin labels. No em dashes.

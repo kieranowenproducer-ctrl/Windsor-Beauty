@@ -7,12 +7,9 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
 // Same brand pattern as orderConfirmationEmail.ts/adminOrderNotificationEmail.ts
-// (inline-CSS HTML table layout, same colours, Resend, same from-address) —
-// a fresh template rather than reusing paypalInstructionsEmail.ts's HTML,
-// since that file is mis-branded "Windsor Beauty" (a separate, pre-existing
-// bug, flagged but not fixed here) and has a different single-button layout
-// anyway. buildPaypalLink() itself is a pure, brand-agnostic function, reused
-// as-is.
+// (inline-CSS HTML table layout, same colours, Resend, same from-address).
+// It is its own template rather than a reuse of paypalInstructionsEmail.ts's
+// HTML, because that one has a different single-button layout.
 const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
 
 export interface SendInvoiceEmailParams {

@@ -243,7 +243,7 @@ export default function AccountDashboardPage() {
       )}
 
       {/* Stats */}
-      {(demoDesign || process.env.NEXT_PUBLIC_WG_MEMBER_REFERRALS_ENABLED === 'true' && customer.emailVerified) && (
+      {(demoDesign || process.env.NEXT_PUBLIC_WB_MEMBER_REFERRALS_ENABLED === 'true' && customer.emailVerified) && (
         <div className="border border-gold-200 bg-white px-5 py-5 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="font-serif text-xl text-stone-800">Your Glow Card</h2>

@@ -5,13 +5,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { findTrialNameInInvoiceText, trialTextLeakMessage } from '@/lib/invoiceTrialTextGuard';
 
-const trials = [{ name: 'crwn t 300' }, { name: 't 300' }, { name: 'eq' }, { name: 'dec' }, { name: '501' }, { name: 'Tes Ace 125mg' }];
+const trials = [{ name: 'crwn t 300' }, { name: 't 300' }, { name: 'eq' }, { name: 'dec' }, { name: '501' }, { name: 'Tes Ace 125ml' }];
 const clean = {
   subject: 'Wholesale order', message: 'Thanks for your order, Product 284 is on its way.',
-  footerText: 'For research use only.', customerNotes: 'Payment within 7 days.',
+  footerText: 'Thank you for your order.', customerNotes: 'Payment within 7 days.',
   lineItems: [
-    { type: 'trial', slug: 'trial:8', name: 'Product 284', description: '300mg' },
-    { type: 'custom', name: 'Pens customised', description: 'Gold finish' },
+    { type: 'trial', slug: 'trial:8', name: 'Product 284', description: '300ml' },
+    { type: 'custom', name: 'Gift wrap', description: 'Gold finish' },
   ],
 };
 
@@ -28,7 +28,7 @@ for (const [key, label] of [['subject', 'Subject / Header Text'], ['message', 'M
 }
 
 test('matching ignores case and punctuation', () => {
-  assert.ok(findTrialNameInInvoiceText({ ...clean, message: 'TES-ACE 125MG x2' }, trials));
+  assert.ok(findTrialNameInInvoiceText({ ...clean, message: 'TES-ACE 125ML x2' }, trials));
 });
 
 test('short names are caught as whole words only', () => {

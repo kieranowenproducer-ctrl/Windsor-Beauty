@@ -55,7 +55,7 @@ assert.match(schema, /affiliate_invitations_recipient_requests/, 'recipient requ
 assert.match(schema, /delivery_status/, 'requested email delivery must be auditable');
 
 const account = await readFile(new URL('../src/app/account/page.tsx', import.meta.url), 'utf8');
-assert.match(account, /Your Glow Card/, 'an affiliate must keep the normal member Glow Card');
+assert.match(account, /Your (?:Glow|Beauty) Card/, 'an affiliate must keep the normal member Beauty Card');
 assert.match(account, /orders\.map\(order =>/, 'an affiliate must keep normal personal order history');
 assert.match(account, /data\.affiliateAvailable/, 'the affiliate panel must be added to, not replace, the member account');
 
@@ -66,7 +66,7 @@ assert.match(accountMe, /affiliatesEnabled\(\) && await isAffiliateCustomer/, 'n
 const accountLayout = await readFile(new URL('../src/app/account/affiliate/layout.tsx', import.meta.url), 'utf8');
 assert.match(accountLayout, /if \(!affiliatesEnabled\(\)\) notFound\(\)/, 'the affiliate page must not open while testing');
 const registrationForm = await readFile(new URL('../src/components/MemberRegistrationForm.tsx', import.meta.url), 'utf8');
-assert.match(registrationForm, /NEXT_PUBLIC_WG_AFFILIATE_CUSTOMER_ACCESS_ENABLED/, 'the public signup choice must also require launch approval');
+assert.match(registrationForm, /NEXT_PUBLIC_WB_AFFILIATE_CUSTOMER_ACCESS_ENABLED/, 'the public signup choice must also require launch approval');
 assert.match(registrationForm, /affiliateInvite/, 'signup must recognise the private link');
 assert.match(registrationForm, /\.filter\(source => source\.value !== 'RAF affiliate' \|\| Boolean\(form\.affiliateInvite\)\)/, 'the public signup list must not offer Raf');
 // Samuel, 27 Sep 2026: commission only on orders paid with the customer's own verified RAF code.
@@ -74,8 +74,8 @@ assert.match(checkout, /if \(affiliatesEnabled\(\) && customer && isAffiliateCod
 assert.match(affiliates, /acc\.customer_id = \$\{params\.customerId\}\s+AND upper\(acc\.code\) = upper\(/, 'the commission record must re-check that the Raf code belongs to the customer');
 
 const affiliateDashboard = await readFile(new URL('../src/app/account/affiliate/page.tsx', import.meta.url), 'utf8');
-assert.match(affiliateDashboard, /My orders and Glow Card/, 'RAF must have a clear route back to personal shopping');
-assert.match(affiliateDashboard, /Your own purchases,\s*deliveries and Glow Card (?:stay|remain) in your normal member account/, 'RAF must be told that personal activity remains separate');
+assert.match(affiliateDashboard, /My orders and Beauty Card/, 'RAF must have a clear route back to personal shopping');
+assert.match(affiliateDashboard, /Your own purchases,\s*deliveries and Beauty Card (?:stay|remain) in your normal member account/, 'RAF must be told that personal activity remains separate');
 const invitePanel = await readFile(new URL('../src/components/affiliate/InviteSomeone.tsx', import.meta.url), 'utf8');
 assert.match(affiliateDashboard, /<InviteSomeone /, 'Raf must have the invitation panel on his dashboard');
 assert.match(invitePanel, /Get my request page/, 'Raf must be able to retrieve his reusable request page');
@@ -140,4 +140,4 @@ assert.match(loyalty, /source: 'qualifying_order'/, 'Raf must retain normal pers
 const checkoutPage = await readFile(new URL('../src/app/checkout/page.tsx', import.meta.url), 'utf8');
 assert.match(checkoutPage, /rafCodeApplied \? 0 : promoPreview/, 'the checkout preview must hide promotions with a personal Raf code');
 
-console.log('Affiliate acceptance checks passed: money, ownership, personal shopping, Glow Card, attribution, refunds and payout safety.');
+console.log('Affiliate acceptance checks passed: money, ownership, personal shopping, Beauty Card, attribution, refunds and payout safety.');

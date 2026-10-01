@@ -16,7 +16,7 @@ import { reviveRetiredOnRestock } from '@/lib/retireProducts';
 // New variants start with a generous default so nothing in the catalogue
 // suddenly looks "out of stock" the moment stock tracking is switched on —
 // staff then dial each one in to the real number from the admin panel. Only
-// used for dosages that have never been tracked before; an existing
+// used for sizes that have never been tracked before; an existing
 // whole-product number (from the pre-variant-stock product_stock table) is
 // copied forward instead, see below.
 const DEFAULT_STOCK = 100;
@@ -31,7 +31,7 @@ export async function GET() {
     // EVERY one of its dosages (not split between them — there's no way to
     // know how much of that number belonged to which dosage, so copying
     // forward is the only safe default; staff then correct each one for
-    // real). A genuinely new, never-tracked product/dosage gets DEFAULT_STOCK.
+    // real). A genuinely new, never-tracked product/size gets DEFAULT_STOCK.
     const overrides = await listCustomProducts().catch(() => ({}));
     const catalogue = mergeProducts(PRODUCTS, overrides);
     const legacyStock = await getLegacyProductStockMap().catch(() => ({} as Record<string, number>));
@@ -87,10 +87,10 @@ export async function POST(request: Request) {
     }
 
     // Back-in-stock alerts: only a genuine 0 → positive restock should fire
-    // them. A dosage with no previous row was never tracked as out of stock
+    // them. A size with no previous row was never tracked as out of stock
     // in the first place, so there's nothing to notify. The alert itself is
     // still per-product (not per-dosage) — a customer who signed up wants to
-    // know the product is back, regardless of which dosage they were viewing.
+    // know the product is back, regardless of which size they were viewing.
     if (previousQuantity === 0 && quantity > 0) {
       await notifyBackInStock(body.slug).catch(() => {});
     }

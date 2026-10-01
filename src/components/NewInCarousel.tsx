@@ -5,7 +5,7 @@ import type { SiteSaleConfig } from '@/lib/siteSale';
 interface Props {
   products: Product[];
   stockMap: Record<string, number>;
-  /** Per-dosage stock, so a card only reads as sold out when every strength is. */
+  /** Per-size stock, so a card only reads as sold out when every size is. */
   variantStockMap?: Record<string, Record<string, number>>;
   reviewStats?: Record<string, { average: number; count: number }>;
   saleConfig?: SiteSaleConfig;

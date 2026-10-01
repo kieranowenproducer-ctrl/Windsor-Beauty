@@ -39,7 +39,7 @@ ${status.note}${tracking}
 Please reply if there is anything else you would like us to check.
 
 Warm regards,
-Team WG`;
+Windsor Beauty`;
 }
 
 export function enquiryNeedsHumanAction(message: string): boolean {
@@ -50,8 +50,7 @@ export function enquiryNeedsHumanAction(message: string): boolean {
 }
 
 export function enquiryNeedsPersonalAdvice(message: string): boolean {
-  if (/\b(dose|dosage|daily|weekly)\b/i.test(message)) return false;
-  return /\b(?:should i|should we|right for me|suitable for me|what(?:'s| is) your advice|whats your advise|advise me|worth (?:swapping|switching)|swap(?:ping)? (?:onto|to)|switch(?:ing)? (?:onto|to)|manage my (?:weight|condition)|recommend for me)\b/i.test(message);
+  return /\b(?:should i|should we|right for me|suitable for me|what(?:'s| is) your advice|whats your advise|advise me|worth (?:swapping|switching)|swap(?:ping)? (?:onto|to)|switch(?:ing)? (?:onto|to)|right for my skin|suitable for my skin|manage my (?:skin|condition)|recommend for me)\b/i.test(message);
 }
 
 export function looksLikeOrderStatusQuestion(subjectKey: string, message: string, orderNumber: string | null): boolean {

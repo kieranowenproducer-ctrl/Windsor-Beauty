@@ -15,10 +15,10 @@ export interface LeafletFields {
 
 export const DEFAULT_LEAFLET_FIELDS: LeafletFields = {
   headline: 'Windsor Beauty',
-  subheading: 'Research peptides and specialist products',
+  subheading: 'Premium skincare for every day',
   cta: 'Scan to visit the Windsor Beauty website',
   qrLabel: 'Scan me',
-  footer: 'For research purposes only. Not for human consumption.',
+  footer: 'windsorbeauty.co.uk',
   discountText: '',
   website: 'windsorbeauty.co.uk',
   showLocationName: false,
@@ -31,7 +31,7 @@ interface Props {
   partnerName: string | null;
   discountCode: string | null;
   campaignId: number;
-  /** Free-text leaflet headline override, e.g. "Exclusive for PAG Gym Members" — cosmetic only, saved on the campaign itself (not the localStorage leaflet text below). */
+  /** Free-text leaflet headline override, e.g. "Exclusive for salon guests" — cosmetic only, saved on the campaign itself (not the localStorage leaflet text below). */
   bespokeTitle: string | null;
 }
 
@@ -181,7 +181,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
 <body>
   <div class="leaflet">
     <div class="header">
-      <div class="header-title">WINDSOR <span class="header-accent">GLOW</span></div>
+      <div class="header-title">WINDSOR <span class="header-accent">BEAUTY</span></div>
     </div>
     <div class="gold-line"></div>
     <div class="body">
@@ -231,7 +231,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
             {/* Header */}
             <div style={{ background: '#1c1917', padding: '14px 18px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 18, letterSpacing: '0.18em', color: '#ffffff' }}>
-                WINDSOR <span style={{ color: '#B8902A' }}>GLOW</span>
+                WINDSOR <span style={{ color: '#B8902A' }}>BEAUTY</span>
               </div>
             </div>
             {/* Gold line */}
@@ -339,7 +339,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
             { key: 'qrLabel', label: 'QR Label' },
             { key: 'discountText', label: 'Discount Text (leave blank to hide)' },
             { key: 'website', label: 'Website URL' },
-            { key: 'footer', label: 'Footer / Disclaimer' },
+            { key: 'footer', label: 'Footer' },
           ] as { key: keyof LeafletFields; label: string }[]).map(({ key, label }) => (
             <div key={key}>
               <label className="block text-[8px] tracking-wider uppercase text-stone-400 mb-1">{label}</label>

@@ -99,7 +99,7 @@ export async function ensureOperationsAndLogs(db: ReturnType<typeof requireDb>) 
   await db`ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMPTZ`;
 
   // Cost basis for the Profitability section (task 66a6a137). One row per
-  // product+dosage variant: the unit cost you pay a supplier per vial, plus the
+  // product+dosage variant: the unit cost you pay a supplier per item, plus the
   // supplier name. Sale prices live in the catalogue; margin = sale - unit_cost.
   // Additive and safe to re-run. (Supplier bulk-purchase / shipping-allocation
   // tracking is a planned Phase 2 that will WRITE these rows automatically.)
@@ -114,17 +114,17 @@ export async function ensureOperationsAndLogs(db: ReturnType<typeof requireDb>) 
       PRIMARY KEY (product_slug, dosage)
     )
   `;
-  // The true cost "to achieve the bottle" is more than the raw vial: unit_cost above
-  // is the RAW vial cost; `components` holds up to a few named extra costs the owner
-  // defines (box, label, anything) and `shipping_per_unit` is this vial's allocated
+  // The true cost "to achieve the bottle" is more than the raw item: unit_cost above
+  // is the RAW item cost; `components` holds up to a few named extra costs the owner
+  // defines (box, label, anything) and `shipping_per_unit` is this item's allocated
   // share of a bulk order's shipping. Total unit cost = unit_cost + sum(components) +
   // shipping_per_unit. All additive/idempotent (task 66a6a137 revision).
   await db`ALTER TABLE product_costs ADD COLUMN IF NOT EXISTS components JSONB NOT NULL DEFAULT '[]'`;
   await db`ALTER TABLE product_costs ADD COLUMN IF NOT EXISTS shipping_per_unit NUMERIC(10,2) NOT NULL DEFAULT 0`;
 
   // Bulk purchases from a supplier. One row per order (e.g. Vendor 1, 5 products ×
-  // 10 vials = 50 vials, £55 shipping). `lines` = [{slug,dosage,qty,blockCost}].
-  // On save the shipping is allocated across the vials in the order and folded into
+  // 10 items = 50 items, £55 shipping). `lines` = [{slug,dosage,qty,blockCost}].
+  // On save the shipping is allocated across the items in the order and folded into
   // each product's raw cost + shipping_per_unit (see db/productCosts.ts). The
   // `update_inventory` flag records the owner's choice about stock (inventory writes
   // are a separate concern, deliberately not automatic yet).

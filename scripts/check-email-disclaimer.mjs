@@ -1,34 +1,20 @@
-// Every email a CUSTOMER receives carries the research-use line, in both halves of it.
+// No email carries the old compliance line, and every email is on one of two lists.
 //
 //   npm run check:email-disclaimer
 //
-// Kieran, 10 September 2026: "Ensure every single email has a research disclaimer at the bottom.
-// I believe it's already on there, but doublecheck."
+// Windsor Beauty is a skincare shop. An earlier version of this shop added a compliance line to
+// the bottom of every customer email. That line is gone, and this check fails if the old wording
+// ever comes back into an email, the shared footer or the one door every email is sent through.
 //
-// He was right that it was there, and right to ask. It was on the picture and not on the words:
-// every HTML half carried it, through the shared footer, and the plain-text half carried it in two
-// emails out of fifteen. That half is not decorative. It is what a screen reader reads out, what a
-// text-only client shows, and what arrives when a mail server strips the HTML. An email whose
-// picture carries a disclaimer and whose words do not is an email with no disclaimer at all for
-// the person reading the words.
-//
-// The line is now appended by sendEmail, the one door this site sends through, so a new email
-// written next year carries it without anybody remembering. This file proves that door still does
-// it, that nothing has opted out that should not have, and that no email has been added that
-// nobody has classified.
-//
-// WHAT IS DELIBERATELY NOT CHECKED. Post that goes to Kieran and the team rather than to a
-// customer: a low-stock alert, a sentinel report, a task notification, the admin copy of an order,
-// the ad-spend report. Nobody is being sold anything in them, and a compliance line on an alert
-// about stock would be noise, which is what teaches people to stop reading the line where it
-// matters.
+// It also keeps the two lists honest: emails a customer receives, and post that goes to the team.
+// Team post must be marked as internal so it is not filed under a customer.
 import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('../src/', import.meta.url));
 
-/** The words that make a research-use line, in any of the wordings actually in use. */
-const DISCLAIMER = /research (?:purposes|use) only|not for human (?:use|consumption)/i;
+/** The old wording, in any of the forms it used to take. None of it may appear in an email. */
+const OLD_WORDING = /research (?:purposes|use)|not for human (?:use|consumption)|laboratory and in vitro/i;
 
 /** Emails a customer receives. Each one is checked. */
 const CUSTOMER_EMAILS = [
@@ -46,6 +32,9 @@ const CUSTOMER_EMAILS = [
   'lib/launchEmail.ts',
   'app/api/admin/enquiries/[id]/reply/route.ts',
   'app/api/contact/send/route.ts',
+  'app/api/admin/customer-emails/[id]/forward/route.ts',
+  'lib/affiliateEmail.ts',
+  'lib/glowCardMilestoneEmail.ts',
 ];
 
 /** Internal post. Listed so nobody has to wonder whether these were forgotten. */
@@ -54,6 +43,7 @@ const INTERNAL_EMAILS = [
   'lib/lowStockAlertEmail.ts',
   'lib/reviewNotificationEmail.ts',
   'lib/automationAlertEmail.ts',
+  'app/api/admin/enquiries/route.ts',
 ];
 
 let passed = 0;
@@ -63,39 +53,24 @@ function check(name, ok, detail = '') {
   else { failed += 1; console.log(`  FAIL  ${name}${detail ? `\n          ${detail}` : ''}`); }
 }
 
-/* The shared footer is where the HTML half gets it. If its default ever loses the wording, every
-   email that relies on it loses the wording silently and no page looks any different. */
 const shared = await readFile(ROOT + 'lib/email/shared.ts', 'utf8');
-check('the shared email footer still carries the research-use line', DISCLAIMER.test(shared));
-
-const notice = await readFile(ROOT + 'lib/email/researchNotice.ts', 'utf8').catch(() => '');
-check('there is one research notice for the plain-text half', DISCLAIMER.test(notice));
-check('and it refuses to write the line twice', /hasResearchNotice/.test(notice));
+check('the shared email footer does not carry the old line', !OLD_WORDING.test(shared));
 
 const sender = await readFile(ROOT + 'lib/email/send.ts', 'utf8');
-check('the one send door appends it to the plain-text half', /withResearchNotice/.test(sender));
-check('and internal post can opt out', /options\.internal/.test(sender));
+check('the one send door does not add the old line', !OLD_WORDING.test(sender) && !/researchNotice/i.test(sender));
+check('and team post can be marked as internal', /options\.internal/.test(sender));
 
-for (const file of CUSTOMER_EMAILS) {
+const noticeFile = await readFile(ROOT + 'lib/email/researchNotice.ts', 'utf8').catch(() => null);
+check('the old notice file has not come back', noticeFile === null);
+
+for (const file of [...CUSTOMER_EMAILS, ...INTERNAL_EMAILS]) {
   const source = await readFile(ROOT + file, 'utf8').catch(() => null);
   if (source === null) { check(`${file} exists`, false, 'file not found, so the list above is stale'); continue; }
-
   const name = file.replace(/^lib\//, '').replace(/^app\/api\//, '');
-
-  // The HTML half: through the shared document, which always carries the footer, or written here.
-  check(`${name}: the HTML half carries it`,
-    /emailDocument\(/.test(source) || DISCLAIMER.test(source));
-
-  // The plain-text half: appended by the sender, so what would break it is opting out.
-  if (/\btext:/.test(source) || /const text =/.test(source)) {
-    check(`${name}: the plain-text half carries it`,
-      DISCLAIMER.test(source) || !/internal:\s*true/.test(source),
-      'this email opts out of the notice but goes to a customer');
-  }
+  check(`${name}: does not carry the old line`, !OLD_WORDING.test(source));
 }
 
-/* Every internal one really did opt out, or it is quietly carrying a compliance line into a stock
-   alert, which is the mirror-image mistake and just as invisible. */
+/* Every piece of team post is marked as internal, so it is never filed under a customer. */
 for (const file of INTERNAL_EMAILS) {
   const source = await readFile(ROOT + file, 'utf8').catch(() => null);
   if (source === null) { check(`${file} exists`, false, 'file not found, so the list above is stale'); continue; }
@@ -104,7 +79,7 @@ for (const file of INTERNAL_EMAILS) {
 }
 
 /* Nothing has been dropped off either list. An email added tomorrow fails here until somebody has
-   decided which of the two it is, which is the only way "every single email" stays true. */
+   decided which of the two it is. */
 async function walk(dir) {
   const out = [];
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -126,7 +101,7 @@ const known = new Set([...CUSTOMER_EMAILS, ...INTERNAL_EMAILS]);
 const unlisted = senders.filter(f => !known.has(f));
 check('every email in the app is on one of the two lists',
   unlisted.length === 0,
-  unlisted.length ? `nobody has decided whether these need the line: ${unlisted.join(', ')}` : '');
+  unlisted.length ? `nobody has decided which list these belong on: ${unlisted.join(', ')}` : '');
 
 console.log(`\n  ${passed + failed} checks, ${passed} passed, ${failed} failed.`);
 process.exit(failed ? 1 : 0);

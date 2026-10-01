@@ -1,5 +1,4 @@
 import { Resend } from 'resend';
-import { withResearchNotice } from './researchNotice';
 import type { EmailFilingHints } from './fileUnderCustomer';
 
 /**
@@ -36,9 +35,7 @@ export interface SendEmailOptions {
   apiKey?: string;
   /**
    * Post to Kieran and the team rather than to a customer: a stock alert, a sentinel report, a
-   * task notification, the admin copy of an order. These skip the research-use line, because a
-   * compliance notice on an alert about disk space is noise, and noise is what teaches people to
-   * stop reading the line everywhere it matters.
+   * task notification, the admin copy of an order. Internal post is not filed under a customer.
    */
   internal?: boolean;
   /**
@@ -70,12 +67,8 @@ export async function sendEmail(
   const apiKey = options.apiKey ?? process.env.RESEND_API_KEY;
   if (!apiKey) return { ok: false, id: null, error: 'No Resend API key configured.' };
 
-  /* The research-use line goes on the plain-text half here because one door is the only way to
-   * apply it consistently. The HTML half already carries it, from
-   * emailDocument's footer. Nothing is added twice, and nothing is added to internal post. */
-  const text = options.internal || payload.text === undefined
-    ? payload.text
-    : withResearchNotice(payload.text);
+  /* The plain-text half goes out exactly as the caller wrote it. Nothing is appended. */
+  const text = payload.text;
 
   try {
     const resend = new Resend(apiKey);

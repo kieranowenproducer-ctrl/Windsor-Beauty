@@ -65,7 +65,7 @@ export default function AddProductFormPanel({
                     />
                   </div>
                   <div>
-                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Purity</label>
+                    <label className="block text-[8px] tracking-widest uppercase text-stone-400 mb-1">Purity badge (optional)</label>
                     <input
                       value={addForm.purity}
                       onChange={e => setAddForm(prev => ({ ...prev, purity: e.target.value }))}
@@ -90,7 +90,7 @@ export default function AddProductFormPanel({
                     <input
                       value={addForm.brand}
                       onChange={e => setAddForm(prev => ({ ...prev, brand: e.target.value }))}
-                      placeholder="e.g. Remedium Research"
+                      placeholder="e.g. Windsor Beauty"
                       className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                     />
                   </div>
@@ -159,7 +159,7 @@ export default function AddProductFormPanel({
                     className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                   />
                   <p className="text-[9px] text-stone-300 mt-1">
-                    Extra search terms — not shown on the storefront, but matched by shop search alongside the name, brand, description and dosage.
+                    Extra search terms. Not shown on the shop, but matched by shop search alongside the name, brand, description and size.
                   </p>
                 </div>
 

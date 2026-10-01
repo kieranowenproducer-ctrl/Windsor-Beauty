@@ -14,7 +14,7 @@ export interface TrialVariant {
   dosage: string;
   price: number;        // sale price
   stock: number;        // units held
-  rawCost: number;      // raw unit cost (the bottle/vial itself)
+  rawCost: number;      // raw unit cost (the item itself)
   components: TrialCostComponent[]; // extra named costs (box, label, anything)
   shipping: number;     // shipping cost per unit
 }

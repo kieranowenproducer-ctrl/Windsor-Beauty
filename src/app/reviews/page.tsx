@@ -198,7 +198,7 @@ export default function ReviewsPage() {
                 href="/shop"
                 className="inline-block bg-gold-700 text-white text-[10px] tracking-[0.22em] uppercase px-9 py-4 hover:bg-gold-800 transition-colors"
               >
-                Shop Peptides
+                Shop Skincare
               </Link>
             </div>
             <div style={{ height: '1px', background: 'rgba(212,175,90,0.35)' }} />

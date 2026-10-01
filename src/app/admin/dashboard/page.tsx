@@ -209,7 +209,7 @@ export default function AdminDashboard() {
   const [duplicateChecked, setDuplicateChecked] = useState(false);
   const [duplicateCheckFailed, setDuplicateCheckFailed] = useState(false);
 
-  // Products running low (task efc5cb9a): every tracked dosage with fewer
+  // Products running low (task efc5cb9a): every tracked size with fewer
   // than `lowStockThreshold` units left, straight from the live stock table.
   // Shown right here because reordering starts with noticing. Since task
   // 3378ea2d each row can be fixed in place: save a real number, or press
@@ -780,7 +780,7 @@ export default function AdminDashboard() {
             </Link>
           )}
 
-          {/* Stock running low (task efc5cb9a): every tracked dosage under the
+          {/* Stock running low (task efc5cb9a): every tracked size under the
               reorder threshold, named with its live count so deciding what to
               order needs no second screen. Gold, not red — nothing is broken,
               something is waiting to be reordered. The matching email goes to

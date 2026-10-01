@@ -160,10 +160,10 @@ export function resolveShipmentService(
 // per line item, including customs data from the product catalogue (used
 // only for international shipments, but harmless to include for UK ones).
 //
-// `name` carries a GENERIC description, never the real product name or dosage —
-// see src/lib/genericNames.ts. The customs fields below are deliberately left
-// alone: they are a separate field and must describe the goods accurately.
-// Pass `orderReference` to record the substitutions in our internal audit log.
+// `name` carries the product's name, or a trial product's neutral reference.
+// See src/lib/genericNames.ts. The customs fields below are a separate field
+// and are passed through unchanged.
+// Pass `orderReference` to record the names sent in our own log.
 export function buildShipmentContents(
   items: OrderItemRecord[],
   productsBySlug: Map<string, Product>,
@@ -175,23 +175,20 @@ export function buildShipmentContents(
   const contents = items.map((item) => {
     const shipping = resolveItemShipping(item, productsBySlug);
     const unitWeightInGrams = item.weightGrams ?? shipping?.weightGrams ?? settings.default_item_weight_grams;
-    // A missing slug is normal — bespoke invoice lines have no catalogue entry.
-    // get(undefined) -> undefined -> the generic default. Exactly the intended
-    // behaviour: an unrecognised line is the LAST thing we'd want to send by name.
+    // A missing slug is normal: bespoke invoice lines have no catalogue entry.
+    // Such a line is sent under the name written on it.
     const { name, audit } = outboundItemName(item.slug ? productsBySlug.get(item.slug) : undefined, {
       slug: item.slug ?? '(bespoke/no-slug)',
       realName: `${item.name}${item.variant ? ` (${item.variant})` : ''}`,
       destination: 'royal-mail',
       // A trial product's own fixed reference, e.g. "Product 284" (task 9e2f4a11). Present only
-      // on trial lines. Without it a trial line has nothing left to identify it by this point,
-      // and every one of them shipped under the same "Cosmetic Item".
+      // on trial lines. Without it a trial line has nothing left to identify it by this point.
       fulfilmentRef: item.fulfilmentRef,
     });
     audits.push(audit);
     return {
       name,
-      // NOT item.slug — the slug is the product name ("retatrutide"), which would
-      // leak straight past the generic `name` above. See outboundSku().
+      // The product's own slug. A trial or bespoke line has none and sends none.
       sku: outboundSku(item.slug),
       quantity: item.quantity,
       unitValue: item.price,

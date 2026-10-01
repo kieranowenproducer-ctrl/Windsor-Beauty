@@ -41,8 +41,8 @@ const required = [
 ];
 const missing = required.filter(name => !present.has(name));
 console.log(missing.length
-  ? `Live RAF invitation schema is not ready. Missing: ${missing.join(', ')}`
-  : 'Live RAF invitation schema has all required fields.');
+  ? `Live affiliate invitation schema is not ready. Missing: ${missing.join(', ')}`
+  : 'Live affiliate invitation schema has all required fields.');
 const [profile] = await sql`SELECT status FROM affiliate_profiles WHERE customer_id = 83 LIMIT 1`;
-console.log(`Live Raf profile: ${profile?.status ?? 'not found'}.`);
+console.log(`Live affiliate profile: ${profile?.status ?? 'not found'}.`);
 process.exitCode = missing.length || profile?.status !== 'paused' ? 1 : 0;

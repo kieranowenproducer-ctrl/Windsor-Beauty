@@ -35,7 +35,7 @@ function CartThumbnail({ slug, name, image }: { slug: string; name: string; imag
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <span className="text-[8px] tracking-widest text-gold-700 text-center leading-tight">
-            WINDSOR<br />GLOW
+            WINDSOR<br />BEAUTY
           </span>
         </div>
       )}
@@ -237,9 +237,6 @@ export default function CartPage() {
               Proceed to Checkout
             </Link>
 
-            <p className="text-[9px] text-stone-500 text-center tracking-wider">
-              For research use only. Not for human consumption.
-            </p>
           </div>
         </div>
       </div>

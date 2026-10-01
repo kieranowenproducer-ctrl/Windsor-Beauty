@@ -306,12 +306,11 @@ export async function ensureCustomersAndOrders(db: ReturnType<typeof requireDb>)
 
   /* WHAT THE CUSTOMER CONFIRMED BEFORE THEY PAID (Samuel, 10 September 2026).
    *
-   * Checkout asks two things before the Pay button unlocks: that they are over 18 and that what
-   * they are buying is not for human consumption, and that they have read the Terms and will
-   * adhere to them. Ticking a box that leaves no trace proves nothing. The point of asking is to
+   * Checkout asks the customer to confirm that they have read the Terms and will adhere to
+   * them before the Pay button unlocks. Ticking a box that leaves no trace proves nothing. The point of asking is to
    * be able to answer "did this customer confirm it?" about a specific order, months later.
    *
-   * THE SENTENCES ARE STORED, NOT JUST THE TICKS. A boolean called `researchUse` records that
+   * THE SENTENCES ARE STORED, NOT JUST THE TICKS. A boolean records that
    * somebody ticked something. It does not record WHAT. Wording changes, and when it does, every
    * older order would silently start reading as though that customer had agreed to today's
    * sentence rather than the one actually on their screen. So each order keeps the exact words it

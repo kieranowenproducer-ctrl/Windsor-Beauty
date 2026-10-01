@@ -6,7 +6,7 @@ import { categorySlug } from '@/lib/categoryUrls';
 // The real names behind the addresses in the after-the-click tables.
 //
 // describePage() in pageNames.ts turns "/account/verify-email" into words on
-// its own, but it cannot know that /shop/retatrutide-pen is the Retatrutide Pen
+// its own, but it cannot know that /shop/hydra-veil-serum is the Hydra Veil Serum
 // or that a blog address is an article called something. Those names live in the
 // catalogue and the database, so the admin read looks them up here and hands the
 // finished map to the page. Only the addresses actually on screen are looked up,

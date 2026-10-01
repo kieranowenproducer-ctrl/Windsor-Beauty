@@ -13,8 +13,8 @@ async function main() {
     customerName: 'Test Customer',
     orderNumber,
     items: [
-      { name: 'NAD+', variant: '500mg / 10ml vial', price: 39.99, quantity: 1 },
-      { name: 'BPC-157', variant: '5mg vial', price: 24.99, quantity: 1 },
+      { name: 'Sample Serum', variant: '30ml', price: 39.99, quantity: 1 },
+      { name: 'Sample Cleanser', variant: '150ml', price: 24.99, quantity: 1 },
     ],
     subtotal: 64.98,
     discountCode: 'WELCOME10',

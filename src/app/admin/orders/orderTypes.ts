@@ -45,8 +45,8 @@ export interface OrderItem {
 }
 
 // A one-line "what was bought" summary for the orders list, so the products
-// are visible at a glance without opening each order (e.g. "2x Reta Vial,
-// 1x MOTS-C"). Variant is appended in brackets only when it adds information.
+// are visible at a glance without opening each order (e.g. "2x Serum,
+// 1x Cleanser"). Variant is appended in brackets only when it adds information.
 export function summariseItems(items: OrderItem[]): string {
   if (!items || items.length === 0) return 'No items';
   return items

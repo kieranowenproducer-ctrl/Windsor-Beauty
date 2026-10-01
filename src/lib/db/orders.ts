@@ -169,7 +169,7 @@ export interface OrderRow {
   // email to an existing account. See ensureSchema for what each value means. 'not_recorded' is
   // every order placed before the column existed, and means exactly that — not a guess.
   account_link: import('../orderAccountLink').OrderAccountLink;
-  /* What they confirmed before paying: over 18, research use only, and the Terms. Carries the
+  /* What they confirmed before paying: that they accept the Terms. Carries the
      exact sentences they were shown, so an old order still reads as what THAT customer agreed to
      rather than as today's wording. NULL means not captured, never 'declined' and never an
      assumed yes: orders placed before this existed, and invoice orders, which are made by the

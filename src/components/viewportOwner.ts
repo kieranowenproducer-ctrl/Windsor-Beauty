@@ -5,7 +5,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 /**
  * ONE BLOCKING LAYER OWNS THE CUSTOMER'S SCREEN AT A TIME.
  *
- * WHY THIS EXISTS. On 12 August 2026 the age/research-use gate started marking
+ * WHY THIS EXISTS. On 12 August 2026 an entry gate started marking
  * everything behind it `inert`, so a keyboard or screen-reader visitor could no
  * longer walk past the three confirmations. That was right, and it stays.
  *
@@ -37,7 +37,7 @@ import { useEffect, useSyncExternalStore } from 'react';
  *
  * Migrated so far: EntryGate, TermsAcceptanceModal, DiscountPopup — the three in
  * the journey that broke. The other body-lock writers (CartDrawer, the calculator,
- * certificate, storage, bac-water and variant modals, and the admin ones) still
+ * certificate, storage and variant modals, and the admin ones) still
  * do it themselves. They are all opened by a deliberate click rather than a
  * timer, so none of them can ambush another, but they should move onto this
  * counter when each is next touched.

@@ -1,7 +1,7 @@
 'use client';
 
 // Admin-only "Edit" entry point on the shop's certificate modal. Opens the
-// same on-certificate editor the Certificate Filler uses, for the dosage the
+// on-certificate editor for the size the
 // customer view is showing, and auto-saves through the same admin catalogue
 // endpoint. The button only renders for staff (the page passes it down based
 // on the wb_ui_session=staff cookie); real security stays on the API, which
@@ -29,7 +29,7 @@ export default function AdminCertificateEdit({
   /**
    * How many problems this certificate has. Above zero the control becomes the red
    * "Fix these N" button, so pressing it opens the certificate itself with the problems
-   * marked on the boxes that fix them — rather than sending someone to the back office
+   * marked on the boxes that fix them, rather than sending someone to the back office
    * to hunt for the same fields on a different screen (task f5c8da12).
    */
   fixCount?: number;
@@ -52,7 +52,7 @@ export default function AdminCertificateEdit({
   const savingNow = useRef(false);
 
   // Load the merged catalogue (live overrides win) and build the editor state
-  // for this product + dosage — the same construction the filler uses.
+  // for this product and size.
   const load = useCallback(async () => {
     setError('');
     try {
@@ -158,7 +158,7 @@ export default function AdminCertificateEdit({
           : 'text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-stone-700 transition-colors font-semibold border border-stone-200 hover:border-stone-300 px-2 py-1 rounded-sm'}
         title={fixCount > 0
           ? 'Open this certificate with the problems marked on it, and type the missing values straight onto it'
-          : 'Edit this certificate in place (admin only)'}
+          : 'Edit this certificate here (staff only)'}
       >
         {fixCount > 0 ? (fixCount === 1 ? 'Fix it' : `Fix these ${fixCount}`) : 'Edit'}
       </button>

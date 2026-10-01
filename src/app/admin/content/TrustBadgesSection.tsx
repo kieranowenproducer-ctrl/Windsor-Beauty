@@ -25,8 +25,8 @@ export default function TrustBadgesSection({
             <div id="section-trust-badges" className="bg-white border border-stone-200 p-6">
               <h2 className="text-sm font-semibold text-stone-800 mb-1">Trust Badges</h2>
               <p className="text-xs text-stone-400 mb-4 leading-relaxed">
-                Edit the four trust badges shown on the homepage (e.g. &ldquo;99% Purity &mdash; Independently
-                Tested&rdquo;). Changes appear on the live site as soon as they&apos;re saved.
+                Edit the four trust badges shown on the homepage. Each one has a short title and a
+                line underneath. Changes appear on the live site as soon as they&apos;re saved.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

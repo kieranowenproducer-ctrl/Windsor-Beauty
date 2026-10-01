@@ -1,4 +1,4 @@
-// Shared by Raf's dashboard and the staff affiliate page, so both describe an invitation the same way.
+// Shared by the affiliate's dashboard and the staff affiliate page, so both describe an invitation the same way.
 // Safe to import from the browser: no database, no secrets.
 
 export const INVITATION_STATE_LABEL: Record<string, string> = {
@@ -27,8 +27,8 @@ export const INVITATION_STATE_TONE: Record<string, string> = {
 export const INVITATION_CAN_RESEND = new Set(['email_failed', 'expired', 'sent', 'delivered', 'link_only', 'sending']);
 
 /**
- * WhatsApp's own share link. It opens WhatsApp on the phone with the message typed in and lets Raf
- * pick the person, so it is sent from his own number.
+ * WhatsApp's own share link. It opens WhatsApp on the phone with the message typed in and lets the affiliate
+ * pick the person, so it is sent from their own number.
  */
 export function whatsappShareUrl(message: string): string {
   return `https://wa.me/?text=${encodeURIComponent(message)}`;

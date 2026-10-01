@@ -33,8 +33,8 @@ const PAGES: { path: string; priority: number; changeFrequency: MetadataRoute.Si
   { path: '/reviews', priority: 0.6, changeFrequency: 'weekly' },
   { path: '/promotion', priority: 0.4, changeFrequency: 'monthly' },
   /* The legal and policy pages. Low priority and genuinely worth including: they are what a
-   * careful buyer checks before a first order, and they are the pages that make a research
-   * supplier look like a real business rather than a shopfront. */
+   * careful buyer checks before a first order, and they are the pages that make a shop
+   * look like a real business rather than a shopfront. */
   { path: '/terms', priority: 0.3, changeFrequency: 'yearly' },
   { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' },
   { path: '/shipping', priority: 0.3, changeFrequency: 'yearly' },
@@ -42,10 +42,8 @@ const PAGES: { path: string; priority: number; changeFrequency: MetadataRoute.Si
   { path: '/refund-policy', priority: 0.3, changeFrequency: 'yearly' },
   { path: '/payment-policy', priority: 0.3, changeFrequency: 'yearly' },
   { path: '/disclaimer', priority: 0.3, changeFrequency: 'yearly' },
-  { path: '/research-disclaimer', priority: 0.3, changeFrequency: 'yearly' },
   { path: '/contact-policy', priority: 0.3, changeFrequency: 'yearly' },
   { path: '/cookies', priority: 0.3, changeFrequency: 'yearly' },
-  { path: '/age-restriction', priority: 0.3, changeFrequency: 'yearly' },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -87,7 +85,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     })),
     /* Below /shop and above the individual products: a category page is a better landing page
-     * than the shop index for anything more specific than "peptides", and a worse one than the
+     * than the shop index for anything more specific than "skincare", and a worse one than the
      * product page for anything named. */
     ...categories.map((category) => ({
       url: `${SITE_URL}${categoryUrl(category.name)}`,

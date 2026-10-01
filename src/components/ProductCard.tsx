@@ -13,9 +13,9 @@ import VariantPickerModal from '@/components/VariantPickerModal';
 interface Props {
   product: Product;
   /**
-   * Live stock for this product, summed across its dosages. Undefined =
+   * Live stock for this product, summed across its sizes. Undefined =
    * untracked/unlimited. Kept as the fallback for callers that have no
-   * per-dosage breakdown; `variantStock` is the better answer where it exists.
+   * per-size breakdown; `variantStock` is the better answer where it exists.
    */
   stock?: number;
   /** Average rating + review count for this product. Omitted/zero count = no rating shown. */
@@ -25,9 +25,9 @@ interface Props {
   /** True for signed-in admins (wb_ui_session=staff). Shows the inline stock editor. */
   isStaff?: boolean;
   /**
-   * Per-dosage stock for this product (dosage -> quantity; a dosage with no
+   * Per-size stock for this product (size -> quantity; a size with no
    * entry is untracked, so unlimited). Drives the sold-out wording, the admin
-   * editor, and the dosage list in the quick-add picker.
+   * editor, and the size list in the quick-add picker.
    */
   variantStock?: Record<string, number>;
 }
@@ -39,7 +39,7 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
   // Admin-only inline stock editing straight from the shop grid (task 6dc6c2ec),
   // so stock can be changed without opening each product. Local copy so a save
   // reflects immediately; writes go to the same admin-gated endpoint the product
-  // page uses. Keyed by dosage.
+  // page uses. Keyed by size (the `dosage` field).
   const [localStock, setLocalStock] = useState<Record<string, number>>({});
   const [editingDosage, setEditingDosage] = useState<string | null>(null);
   const [stockDraft, setStockDraft] = useState('');
@@ -74,13 +74,13 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
   const availability = effectiveAvailability(product, stock);
   const comingSoon = availability === 'coming_soon';
   // "Sold out" on a card speaks for the whole product: the stamp goes across the
-  // photograph, so it may only appear when there is nothing left in any strength.
+  // photograph, so it may only appear when there is nothing left in any size.
   //
-  // The `stock` prop is a SUM across dosages, which is the wrong instrument for that
-  // question. Half the catalogue has one dosage counted and another untracked (aod-9604,
-  // retatrutide, pt-141, tb-500 and more), so the day the counted one hits zero the sum
-  // reads zero and the card would stamp a product whose other strength is still on the
-  // shelf. With the per-dosage numbers we ask the real question instead, through the same
+  // The `stock` prop is a SUM across sizes, which is the wrong instrument for that
+  // question. A product can have one size counted and another untracked, so the day the
+  // counted one hits zero the sum reads zero and the card would stamp a product whose
+  // other size is still on the shelf. With the per-size numbers we ask the real question
+  // instead, through the same
   // rule the product page uses. Without them (a caller that has no breakdown yet) the old
   // aggregate still applies, so nothing regresses.
   //
@@ -88,8 +88,8 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
   // never contradict what they just typed.
   const liveVariantStock = variantStock ? { ...variantStock, ...localStock } : undefined;
   const outOfStock = liveVariantStock ? allDosagesSoldOut(product, liveVariantStock) : availability === 'out_of_stock';
-  // Individual strengths that are gone. The quick-add picker greys these out rather than
-  // letting a customer put a sold-out dosage in the basket for checkout to reject later.
+  // Individual sizes that are gone. The quick-add picker greys these out rather than
+  // letting a customer put a sold-out size in the basket for checkout to reject later.
   const soldOutDosages = variants.filter((v) => dosageSoldOut(product, liveVariantStock, v.dosage)).map((v) => v.dosage);
   const priceTbc = baseVariant.price === 0;
   const salePercent = saleConfig ? effectiveSalePercent(saleConfig, product) : 0;
@@ -224,7 +224,7 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
                 <div className="w-11 h-2 bg-gold-400 rounded-sm mx-auto mb-0.5" />
                 <div className="w-9 h-20 border border-gold-200 bg-white/90 mx-auto flex flex-col items-center justify-center rounded-b-sm">
                   <span className="text-[7px] tracking-widest text-gold-700 text-center leading-tight font-semibold">
-                    WINDSOR<br />GLOW
+                    WINDSOR<br />BEAUTY
                   </span>
                   <div className="mt-1 w-6 h-px bg-gold-200" />
                   <span className="mt-0.5 text-[7px] text-gold-700 tracking-wider">
@@ -232,11 +232,6 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
                   </span>
                 </div>
               </div>
-              {product.purity && (
-                <span className="text-[7px] text-stone-500 tracking-[0.2em] uppercase">
-                  {product.purity} Purity
-                </span>
-              )}
             </div>
           )}
         </div>
@@ -286,7 +281,7 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
           </p>
         )}
 
-        {/* Dosage variants */}
+        {/* Sizes */}
         <div className="flex flex-wrap gap-1 mb-4">
           {variants.map(v => (
             <span key={v.dosage} className="text-[10px] font-medium tracking-wide border border-gold-300 text-gold-700 px-2 py-0.5">

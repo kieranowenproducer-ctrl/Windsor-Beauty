@@ -651,7 +651,7 @@ export default function AdminDiscountCodesPage() {
               was never a customer-entered code, so it didn't belong in this section). */}
           <div className="mt-12 border border-gold-100 bg-gold-50/40 px-5 py-4">
             <p className="text-xs text-stone-600 leading-relaxed">
-              Looking for automatic, no-code discounts (e.g. &ldquo;10% off all peptides&rdquo;)? That feature has
+              Looking for automatic, no-code discounts (e.g. &ldquo;10% off all serums&rdquo;)? That feature has
               moved to{' '}
               <Link href="/admin/promotions" className="text-gold-700 hover:text-gold-700 underline">
                 Promotions

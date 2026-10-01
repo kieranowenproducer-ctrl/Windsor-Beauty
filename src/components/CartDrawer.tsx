@@ -44,21 +44,15 @@ function CartThumbnail({ slug, name, image }: { slug: string; name: string; imag
 
 // Slide-in basket drawer: shows the current cart contents (thumbnails,
 // quantity controls, subtotal, free-shipping progress, checkout links) plus
-// an upsell carousel and needle-usage disclaimer when relevant. It renders
+// an upsell carousel. It renders
 // nothing until CartContext's drawerOpen flag is true — opened via
 // openDrawer() (e.g. after adding an item) and dismissed via closeDrawer(),
 // backdrop click, or the close button.
-// penSlugs comes in as a prop rather than being derived here from PRODUCTS.
-// This component lives in the site-wide layout, so importing the catalogue put
-// all 59KB of product data into the shared client bundle of EVERY page — the
-// homepage, Contact, the policy pages, all of it — purely to work out which
-// slugs are pens for one disclaimer. Every byte in that bundle has to arrive
-// and be parsed before the header becomes pressable, which is the fault this
-// change is part of fixing. The layout is a server component and works the
-// list out there instead; only the handful of slugs crosses to the browser.
-export default function CartDrawer({ penSlugs = [] }: { penSlugs?: string[] }) {
+// This component lives in the site-wide layout, so it must never import the
+// product catalogue: that would put all the product data into the shared client
+// bundle of every page.
+export default function CartDrawer() {
   const { items, drawerOpen, closeDrawer, removeItem, updateQty, clearCart, totalPrice, totalItems, lastAddedSlug, priceForItem, memberSaving } = useCart();
-  const penSlugSet = new Set(penSlugs);
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null);
   const [ukDeliveryRate, setUkDeliveryRate] = useState<number | null>(null);
   const [memberOfferOpen, setMemberOfferOpen] = useState(false);
@@ -148,15 +142,6 @@ export default function CartDrawer({ penSlugs = [] }: { penSlugs?: string[] }) {
           className="flex-1 overflow-y-auto overscroll-contain px-6 py-4"
           style={{ touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' }}
         >
-          {items.some(item => penSlugSet.has(item.slug)) && (
-            <div className="border border-gold-200 bg-gold-50/40 px-4 py-3 mb-4">
-              <p className="text-[10px] text-stone-500 leading-relaxed">
-                <span className="font-semibold text-stone-600">Needle usage disclaimer: </span>
-                pens in your basket are supplied with a needle for lawful research handling and
-                reconstitution only, not for human or animal use.
-              </p>
-            </div>
-          )}
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center gap-3 py-16">
               <svg className="w-10 h-10 text-stone-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -298,12 +283,6 @@ export default function CartDrawer({ penSlugs = [] }: { penSlugs?: string[] }) {
           </div>
         )}
 
-        {/* Research notice */}
-        <div className="px-6 pb-4">
-          <p className="text-[8px] text-stone-500 text-center tracking-wider">
-            For research use only. Not for human consumption.
-          </p>
-        </div>
       </div>
     </>
   );

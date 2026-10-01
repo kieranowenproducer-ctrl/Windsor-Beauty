@@ -91,10 +91,10 @@ const CERTIFICATE_STRING_FIELDS: (keyof ProductCertificate)[] = [
   'molecularWeight', 'storage', 'caution', 'image',
 ];
 
-// Parses the optional admin-submitted Certificate of Analysis block. Returns
+// Parses the optional admin-submitted product certificate block. Returns
 // undefined if absent, null if present but malformed (caller should reject
-// the save). All text fields are manually entered by the admin from real
-// batch/lab data — nothing here is auto-generated.
+// the save). All text fields are typed by the admin from the real document.
+// Nothing here is auto-generated.
 export function parseCertificateInput(value: unknown): ProductCertificate | null | undefined {
   if (value === undefined || value === null) return undefined;
   if (typeof value !== 'object') return null;
@@ -335,8 +335,8 @@ export function parseProductInput(value: unknown): Product | null {
     const variantShipping = parseShippingInput(e.shipping);
     if (variantShipping === null) return null;
     const variantImage = typeof e.image === 'string' && e.image.trim() ? e.image.trim() : undefined;
-    // Per-dosage certificate (Option A). null = malformed → reject the product;
-    // undefined = none set for this dosage (falls back to the product-level cert).
+    // Per-size certificate. null = malformed, so reject the product;
+    // undefined = none set for this size (falls back to the product-level cert).
     const variantCertificate = parseCertificateInput(e.certificate);
     if (variantCertificate === null) return null;
     variants.push({ dosage, price: roundMoney(price), enabled, shipping: variantShipping, image: variantImage, certificate: variantCertificate });

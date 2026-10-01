@@ -6,8 +6,7 @@ import { buildShippingConfirmationEmail } from '@/lib/shippingEmail';
  * Look at the emails a customer actually gets, without sending one.
  *
  * Kieran asked on 5 September 2026 (task 8a498491) to be shown what the "paid"
- * and "dispatched" emails look like, and to be able to check the research-use
- * disclaimer is on the bottom of them. Rather than paste him a mock-up, this
+ * and "dispatched" emails look like. Rather than paste him a mock-up, this
  * renders the REAL templates through the REAL builders, so what he sees on
  * screen is what lands in an inbox.
  *
@@ -55,8 +54,8 @@ function build(type: PreviewType): { subject: string; text: string; html: string
     customerName: SAMPLE.customerName,
     orderNumber: SAMPLE.orderNumber,
     items: [
-      { name: 'Sample Peptide', variant: '10mg', quantity: 2, price: 30, slug: 'sample-peptide' },
-      { name: 'Bacteriostatic Water', variant: '3ml', quantity: 1, price: 4.99, slug: 'bac-water' },
+      { name: 'Sample Serum', variant: '30ml', quantity: 2, price: 30, slug: 'sample-serum' },
+      { name: 'Sample Cleanser', variant: '150ml', quantity: 1, price: 4.99, slug: 'sample-cleanser' },
     ],
     subtotal: 64.99,
     shippingLabel: 'Royal Mail Tracked 24',

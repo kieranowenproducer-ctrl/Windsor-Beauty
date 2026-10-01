@@ -7,7 +7,7 @@ import { INVITATION_STATE_LABEL, INVITATION_STATE_TONE } from '@/lib/affiliateIn
 type Overview = { profiles: Array<Record<string, string | number>>; payouts: Array<Record<string, string | number>>; referrals: Array<Record<string, string | number | boolean | null>>; invitations?: Array<Record<string, string | number | boolean | null>>; setupRequired?: boolean };
 
 const money = (value: unknown) => `£${(Number(value) / 100).toFixed(2)}`;
-// Same readable date as Raf sees on his own page. This used to print 22/03/2027 here
+// Same readable date as the affiliate sees on their own page. This used to print 22/03/2027 here
 // and 22 Mar 2027 there, which reads as two different systems.
 const date = (value: unknown) => new Date(String(value)).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
@@ -52,7 +52,7 @@ function StaffInvitation({ affiliateCustomerId, active, preview }: { affiliateCu
       const result = await response.json().catch(() => null);
       if (!response.ok || !result?.link) throw new Error(result?.error || 'The request page could not be opened.');
       setRequestLink(result.link);
-      setMessage('Staff can share this page if Raf cannot access his panel. The recipient requests their own email.');
+      setMessage('Staff can share this page if the affiliate cannot access their panel. The recipient requests their own email.');
     } catch (error) { setMessage(error instanceof Error ? error.message : 'The request page could not be opened.'); }
   }
 
@@ -85,10 +85,10 @@ function StaffInvitation({ affiliateCustomerId, active, preview }: { affiliateCu
 
   return <section aria-label="Staff invitation fallback" className="mt-6 border-t border-stone-100 pt-5">
     <p className={EYEBROW}>Invitation fallback</p>
-    <h3 className="mt-1 font-serif text-lg text-stone-800">Help Raf with invitations</h3>
-    <p className="mt-1 text-xs leading-relaxed text-stone-600">Staff can retrieve Raf’s request page or create a one-person link. Neither button sends an email.</p>
-    <button type="button" onClick={getRequestLink} disabled={!active} className="mt-4 min-h-11 border border-gold-700 px-4 text-xs font-semibold text-gold-800 hover:bg-gold-50 disabled:opacity-50">Get Raf’s request page</button>
-    {requestLink && <div className="mt-3 flex flex-wrap gap-2"><input aria-label="Raf request page link" readOnly value={requestLink} onFocus={event => event.target.select()} className="min-h-11 min-w-0 flex-1 border border-stone-300 bg-white px-3 text-xs text-stone-700" /><button type="button" onClick={() => navigator.clipboard.writeText(requestLink).then(() => setMessage('Request page copied.')).catch(() => setMessage('Select the link and copy it manually.'))} className="min-h-11 border border-gold-700 px-4 text-xs font-semibold text-gold-800">Copy</button></div>}
+    <h3 className="mt-1 font-serif text-lg text-stone-800">Help with invitations</h3>
+    <p className="mt-1 text-xs leading-relaxed text-stone-600">Staff can retrieve the affiliate’s request page or create a one-person link. Neither button sends an email.</p>
+    <button type="button" onClick={getRequestLink} disabled={!active} className="mt-4 min-h-11 border border-gold-700 px-4 text-xs font-semibold text-gold-800 hover:bg-gold-50 disabled:opacity-50">Get the request page</button>
+    {requestLink && <div className="mt-3 flex flex-wrap gap-2"><input aria-label="Affiliate request page link" readOnly value={requestLink} onFocus={event => event.target.select()} className="min-h-11 min-w-0 flex-1 border border-stone-300 bg-white px-3 text-xs text-stone-700" /><button type="button" onClick={() => navigator.clipboard.writeText(requestLink).then(() => setMessage('Request page copied.')).catch(() => setMessage('Select the link and copy it manually.'))} className="min-h-11 border border-gold-700 px-4 text-xs font-semibold text-gold-800">Copy</button></div>}
     <p className="mt-5 text-xs text-stone-600">One-person fallback link</p>
     <form onSubmit={create} className="mt-4 flex flex-wrap gap-2">
       <label htmlFor={`staff-affiliate-invite-${affiliateCustomerId}`} className="sr-only">Recipient email address</label>
@@ -111,8 +111,8 @@ function StaffInvitation({ affiliateCustomerId, active, preview }: { affiliateCu
 }
 
 const previewOverview: Overview = {
-  profiles: [{ customer_id: 83, display_name: 'Raf', referral_code: 'RAF', status: 'active', first_name: 'Raf', last_name: 'Christian', email: 'raf@example.com', code_duration_days: 183, balance_pence: 1954, referral_count: 12, order_count: 8 }],
-  payouts: [{ id: 12, affiliate_customer_id: 83, display_name: 'Raf', email: 'raf@example.com', amount_pence: 1900, method: 'cash', status: 'requested', requested_at: new Date().toISOString() }],
+  profiles: [{ customer_id: 83, display_name: 'Example Partner', referral_code: 'PARTNER', status: 'active', first_name: 'Example', last_name: 'Partner', email: 'partner@example.com', code_duration_days: 183, balance_pence: 1954, referral_count: 12, order_count: 8 }],
+  payouts: [{ id: 12, affiliate_customer_id: 83, display_name: 'Example Partner', email: 'partner@example.com', amount_pence: 1900, method: 'cash', status: 'requested', requested_at: new Date().toISOString() }],
   referrals: [{ id: 1, affiliate_customer_id: 83, status: 'active', first_name: 'Alex', last_name: 'Morgan', email: 'alex@example.com', code: 'RAF5-A12B3C4D', code_active: true, expires_at: '2027-03-22T12:00:00.000Z', order_count: 3, earned_pence: 823, created_at: '2026-09-18T12:00:00.000Z' }],
 };
 
@@ -162,7 +162,7 @@ export function AdminAffiliates({ forcePreview = false }: { forcePreview?: boole
             <p className={EYEBROW}>Customers</p>
             <h1 className="mt-1.5 font-serif text-4xl text-stone-800">Affiliate control</h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-stone-600">
-              Staff controls for Raf&apos;s referrals, codes and requests. Nothing leaves his balance until you approve it here.
+              Staff controls for affiliate referrals, codes and requests. Nothing leaves an affiliate&apos;s balance until you approve it here.
             </p>
           </header>
 
@@ -177,13 +177,13 @@ export function AdminAffiliates({ forcePreview = false }: { forcePreview?: boole
 
           {data && data.profiles.length === 0 && !preview && (
             <section className={`mb-7 ${CARD} p-6`}>
-              <h2 className="font-serif text-xl text-stone-800">Connect Raf Christian</h2>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone-600">This creates the affiliate profile for customer 83. It does not pay money or contact customers.</p>
+              <h2 className="font-serif text-xl text-stone-800">Set up the first affiliate</h2>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone-600">This creates the affiliate profile for customer number 83, with the invitation code PARTNER. Check that customer 83 is the right person first. It does not pay money or contact customers.</p>
               <button
-                onClick={() => act({ action: 'create_profile', customerId: 83, displayName: 'Raf', referralCode: 'RAF', durationDays: 183 })}
+                onClick={() => act({ action: 'create_profile', customerId: 83, displayName: 'Our partner', referralCode: 'PARTNER', durationDays: 183 })}
                 className="mt-5 min-h-11 bg-gold-700 px-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-gold-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700"
               >
-                Create Raf profile
+                Create affiliate profile
               </button>
             </section>
           )}
@@ -265,11 +265,11 @@ export function AdminAffiliates({ forcePreview = false }: { forcePreview?: boole
                       <p className="mt-2 text-[11px] text-stone-500">Existing codes keep their original expiry date.</p>
                     </div>
                     <StaffInvitation affiliateCustomerId={Number(p.customer_id)} active={active} preview={preview} />
-                    <section className="mt-5 border-t border-stone-100 pt-4" aria-label="Raf's invitations">
+                    <section className="mt-5 border-t border-stone-100 pt-4" aria-label="Affiliate invitations">
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <p className={EYEBROW}>Invitations</p>
                         <span className="flex flex-wrap gap-3 text-[11px]">
-                          <a href="/api/admin/affiliates?emailPreview=1" target="_blank" rel="noopener" className="text-gold-800 underline underline-offset-2">See the email Raf sends</a>
+                          <a href="/api/admin/affiliates?emailPreview=1" target="_blank" rel="noopener" className="text-gold-800 underline underline-offset-2">See the invitation email</a>
                           <a href="/api/admin/affiliates?emailPreview=1&requested=1" target="_blank" rel="noopener" className="text-gold-800 underline underline-offset-2">See the requested version</a>
                         </span>
                       </div>
@@ -277,7 +277,7 @@ export function AdminAffiliates({ forcePreview = false }: { forcePreview?: boole
                         ? <p className="mt-2 text-xs text-stone-500">No invitations yet.</p>
                         : <ul className="mt-2 space-y-2 text-xs text-stone-700">
                           {(data?.invitations || []).filter(row => Number(row.affiliate_customer_id) === Number(p.customer_id)).map(row => <li key={String(row.id)} className="flex flex-wrap items-center justify-between gap-2 border border-stone-100 px-3 py-2">
-                            <span className="min-w-0 break-all">{String(row.recipient_email)}<span className="ml-2 text-stone-400">{row.created_source === 'recipient' ? 'asked on the request page' : row.created_source === 'staff' ? 'made by staff' : 'sent by Raf'}, {date(row.created_at)}</span></span>
+                            <span className="min-w-0 break-all">{String(row.recipient_email)}<span className="ml-2 text-stone-400">{row.created_source === 'recipient' ? 'asked on the request page' : row.created_source === 'staff' ? 'made by staff' : 'sent by the affiliate'}, {date(row.created_at)}</span></span>
                             <span className={`shrink-0 px-2 py-0.5 text-[10px] font-semibold ${INVITATION_STATE_TONE[String(row.state)] || 'bg-stone-100 text-stone-700'}`}>{INVITATION_STATE_LABEL[String(row.state)] || String(row.state)}</span>
                           </li>)}
                         </ul>}

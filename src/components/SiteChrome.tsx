@@ -2,7 +2,6 @@
 
 import { Children } from 'react';
 import { usePathname } from 'next/navigation';
-import EntryGate from './EntryGate';
 import CampaignPoster from './CampaignPoster';
 
 // Every page opens with the promo bar, the logo row, a long navigation strip
@@ -21,35 +20,18 @@ function SkipLink() {
   );
 }
 
-interface TermsOverride {
-  title: string | null;
-  body: string;
-  format?: string;
-}
-
-// Temporary homepage showcase, requested by Kieran on 25 August 2026.
-// Change this one switch back to false to restore the age and terms entry screen.
-//
-// STILL OFF, AND DELIBERATELY (Samuel, 10 September 2026). He asked for the gate
-// back that day, then: "Keep the gate switched off for the meantime as we are
-// still advertising." The gate itself is READY: its two statements were rewritten
-// the same day, so switching this to false brings back the version he asked for
-// rather than the old three-box one. Nothing else needs doing.
-const TEMPORARILY_BYPASS_ENTRY_GATE = true;
-
-// Wraps every route in the public site's chrome (age/terms gate, sticky
-// header stack, cart drawer, discount popup, footer). Admin routes get the
-// same site header but skip the entry gate, cart, popup, and footer.
+// Wraps every route in the public site's chrome (sticky header stack, cart
+// drawer, discount popup, footer). Admin routes get the same site header but
+// skip the cart, popup, and footer. There is no entry gate: the shop is open
+// to everybody.
 export default function SiteChrome({
   children,
-  termsOverride,
   headerStack,
   cartDrawer,
   discountPopup,
   footer,
 }: {
   children: React.ReactNode;
-  termsOverride: TermsOverride | null;
   headerStack: React.ReactNode;
   cartDrawer: React.ReactNode;
   discountPopup: React.ReactNode;
@@ -61,29 +43,21 @@ export default function SiteChrome({
   const pageChildren = Children.toArray(children);
 
   // The temporary pre-launch wall — its own full-screen page, not nested
-  // inside the normal header/footer/age-gate/cart/discount-popup chrome.
+  // inside the normal header/footer/cart/discount-popup chrome.
   if (pathname === '/coming-soon') {
     return <>{pageChildren}</>;
   }
 
-  // Email-link destinations and legal/payment pages must never sit behind
-  // the entry gate: a password-reset or verification click has to land
-  // straight on the action it promised, and policies must be readable before
-  // anyone ticks a box agreeing to them. The gate (and the discount popup)
-  // only belong to normal browsing.
-  const GATE_EXEMPT_PREFIXES = [
-    // /reviews is here for the same reason as the rest: it is where the
-    // review-request email's button lands (task ba827a09). A customer who has
-    // already bought, already agreed to the terms and already been through
-    // this gate should not be met by the tick-box notice when they click
-    // "Leave your review" — they simply do not, and the review is lost.
-    // Leaving a review still requires being signed in, so nothing about who
-    // can post is loosened; only the notice in front of reading the page.
+  // Email-link destinations and legal/payment pages never show the discount
+  // popup: a password-reset or verification click has to land straight on the
+  // action it promised, and nobody reading a policy wants an offer over it.
+  const POPUP_EXEMPT_PREFIXES = [
+    // /reviews is where the review-request email's button lands.
     '/account', '/pay', '/unsubscribe', '/reviews',
     '/terms', '/privacy', '/refund-policy', '/returns', '/shipping',
-    '/disclaimer', '/research-disclaimer', '/payment-policy', '/contact-policy', '/cookies',
+    '/disclaimer', '/payment-policy', '/contact-policy', '/cookies',
   ];
-  const gateExempt = GATE_EXEMPT_PREFIXES.some(
+  const popupExempt = POPUP_EXEMPT_PREFIXES.some(
     prefix => pathname === prefix || pathname?.startsWith(`${prefix}/`)
   );
 
@@ -118,7 +92,7 @@ export default function SiteChrome({
     );
   }
 
-  if (gateExempt) {
+  if (popupExempt) {
     return (
       <>
         <CampaignPoster />
@@ -140,13 +114,9 @@ export default function SiteChrome({
     );
   }
 
-  // The campaign poster is a SIBLING of the gate, not a child of it. It draws
-  // at z-100, above the gate's z-50, and the gate now makes everything beneath
-  // it inert so a keyboard or screen-reader visitor cannot walk past the age
-  // and research-use confirmations. Left inside, the poster a QR scanner sees
-  // would have been inert too — visible, on top, and impossible to dismiss.
-  const storefront = (
+  return (
     <>
+      <CampaignPoster />
       <SkipLink />
       {headerStack}
       {cartDrawer}
@@ -162,15 +132,6 @@ export default function SiteChrome({
         className="flex-1 focus:outline-none"
       >{pageChildren}</main>
       {footer}
-    </>
-  );
-
-  return (
-    <>
-      <CampaignPoster />
-      {TEMPORARILY_BYPASS_ENTRY_GATE
-        ? storefront
-        : <EntryGate termsOverride={termsOverride}>{storefront}</EntryGate>}
     </>
   );
 }

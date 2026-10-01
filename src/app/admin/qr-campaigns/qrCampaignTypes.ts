@@ -85,7 +85,7 @@ export function detectPreset(url: string): string {
 }
 
 export const CAMPAIGN_TYPES = [
-  { value: 'gym', label: 'Gym' },
+  { value: 'gym', label: 'Salon or Spa' },
   { value: 'clinic', label: 'Clinic' },
   { value: 'leaflet', label: 'Leaflet' },
   { value: 'partner', label: 'Partner' },

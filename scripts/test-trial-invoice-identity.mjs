@@ -5,7 +5,7 @@ import { anonymiseTrialLines } from '@/lib/invoiceTrialLines';
 
 const inventory = [{
   id: 17,
-  name: 'Internal Trial compound',
+  name: 'Internal Trial cream',
   productCode: '909',
   variants: [{ dosage: '10 mg', price: 42, stock: 2 }],
 }];
@@ -14,7 +14,7 @@ const base = {
   customerName: 'Test customer',
   email: 'test@example.com',
   lineItems: [{
-    type: 'trial', slug: 'trial:17', name: 'Internal Trial compound',
+    type: 'trial', slug: 'trial:17', name: 'Internal Trial cream',
     description: '10 mg', quantity: 1, unitPrice: 42, discount: 3,
     fulfilmentRef: 'Product 123456', // the browser must never select the code
   }],
@@ -35,16 +35,16 @@ test('picked Trial identity survives invoice save and renders the same permanent
   assert.equal(printed[0].description, undefined);
   assert.equal(printed[0].slug, undefined);
   assert.equal(printed[0].lineTotal, 39);
-  assert.ok(!JSON.stringify(printed).includes('Internal Trial compound'));
+  assert.ok(!JSON.stringify(printed).includes('Internal Trial cream'));
 });
 
 test('a manual line cannot smuggle a Trial name or code onto an invoice', () => {
   for (const line of [
-    { type: 'custom', name: ' internal  trial compound ' },
+    { type: 'custom', name: ' internal  trial cream ' },
     { type: 'custom', name: 'Product 909' },
-    { type: 'custom', name: 'Internal Trial Compound (300mg)' },
-    { type: 'product', name: 'Internal-Trial Compound', slug: 'ordinary-product' },
-    { type: 'custom', name: 'Special item', description: 'Internal Trial Compound' },
+    { type: 'custom', name: 'Internal Trial Cream (300ml)' },
+    { type: 'product', name: 'Internal-Trial Cream', slug: 'ordinary-product' },
+    { type: 'custom', name: 'Special item', description: 'Internal Trial Cream' },
   ]) {
     assert.equal(parseInvoiceInput({ ...base, lineItems: [{ ...line, quantity: 1, unitPrice: 42 }] }, inventory), null);
   }

@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 function previewData() {
   return {
-    profile: { display_name: 'Raf', referral_code: 'RAF', status: 'active', balance_pence: 1954, withdrawable_pence: 1900, lifetime_earned_pence: 4879, referral_count: 12, paid_order_count: 8 },
+    profile: { display_name: 'Example Partner', referral_code: 'PARTNER', status: 'active', balance_pence: 1954, withdrawable_pence: 1900, lifetime_earned_pence: 4879, referral_count: 12, paid_order_count: 8 },
     referrals: [
       { id: 1, first_name: 'Alex', last_name: 'M', email: 'a•••@example.com', status: 'active', code: 'RAF5-A12B3C4D', code_active: true, expires_at: '2027-03-22T12:00:00.000Z', qualifying_orders: 3, earned_pence: 823, created_at: '2026-09-18T12:00:00.000Z' },
       { id: 2, first_name: 'Jordan', last_name: 'P', email: 'j•••@example.com', status: 'active', code: 'RAF5-E56F7A8B', code_active: true, expires_at: '2027-03-22T12:00:00.000Z', qualifying_orders: 1, earned_pence: 188, created_at: '2026-09-20T12:00:00.000Z' },

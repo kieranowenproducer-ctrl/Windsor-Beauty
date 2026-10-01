@@ -15,9 +15,9 @@ export const dynamic = 'force-dynamic';
 const headers = { 'Cache-Control': 'no-store' };
 
 /**
- * Raf types the person's email address and presses Send. Windsor Beauty emails the invitation from
- * info@windsorbeauty.co.uk, and the same link always comes back with a ready-made message, so Raf can
- * send it from his own phone whether or not the email goes through.
+ * The affiliate types the person's email address and presses Send. Windsor Beauty emails the invitation from
+ * info@windsorbeauty.co.uk, and the same link always comes back with a ready-made message, so they can
+ * send it from their own phone whether or not the email goes through.
  */
 export async function POST(request: Request) {
   if (!affiliatesEnabled()) return NextResponse.json({ error: 'Affiliate invitations are not open yet.' }, { status: 404, headers });
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const link = `${new URL(request.url).origin}/account/register?affiliateInvite=${'a'.repeat(64)}`;
     return NextResponse.json({
       link,
-      shareMessage: affiliateShareMessage('Raf', email, link),
+      shareMessage: affiliateShareMessage('Example Partner', email, link),
       recipientEmail: email,
       expiresAt: new Date(Date.now() + 7 * 86_400_000).toISOString(),
       email: sendByEmail ? (email.includes('fail') ? 'not_sent' : 'sent') : 'not_requested',
@@ -56,8 +56,8 @@ export async function POST(request: Request) {
   if (sendByEmail) {
     email = 'not_sent';
     try {
-      // Someone who unsubscribed from Windsor Beauty email is not emailed again. Raf can still send
-      // the link himself; the answer he sees is the same as any other failed send.
+      // Someone who unsubscribed from Windsor Beauty email is not emailed again. The affiliate can still send
+      // the link themselves; the answer they see is the same as any other failed send.
       const contact = await findMarketingContactByEmail(invitation.recipientEmail);
       if (!contact?.unsubscribed_at) {
         const sent = await sendAffiliateInvitationEmail({

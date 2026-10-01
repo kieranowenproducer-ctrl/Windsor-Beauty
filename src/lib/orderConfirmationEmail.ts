@@ -42,9 +42,9 @@ function glowCardCopy(card: OrderConfirmationParams['glowCard']) {
   if (!card) return null;
   if (card.points === null || card.cycle === null) {
     return {
-      headline: 'Collect Glow Points when signed in',
+      headline: 'Collect Beauty Points when signed in',
       explanation: 'This order was not placed through a signed-in member account, so it did not add a point.',
-      progress: 'Sign in before your next paid £30+ product order to start collecting Glow Points.',
+      progress: 'Sign in before your next paid £30+ product order to start collecting Beauty Points.',
     };
   }
   const points = normaliseGlowPoints(card.points);
@@ -54,24 +54,24 @@ function glowCardCopy(card: OrderConfirmationParams['glowCard']) {
     ? `All 5 stamps are filled. Your £${stage.amount} reward and half-price standard UK delivery are ready to claim.`
     : `You have ${stage.filled} of 5 stamps on your £${stage.amount} reward card. You are ${5 - stage.filled} point${5 - stage.filled === 1 ? '' : 's'} away from £${stage.amount} off plus half-price standard UK delivery.`;
   const headline = card.earnedPoint
-    ? 'You earned another Glow Point'
+    ? 'You earned another Beauty Point'
     : card.reason === 'below_minimum'
-      ? 'Your Glow Card progress'
+      ? 'Your Beauty Card progress'
       : card.reason === 'not_signed_in'
-        ? 'Collect Glow Points when signed in'
-        : 'Your Glow Card progress';
+        ? 'Collect Beauty Points when signed in'
+        : 'Your Beauty Card progress';
   const explanation = card.earnedPoint
     ? 'This paid member order was £30 or more in products, so your point has been added.'
     : card.reason === 'below_minimum'
       ? 'This order was below £30 of products, so it did not add a point. Your current card is still shown below.'
       : card.reason === 'not_signed_in'
         ? 'This order was not placed while signed in, so it did not add a point. Sign in before your next order to collect points.'
-        : 'Your current Glow Card is shown below.';
+        : 'Your current Beauty Card is shown below.';
   return { headline, explanation, progress };
 }
 
 /**
- * A deliberately self-contained Glow Card visual for email. It is built from
+ * A deliberately self-contained Beauty Card visual for email. It is built from
  * nested presentation tables rather than a personalised image URL: Outlook,
  * Gmail and Apple Mail can all render it, and the email never leaks a member
  * name, address, account ID or signed URL to an image service.
@@ -166,7 +166,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
   const glowCardPanel = glowCard ? `
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#fffdf8;border:1px solid #e3d5ad;margin-bottom:32px">
               <tr><td style="padding:20px 24px">
-                <p style="margin:0 0 8px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#a77b18">Your Glow Card</p>
+                <p style="margin:0 0 8px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#a77b18">Your Beauty Card</p>
                 <p style="margin:0 0 7px;font-size:19px;color:#1c1917">${escapeHtml(glowCard.headline)}</p>
                 <p style="margin:0 0 18px;font-size:12px;color:#57534e;line-height:1.6">${escapeHtml(glowCard.explanation)}</p>
                 ${glowCardImage}
@@ -181,7 +181,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
             <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#b8902a">Order Received</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">Thank you, ${escapeHtml(params.customerName.split(' ')[0])}.</h1>
             <p style="margin:0 0 24px;font-size:13px;color:#57534e;line-height:1.6">
-              Your order has been confirmed and payment received. We will begin preparing your order immediately.
+              Your order has been confirmed and payment received. We are now preparing it for dispatch.
             </p>
 
             <!-- Order number badge -->
@@ -245,8 +245,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
             </table>
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
-              Any questions, just reply to this email.
-              For any questions about your order, contact
+              Any questions, just reply to this email, or contact
               <a href="mailto:sales@windsorbeauty.co.uk" style="color:#b8902a;text-decoration:none">sales@windsorbeauty.co.uk</a>
               and include your order reference <strong style="color:#78716c">${escapeHtml(params.orderNumber)}</strong>.
             </p>
@@ -254,23 +253,22 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
         </tr>`;
 
   const html = emailDocument({
-    title: `Order confirmed — ${params.orderNumber}`,
+    title: `Order ${params.orderNumber} confirmed`,
     headerLabel: 'Order Confirmation',
     bodyHtml,
   });
 
-  const subject = `Order confirmed — ${params.orderNumber}`;
+  const subject = `Your Windsor Beauty order ${params.orderNumber} is confirmed`;
   const text =
     `${emailGreeting(params.customerName)}\n\n` +
     `Your Windsor Beauty order ${params.orderNumber} has been confirmed and payment received.\n\n` +
     `Items:\n` +
-    visibleItems.map(i => `  ${i.name}${i.variant ? ` (${i.variant})` : ''} x${i.quantity} — £${(Number(i.price) * i.quantity).toFixed(2)}`).join('\n') +
+    visibleItems.map(i => `  ${i.name}${i.variant ? ` (${i.variant})` : ''} x${i.quantity}, £${(Number(i.price) * i.quantity).toFixed(2)}`).join('\n') +
     `\n\nTotal paid: £${Number(params.total).toFixed(2)}\n\n` +
-    (glowCard ? `Glow Card\n${glowCard.headline}. ${glowCard.explanation}\n${glowCard.progress}\n\n` : '') +
+    (glowCard ? `Beauty Card\n${glowCard.headline}. ${glowCard.explanation}\n${glowCard.progress}\n\n` : '') +
     `Delivery to: ${params.shippingAddress}\n\n` +
     `We will send you a tracking number once your order has been dispatched.\n\n` +
-    `Any questions, just reply to this email.\n` +
-    `For any questions about your order, contact sales@windsorbeauty.co.uk and include your order reference ${params.orderNumber}.`;
+    `Any questions, just reply to this email, or contact sales@windsorbeauty.co.uk and include your order reference ${params.orderNumber}.`;
 
   return { subject, text, html };
 }

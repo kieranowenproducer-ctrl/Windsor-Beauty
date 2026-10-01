@@ -103,10 +103,10 @@ function AdminProductsPageContent() {
   const [editVariants, setEditVariants] = useState<VariantDraft[]>([]);
   const [editShipping, setEditShipping] = useState<ShippingDraft>(EMPTY_SHIPPING_DRAFT);
   const [editKeywordsInput, setEditKeywordsInput] = useState('');
-  // Per-dosage certificates (Option A). Certificate drafts are keyed by target:
-  // '' = the shared/product-level certificate (the default, and what single-dosage
-  // products use), and a dosage string = that dosage's own certificate. `certTarget`
-  // is the dosage currently being edited. `editCertificate` / `setEditCertificate`
+  // Per-size certificates (Option A). Certificate drafts are keyed by target:
+  // '' = the shared/product-level certificate (the default, and what single-size
+  // products use), and a size string = that size's own certificate. `certTarget`
+  // is the size currently being edited. `editCertificate` / `setEditCertificate`
   // are derived views onto the active target, so the entire existing certificate
   // form (45 call sites) keeps working untouched — it just edits whichever target
   // is selected.
@@ -120,11 +120,11 @@ function AdminProductsPageContent() {
       return { ...prev, [certTarget]: next };
     });
   };
-  // Vial or pen. Set from the product when the drawer opens, and changed by the
-  // Vial / Pen buttons at the top of the certificate section, which rewrite the
-  // storage and appearance wording to match. See src/lib/certificateStandards.ts.
+  // Which storage choice the certificate is on (the two names are historic). Set from
+  // the product when the drawer opens, and changed by the two buttons at the top of
+  // the certificate section. See src/lib/certificateStandards.ts.
   const [certFormat, setCertFormatState] = useState<CertificateFormat>('vial');
-  // What the last press of Vial / Pen actually rewrote, shown back to the admin.
+  // What the last press of those buttons actually rewrote, shown back to the admin.
   const [certFormatChanged, setCertFormatChanged] = useState<string[]>([]);
   const [editStorageInstructions, setEditStorageInstructions] = useState<ProductInfoDraft>(EMPTY_STORAGE_INSTRUCTIONS_DRAFT);
   const [savingEdit, setSavingEdit] = useState(false);
@@ -159,7 +159,7 @@ function AdminProductsPageContent() {
   // slug -> dosage -> quantity. The per-product `stock` above is now just
   // the sum of these, kept only for sorting/CSV export/status badges.
   const [variantStock, setVariantStock] = useState<Record<string, Record<string, number>>>({});
-  // Drafts/saving/saved state keyed by "slug::dosage" since each dosage has
+  // Drafts/saving/saved state keyed by "slug::dosage" since each size has
   // its own input + Save button now.
   const [stockDrafts, setStockDrafts] = useState<Record<string, string>>({});
   const [savingStockKey, setSavingStockKey] = useState<string | null>(null);
@@ -508,9 +508,9 @@ function AdminProductsPageContent() {
     }
   }
 
-  // Price cell — for a multi-dosage product, show the price for EVERY dosage
-  // (one row per variant, dosage-labelled to match the stock column), so the
-  // per-dosage unit price is visible at a glance instead of a single "from"
+  // Price cell — for a multi-size product, show the price for EVERY dosage
+  // (one row per variant, size-labelled to match the stock column), so the
+  // per-size unit price is visible at a glance instead of a single "from"
   // figure. Single-variant products show the one price (or TBC when it's £0).
   function renderPriceCell(product: Product) {
     const variants = product.variants;
@@ -531,7 +531,7 @@ function AdminProductsPageContent() {
   }
 
   // Shared between the desktop table cell and the mobile/tablet card layout
-  // below — one dosage row per variant, each with its own input/Save/Saved
+  // below — one size row per variant, each with its own input/Save/Saved
   // state, so this never has to be kept in sync in two places.
   function renderStockEditor(product: Product) {
     return (
@@ -675,8 +675,8 @@ function AdminProductsPageContent() {
     setEditVariants(sortVariantsByStrength(p.variants).map(v => ({ dosage: v.dosage, price: String(v.price), enabled: v.enabled !== false, image: v.image || '', shipping: shippingToDraft(v.shipping) })));
     setEditShipping(shippingToDraft(p.shipping));
     setEditKeywordsInput((p.keywords ?? []).join(', '));
-    // Load the shared certificate under '' and each dosage's own certificate under
-    // its dosage key. Editing starts on the shared certificate.
+    // Load the shared certificate under '' and each size's own certificate under
+    // its size key. Editing starts on the shared certificate.
     const shared = certificateToDraft(p.certificate);
     const format = detectFormat(p.categories, shared.storage || p.storage);
     // A product whose certificate has never been started opens with the
@@ -710,7 +710,7 @@ function AdminProductsPageContent() {
   }
 
   // ── the standard certificate rows ──────────────────────────────────────────
-  // Appearance, Purity (HPLC) and Content are shown on every certificate in the
+  // Batch / Lot and Certificate Date are shown on every certificate in the
   // editor under fixed names, so they never have to be typed. Writing to one
   // creates the row if the certificate does not have it yet, and edits the
   // existing row (whatever it happens to be called) if it does.
@@ -722,10 +722,9 @@ function AdminProductsPageContent() {
     setEditCertificate(prev => ({ ...prev, verificationSummary: setStandardSummaryRow(prev.verificationSummary, row, value) }));
   }
 
-  // Pressing Vial or Pen swaps the storage and appearance wording to that
-  // format's standard. Anything typed by hand is left alone, and no measured
-  // value is ever touched. What it rewrote is reported back so a press that
-  // changed more than expected is visible before anything is saved.
+  // Pressing one of the two storage buttons records the choice. Nothing typed
+  // by hand is changed (see applyFormatStandards). Anything it did rewrite is
+  // reported back so it is visible before anything is saved.
   function setCertFormat(format: CertificateFormat) {
     const applied = applyFormatStandards({ storage: editCertificate.storage, testRows: editCertificate.testRows }, format);
     setCertFormatState(format);
@@ -798,10 +797,10 @@ function AdminProductsPageContent() {
       const dosage = draft.dosage.trim();
       const price = Number(draft.price);
       if (!dosage || !Number.isFinite(price) || price < 0) {
-        setEditError('Each dosage option needs a label and a price of zero or more.');
+        setEditError('Each size option needs a label and a price of zero or more.');
         return;
       }
-      // Attach this dosage's own certificate if one was entered for it (Option A);
+      // Attach this size's own certificate if one was entered for it (Option A);
       // otherwise leave it off so it falls back to the shared product-level cert.
       const perDosageCert = certDrafts[dosage] ? certificateDraftToPayload(certDrafts[dosage]) : undefined;
       const variantCertificate = perDosageCert && certificatePayloadHasContent(perDosageCert) ? perDosageCert : undefined;
@@ -816,7 +815,7 @@ function AdminProductsPageContent() {
       keywords: parseKeywordsInput(editKeywordsInput),
       availability: editForm.availability === 'available' ? undefined : editForm.availability,
       // The product-level (shared) certificate always comes from the '' target,
-      // regardless of which dosage's certificate is currently open in the editor.
+      // regardless of which size's certificate is currently open in the editor.
       certificate: certificateDraftToPayload(certDrafts[''] ?? EMPTY_CERTIFICATE_DRAFT),
       storageInstructions: storageInstructionsDraftToPayload(editStorageInstructions),
     };
@@ -979,7 +978,7 @@ function AdminProductsPageContent() {
 
 
           {/* Table — waits for catalogue overrides to load so a just-edited
-              product doesn't briefly show its stale static dosage/price
+              product doesn't briefly show its stale static size/price
               before the real saved value appears. */}
           {!overridesLoaded ? (
             <div className="flex items-center justify-center py-24">

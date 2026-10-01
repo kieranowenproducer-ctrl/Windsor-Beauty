@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
   const file = formData.get('file');
   if (!file || !(file instanceof File)) {
     return NextResponse.json(
-      { error: 'No file provided — send a "file" field in multipart/form-data' },
+      { error: 'No file was chosen. Please pick a CSV file and try again.' },
       { status: 400 },
     );
   }

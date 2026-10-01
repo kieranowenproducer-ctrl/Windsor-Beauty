@@ -2,39 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import CountrySelect from '@/components/CountrySelect';
-import TermsAcceptanceModal from '@/components/TermsAcceptanceModal';
 import MarketingOptInPrompt from '@/components/MarketingOptInPrompt';
 import SocialProfilePrompt from '@/components/SocialProfilePrompt';
 import Link from 'next/link';
 import {
   REFERRAL_SOURCES, composeReferral, referralNeedsDetail,
 } from '@/lib/referralSources';
-import { COMPLIANCE_CONFIRMATIONS, type ComplianceKey } from '@/lib/complianceConfirmations';
+import { COMPLIANCE_CONFIRMATIONS, COMPLIANCE_CONFIRMATIONS_ERROR, type ComplianceKey } from '@/lib/complianceConfirmations';
 
 const PHONE_PATTERN = /^[+\d][\d\s()-]{6,19}$/;
 
-// Mandatory confirmations before an account can be created (task 3933725e).
-// Wording is Kieran's, verbatim: this is compliance copy for a research-use-
-// only business, so it is never paraphrased or tidied. The keys match the
-// booleans the register/subscribe APIs re-check server-side, so a locked
-// button is not the only thing standing between someone and an account.
-// The SAME boxes the entry gate uses, in the same order and the same words
-// (Kieran, 7 September: "It should follow the same tick boxes that you have
-// when you enter the website"). One list, one place: src/lib/complianceConfirmations.ts
-// There are two of them since 10 September, because the age and lawful-use
-// sentences were combined into one. All three booleans are still sent and the
-// server still re-checks all three.
+// The one mandatory confirmation before an account can be created: the Terms and Conditions and
+// the Privacy Policy. The wording lives in src/lib/complianceConfirmations.ts, and its key matches
+// the boolean the register/subscribe APIs re-check server-side, so a locked button is not the only
+// thing standing between someone and an account.
 const CONFIRMATIONS = COMPLIANCE_CONFIRMATIONS;
 
-/* One sentence can answer for more than one of these, since the age and lawful-use statements
-   were combined into a single box. The booleans sent to the server did not change. */
 type ConfirmationKey = ComplianceKey;
-
-interface TermsOverride {
-  title: string | null;
-  body: string;
-  format?: string;
-}
 
 const inputCls =
   'w-full border border-stone-200 focus:border-gold-400 outline-none px-3 py-2.5 text-sm text-stone-700 bg-white disabled:bg-stone-50 disabled:text-stone-400 transition-colors';
@@ -58,9 +42,6 @@ export interface MemberFormData {
   password: string;
   confirmPassword: string;
   marketingConsent: boolean;
-  ageConfirmed: boolean;
-  researchUseConfirmed: boolean;
-  lawfulUseConfirmed: boolean;
   termsAccepted: boolean;
 }
 
@@ -77,7 +58,7 @@ export default function MemberRegistrationForm({
   submitting = false,
   serverError,
 }: Props) {
-  const affiliateSignupEnabled = process.env.NEXT_PUBLIC_WG_AFFILIATE_CUSTOMER_ACCESS_ENABLED === 'true' || process.env.NODE_ENV !== 'production';
+  const affiliateSignupEnabled = process.env.NEXT_PUBLIC_WB_AFFILIATE_CUSTOMER_ACCESS_ENABLED === 'true' || process.env.NODE_ENV !== 'production';
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -99,7 +80,7 @@ export default function MemberRegistrationForm({
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [validationError, setValidationError] = useState('');
   const [inviteStatus, setInviteStatus] = useState<'none' | 'checking' | 'valid' | 'invalid'>('none');
-  // The address a Raf invitation was made for. Filled in and locked, because the invitation only
+  // The address a private invitation was made for. Filled in and locked, because the invitation only
   // works with that address and retyping it was the one step people could get wrong.
   const [inviteEmail, setInviteEmail] = useState('');
   /* The one last ask before somebody joins without the offers. `optInAsked` is what makes it
@@ -109,7 +90,6 @@ export default function MemberRegistrationForm({
   const [optInAsked, setOptInAsked] = useState(false);
   const [showSocialPrompt, setShowSocialPrompt] = useState(false);
   const [socialPromptAsked, setSocialPromptAsked] = useState(false);
-  const [showJoinGuide, setShowJoinGuide] = useState(false);
 
   /* WHERE THEY HEARD ABOUT US, held as two answers and saved as one (task 38962e15).
    *
@@ -120,24 +100,13 @@ export default function MemberRegistrationForm({
   const [referralDetail, setReferralDetail] = useState('');
   const needsDetail = referralNeedsDetail(referralSource);
 
-  // Mandatory confirmations + the read-to-the-end Terms acceptance. All four
-  // must be true before the account can be created.
+  // The mandatory confirmation. It must be ticked before the account can be created.
   const [confirmations, setConfirmations] = useState<Record<ConfirmationKey, boolean>>({
-    ageConfirmed: false,
-    researchUseConfirmed: false,
-    lawfulUseConfirmed: false,
+    termsAccepted: false,
   });
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [termsModalOpen, setTermsModalOpen] = useState(false);
-  // The live Terms are a site_content override that beats the modal's built-in
-  // copy, so they are fetched rather than assumed. The button that opens the
-  // modal stays disabled until this resolves, so nobody can accept a version of
-  // the terms that is not the one actually published.
-  const [termsOverride, setTermsOverride] = useState<TermsOverride | null>(null);
-  const [termsLoaded, setTermsLoaded] = useState(false);
 
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_WG_MEMBER_REFERRALS_ENABLED !== 'true') return;
+    if (process.env.NEXT_PUBLIC_WB_MEMBER_REFERRALS_ENABLED !== 'true') return;
     const code = new URLSearchParams(window.location.search).get('referralCode');
     if (code) setForm(prev => ({ ...prev, referralCode: code.toUpperCase().slice(0, 32) }));
   }, []);
@@ -162,21 +131,10 @@ export default function MemberRegistrationForm({
     }
   }, [affiliateSignupEnabled]);
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/api/content/terms')
-      .then(res => res.json())
-      .then(data => { if (!cancelled) setTermsOverride(data?.override ?? null); })
-      .catch(() => { /* fall back to the modal's built-in terms */ })
-      .finally(() => { if (!cancelled) setTermsLoaded(true); });
-    return () => { cancelled = true; };
-  }, []);
-
   const allConfirmed = CONFIRMATIONS.every(c => c.keys.every(key => confirmations[key]));
-  const canSubmit = allConfirmed && termsAccepted && !submitting;
+  const canSubmit = allConfirmed && !submitting;
 
-  /* Ticked as one sentence, recorded as every boolean that sentence covers. Setting only the
-     first of them would leave a compliance record saying something the person was never shown. */
+  /* Ticked as one sentence, recorded as every boolean that sentence covers. */
   function toggleConfirmation(keys: readonly ConfirmationKey[]) {
     setConfirmations(prev => {
       const turningOn = !keys.every(key => prev[key]);
@@ -216,7 +174,7 @@ export default function MemberRegistrationForm({
       return;
     }
     if (referralSource === 'RAF affiliate' && inviteStatus !== 'valid') {
-      setValidationError('This Raf invitation is not ready. Ask Raf for a new private link.');
+      setValidationError('This invitation is not ready. Please ask for a new private link.');
       return;
     }
     if (form.password.length < 8) {
@@ -228,11 +186,7 @@ export default function MemberRegistrationForm({
       return;
     }
     if (!allConfirmed) {
-      setValidationError('Please tick both confirmations to continue.');
-      return;
-    }
-    if (!termsAccepted) {
-      setValidationError('Please read and accept the Terms and Conditions to continue.');
+      setValidationError(COMPLIANCE_CONFIRMATIONS_ERROR);
       return;
     }
 
@@ -242,7 +196,7 @@ export default function MemberRegistrationForm({
      * question left is the optional one. If the marketing box is unticked, ask once before
      * creating the account. Most people who leave it unticked are not refusing the offers, they
      * simply never read a line of small grey text sitting between the password fields and the
-     * confirmations they had to tick.
+     * confirmation they had to tick.
      *
      * It is asked HERE, after validation, on purpose. Asking before the checks would mean somebody
      * with a mistyped password answers the marketing question and is then sent back to fix the
@@ -281,7 +235,6 @@ export default function MemberRegistrationForm({
       facebookProfile: form.facebookProfile.trim(),
       marketingConsent: consent,
       ...confirmations,
-      termsAccepted,
     });
   }
 
@@ -292,42 +245,16 @@ export default function MemberRegistrationForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       {inviteStatus === 'valid' && (
         <div className="border border-gold-300 bg-stone-900 px-5 py-5 text-white">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-gold-300">Invited by Raf</p>
+          <p className="text-[9px] uppercase tracking-[0.3em] text-gold-300">Private invitation</p>
           <p className="mt-2 font-serif text-xl leading-snug">Welcome. Your invitation is ready.</p>
           <p className="mt-2 text-xs leading-relaxed text-stone-300">
-            Fill in your details below. When you confirm your email, we send you 10% off your first order and your own 5% Raf code. Both also appear in your account.
+            Fill in your details below. When you confirm your email, we send you 10% off your first order and your own 5% personal code. Both also appear in your account.
           </p>
-          {/* The two-minute joining guide (Samuel, 27 Sep 2026). Only people Raf invited see this box.
-              Nothing loads until they press the button. */}
-          <button
-            type="button"
-            onClick={() => setShowJoinGuide(open => !open)}
-            aria-expanded={showJoinGuide}
-            aria-controls="raf-join-guide"
-            className="mt-4 inline-flex items-center gap-2 border border-gold-300 px-3.5 py-2 text-[10px] uppercase tracking-[0.2em] text-gold-300 hover:bg-gold-300/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden className="h-3 w-3 fill-current"><path d="M8 5v14l11-7z" /></svg>
-            {showJoinGuide ? 'Hide the guide' : 'Watch how to join (2 min)'}
-          </button>
-          {showJoinGuide && (
-            <video
-              id="raf-join-guide"
-              src="/videos/joining-through-raf.mp4"
-              poster="/videos/joining-through-raf-poster.jpg"
-              controls
-              autoPlay
-              playsInline
-              preload="metadata"
-              className="mt-4 block w-full max-w-xs mx-auto bg-stone-950"
-            >
-              Your browser cannot play this video.
-            </video>
-          )}
         </div>
       )}
       {inviteStatus === 'invalid' && (
         <p role="alert" className="border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
-          This invitation has expired or has already been used. Ask Raf to send you a new one.
+          This invitation has expired or has already been used. Please ask for a new one.
         </p>
       )}
       <div className="grid grid-cols-2 gap-4">
@@ -462,7 +389,7 @@ export default function MemberRegistrationForm({
       </div>
 
       <div className="border-t border-gold-100 pt-4">
-        {!form.affiliateInvite && (process.env.NEXT_PUBLIC_WG_MEMBER_REFERRALS_ENABLED === 'true' || process.env.NEXT_PUBLIC_WG_GLOW_CARD_LOYALTY_ENABLED === 'true') && (
+        {!form.affiliateInvite && (process.env.NEXT_PUBLIC_WB_MEMBER_REFERRALS_ENABLED === 'true' || process.env.NEXT_PUBLIC_WB_GLOW_CARD_LOYALTY_ENABLED === 'true') && (
           <div className="mb-4">
             <label className={labelCls} htmlFor="member-referralCode">Member referral code (optional)</label>
             <input
@@ -474,7 +401,7 @@ export default function MemberRegistrationForm({
               A friend who joins through your link earns a referral point with you after their first paid signed-in £30+ product order.
             </p>
             <Link href="/glow-card-terms" target="_blank" className="inline-block text-[10px] text-gold-700 underline underline-offset-4 mt-1.5">
-              Read the Glow Card terms
+              Read the Beauty Card terms
             </Link>
           </div>
         )}
@@ -500,8 +427,8 @@ export default function MemberRegistrationForm({
         </select>
 
         {/* Only for the choices where the detail is worth more than the channel. Clearing it on
-            every change is deliberate: picking "a gym", typing its name, then changing to
-            "Instagram" must not leave the gym's name attached to Instagram. */}
+            every change is deliberate: picking one answer, typing its detail, then changing to
+            "Instagram" must not leave that detail attached to Instagram. */}
         {needsDetail && (
           <div className="mt-3">
             <label className={labelCls} htmlFor="referredByDetail">
@@ -522,17 +449,17 @@ export default function MemberRegistrationForm({
 
         {referralSource === 'RAF affiliate' && (
           <div className="mt-3 rounded-sm border border-gold-200 bg-gold-50/50 p-4">
-            <p className={labelCls}>Private invitation from Raf</p>
+            <p className={labelCls}>Private invitation</p>
             <p className="mt-2 text-[10px] leading-relaxed text-stone-600">
               {inviteStatus === 'checking' ? 'Checking your invitation.' : inviteStatus === 'valid'
-                ? 'After you confirm your email, your welcome code and your personal Raf code are emailed to you and shown in your account. Use one code per order.'
-                : 'This invitation has expired or has already been used. Ask Raf for a new link.'}
+                ? 'After you confirm your email, your welcome code and your personal code are emailed to you and shown in your account. Use one code per order.'
+                : 'This invitation has expired or has already been used. Please ask for a new link.'}
             </p>
           </div>
         )}
 
         <p className="text-[9px] text-stone-500 mt-1.5 leading-relaxed">
-          It helps us know where our researchers are finding us. If none of these fit, choose
+          It helps us know where our customers are finding us. If none of these fit, choose
           &ldquo;Something else&rdquo;.
         </p>
         </>}
@@ -600,23 +527,18 @@ export default function MemberRegistrationForm({
         </div>
       </div>
 
-      {/* Mandatory confirmations (task 3933725e). Same checkbox treatment as
-          the site entry gate, so the two read as one system. Marketing above
-          stays optional; every box here has to be ticked. */}
+      {/* The mandatory confirmation. Marketing above stays optional; this box has to be ticked. */}
       <div className="border-t border-gold-100 pt-4">
-        <p className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold mb-1">
-          By signing up as a member
-        </p>
-        <p className="text-[10px] text-stone-500 leading-relaxed mb-3">
-          Please confirm each statement. Both are required.
+        <p className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold mb-3">
+          Before you join
         </p>
 
         <div className="space-y-2 sm:space-y-1">
-          {CONFIRMATIONS.map(({ id, keys, label }) => {
+          {CONFIRMATIONS.map(({ id, keys, label, links }) => {
             const ticked = keys.every(key => confirmations[key]);
             return (
+            <div key={id}>
             <label
-              key={id}
               htmlFor={`member-confirm-${id}`}
               className="flex items-start gap-3 cursor-pointer group py-3 sm:py-2 px-1 -mx-1 rounded-sm"
             >
@@ -642,57 +564,26 @@ export default function MemberRegistrationForm({
               </div>
               <span className="text-xs font-semibold text-stone-700 leading-relaxed select-none">{label}</span>
             </label>
+            {/* The links sit outside the tickable sentence, so opening a document never toggles
+                the box. The /terms and /privacy pages are exempt from the coming-soon wall
+                (see proxy.ts), so these links work pre-launch too. */}
+            <p className="ml-8 sm:ml-7 flex flex-wrap gap-x-4 gap-y-1">
+              {links.map(link => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener"
+                  className="text-[11px] underline text-gold-700 hover:text-gold-800"
+                >
+                  Read the {link.text}
+                </a>
+              ))}
+            </p>
+            </div>
             );
           })}
         </div>
-      </div>
-
-      {/* Terms and Conditions, the same read-to-the-end box the entry gate
-          uses (shared TermsAcceptanceModal, shared live copy). */}
-      <div className="border border-gold-200 bg-gold-50/40 px-4 py-4 sm:px-5 sm:py-5">
-        <h3 className="text-xs tracking-[0.05em] text-stone-700 font-semibold leading-snug mb-1.5">
-          Please review our Terms &amp; Conditions before creating your account
-        </h3>
-        <p className="text-[11px] text-stone-500 leading-relaxed mb-4">
-          They cover research use, product disclaimers, and the stated use of any needles sold or
-          included with products. Open them below, read to the end, and confirm to continue.
-        </p>
-
-        {!termsAccepted ? (
-          <button
-            type="button"
-            onClick={() => setTermsModalOpen(true)}
-            disabled={!termsLoaded || submitting}
-            className="w-full flex items-center justify-center gap-2 bg-white border border-gold-400 text-gold-700 text-[10px] tracking-[0.2em] uppercase font-semibold px-5 py-3.5 hover:bg-gold-800 hover:text-white hover:border-gold-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-gold-700"
-          >
-            {termsLoaded ? 'Read Terms & Conditions' : 'Loading Terms…'}
-            {termsLoaded && (
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            )}
-          </button>
-        ) : (
-          <div className="flex items-center justify-between gap-3 bg-white border border-gold-200 px-4 py-3">
-            <div className="flex items-center gap-2.5">
-              <div className="h-4 w-4 flex-shrink-0 bg-gold-700 flex items-center justify-center">
-                <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 10 10" fill="none">
-                  <path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <span className="text-xs text-stone-600 leading-relaxed">
-                Terms &amp; Conditions and research-use disclaimer read and agreed.
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setTermsModalOpen(true)}
-              className="shrink-0 text-[9px] tracking-[0.2em] uppercase text-gold-700 hover:text-gold-700 border-b border-gold-300 hover:border-gold-500 pb-0.5 transition-colors"
-            >
-              Read Again
-            </button>
-          </div>
-        )}
       </div>
 
       {displayError && (
@@ -713,32 +604,12 @@ export default function MemberRegistrationForm({
 
       {!canSubmit && !submitting && (
         <p className="text-[10px] text-stone-500 leading-relaxed text-center">
-          {!allConfirmed
-            ? 'Tick both confirmations above to unlock this button.'
-            : 'Read and accept the Terms & Conditions above to unlock this button.'}
+          Tick the box above to unlock this button.
         </p>
       )}
-
-      {/* The /terms and /privacy pages are exempt from the coming-soon wall
-          (see proxy.ts), so these links work pre-launch too. */}
-      <p className="text-[10px] text-stone-500 leading-relaxed text-center">
-        By creating an account you agree to our{' '}
-        <a href="/terms" target="_blank" rel="noopener" className="underline text-stone-500 hover:text-gold-800">Terms &amp; Conditions</a>{' '}
-        and{' '}
-        <a href="/privacy" target="_blank" rel="noopener" className="underline text-stone-500 hover:text-gold-800">Privacy Policy</a>.
-      </p>
     </form>
 
-    {/* Outside the <form> on purpose: it is a full-screen overlay, and its
-        buttons must never be treated as this form's submit control. */}
-    <TermsAcceptanceModal
-      open={termsModalOpen}
-      onAccept={() => { setTermsAccepted(true); setTermsModalOpen(false); }}
-      onClose={() => setTermsModalOpen(false)}
-      override={termsOverride}
-    />
-
-    {/* Outside the <form> for the same reason as the terms modal above: its buttons must never
+    {/* Outside the <form> on purpose: it is an overlay, and its buttons must never
         act as this form's submit control. Both answers create the account. */}
     <MarketingOptInPrompt
       open={showOptIn}

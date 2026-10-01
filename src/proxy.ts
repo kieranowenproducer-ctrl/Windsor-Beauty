@@ -73,7 +73,6 @@ const WALL_EXEMPT_PREFIXES = [
   '/returns',
   '/shipping',
   '/disclaimer',
-  '/research-disclaimer',
   '/payment-policy',
   '/contact-policy',
   '/cookies',

@@ -198,7 +198,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
             {/* Status / payment section */}
             {paid ? (
               <div className="px-6 sm:px-8 py-8 text-center">
-                <p className="text-[10px] tracking-[0.3em] uppercase text-gold-700 font-semibold mb-2">Paid — Thank You</p>
+                <p className="text-[10px] tracking-[0.3em] uppercase text-gold-700 font-semibold mb-2">Paid. Thank You</p>
                 <p className="text-sm text-stone-500 leading-relaxed">
                   This invoice has been paid in full. A confirmation email has been sent to you.
                 </p>
@@ -260,7 +260,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
                         Pay {money(payment.paypalTotal)} via PayPal &rarr;
                       </a>
                       <p className="text-[10px] text-stone-500 text-center leading-relaxed mt-2">
-                        PayPal payments include a {payment.paypalFeePercent}% processing fee — total via
+                        PayPal payments include a {payment.paypalFeePercent}% processing fee, so the total via
                         PayPal is {money(payment.paypalTotal)} instead of {money(invoice.total)}. Pay by
                         Bank has no fee.
                       </p>
@@ -285,9 +285,9 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
         )}
 
         <p className="text-[10px] text-stone-500 text-center leading-relaxed mt-6">
-          Windsor Beauty &mdash; windsorbeauty.co.uk
+          Windsor Beauty, windsorbeauty.co.uk
           <br />
-          All products are supplied strictly for research purposes only. Not for human use.
+          Our products are for external use only.
         </p>
       </div>
     </div>

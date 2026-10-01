@@ -6,8 +6,8 @@
 // matchesSearchTerms from src/lib/adminSearch.ts, and the real orderSearchText/sortOrders from the
 // Orders screen.
 //
-// WHAT WENT WRONG, and what these checks exist to stop coming back (Kieran, 2026-09-24): typing
-// "Amber Reta" into Orders found nothing. The box looked for that whole phrase inside one field at
+// WHAT WENT WRONG, and what these checks exist to stop coming back: typing a customer and a
+// product together into Orders found nothing. The box looked for that whole phrase inside one field at
 // a time, and it never looked at the products at all, so an order that was sitting right there
 // came back empty. The rule now is that every word has to be SOMEWHERE on the order, and the words
 // can be in different places.
@@ -31,7 +31,7 @@ const order = (over = {}) => ({
   email: 'amber@example.com',
   phone: '07700 900123',
   total: 120,
-  items: [{ name: 'Omnimorph Pen', variant: 'Retatrutide 10mg', price: 120, quantity: 1 }],
+  items: [{ name: 'Hydra Veil Serum', variant: '30ml', price: 120, quantity: 1 }],
   status: 'delivered',
   createdAt: '2026-08-14T10:00:00Z',
   discountCode: null,
@@ -52,7 +52,7 @@ const anne = order({
   orderNumber: 'WB-1002',
   customerName: 'Anne Doherty',
   email: 'anne@example.com',
-  items: [{ name: 'MOTS-C', variant: '10mg vial', price: 60, quantity: 2 }],
+  items: [{ name: 'Vita-C Cleanser', variant: '150ml', price: 60, quantity: 2 }],
   createdAt: '2026-09-02T09:00:00Z',
   total: 60,
   trackingNumber: null,
@@ -60,7 +60,7 @@ const anne = order({
 const amberSecond = order({
   orderNumber: 'WB-1003',
   customerName: 'Amber Whitfield',
-  items: [{ name: 'MOTS-C', variant: '10mg vial', price: 60, quantity: 1 }],
+  items: [{ name: 'Vita-C Cleanser', variant: '150ml', price: 60, quantity: 1 }],
   createdAt: '2026-09-10T09:00:00Z',
   total: 60,
 });
@@ -72,66 +72,68 @@ const jose = order({
   total: 240,
 });
 
-// The two products that came back empty on 25 September, written down the way the real orders are.
-const hghOrder = order({
+// Two more products, for the "and" and "or" checks.
+const roseOrder = order({
   orderNumber: 'WB-1005',
   customerName: 'Bev Hardy',
   email: 'bev@example.com',
-  items: [{ name: 'HGH (191 AA )- Human Growth Hormone', variant: '100IU', price: 300, quantity: 1 }],
+  items: [{ name: 'Rose Night Cream', variant: '50ml', price: 300, quantity: 1 }],
   createdAt: '2026-09-12T09:00:00Z',
   total: 300,
 });
-const aodOrder = order({
+const spfOrder = order({
   orderNumber: 'WB-1006',
   customerName: 'Carl Innes',
   email: 'carl@example.com',
-  items: [{ name: 'AOD-9604', variant: '5mg', price: 80, quantity: 1 }],
+  items: [{ name: 'Daily SPF-30', variant: '40ml', price: 80, quantity: 1 }],
   createdAt: '2026-09-13T09:00:00Z',
   total: 80,
 });
-// An order written down in shorthand, which is what breaks searching for the full product name.
-const shorthandOrder = order({
+// An order written down with a different spelling, which is what a word group is for.
+const spellingOrder = order({
   orderNumber: 'WB-1007',
   customerName: 'Dina Patel',
   email: 'dina@example.com',
-  items: [{ name: 'Reta 30mg / Tirez 30mg', variant: '30mg', price: 200, quantity: 1 }],
+  items: [{ name: 'Silk Moisturizer', variant: '50ml', price: 200, quantity: 1 }],
   createdAt: '2026-09-14T09:00:00Z',
   total: 200,
 });
 
-const all = [amber, anne, amberSecond, jose, hghOrder, aodOrder, shorthandOrder];
-const find = (query) => all
-  .filter(o => matchesSearchGroups(orderSearchText(o), parseSearchGroups(query, SEARCH_ALIAS_GROUPS)))
+const all = [amber, anne, amberSecond, jose, roseOrder, spfOrder, spellingOrder];
+const findWith = (query, groups) => all
+  .filter(o => matchesSearchGroups(orderSearchText(o), parseSearchGroups(query, groups)))
   .map(o => o.orderNumber);
+// The shop's own list, which is what the real screens use.
+const find = (query) => findWith(query, SEARCH_ALIAS_GROUPS);
 
 console.log('\n=== Splitting up what was typed ===\n');
-check('two plain words',            parseSearchTerms('Amber Reta'),       ['amber', 'reta']);
-check('a dash between words',       parseSearchTerms('Amber- Reta'),      ['amber', 'reta']);
-check('a plus between words',       parseSearchTerms('Anne + Mots'),      ['anne', 'mots']);
-check('a plus with no spaces',      parseSearchTerms('Anne+Mots'),        ['anne', 'mots']);
-check('a comma between words',      parseSearchTerms('Anne, Mots'),       ['anne', 'mots']);
-check('a dash INSIDE a word stays', parseSearchTerms('MOTS-C'),           ['mots-c']);
-check('quotes keep a phrase whole', parseSearchTerms('"omnimorph pen"'),  ['omnimorph pen']);
+check('two plain words',            parseSearchTerms('Amber Hydra'),      ['amber', 'hydra']);
+check('a dash between words',       parseSearchTerms('Amber- Hydra'),     ['amber', 'hydra']);
+check('a plus between words',       parseSearchTerms('Anne + Vita'),      ['anne', 'vita']);
+check('a plus with no spaces',      parseSearchTerms('Anne+Vita'),        ['anne', 'vita']);
+check('a comma between words',      parseSearchTerms('Anne, Vita'),       ['anne', 'vita']);
+check('a dash INSIDE a word stays', parseSearchTerms('VITA-C'),           ['vita-c']);
+check('quotes keep a phrase whole', parseSearchTerms('"night cream"'),    ['night cream']);
 check('an apostrophe is left be',   parseSearchTerms("O'Brien"),          ["o'brien"]);
 check('an empty box means nothing', parseSearchTerms('   '),              []);
-check('the same word twice is one', parseSearchTerms('reta reta'),        ['reta']);
+check('the same word twice is one', parseSearchTerms('serum serum'),      ['serum']);
 
-console.log('\n=== The complaint itself ===\n');
-check('Amber Reta finds Amber\'s Reta order',   find('Amber Reta'),   ['WB-1001']);
-check('Amber- Reta does the same',              find('Amber- Reta'),  ['WB-1001']);
-check('Anne + Mots finds Anne\'s MOTS-C',       find('Anne + Mots'),  ['WB-1002']);
-check('Amber Mots finds her OTHER order',       find('Amber Mots'),   ['WB-1003']);
-check('Amber on its own finds both of hers',    find('Amber'),        ['WB-1001', 'WB-1003']);
-check('Mots on its own finds both MOTS-C',      find('Mots'),         ['WB-1002', 'WB-1003']);
-check('a word nobody has finds nothing',        find('Amber Tirz'),   []);
-check('an empty box hides nobody',              find('').length,      all.length);
+console.log('\n=== A customer and a product together ===\n');
+check('Amber Hydra finds Amber\'s serum order',  find('Amber Hydra'),  ['WB-1001']);
+check('Amber- Hydra does the same',              find('Amber- Hydra'), ['WB-1001']);
+check('Anne + Vita finds Anne\'s cleanser',      find('Anne + Vita'),  ['WB-1002']);
+check('Amber Vita finds her OTHER order',        find('Amber Vita'),   ['WB-1003']);
+check('Amber on its own finds both of hers',     find('Amber'),        ['WB-1001', 'WB-1003']);
+check('Vita on its own finds both cleansers',    find('Vita'),         ['WB-1002', 'WB-1003']);
+check('a word nobody has finds nothing',         find('Amber Balm'),   []);
+check('an empty box hides nobody',               find('').length,      all.length);
 
 console.log('\n=== Forgiving how it was typed ===\n');
-check('case does not matter',            find('AMBER reta'),         ['WB-1001']);
-check('motsc finds MOTS-C',              find('anne motsc'),         ['WB-1002']);
-check('mots c finds MOTS-C',             find('anne mots c'),        ['WB-1002']);
-check('jose finds José',            find('jose'),               ['WB-1004']);
-check('an accent typed finds it too',    find('Márquez'),       ['WB-1004']);
+check('case does not matter',            find('AMBER hydra'),        ['WB-1001']);
+check('vitac finds Vita-C',              find('anne vitac'),         ['WB-1002']);
+check('vita c finds Vita-C',             find('anne vita c'),        ['WB-1002']);
+check('jose finds Jos\u00e9',            find('jose'),               ['WB-1004']);
+check('an accent typed finds it too',    find('M\u00e1rquez'),       ['WB-1004']);
 check('a stray plus on its own is fine', find('+ amber'),            ['WB-1001', 'WB-1003']);
 
 console.log('\n=== Searching the rest of the order, not just the name ===\n');
@@ -168,32 +170,31 @@ check('to only',                   between('', '2026-07-31'),           ['WB-100
 check('both ends are included',    between('2026-08-14', '2026-08-14'), ['WB-1001']);
 check('a day is read in UK time',  orderDayInUk(amber),                 '2026-08-14');
 
-console.log('\n=== The 25 September complaint: hgh and aod ===\n');
-check('hgh finds the HGH order',            find('hgh'),          ['WB-1005']);
-check('aod finds the AOD order',            find('aod'),          ['WB-1006']);
-check('aod-9604 typed in full works too',   find('AOD-9604'),     ['WB-1006']);
+console.log('\n=== "and" and "or" ===\n');
+check('rose finds the night cream order',   find('rose'),         ['WB-1005']);
+check('spf finds the SPF order',            find('spf'),          ['WB-1006']);
+check('SPF-30 typed in full works too',     find('SPF-30'),       ['WB-1006']);
 // "and" is how a person joins two words out loud. It must never be searched for as a word.
-check('"hgh and aod" means "hgh aod"',      find('hgh and aod'),  find('hgh aod'));
-check('...and neither order has both',      find('hgh and aod'),  []);
-// Which is why "or" exists: it is what he actually meant.
-check('"hgh or aod" finds both',            find('hgh or aod'),   ['WB-1005', 'WB-1006']);
+check('"rose and spf" means "rose spf"',    find('rose and spf'), find('rose spf'));
+check('...and neither order has both',      find('rose and spf'), []);
+// Which is why "or" exists: it is what the person actually meant.
+check('"rose or spf" finds both',           find('rose or spf'),  ['WB-1005', 'WB-1006']);
 check('"and" on its own is still searched', parseSearchTerms('and'), ['and']);
-check('a stray "or" at the end is ignored', find('hgh or'),       ['WB-1005']);
+check('a stray "or" at the end is ignored', find('rose or'),      ['WB-1005']);
 
-console.log('\n=== Short names, both directions ===\n');
-check('reta finds Retatrutide',                  find('reta').includes('WB-1001'), true);
-check('retatrutide finds an order saying Reta',  find('retatrutide').includes('WB-1007'), true);
-check('...and still finds the full name',        find('retatrutide').includes('WB-1001'), true);
-check('tirez is understood as Tirzepatide',      find('tirzepatide'), ['WB-1007']);
-check('hgh finds it written as Growth Hormone',  find('somatropin'), ['WB-1005']);
-check('a customer AND a short name together',    find('Dina reta'), ['WB-1007']);
-// Jose's order carries Retatrutide too, so the quoted search rightly finds both. What it must NOT
-// find is WB-1007, the one written down only as "Reta 30mg".
-check('quotes turn short names OFF',             find('"retatrutide"'), ['WB-1001', 'WB-1004']);
-check('a word with no short name is unchanged',  find('Hardy'), ['WB-1005']);
+console.log('\n=== Words that mean the same thing ===\n');
+// The shop's own list is empty, so search is by the plain words typed. The feature itself still
+// works for any list it is handed, which is what the made-up group below proves.
+const SPELLINGS = [['moisturiser', 'moisturizer']];
+check('with no list, only the spelling typed is found',  find('moisturiser'), []);
+check('with a list, either spelling finds the order',    findWith('moisturiser', SPELLINGS), ['WB-1007']);
+check('...and the spelling on the order still works',    findWith('moisturizer', SPELLINGS), ['WB-1007']);
+check('a customer AND a listed word together',           findWith('Dina moisturiser', SPELLINGS), ['WB-1007']);
+check('quotes turn the list OFF',                        findWith('"moisturiser"', SPELLINGS), []);
+check('a word that is on no list is unchanged',          findWith('Hardy', SPELLINGS), ['WB-1005']);
 
-console.log('\n=== The short-name list itself ===\n');
-check('it was built from the terminology list and is not empty', SEARCH_ALIAS_GROUPS.length > 15, true);
+console.log('\n=== The shop\'s own list ===\n');
+check('it is a list', Array.isArray(SEARCH_ALIAS_GROUPS), true);
 check('every group has at least two ways to say it', SEARCH_ALIAS_GROUPS.every(g => g.length >= 2), true);
 check('nothing in it is one or two letters', SEARCH_ALIAS_GROUPS.every(g => g.every(w => w.length >= 3)), true);
 check('it is all lower case', SEARCH_ALIAS_GROUPS.every(g => g.every(w => w === w.toLowerCase())), true);

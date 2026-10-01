@@ -152,7 +152,7 @@ const EVENT_LABELS: Record<string, string> = {
   sign_in: 'Signed in',
   register: 'New member',
   verification: 'Checked a batch code',
-  research_question: 'Asked PEARL',
+  research_question: 'Asked a question',
   enquiry: 'Sent an enquiry',
   qr_scan: 'Scanned a QR code',
   order: 'Placed an order',

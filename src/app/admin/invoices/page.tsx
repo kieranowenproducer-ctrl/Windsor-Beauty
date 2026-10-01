@@ -385,7 +385,7 @@ export default function AdminInvoicesPage() {
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && loadInvoices()}
-                    placeholder="Search as you type, eg Amber Reta"
+                    placeholder="Search as you type, eg Amber serum"
                     aria-label="Search invoices"
                     className="flex-1 min-w-[180px] sm:flex-none sm:w-56 border border-stone-200 px-3 py-2 text-xs focus:outline-none focus:border-gold-400 transition-colors"
                   />
@@ -466,8 +466,8 @@ export default function AdminInvoicesPage() {
               <p className="text-[11px] text-stone-500">
                 Searches as you type, and takes more than one word. Every word has to be on the
                 invoice somewhere, so
-                <span className="text-stone-700 font-medium"> Amber Reta</span> finds Amber&rsquo;s Reta invoice and
-                <span className="text-stone-700 font-medium"> hgh or aod</span> finds either.
+                <span className="text-stone-700 font-medium"> Amber serum</span> finds Amber&rsquo;s serum invoice and
+                <span className="text-stone-700 font-medium"> serum or cleanser</span> finds either.
                 Product names and short names both count.
               </p>
             </div>

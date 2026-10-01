@@ -194,8 +194,8 @@ export async function listCustomerEmails(customerId: number, email: string): Pro
 // ─── Reading and removing one saved email (task ce308493) ───────────────────
 // Kieran, 19 September 2026: "there must also be options to re-forward that email to a customer
 // should the customer not receive that email or customer wants a copy of that email", and then:
-// "There must also be an option to delete or edit saved emails too... if One member asks for how
-// many clicks per pen and we have that information already for another client in their email, we
+// "There must also be an option to delete or edit saved emails too... if One member asks a
+// question and we have that information already for another client in their email, we
 // should be able to edit, copy, delete, do whatever to that email and use it for another member."
 
 /** One saved email, including the formatted version, for reading and for sending again. */

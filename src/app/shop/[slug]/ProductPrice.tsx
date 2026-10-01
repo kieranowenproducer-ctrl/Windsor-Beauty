@@ -30,7 +30,7 @@ export default function ProductPrice({
             isMember ? (
               // Samuel, 26 Sept 2026 (video): the member saving was a 9px tag and an 11px grey
               // line nobody read. The price a non-member would pay now sits struck through beside
-              // the member price, and the saving is a gold tag in the Glow Card's gradient.
+              // the member price, and the saving is a gold tag in the Beauty Card's gradient.
               <div className="mb-5">
                 <div className="flex items-baseline gap-3 flex-wrap">
                   <span className="text-3xl font-semibold text-gold-700">&pound;{discountedPrice.toFixed(2)}</span>

@@ -25,16 +25,15 @@ import ShopClient from './ShopClient';
  */
 export const dynamic = 'force-dynamic';
 
-const DESCRIPTION = 'Browse Windsor Beauty research compounds: high-purity peptides, pre-dosed pens '
-  + 'and reconstitution supplies, each supplied with a certificate of analysis. For laboratory '
-  + 'research use only, not for human consumption.';
+const DESCRIPTION = 'Shop Windsor Beauty skincare: serums, moisturisers, cleansers, SPF and more. '
+  + 'Browse the full range by category.';
 
 export const metadata: Metadata = {
-  title: 'Research Compounds | Windsor Beauty',
+  title: 'Shop Skincare | Windsor Beauty',
   description: DESCRIPTION,
   alternates: { canonical: `${SITE_URL}/shop` },
   openGraph: {
-    title: 'Research Compounds | Windsor Beauty',
+    title: 'Shop Skincare | Windsor Beauty',
     description: DESCRIPTION,
     type: 'website',
     url: `${SITE_URL}/shop`,
@@ -53,7 +52,7 @@ function itemListJsonLd(products: ReturnType<typeof visibleProducts>) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Research Compounds',
+    name: 'Windsor Beauty Skincare',
     numberOfItems: products.length,
     itemListElement: products.map((product, index) => ({
       '@type': 'ListItem',

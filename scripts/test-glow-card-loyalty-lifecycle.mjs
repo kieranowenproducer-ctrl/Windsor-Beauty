@@ -1,4 +1,4 @@
-// Proves the paid-order Glow Card lifecycle against a deliberately empty,
+// Proves the paid-order Beauty Card lifecycle against a deliberately empty,
 // dedicated database. It will never read DATABASE_URL or a local .env file.
 //
 // Setup (one time): create a separate database named windsor_beauty_loyalty_test
@@ -190,5 +190,5 @@ try {
   await sql`CREATE SCHEMA public`;
 }
 
-console.log(`\nGlow Card lifecycle: ${passed} passed, ${failed} failed.\n`);
+console.log(`\nBeauty Card lifecycle: ${passed} passed, ${failed} failed.\n`);
 process.exitCode = failed ? 1 : 0;

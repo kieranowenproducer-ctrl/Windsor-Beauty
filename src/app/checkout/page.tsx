@@ -5,14 +5,12 @@ import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import AccountIncentiveBanner from '@/components/AccountIncentiveBanner';
 import MemberSavingsNote from '@/components/MemberSavingsNote';
-import BacWaterUpsellModal from '@/components/BacWaterUpsellModal';
 import PromotionsAppliedBlock from '@/components/PromotionsAppliedBlock';
 import CountrySelect from '@/components/CountrySelect';
 import { usePromotionPreview } from '@/hooks/usePromotionPreview';
 import { useIsLoggedIn } from '@/hooks/useIsLoggedIn';
 import { CHECKOUT_CONFIRMATIONS, CHECKOUT_CONFIRMATIONS_ERROR } from '@/lib/complianceConfirmations';
 import { PRODUCTS, Product, ProductVariant, mergeProducts, activeVariants } from '@/data/products';
-import { reconstitutionTargetFor } from '@/lib/upsells';
 import { percentOf, sumMoney } from '@/lib/money';
 import { trackShopAction } from '@/lib/analytics/shopTracking';
 import {
@@ -87,11 +85,10 @@ export default function CheckoutPage() {
     international: SHIPPING_OPTION_META[1].price,
   });
   const [placingOrder, setPlacingOrder] = useState(false);
-  /* What somebody confirms before paying (audit 2026-07-07 for the Terms; Samuel added the
-     research-use and over-18 one on 10 September 2026). Both gate the Pay button. The Terms half
-     mirrors the same acknowledgement on the invoice /pay/[token] page. */
-  const [confirmations, setConfirmations] = useState<Record<'researchUse' | 'terms', boolean>>({
-    researchUse: false,
+  /* What somebody confirms before paying: that they have read and accept the Terms and the
+     Privacy Policy. It gates the Pay button, and the server checks it again. The wording lives in
+     src/lib/complianceConfirmations.ts. */
+  const [confirmations, setConfirmations] = useState<Record<'terms', boolean>>({
     terms: false,
   });
   const allConfirmed = CHECKOUT_CONFIRMATIONS.every(c => confirmations[c.id]);
@@ -102,13 +99,6 @@ export default function CheckoutPage() {
   const [overrides, setOverrides] = useState<Record<string, Product>>({});
   const [hiddenSlugs, setHiddenSlugs] = useState<Set<string>>(new Set());
   const [stockMap, setStockMap] = useState<Record<string, number>>({});
-  const [showBacWaterUpsell, setShowBacWaterUpsell] = useState(false);
-  const [bacWaterPrompted, setBacWaterPrompted] = useState(false);
-  // Snapshot taken when the questions start, so adding one water mid-flow cannot renumber the
-  // queue underneath us and skip the other one.
-  const [waterQueue, setWaterQueue] = useState<string[]>([]);
-  const [waterIndex, setWaterIndex] = useState(0);
-
   useEffect(() => {
     fetch('/api/products/catalogue')
       .then(res => res.json())
@@ -173,36 +163,6 @@ export default function CheckoutPage() {
   }, [SHIPPING_OPTIONS, shipping]);
 
   const catalogue = useMemo(() => mergeProducts(PRODUCTS, overrides), [overrides]);
-
-  // Which waters this basket actually calls for, in basket order. Most baskets want one; a basket
-  // holding both a BAC-water product and an acetic-acid one genuinely wants both, and asking about
-  // only one would send somebody home without half of what they need to use what they bought.
-  // Only worth asking at all when the basket holds something that has to be reconstituted: it used
-  // to ask everybody, including a basket of nothing but pre-filled pens, where the answer is always
-  // no and the question is just one more screen between a customer and paying.
-  const eligibleDiluents = useMemo(() => {
-    const wanted: string[] = [];
-    for (const item of items) {
-      const product = catalogue.find(p => p.slug === item.slug);
-      const target = product ? reconstitutionTargetFor(product) : null;
-      if (target && !wanted.includes(target)) wanted.push(target);
-    }
-    return wanted.filter(slug => {
-      if (items.some(i => i.slug === slug)) return false;   // already in the basket
-      if (hiddenSlugs.has(slug)) return false;
-      const product = catalogue.find(p => p.slug === slug);
-      if (!product) return false;
-      const stock = stockMap[slug];
-      if (typeof stock === 'number' && stock <= 0) return false;
-      return activeVariants(product).some(v => v.price > 0);
-    });
-  }, [items, catalogue, hiddenSlugs, stockMap]);
-
-  // The water currently being asked about.
-  const currentDiluentProduct = useMemo(
-    () => catalogue.find(p => p.slug === waterQueue[waterIndex]),
-    [catalogue, waterQueue, waterIndex],
-  );
 
   const [discountInput, setDiscountInput] = useState('');
   const [discountStatus, setDiscountStatus] = useState<DiscountStatus>('idle');
@@ -367,44 +327,7 @@ export default function CheckoutPage() {
   }, [isLoggedIn]);
 
   function handleContinueToPayment() {
-    if (!bacWaterPrompted && eligibleDiluents.length > 0) {
-      setWaterQueue(eligibleDiluents);
-      setWaterIndex(0);
-      setShowBacWaterUpsell(true);
-      return;
-    }
     setStep('payment');
-  }
-
-  // Ask about the next water this basket needs, or stop asking and go to payment.
-  function advanceWaterPrompt() {
-    const next = waterIndex + 1;
-    if (next < waterQueue.length) {
-      setWaterIndex(next);
-      return;
-    }
-    setBacWaterPrompted(true);
-    setShowBacWaterUpsell(false);
-    setStep('payment');
-  }
-
-  function handleAddBacWater(variant: ProductVariant, quantity: number) {
-    if (currentDiluentProduct) {
-      addItem({
-        productId: currentDiluentProduct.id,
-        name: currentDiluentProduct.name,
-        slug: currentDiluentProduct.slug,
-        variant: variant.dosage,
-        price: variant.price,
-        quantity,
-        image: currentDiluentProduct.image,
-      });
-    }
-    advanceWaterPrompt();
-  }
-
-  function handleSkipBacWater() {
-    advanceWaterPrompt();
   }
 
   async function handlePay() {
@@ -439,7 +362,7 @@ export default function CheckoutPage() {
           phone: details.phone,
           marketingConsent: isLoggedIn === false ? marketingConsent : false,
           shippingRecipient: differentAddress ? shippingRecipient.trim() || null : null,
-          // What they ticked. The server checks these too and refuses the order without both,
+          // What they ticked. The server checks this too and refuses the order without it,
           // because a greyed-out button is a courtesy and not a control.
           confirmations,
           shippingLabel: selectedShipping.label,
@@ -976,7 +899,7 @@ export default function CheckoutPage() {
                 </div>
                 {shippingDiscountAmount > 0 && (
                   <div className="flex justify-between text-xs text-gold-700">
-                    <span>Glow Card delivery reward</span>
+                    <span>Beauty Card delivery reward</span>
                     <span>&minus;&pound;{shippingDiscountAmount.toFixed(2)}</span>
                   </div>
                 )}
@@ -992,23 +915,16 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* THE LAST THING SOMEBODY TICKS BEFORE THEY PAY (Samuel, 10 September 2026).
-                  Checkout had one box, about the Terms. It now has two, because the research-use
-                  and over-18 confirmation is about the goods in the basket rather than about the
-                  person browsing, and this is the last moment anybody can be asked about them.
-                  Both are needed before Pay unlocks; the wording lives in one file with the entry
-                  gate's, so nobody edits one and forgets the other. */}
+              {/* The one thing somebody ticks before they pay. The wording lives in
+                  src/lib/complianceConfirmations.ts so the server stores exactly what was shown. */}
               <div className="border border-gold-200 bg-gold-50/40 px-4 py-4 mb-4 space-y-2">
                 <p className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold">
                   Before you pay
                 </p>
-                {CHECKOUT_CONFIRMATIONS.map(({ id, label, link }) => (
+                {CHECKOUT_CONFIRMATIONS.map(({ id, label, links }) => (
                   <div key={id} className="py-1.5">
                     {/* min-h-11 is 44px, the touch-target floor this site holds itself to
-                        everywhere else. Without it the Terms row is a single line on a phone and
-                        came out at 33px, which is a fiddly tap for the one control standing
-                        between somebody and paying. The research-use row wraps onto two lines and
-                        was fine, which is exactly why this only showed up on a phone. */}
+                        everywhere else: this is the one control between somebody and paying. */}
                     <label
                       htmlFor={`checkout-confirm-${id}`}
                       className="flex min-h-11 items-start gap-2.5 py-1 cursor-pointer"
@@ -1023,24 +939,23 @@ export default function CheckoutPage() {
                       />
                       <span className="text-xs text-stone-600 leading-relaxed">{label}</span>
                     </label>
-                    {/* THE LINK SITS OUTSIDE THE TICKABLE SENTENCE, ON ITS OWN LINE.
-                        Inline, it was a trap: the whole sentence toggles the box, so a customer
-                        aiming at the words "Terms & Conditions" got a new tab and NO tick, came
-                        back to a Pay button that was still grey, and had nothing telling them the
-                        box they thought they had ticked was empty. Measured, not guessed: clicking
-                        the middle of that sentence opened a tab and left the box unticked every
-                        time. Reading and agreeing are two different actions and now have two
-                        different targets. */}
-                    {link && (
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener"
-                        className="ml-[26px] mt-1 inline-block text-[11px] underline text-gold-700 hover:text-gold-800"
-                      >
-                        Read the {link.text}
-                      </a>
-                    )}
+                    {/* THE LINKS SIT OUTSIDE THE TICKABLE SENTENCE, ON THEIR OWN LINE. Inline they
+                        were a trap: the whole sentence toggles the box, so a customer aiming at the
+                        link got a new tab and NO tick. Reading and agreeing are two different
+                        actions and have two different targets. */}
+                    <p className="ml-[26px] mt-1 flex flex-wrap gap-x-4 gap-y-1">
+                      {links.map(link => (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener"
+                          className="inline-block text-[11px] underline text-gold-700 hover:text-gold-800"
+                        >
+                          Read the {link.text}
+                        </a>
+                      ))}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -1131,7 +1046,7 @@ export default function CheckoutPage() {
               </div>
               {shippingDiscountAmount > 0 && (
                 <div className="flex justify-between text-xs">
-                  <span className="text-gold-700">Glow Card delivery reward</span>
+                  <span className="text-gold-700">Beauty Card delivery reward</span>
                   <span className="text-gold-700">&minus;&pound;{shippingDiscountAmount.toFixed(2)}</span>
                 </div>
               )}
@@ -1147,32 +1062,10 @@ export default function CheckoutPage() {
               </div>
               <MemberSavingsNote context="order" showGuest compact className="!mt-3" />
             </div>
-            {items.some(item => catalogue.find(p => p.slug === item.slug)?.categories.includes('Pens')) && (
-              <div className="border border-gold-200 bg-gold-50/40 px-3 py-3 mt-4">
-                <p className="text-[9px] text-stone-500 leading-relaxed">
-                  <span className="font-semibold text-stone-600">Needle usage disclaimer: </span>
-                  pens in your order are supplied with a needle for lawful research handling and
-                  reconstitution only, not for human or animal use.
-                </p>
-              </div>
-            )}
-            <p className="text-[8px] text-stone-500 text-center mt-4 leading-relaxed">
-              For research use only. Not for human consumption.
-            </p>
           </div>
         </div>
       </div>
 
-
-      {showBacWaterUpsell && currentDiluentProduct && (
-        <BacWaterUpsellModal
-          key={currentDiluentProduct.slug}
-          product={currentDiluentProduct}
-          stock={stockMap[currentDiluentProduct.slug]}
-          onAdd={handleAddBacWater}
-          onSkip={handleSkipBacWater}
-        />
-      )}
     </div>
   );
 }

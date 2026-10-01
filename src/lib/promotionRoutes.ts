@@ -3,10 +3,12 @@
 // validate custom links so a promotion can't be published with a dead button.
 export const KNOWN_PROMOTION_ROUTES: { value: string; label: string }[] = [
   { value: '/promotion', label: 'Promotion page (shows discount code)' },
-  { value: '/shop', label: 'Shop — All Products' },
-  { value: '/shop?category=Peptides', label: 'Shop — Peptides' },
-  { value: '/shop?category=Pens', label: 'Shop — Pens' },
-  { value: '/shop?category=Reconstitution', label: 'Shop — Reconstitution Supplies' },
+  { value: '/shop', label: 'Shop: All Products' },
+  { value: '/shop?category=Serums', label: 'Shop: Serums' },
+  { value: '/shop?category=Moisturisers', label: 'Shop: Moisturisers' },
+  { value: '/shop?category=Cleansers', label: 'Shop: Cleansers' },
+  { value: '/shop?category=SPF', label: 'Shop: SPF' },
+  { value: '/shop?category=Extras', label: 'Shop: Extras' },
   { value: '/reviews', label: 'Reviews' },
   { value: '/about', label: 'About' },
   { value: '/contact', label: 'Contact' },
@@ -14,7 +16,7 @@ export const KNOWN_PROMOTION_ROUTES: { value: string; label: string }[] = [
 
 // A valid destination is either:
 // - empty (falls back to /promotion in the banner)
-// - a site-relative path starting with "/" (e.g. /shop, /shop/slug, /shop?category=Pens)
+// - a site-relative path starting with "/" (e.g. /shop, /shop/slug, /shop?category=Serums)
 // - an absolute http(s) URL, for linking to an external page
 const RELATIVE_PATH_PATTERN = /^\/[A-Za-z0-9\-_/]*(\?[A-Za-z0-9\-_=&%]*)?$/;
 const ABSOLUTE_URL_PATTERN = /^https?:\/\/[^\s]+$/;

@@ -45,7 +45,7 @@ export default function AdminProductManager({
   return (
     <>
           {/* Admin-only product manager (staff cookie only; never shown to
-              customers). Dosages, prices, stock and availability are all
+              customers). Sizes, prices, stock and availability are all
               editable here so the dashboard is not needed for everyday
               changes (task a5b6aa85). */}
           {isStaff && (() => {
@@ -57,7 +57,7 @@ export default function AdminProductManager({
               <div className="mb-5 rounded-lg border border-gold-300 bg-gold-50/60 px-4 py-3">
                 <p className="mb-2 flex items-center justify-between gap-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-gold-700">
                   <span className="flex items-center gap-2">
-                    <span className="rounded bg-gold-700 px-1.5 py-0.5 text-white">Admin</span> Dosages, prices and stock
+                    <span className="rounded bg-gold-700 px-1.5 py-0.5 text-white">Admin</span> Sizes, prices and stock
                   </span>
                   <Link
                     href={`/admin/products?edit=${encodeURIComponent(product.slug)}`}
@@ -190,7 +190,7 @@ export default function AdminProductManager({
                               onClick={() => toggleDosageEnabled(product, v.dosage)}
                               disabled={variantSaving}
                               className="rounded border border-gold-300 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-gold-700 hover:bg-gold-100 focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:opacity-50"
-                              title={isDisabled ? 'Show this dosage to customers' : 'Hide this dosage from customers'}
+                              title={isDisabled ? 'Show this size to customers' : 'Hide this size from customers'}
                             >
                               {isDisabled ? 'Show' : 'Hide'}
                             </button>
@@ -199,7 +199,7 @@ export default function AdminProductManager({
                               onClick={() => removeDosage(product, v.dosage)}
                               disabled={variantSaving}
                               className="rounded border border-stone-300 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-stone-500 hover:bg-stone-100 focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:opacity-50"
-                              title="Remove this dosage from the product"
+                              title="Remove this size from the product"
                             >
                               Remove
                             </button>
@@ -210,18 +210,18 @@ export default function AdminProductManager({
                   })}
                 </ul>
 
-                {/* Add a new dosage without leaving the shop */}
+                {/* Add a new size without leaving the shop */}
                 {addingDosage ? (
                   <div className="mt-3 flex flex-wrap items-end gap-2 border-t border-gold-200 pt-3">
                     <label className="flex flex-col gap-1 text-[10px] font-semibold uppercase tracking-wider text-gold-700">
-                      Dosage
+                      Size
                       <input
                         type="text"
                         autoFocus
                         value={newDosage}
                         disabled={variantSaving}
                         onChange={e => setNewDosage(e.target.value)}
-                        placeholder="e.g. 10mg"
+                        placeholder="e.g. 50ml"
                         className="w-24 rounded border border-gold-400 bg-white px-2 py-1 text-sm normal-case tracking-normal text-stone-800 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-gold-500"
                       />
                     </label>
@@ -260,7 +260,7 @@ export default function AdminProductManager({
                         disabled={variantSaving}
                         className="rounded bg-gold-700 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white hover:bg-gold-700 disabled:opacity-50"
                       >
-                        {variantSaving ? 'Saving' : 'Add dosage'}
+                        {variantSaving ? 'Saving' : 'Add size'}
                       </button>
                       <button
                         type="button"
@@ -278,7 +278,7 @@ export default function AdminProductManager({
                     onClick={() => { setAddingDosage(true); setVariantError(null); setEditingPriceDosage(null); setEditingDosage(null); }}
                     className="mt-3 rounded border border-dashed border-gold-400 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-gold-700 hover:bg-gold-100 focus:outline-none focus:ring-2 focus:ring-gold-500"
                   >
-                    + Add dosage
+                    + Add size
                   </button>
                 )}
 
@@ -287,10 +287,10 @@ export default function AdminProductManager({
                 )}
                 {anyTracked && (
                   <p className="mt-2 border-t border-gold-200 pt-2 text-xs text-stone-500">
-                    Total: <span className="font-semibold text-stone-700 tabular-nums">{total}</span> across all dosages
+                    Total: <span className="font-semibold text-stone-700 tabular-nums">{total}</span> across all sizes
                   </p>
                 )}
-                <p className="mt-1 text-[10px] text-stone-500">Only visible to you as an admin. Prices, stock and dosages save straight to the live shop.</p>
+                <p className="mt-1 text-[10px] text-stone-500">Only visible to you as an admin. Prices, stock and sizes save straight to the live shop.</p>
               </div>
             );
           })()}

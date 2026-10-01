@@ -7,7 +7,7 @@ const previous = process.env.ENQUIRY_REPLY_ARCHIVE_TO;
 
 delete process.env.ENQUIRY_REPLY_ARCHIVE_TO;
 assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'info@windsorbeauty.co.uk');
-assert.equal(getEnquiryReplyArchiveAddress('INFO@WINDSORGLOW.COM'), null);
+assert.equal(getEnquiryReplyArchiveAddress('INFO@WINDSORBEAUTY.CO.UK'), null);
 
 process.env.ENQUIRY_REPLY_ARCHIVE_TO = ' archive@windsorbeauty.co.uk ';
 assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'archive@windsorbeauty.co.uk');

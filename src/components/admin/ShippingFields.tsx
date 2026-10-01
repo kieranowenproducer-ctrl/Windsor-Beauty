@@ -159,7 +159,7 @@ export default function ShippingFields({
             <input
               value={draft.customsDescription}
               onChange={e => set('customsDescription', e.target.value)}
-              placeholder="e.g. Research peptide, lyophilised powder"
+              placeholder="e.g. Skincare, face serum"
               className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
             />
           </div>

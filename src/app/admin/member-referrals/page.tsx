@@ -88,7 +88,7 @@ export default function MemberReferralsAdminPage() {
 
   async function changeAccess(account: SafetyAccount) {
     const note = (safetyNotes[account.id] || '').trim();
-    if (note.length < 5) { setError('Add a short reason before changing Glow Card access.'); return; }
+    if (note.length < 5) { setError('Add a short reason before changing Beauty Card access.'); return; }
     setBusy(-account.id);
     try {
       const response = await fetch('/api/admin/member-referrals', {
@@ -100,12 +100,12 @@ export default function MemberReferralsAdminPage() {
         }),
       });
       const result = await response.json().catch(() => null);
-      if (!response.ok) setError(result?.error || 'Glow Card access could not be changed.');
+      if (!response.ok) setError(result?.error || 'Beauty Card access could not be changed.');
       else {
         setSafetyNotes(previous => { const next = { ...previous }; delete next[account.id]; return next; });
         await load();
       }
-    } catch { setError('Glow Card access could not be changed. Please try again.'); }
+    } catch { setError('Beauty Card access could not be changed. Please try again.'); }
     finally { setBusy(null); }
   }
 
@@ -165,14 +165,14 @@ export default function MemberReferralsAdminPage() {
     <section className="border border-stone-200 bg-stone-50 p-5 mb-8">
       <h2 className="font-serif text-xl text-stone-800">Account safety controls</h2>
       <p className="text-sm text-stone-600 mt-2 max-w-3xl">
-        Freeze a Glow Card while suspicious activity is checked. Its referral link, reward claims and unused reward codes stop working, but the member's account and orders remain available.
+        Freeze a Beauty Card while suspicious activity is checked. Its referral link, reward claims and unused reward codes stop working, but the member's account and orders remain available.
       </p>
       {safetyAccounts.length === 0 && <p className="text-sm text-stone-600 mt-4">No reviewed or frozen accounts need an access decision.</p>}
       <div className="grid lg:grid-cols-2 gap-3 mt-4">{safetyAccounts.map(account => <div key={account.id} className="border border-stone-200 bg-white p-4">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <p className="text-sm font-semibold text-stone-800 break-all">{account.email}</p>
           <span className={account.frozenAt ? 'text-xs font-semibold text-red-800 bg-red-50 border border-red-200 px-2 py-1' : 'text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-1'}>
-            {account.frozenAt ? 'Glow Card frozen' : 'Glow Card active'}
+            {account.frozenAt ? 'Beauty Card frozen' : 'Beauty Card active'}
           </span>
         </div>
         {account.frozenReason && <p className="text-xs text-stone-600 mt-2">Current reason: {account.frozenReason}</p>}
@@ -187,7 +187,7 @@ export default function MemberReferralsAdminPage() {
           className={account.frozenAt
             ? 'mt-3 bg-gold-700 text-white text-xs px-4 py-2.5 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-gold-700'
             : 'mt-3 border border-red-300 text-red-800 bg-white text-xs px-4 py-2.5 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-700'}>
-          {account.frozenAt ? 'Restore Glow Card' : 'Freeze Glow Card'}
+          {account.frozenAt ? 'Restore Beauty Card' : 'Freeze Beauty Card'}
         </button>
       </div>)}</div>
     </section>

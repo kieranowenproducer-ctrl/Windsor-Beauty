@@ -3,7 +3,7 @@ import { requireDb } from '@/lib/db/client';
 import { createSecurityReviewCase } from '@/lib/db/securityReviews';
 
 // Keep the unfinished scheme dark on the live shop until the terms and launch are approved.
-// The original referral-stamp scheme and the order-loyalty Glow Card are
+// The original referral-stamp scheme and the order-loyalty Beauty Card are
 // mutually exclusive. Keeping the old routes dark when the replacement is on
 // prevents one real order from earning two different kinds of reward.
 export const referralsEnabled = () => process.env.WB_MEMBER_REFERRALS_ENABLED === 'true'
@@ -72,7 +72,7 @@ export async function getOrCreateReferralCode(customerId: number): Promise<strin
     WHERE id = ${customerId} AND banned_at IS NULL
       AND glow_card_frozen_at IS NULL AND account_status = 'active'
   `;
-  if (!allowed.length) throw new Error('Glow Card access is not available');
+  if (!allowed.length) throw new Error('Beauty Card access is not available');
   const existing = await db`SELECT code FROM member_referral_codes WHERE customer_id = ${customerId}`;
   if (existing.length) return String(existing[0].code);
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -191,7 +191,7 @@ async function syncOneReferral(row: ReferralRow) {
   if (row.referrer_frozen_at || row.referred_frozen_at) {
     await db`
       UPDATE member_referrals SET status = 'review',
-        review_reason = 'A Glow Card account is frozen by staff'
+        review_reason = 'A Beauty Card account is frozen by staff'
       WHERE id = ${row.id} AND status NOT IN ('ready', 'rejected')
     `;
     return;
@@ -671,7 +671,7 @@ export async function setGlowCardFreeze(params: {
       RETURNING id
     ), held AS (
       UPDATE member_referrals SET status = 'review',
-        review_reason = 'A Glow Card account is frozen by staff'
+        review_reason = 'A Beauty Card account is frozen by staff'
       WHERE ${params.frozen}::boolean
         AND (referrer_id = ${params.customerId} OR referred_id = ${params.customerId})
         AND status IN ('waiting_order', 'waiting_verification', 'holding', 'approved')

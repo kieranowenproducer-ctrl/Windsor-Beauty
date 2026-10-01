@@ -54,7 +54,7 @@ export interface UpsellRecommendation {
   price: number;
   image: string | undefined;
   message: string | null;
-  /** Every active variant, lowest-strength-first. Add must ask the customer to choose from this list rather than silently adding `variant` whenever it has more than one entry. */
+  /** Every active variant, smallest size first. Add must ask the customer to choose from this list rather than silently adding `variant` whenever it has more than one entry. */
   variants: { dosage: string; price: number }[];
 }
 
@@ -90,138 +90,15 @@ export const DEFAULT_UPSELL_HEADING = 'Frequently bought with';
 // itself) keeps that pure function completely unaware manual overrides
 // exist — it just receives a flat UpsellRuleRow[] and treats every row the
 // same way, CSV or manual.
-// The one upsell relationship derivable from real data with zero marketing
-// judgement: every lyophilised peptide vial needs BAC Water to reconstitute.
-// Pens are pre-mixed and the diluents can't recommend themselves. Shared
-// between the fallback engine below and the admin's "Generate Upsell Rules
-// CSV" button (src/app/admin/upsells/page.tsx) so the one real business rule
-// has a single source of truth instead of two copies that could drift apart.
-export const RECONSTITUTION_TARGET_SLUG = 'bac-water';
-export const ACETIC_ACID_SLUG = 'acetic-acid-06-10ml';
-export const KNOWN_DILUENT_SLUGS = new Set([RECONSTITUTION_TARGET_SLUG, ACETIC_ACID_SLUG]);
-const FALLBACK_PRIORITY_BASE = 1000; // always ranks below any real CSV/manual rule (which use small positive integers)
+// Ranks every automatic same-category suggestion below any real CSV or manual rule
+// (which use small positive integers).
+const FALLBACK_PRIORITY_BASE = 1000;
 export const FALLBACK_IMPORT_BATCH_ID = 'category-fallback';
 
-// ─── Bacteriostatic water is not an upsell ───────────────────────────────────
-// A vial of dry powder cannot be used without something to reconstitute it, so
-// offering the water is not marketing — it is part of selling the vial.
-// Samuel's words: "Every vial of dry powder sold should be suggested to a
-// customer to be sold with BAC. That is standard. That is not an upsell."
-//
-// It used to be a FALLBACK, offered only to a product nobody had curated rules
-// for. The moment a product picked up any imported or hand-set rule it counted
-// as "covered" and the water quietly dropped off. Measured on the live shop on
-// 22 Aug 2026: 27 of the 48 curated products carried no water rule, and HGH
-// 191AA, Oxytocin, NAD+ and the Wolverine blend — all dry powder vials — showed
-// no water anywhere on the page. It is now a standing rule instead: always
-// emitted, for every product that needs it, whatever else is set up.
-export const RECONSTITUTION_BATCH_ID = 'reconstitution';
-// Zero, so it ranks above every curated rule, which start at 1. Not cosmetic:
-// the list is capped at MAX_RECOMMENDATIONS, so a product with a full set of
-// curated suggestions would otherwise push the water off the end and show
-// nothing — the exact failure this rule exists to prevent.
-const RECONSTITUTION_PRIORITY = 0;
-export const RECONSTITUTION_MESSAGE = 'Needed to reconstitute this product';
-// Acetic acid products get their own line, because a customer who already keeps BAC water in the
-// cupboard needs telling that this one is different, not just offering a second bottle.
-export const ACETIC_ACID_MESSAGE = 'Needed to reconstitute this one, instead of BAC Water';
-export function reconstitutionMessageFor(targetSlug: string): string {
-  return targetSlug === ACETIC_ACID_SLUG ? ACETIC_ACID_MESSAGE : RECONSTITUTION_MESSAGE;
-}
-
-// Two exclusions, and only two, both facts rather than guesses: a pen arrives pre-mixed, and a
-// diluent cannot recommend itself. EVERYTHING else is offered water.
-//
-// There was a third: a list of words — nasal, spray, capsule, tablet, oral — that excluded a
-// product whose NAME contained one. Samuel struck it out: "5-Amino-1MQ Will Need bac water so do
-// not assume this is a capsule. This needs fixing. Don't assume." He is right, and the reasoning
-// generalises. This catalogue has no field saying what form a product takes, so a word in a name is
-// a guess, and a guess in this direction silently removes water from something that needs it —
-// which is the whole complaint this rule exists to answer.
-//
-// If a specific product genuinely should not be offered water, it gets named here as a decision.
-// Nothing is excluded because of what it happens to be called.
-//
-// Two named lists, and both are DECISIONS with a person and a reason attached — never a reading of
-// what a product happens to be called.
-
-// Already a liquid, so there is nothing to reconstitute. Samuel, 23 Aug 2026: "L-Carnitine Doesn't
-// needs any water !!! It already is already liquid as is Pag NRG and UP 389."
-// (UP-389 is stored under the slug `super-human-blend`; its display name was changed, the slug was
-// not. Checked against the live catalogue rather than assumed from the name.)
-const NEVER_NEEDS_WATER = new Set<string>([
-  'l-carnitine-5000mg',   // L-Carnitine
-  'pag-nrg',              // PAG~NRG
-  'super-human-blend',    // UP-389
-]);
-
-// Must be reconstituted in acetic acid, not bacteriostatic water, AT EVERY DOSAGE. Samuel,
-// 23 Aug 2026: "The pH value of these products must be kept between 4.0 and 6.0. These product
-// need to reconstructed in an acetic acid solution; otherwise, it is prone to becoming cloudy or
-// jelly like." He listed CJC-1295 both with and without DAC; this shop sells one CJC-1295, and
-// since both forms take acetic acid the single entry covers it either way. He wrote
-// "KS：KissPeptin"; the shop sells two, and the reason he gave is about kisspeptin itself, so both
-// are here.
-const NEEDS_ACETIC_ACID = new Set<string>([
-  'ipamorelin',                        // IPA
-  'cjc-1295-no-dac-ipamorelin-10mg',   // IPA/CJC-1295 (Ipamorelin 10mg + CJC-1295 No DAC)
-  'aod-9604',                          // AOD-9604
-  'tesamorelin',                       // Tesamorelin
-  'cjc-1295',                          // CJC-1295, with or without DAC
-  'kisspeptin-10',                     // KissPeptin
-  'kisspeptin-54',                     // KissPeptin
-]);
-
-/**
- * Which diluent this product has to be mixed with, or null when it needs none.
- * The single source of truth for the whole shop: the product page, the basket, the question before
- * payment and the admin's CSV generator all read this, so none of them can drift from the others.
- */
-export function reconstitutionTargetFor(product: Product): string | null {
-  if (KNOWN_DILUENT_SLUGS.has(product.slug)) return null;   // water cannot need water
-  if (product.categories.includes('Pens')) return null;     // a pen arrives pre-mixed
-  if (NEVER_NEEDS_WATER.has(product.slug)) return null;     // named as already liquid
-  if (NEEDS_ACETIC_ACID.has(product.slug)) return ACETIC_ACID_SLUG;
-  return RECONSTITUTION_TARGET_SLUG;
-}
-
-export function needsReconstitution(product: Product): boolean {
-  return reconstitutionTargetFor(product) !== null;
-}
-
-/**
- * The water rule for every trigger that needs it. Applied on top of the curated rules rather than
- * instead of them, and deduped downstream by upsell slug — so a product that already lists BAC
- * Water keeps its own message and simply moves to the front.
- */
-export function buildReconstitutionRules(
-  triggerSlugs: string[],
-  catalogue: Product[],
-): UpsellRuleRow[] {
-  const bySlug = new Map(catalogue.map(p => [p.slug, p]));
-  const now = new Date().toISOString();
-  const rules: UpsellRuleRow[] = [];
-  for (const trigger of triggerSlugs) {
-    const product = bySlug.get(trigger);
-    if (!product) continue;
-    const target = reconstitutionTargetFor(product);
-    // No diluent needed, or the shop is not currently selling the one it needs.
-    if (!target || !bySlug.has(target)) continue;
-    rules.push({
-      id: -3,
-      trigger_handle: trigger,
-      upsell_handle: target,
-      priority: RECONSTITUTION_PRIORITY,
-      custom_message: reconstitutionMessageFor(target),
-      active: true,
-      start_date: null,
-      end_date: null,
-      import_batch_id: RECONSTITUTION_BATCH_ID,
-      created_at: now,
-    });
-  }
-  return rules;
-}
+// ─── No product in this shop REQUIRES another one ────────────────────────────
+// There is no built-in rule and no hard-coded product: every suggestion comes
+// from the admin's own rules (CSV or hand-picked), with same-category products
+// as the fallback.
 
 // A trigger counts as "covered" the moment it has a manual override saved
 // (even one with zero upsell_handles — that's an admin's deliberate "show
@@ -238,11 +115,9 @@ export function coveredTriggerSlugs(csvRules: UpsellRuleRow[], manualOverrides: 
 // Guarantees "Frequently bought with" always has something sensible to show
 // instead of silently rendering nothing — the gap the old, separate,
 // image-less "Related Products" block was papering over for any product an
-// admin hadn't gotten around to curating yet (e.g. 5-Amino-1MQ). Two signals,
-// ranked in this order, for each uncovered trigger: (1) the one real
-// complementary relationship in this catalogue (peptide vial -> BAC Water),
-// then (2) same-category siblings — the best signal available without real
-// purchase/research data. Always synthetic, always catalogue-only (every
+// admin hadn't gotten around to curating yet. One signal,
+// for each uncovered trigger: same-category siblings, the best signal available
+// without real purchase data. Always synthetic, always catalogue-only (every
 // candidate comes straight from the live `catalogue` array), always ranked
 // below any real CSV/manual rule via FALLBACK_PRIORITY_BASE, and automatically
 // filtered for hidden/out-of-stock/duplicate/self by computeUpsellRecommendations
@@ -276,15 +151,6 @@ export function buildCategoryFallbackRules(
 
     let priority = FALLBACK_PRIORITY_BASE;
     const added = new Set<string>([trigger]);
-
-    // The water itself is no longer emitted here: buildReconstitutionRules emits it for every
-    // product that needs it, curated or not, so doing it in both places would be two copies of
-    // one business rule waiting to drift apart. It is still marked as added so the sibling loop
-    // below does not offer it a second time as a same-category suggestion.
-    const diluent = reconstitutionTargetFor(product);
-    if (diluent && bySlug.has(diluent)) {
-      added.add(diluent);
-    }
 
     const siblings = catalogue.filter(p => !added.has(p.slug) && p.categories.some(c => product.categories.includes(c)));
     for (const sibling of siblings) {
@@ -382,19 +248,6 @@ export function computeUpsellRecommendations(params: {
     if (!existing || rule.priority < existing.priority) {
       bestPriority.set(rule.upsell_handle, { priority: rule.priority, message: rule.custom_message });
     }
-  }
-
-  // "Suggest AA water INSTEAD of BAC water." A curated rule saved months ago may still name the
-  // wrong one, so drop any diluent that nothing in this basket actually calls for. A basket holding
-  // both kinds keeps both, because then both are genuinely wanted.
-  const wantedDiluents = new Set<string>();
-  for (const slug of basketSlugs) {
-    const product = productBySlug.get(slug);
-    const target = product ? reconstitutionTargetFor(product) : null;
-    if (target) wantedDiluents.add(target);
-  }
-  for (const slug of Array.from(bestPriority.keys())) {
-    if (KNOWN_DILUENT_SLUGS.has(slug) && !wantedDiluents.has(slug)) bestPriority.delete(slug);
   }
 
   return Array.from(bestPriority.entries())

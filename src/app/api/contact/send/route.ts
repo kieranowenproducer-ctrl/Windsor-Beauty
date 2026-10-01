@@ -11,10 +11,10 @@ const FROM_ADDRESS = 'Windsor Beauty Website <enquiries@windsorbeauty.co.uk>';
 const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
 
 const SUBJECT_LABELS: Record<string, string> = {
+  general: 'General Enquiry',
   order:   'Order Enquiry',
   product: 'Product Information',
   verify:  'Verification Issue',
-  coa:     'Certificate of Analysis',
   returns: 'Returns and Refunds',
   other:   'Other',
 };
@@ -101,8 +101,8 @@ export async function POST(request: Request) {
 
   // ── Build email ───────────────────────────────────────────────────────────────
   const subjectLine = orderSummary
-    ? `Website enquiry — ${subjectLabel} — ${orderSummary.orderNumber} — ${name}`
-    : `Website enquiry — ${subjectLabel} — ${name}`;
+    ? `Website enquiry: ${subjectLabel}, ${orderSummary.orderNumber}, ${name}`
+    : `Website enquiry: ${subjectLabel}, ${name}`;
 
   const orderBlockHtml = orderSummary ? `
     <div style="margin:20px 0;border:2px solid #b8902a;background:#fefce8;padding:16px 20px">
@@ -211,7 +211,7 @@ Admin:        ${orderSummary.adminUrl}
       html: emailDocument({
         title: subjectLine,
         headerLabel: 'Website Enquiry',
-        footerText: 'Internal Notification — Reply directly to this email to respond to the customer.',
+        footerText: 'Internal notification. Reply directly to this email to respond to the customer.',
         bodyHtml: `
         <tr>
           <td style="padding:40px 40px 32px">
@@ -243,8 +243,7 @@ Admin:        ${orderSummary.adminUrl}
     // reworded, reword this with it.
     //
     // It deliberately does NOT answer anything. An acknowledgement that starts
-    // being helpful about a research compound is an answer nobody reviewed, and
-    // the enquiry that prompted all of this was somebody asking about dosing.
+    // being helpful about a product is an answer nobody reviewed.
     //
     // Sent AFTER the internal email and never allowed to fail the request: the
     // enquiry is already saved and sales@ already has it. A customer getting no
@@ -255,7 +254,7 @@ Admin:        ${orderSummary.adminUrl}
         from: FROM_ADDRESS,
         to: email,
         replyTo: TO_ADDRESS,
-        subject: `We have received your enquiry — ${subjectLabel}`,
+        subject: `We have received your enquiry: ${subjectLabel}`,
         text:
           `${emailGreeting(name)}
 
@@ -276,14 +275,10 @@ ${message}
 
 ` +
           `Windsor Beauty
-windsorbeauty.co.uk
-
-` +
-          `All products are strictly for laboratory and in vitro research use. Not for human consumption.`,
+windsorbeauty.co.uk`,
         html: emailDocument({
           title: 'We have received your enquiry',
           headerLabel: 'Enquiry Received',
-          footerText: 'All products are strictly for laboratory and in vitro research use. Not for human consumption.',
           bodyHtml: `
           <tr>
             <td style="padding:40px 40px 32px">

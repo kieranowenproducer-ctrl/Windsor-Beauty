@@ -30,7 +30,7 @@ function csvField(value: string): string {
 }
 
 function buildCsv(rows: StockReportRow[], generatedAt: string): string {
-  const header = ['Product Name', 'SKU / ID', 'Size / Dosage', 'Category', 'Price', 'Stock Quantity', 'Status', 'Last Updated'];
+  const header = ['Product Name', 'SKU / ID', 'Size', 'Category', 'Price', 'Stock Quantity', 'Status', 'Last Updated'];
   const lines: string[] = [];
   lines.push(csvField(`Windsor Beauty Stock Check — generated ${new Date(generatedAt).toLocaleString('en-GB')}`));
   lines.push('');
@@ -72,9 +72,9 @@ function StockTable({ rows }: { rows: StockReportRow[] }) {
   }
   return (
     <>
-      {/* Mobile: stacked cards so the dosage and price always sit beside each
+      {/* Mobile: stacked cards so the size and price always sit beside each
           product. The desktop table below scrolls sideways on a phone, which
-          hid exactly those two columns and made multi-dosage products look
+          hid exactly those two columns and made multi-size products look
           like duplicate rows. */}
       <div className="sm:hidden border border-stone-200 divide-y divide-stone-100">
         {rows.map(r => (
@@ -111,7 +111,7 @@ function StockTable({ rows }: { rows: StockReportRow[] }) {
             <tr className="border-b border-stone-100 bg-stone-50">
               <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Product</th>
               <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">SKU</th>
-              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Size / Dosage</th>
+              <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Size</th>
               <th className="text-left text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Category</th>
               <th className="text-right text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Price</th>
               <th className="text-right text-[9px] tracking-[0.15em] uppercase text-stone-400 px-4 py-2.5">Stock</th>

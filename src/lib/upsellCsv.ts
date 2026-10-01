@@ -45,20 +45,14 @@ export const UPSELL_OPTIONAL_COLUMNS = ['custom_message', 'start_date', 'end_dat
 
 export const UPSELL_CSV_HEADER = 'trigger_product_handle,upsell_product_handle,priority,custom_message,active,start_date,end_date';
 
-// Real, current catalogue handles (verified against src/data/products.ts) —
-// a previous version of this example used guessed-looking slugs
-// (bac-water-10ml, insulin-syringes, alcohol-wipes, cjc-1295-ipamorelin) that
-// didn't actually match any product, two of which don't exist in the
-// catalogue at all. Caught via the import preview's catalogue cross-check
-// while testing — a real admin downloading and re-uploading this exact file
-// unmodified would have gotten 3 of 4 rows silently rejected. If product
-// handles change again, re-verify against "Export Product Handles CSV" on
-// /admin/products rather than guessing.
+// An example of the layout only. The handles below are placeholders, not real
+// products: swap them for handles from "Export Product Handles CSV" on
+// /admin/products before uploading, or the import preview will reject the rows.
 export const UPSELL_CSV_EXAMPLE = `${UPSELL_CSV_HEADER}
-retatrutide,bac-water,1,Needed to reconstitute this product,TRUE,,
-semaglutide,bac-water,1,Needed to reconstitute this product,TRUE,,
-tirzepatide,bac-water,1,Needed to reconstitute this product,TRUE,,
-cjc-1295-no-dac-ipamorelin-10mg,bac-water,1,Needed to reconstitute this product,TRUE,,
+first-product-handle,second-product-handle,1,Goes well with this product,TRUE,,
+first-product-handle,third-product-handle,2,,TRUE,,
+second-product-handle,first-product-handle,1,Often bought together,TRUE,,
+third-product-handle,first-product-handle,1,,TRUE,,
 `;
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

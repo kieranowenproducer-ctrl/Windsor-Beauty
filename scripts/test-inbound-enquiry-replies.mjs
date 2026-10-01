@@ -128,16 +128,16 @@ async function run() {
   /* ── 1. Her words are stored, and stored as hers ───────────────────────── */
   const emma = (await sql.query(
     `INSERT INTO ${T} (name, email, message, status) VALUES ($1,$2,$3,'replied') RETURNING *`,
-    ['Emma Lewis', 'emmalouise123@example.test', 'Are the peptides pre-mixed?']))[0];
+    ['Emma Lewis', 'emmalouise123@example.test', 'Is the serum fragrance free?']))[0];
 
   // An answer we sent, written the old way, with no direction given at all.
   await sql.query(
     `INSERT INTO ${T}_replies (enquiry_id, body, from_address) VALUES ($1,$2,$3)`,
-    [emma.id, 'All pens are pre-mixed.', 'info@windsorbeauty.co.uk']);
+    [emma.id, 'Thank you. We will check and come back to you.', 'info@windsorbeauty.co.uk']);
   const ours = (await sql.query(`SELECT direction FROM ${T}_replies WHERE enquiry_id = $1`, [emma.id]))[0];
   check('a reply written before the column existed still counts as ours', ours.direction, 'out');
 
-  const hers = await recordInbound(emma.id, 'May I ask why there are two pens?', 'EmmaLouise123@example.test', 'rcv_001');
+  const hers = await recordInbound(emma.id, 'May I ask why there are two bottles?', 'EmmaLouise123@example.test', 'rcv_001');
   check('her reply is saved', Boolean(hers?.created), true);
   check('her reply is marked as hers', hers.reply.direction, 'in');
   check('her address is stored, not ours', hers.reply.from_address, 'emmalouise123@example.test');
@@ -161,7 +161,7 @@ async function run() {
   check('a simple thank-you is recorded and finished automatically', courtesyAfter.status, 'closed');
 
   /* ── 3. A retried webhook writes one row, not two ──────────────────────── */
-  const retry = await recordInbound(emma.id, 'May I ask why there are two pens?', 'emmalouise123@example.test', 'rcv_001');
+  const retry = await recordInbound(emma.id, 'May I ask why there are two bottles?', 'emmalouise123@example.test', 'rcv_001');
   check('the retry is accepted', Boolean(retry), true);
   check('the retry did not write a second row', retry.created, false);
   const count = (await sql.query(

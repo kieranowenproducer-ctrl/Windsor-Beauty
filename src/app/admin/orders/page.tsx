@@ -200,7 +200,7 @@ function AdminOrdersContent() {
   );
   // Every word typed has to be found somewhere on the order, and they can be in different places,
   // which is what makes "Amber Reta" work. Each word carries its short names with it, so
-  // "Retatrutide" also finds an order written down as "Reta 30mg". src/lib/adminSearch.ts has the
+  // a full product name also finds an order written down under its short name. src/lib/adminSearch.ts has the
   // rules and src/lib/searchAliases.ts has the short names.
   const searchGroups = useMemo(() => parseSearchGroups(search, searchAliases), [search, searchAliases]);
   const isSearching = searchGroups.length > 0;

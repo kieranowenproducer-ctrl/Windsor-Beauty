@@ -50,7 +50,7 @@ export default function ProductTable({
                 <tr className="border-b border-stone-200 bg-stone-50 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
                   <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Product</th>
                   <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Categories</th>
-                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Purity</th>
+                  <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Purity badge</th>
                   <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">From</th>
                   <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Sold</th>
                   <th className="text-left text-[9px] tracking-[0.18em] uppercase text-stone-400 px-4 py-3">Stock</th>
@@ -77,9 +77,9 @@ export default function ProductTable({
                         {soldCounts[product.slug] !== undefined ? soldCounts[product.slug].toLocaleString() : <span className="text-stone-300">0</span>}
                       </td>
                       <td className="px-4 py-3">
-                        {/* One row per dosage — every variant of a product
+                        {/* One row per size — every variant of a product
                             carries its own stock number, so selling out one
-                            dosage (e.g. 30mg) never affects the others. */}
+                            size (e.g. 30ml) never affects the others. */}
                         {renderStockEditor(product)}
                       </td>
                       <td className="px-4 py-3">

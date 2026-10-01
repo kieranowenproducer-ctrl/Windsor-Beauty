@@ -6,8 +6,8 @@ import { affiliateInvitationEmail } from '@/lib/affiliateEmail';
 export const dynamic = 'force-dynamic';
 
 const preview = {
-  profiles: [{ customer_id: 83, display_name: 'Raf', referral_code: 'RAF', status: 'active', first_name: 'Raf', last_name: 'Christian', email: 'raf@example.com', code_duration_days: 183, balance_pence: 1954, referral_count: 12, order_count: 8 }],
-  payouts: [{ id: 12, affiliate_customer_id: 83, display_name: 'Raf', email: 'raf@example.com', amount_pence: 1900, method: 'cash', status: 'requested', requested_at: new Date().toISOString() }],
+  profiles: [{ customer_id: 83, display_name: 'Example Partner', referral_code: 'PARTNER', status: 'active', first_name: 'Example', last_name: 'Partner', email: 'partner@example.com', code_duration_days: 183, balance_pence: 1954, referral_count: 12, order_count: 8 }],
+  payouts: [{ id: 12, affiliate_customer_id: 83, display_name: 'Example Partner', email: 'partner@example.com', amount_pence: 1900, method: 'cash', status: 'requested', requested_at: new Date().toISOString() }],
   invitations: [
     { id: 3, affiliate_customer_id: 83, recipient_email: 'sam@example.com', created_source: 'affiliate', state: 'delivered', created_at: '2026-09-26T10:00:00.000Z' },
     { id: 2, affiliate_customer_id: 83, recipient_email: 'jo@example.com', created_source: 'affiliate', state: 'email_failed', created_at: '2026-09-25T15:00:00.000Z' },
@@ -17,12 +17,12 @@ const preview = {
 };
 
 export async function GET(request: Request) {
-  // Staff can open the exact email a person Raf invites receives, with an example address and link.
+  // Staff can open the exact email a person an affiliate invites receives, with an example address and link.
   // Nothing is created or sent.
   if (new URL(request.url).searchParams.get('emailPreview') === '1') {
     const email = affiliateInvitationEmail({
       email: 'their.name@example.com',
-      affiliateName: 'Raf',
+      affiliateName: 'Example Partner',
       link: 'https://www.windsorbeauty.co.uk/account/register?affiliateInvite=example',
       expiresAt: new Date(Date.now() + 7 * 86_400_000).toISOString(),
       requested: new URL(request.url).searchParams.get('requested') === '1',
@@ -52,13 +52,13 @@ export async function POST(request: Request) {
       if (!Number.isInteger(customerId) || customerId <= 0) throw new Error('Choose a valid affiliate.');
       const invitation = await createAffiliateInvitation(customerId, String(body.recipientEmail || ''), 'staff');
       const link = affiliateInvitationLink(request, invitation.token);
-      return NextResponse.json({ link, shareMessage: affiliateShareMessage('Raf', invitation.recipientEmail, link), recipientEmail: invitation.recipientEmail, expiresAt: invitation.expiresAt }, { headers: { 'Cache-Control': 'no-store' } });
+      return NextResponse.json({ link, shareMessage: affiliateShareMessage('', invitation.recipientEmail, link), recipientEmail: invitation.recipientEmail, expiresAt: invitation.expiresAt }, { headers: { 'Cache-Control': 'no-store' } });
     }
     if (body?.action === 'create_profile') {
       const customerId = Number(body.customerId);
       const durationDays = Number(body.durationDays ?? 183);
       if (!Number.isInteger(customerId) || customerId <= 0) throw new Error('Choose a valid customer.');
-      const profile = await createAffiliateProfile({ customerId, displayName: String(body.displayName || 'Raf'), referralCode: String(body.referralCode || 'RAF'), durationDays });
+      const profile = await createAffiliateProfile({ customerId, displayName: String(body.displayName || 'Our partner'), referralCode: String(body.referralCode || 'PARTNER'), durationDays });
       return NextResponse.json({ success: true, profile });
     }
     if (body?.action === 'set_duration') {

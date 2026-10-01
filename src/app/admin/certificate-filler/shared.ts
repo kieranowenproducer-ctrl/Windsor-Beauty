@@ -1,15 +1,15 @@
-// Shared model + helpers for the TEMPORARY Certificate Filler tool: the draft
-// state, labelled-field matching and status logic used by both the form view
-// (page.tsx) and the on-certificate editor (CertificateEditor.tsx). Delete
-// this whole folder to remove the feature.
+// Shared model + helpers for the on-certificate editor: the draft state,
+// labelled-field matching and status logic used by CertificateEditor.tsx and
+// src/components/admin/AdminCertificateEdit.tsx.
 import {
   type Product, type ProductCertificate, type CertificateTestRow, type CertificateInfoRow,
   type CertificateFillerStatus,
 } from '@/data/products';
 import { type CertReference } from '@/data/certReference';
+import { BATCH_ROW_MATCH, DATE_ROW_MATCH } from '@/lib/certificateStandards';
 
 // ─────────────────────────────────────────────────────────────── draft model ──
-// A string-mirror of ProductCertificate (+ the editable dosage) for controlled
+// A string-mirror of ProductCertificate (+ the editable size) for controlled
 // inputs, holding EVERY field so a save never drops data the tool doesn't show.
 export interface Draft {
   enabled: boolean;
@@ -70,38 +70,22 @@ export const certHasContent = (c: ProductCertificate) =>
   Boolean(c.certificateId || c.testRows.length || c.image || (c.externalImages?.length ?? 0) > 0);
 
 // ─────────────────────────────────────────────────── labelled-field helpers ──
-// Find/create a test row by a robust name match, so we edit the existing row
+// Find/create a details row by a robust name match, so we edit the existing row
 // (whatever it's called) rather than duplicating it, and keep any other rows.
-// The purity floor is 99%, not 98%: the site advertises above 99% on every
-// research compound and the certificate checks fail anything lower (MIN_PURITY
-// in src/lib/certificateAudit.ts). The wordings themselves live in
-// src/lib/certificateStandards.ts, which is where the product editor reads them.
-export const TEST_KEYS = {
-  appearance: { re: /appear/i, name: 'Appearance', spec: 'White to off-white lyophilised powder' },
-  purity: { re: /purit/i, name: 'Purity (HPLC)', spec: '≥ 99%' },
-  content: { re: /content|assay/i, name: 'Content', spec: '' },
-} as const;
+// No test row is fixed: what a certificate lists is up to the document itself,
+// so every test row is typed by hand. The key names are historic.
 export const VS_KEYS = {
-  batch: { re: /batch|lot/i, name: 'Batch / Lot' },
-  testDate: { re: /test.?date|date.?test|^date$|tested/i, name: 'Test Date' },
+  batch: { re: BATCH_ROW_MATCH, name: 'Batch / Lot' },
+  testDate: { re: DATE_ROW_MATCH, name: 'Certificate Date' },
   manufactureDate: { re: /manufact|mfg/i, name: 'Manufacture Date' },
-  retestDate: { re: /retest|expiry|expire/i, name: 'Retest Date' },
-  laboratory: { re: /lab\b|laborator/i, name: 'Laboratory' },
+  retestDate: { re: /retest|expiry|expire|best before/i, name: 'Expiry Date' },
+  laboratory: { re: /lab\b|laborator|issued by/i, name: 'Issued By' },
 } as const;
 
 export const rowResult = (rows: CertificateTestRow[], re: RegExp) => rows.find((r) => re.test(r.test))?.result ?? '';
 export const rowSpec = (rows: CertificateTestRow[], re: RegExp) => rows.find((r) => re.test(r.test))?.specification ?? '';
 export const vsValue = (rows: CertificateInfoRow[], re: RegExp) => rows.find((r) => re.test(r.label))?.value ?? '';
 
-export function setTestRow(rows: CertificateTestRow[], key: keyof typeof TEST_KEYS, field: 'result' | 'specification', value: string): CertificateTestRow[] {
-  const cfg = TEST_KEYS[key];
-  const next = rows.map((r) => ({ ...r }));
-  const idx = next.findIndex((r) => cfg.re.test(r.test));
-  if (idx >= 0) { next[idx][field] = value; return next; }
-  const created: CertificateTestRow = { test: cfg.name, specification: cfg.spec, result: '' };
-  created[field] = value;
-  return [...next, created];
-}
 export function setVsRow(rows: CertificateInfoRow[], key: keyof typeof VS_KEYS, value: string): CertificateInfoRow[] {
   const cfg = VS_KEYS[key];
   const next = rows.map((r) => ({ ...r }));
@@ -110,7 +94,6 @@ export function setVsRow(rows: CertificateInfoRow[], key: keyof typeof VS_KEYS, 
   return [...next, { label: cfg.name, value }];
 }
 // Rows that AREN'T one of the labelled ones — shown in an "other rows" editor so nothing is hidden.
-export const otherTestRows = (rows: CertificateTestRow[]) => rows.map((r, i) => ({ r, i })).filter(({ r }) => !Object.values(TEST_KEYS).some((k) => k.re.test(r.test)));
 export const otherVsRows = (rows: CertificateInfoRow[]) => rows.map((r, i) => ({ r, i })).filter(({ r }) => !Object.values(VS_KEYS).some((k) => k.re.test(r.label)));
 
 // ───────────────────────────────────────────────────────────── row metadata ──
@@ -119,6 +102,7 @@ export interface RowMeta {
   origDosage: string; variantEnabled: boolean; single: boolean;
   ref: CertReference | undefined; special: boolean; imageUrl?: string;
 }
+// Historic. No product in this shop has a reference kind, so this is always false.
 export const isSpecialKind = (k?: CertReference['kind']) => k === 'blend' || k === 'water' || k === 'pen-external';
 
 export type StatusKey = 'not_started' | 'in_progress' | 'ready' | 'needs_review' | 'blocked' | 'complete';
@@ -135,15 +119,12 @@ export function requiredMissing(d: Draft, meta: RowMeta): string[] {
   if (d.mode === 'external') return d.externalImages.length ? [] : ['Uploaded certificate page(s)'];
   const miss: string[] = [];
   if (!d.certificateId.trim()) miss.push('Certificate number');
-  if (meta.special) {
-    if (!d.testRows.some((r) => r.result.trim())) miss.push('At least one test result');
-  } else {
-    if (!rowResult(d.testRows, TEST_KEYS.purity.re).trim()) miss.push('Purity result');
-    if (!rowResult(d.testRows, TEST_KEYS.content.re).trim()) miss.push('Content result');
-    if (!rowResult(d.testRows, TEST_KEYS.appearance.re).trim()) miss.push('Appearance result');
-  }
-  if (!vsValue(d.verificationSummary, VS_KEYS.batch.re).trim()) miss.push('Batch / Lot');
-  if (!vsValue(d.verificationSummary, VS_KEYS.testDate.re).trim()) miss.push('Test date');
+  // The same three things the Certificates screen asks for
+  // (certificateIssuesFor in src/lib/certificateAudit.ts). A batch or date
+  // typed as a test row counts, exactly as it does there.
+  void meta;
+  if (!(vsValue(d.verificationSummary, VS_KEYS.batch.re) || rowResult(d.testRows, VS_KEYS.batch.re)).trim()) miss.push('Batch / Lot');
+  if (!(vsValue(d.verificationSummary, VS_KEYS.testDate.re) || rowResult(d.testRows, VS_KEYS.testDate.re)).trim()) miss.push('Certificate date');
   return miss;
 }
 export function autoStatus(d: Draft, meta: RowMeta): StatusKey {

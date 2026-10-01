@@ -83,9 +83,9 @@ await sendInvoiceEmail({
   orderNumber: 'WB-TRIAL1',
   // Kieran's own example, plus a normal catalogue line to show the difference.
   lineItems: [
-    { type: 'trial', slug: 'trial:8', name: '501', description: '501mg', quantity: 1, unitPrice: 45, discount: 3, lineTotal: 42 },
-    { type: 'trial', slug: 'trial:13', name: 'ANADR 50MG 60S', description: '50MG', quantity: 1, unitPrice: 35, discount: 0, lineTotal: 35 },
-    { type: 'product', slug: 'retatrutide', name: 'Retatrutide', description: '10mg', quantity: 1, unitPrice: 100, discount: 0, lineTotal: 100 },
+    { type: 'trial', slug: 'trial:8', name: '501', description: '501ml', quantity: 1, unitPrice: 45, discount: 3, lineTotal: 42 },
+    { type: 'trial', slug: 'trial:13', name: 'ANADR 50ML 60S', description: '50ML', quantity: 1, unitPrice: 35, discount: 0, lineTotal: 35 },
+    { type: 'product', slug: 'hydra-veil-serum', name: 'Hydra Veil Serum', description: '30ml', quantity: 1, unitPrice: 100, discount: 0, lineTotal: 100 },
   ],
   shippingLabel: 'UK Delivery',
   shippingAmount: 5,
@@ -104,11 +104,11 @@ const text = captured.text ?? '';
 fs.writeFileSync(path.join(OUT, 'invoice-email.html'), html);
 fs.writeFileSync(path.join(OUT, 'invoice-email.txt'), text);
 
-const leaks = ['501', 'ANADR', '50MG', '501mg', 'trial:'].filter(w => html.includes(w) || text.includes(w));
+const leaks = ['501', 'ANADR', '50ML', '501ml', 'trial:'].filter(w => html.includes(w) || text.includes(w));
 console.log(`HTML: ${html.length} bytes`);
 console.log(`Shows "Product 1":        ${html.includes('Product 1') ? 'YES' : 'NO'}`);
 console.log(`Shows "Product 2":        ${html.includes('Product 2') ? 'YES' : 'NO'}`);
-console.log(`Keeps the real product:   ${html.includes('Retatrutide') ? 'YES' : 'NO'}`);
+console.log(`Keeps the real product:   ${html.includes('Hydra Veil Serum') ? 'YES' : 'NO'}`);
 console.log(`Trial names that leaked:  ${leaks.length ? leaks.join(', ') : 'none'}`);
 console.log(`Totals present (£182):    ${html.includes('182') ? 'YES' : 'NO'}`);
 

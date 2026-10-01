@@ -13,7 +13,7 @@ import ShopClient from '../../ShopClient';
  * sold and had no way of saying so: nothing to link to, nothing to put in a sitemap, and nothing
  * for a search result to be about. Fixing the product pages on 10 August made each product
  * findable by its own name and left the shop with no page between the front door and a single
- * compound.
+ * product.
  *
  * WHY THIS IS A SERVER COMPONENT RENDERING THE CLIENT ONE. Same split as the product page next
  * door, and for the same reason: only a server component can own a title, a description and a
@@ -32,23 +32,16 @@ interface CategoryPageProps {
 }
 
 /**
- * Everything this page is allowed to say about a category, which is deliberately very little.
+ * Everything this page says about a category, which is deliberately very little: the name exactly
+ * as the shop already labels it, and how many products are in it.
  *
- * THE COMPLIANCE LINE, AND IT IS THE WHOLE REASON THIS FUNCTION IS THIS SHORT. These category
- * names are already public on the site, and nothing here invents one. But a page TITLED "Fat Loss
- * Research Compounds", written to be found by somebody searching for fat loss, is a more
- * assertive use of that name than a filter in a dropdown ever was. So this says three things and
- * stops: the name exactly as the shop already labels it, how many products are in it, and the
- * same research-use qualifier every product description carries.
- *
- * It must NEVER grow a sentence explaining what the category is for, what the compounds in it do,
- * or who might want them. That is the same line held for the product descriptions on 10 August.
- * check-seo.mjs enforces it with a length ceiling, so a sentence added here fails the check.
+ * It must not grow a sentence about what the products in a category do for skin. A claim like
+ * that belongs on a product page, written by a person who knows the product. check-seo.mjs holds
+ * this to a length ceiling, so a sentence added here fails the check.
  */
 function describe(name: string, count: number): string {
-  return `${count} research compound${count === 1 ? '' : 's'} in ${name} from Windsor Beauty. `
-    + 'Supplied for laboratory research use only, not for human consumption, with a certificate '
-    + 'of analysis.';
+  return `${count} skincare product${count === 1 ? '' : 's'} in ${name} from Windsor Beauty. `
+    + 'See sizes and prices, and order online.';
 }
 
 /** The live categories, and the one this request is about. Null when there is nothing to show. */
@@ -66,7 +59,7 @@ export async function generateMetadata(props: CategoryPageProps): Promise<Metada
   const found = await resolve(params.slug);
   if (!found) return { title: 'Category Not Found | Windsor Beauty' };
 
-  const title = `${found.name} Research Compounds | Windsor Beauty`;
+  const title = `${found.name} | Windsor Beauty Skincare`;
   const description = describe(found.name, found.count);
   const canonical = `${SITE_URL}${categoryUrl(found.name)}`;
 

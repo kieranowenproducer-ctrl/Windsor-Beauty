@@ -12,8 +12,8 @@ interface Props {
   products: Product[];
   stockMap: Record<string, number>;
   /**
-   * Per-dosage stock, slug -> dosage -> quantity. Without it a card can only
-   * see a product's summed total, which cannot tell "one strength gone" from
+   * Per-size stock, slug -> size -> quantity. Without it a card can only
+   * see a product's summed total, which cannot tell "one size gone" from
    * "all of them gone" — the difference the OUT OF STOCK stamp turns on.
    */
   variantStockMap?: Record<string, Record<string, number>>;

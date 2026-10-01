@@ -112,7 +112,7 @@ export default function RetiredProductsPanel() {
                   <span className={`ml-2 text-[8px] tracking-wider uppercase px-1.5 py-0.5 ${item.quantity > 0 ? 'bg-gold-50 text-gold-700' : item.productHidden ? 'bg-stone-100 text-stone-500' : 'bg-amber-50 text-amber-600'}`}>
                     {item.quantity > 0
                       ? `Selling the last ${item.quantity}`
-                      : item.productHidden ? 'Off the shop' : 'This dosage hidden'}
+                      : item.productHidden ? 'Off the shop' : 'This size hidden'}
                   </span>
                 </span>
                 <button
@@ -130,7 +130,7 @@ export default function RetiredProductsPanel() {
                 </button>
                 {/* Coming soon is a whole-product state, so it is only offered
                     when the whole product is off the shop — on a product whose
-                    other dosages still sell it would block all of them. */}
+                    other sizes still sell it would block all of them. */}
                 {item.productHidden && (
                   <button
                     type="button"

@@ -14,7 +14,7 @@ import { findOrderByNumber, isDbConfigured } from '@/lib/db';
  *   - Ordered items with quantities and prices
  *   - Subtotal, discount, shipping, total
  *   - Tracking number (if already assigned)
- *   - "Research use only" disclaimer footer
+ *   - Footer with the shop's name, website and orders address
  */
 export async function GET(_request: Request, props: { params: Promise<{ orderNumber: string }> }) {
   const params = await props.params;
@@ -70,7 +70,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Packing Slip — ${order.order_number}</title>
+  <title>Packing Slip ${order.order_number}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #1a1a1a; padding: 32px 40px; max-width: 720px; margin: auto; }
@@ -105,7 +105,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   <div class="header">
     <div>
       <div class="brand">Windsor Beauty</div>
-      <div class="brand-sub">Research Peptides &amp; Compounds</div>
+      <div class="brand-sub">Skincare</div>
     </div>
     <div class="order-ref">
       <h2>Packing Slip</h2>
@@ -131,7 +131,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
 
   <div class="shipping-bar">
     <strong>Delivery method</strong>
-    ${order.shipping_label}${order.tracking_number ? ` — <strong>Tracking: ${order.tracking_number}</strong>` : ''}
+    ${order.shipping_label}${order.tracking_number ? `, <strong>Tracking: ${order.tracking_number}</strong>` : ''}
   </div>
 
   <div class="section-title" style="margin-bottom:8px">Order items</div>
@@ -172,8 +172,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   ${order.admin_notes ? `<div style="margin-top:16px;padding:10px;background:#fffbe6;border:1px solid #e8d44d;border-radius:4px;font-size:11px;color:#555"><strong>Admin notes:</strong><br>${order.admin_notes.replace(/\n/g, '<br>')}</div>` : ''}
 
   <div class="footer">
-    <p>Windsor Beauty — windsorbeauty.co.uk — orders@windsorbeauty.co.uk</p>
-    <p style="margin-top:6px">All products are supplied strictly for research purposes only. Not for human use.</p>
+    <p>Windsor Beauty, windsorbeauty.co.uk, orders@windsorbeauty.co.uk</p>
   </div>
 
   <div class="no-print" style="text-align:center;margin-top:24px">

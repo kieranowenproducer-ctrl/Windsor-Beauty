@@ -61,8 +61,8 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
 
   // Royal Mail's spreadsheet import expects parcel weight in kilograms. We
   // don't track per-product weights yet, so estimate from item count
-  // (50g per unit + 50g packaging, minimum 100g) — close enough for small
-  // peptide vials/pens, and easy to overwrite per row before uploading.
+  // (50g per unit + 50g packaging, minimum 100g). It is a rough guide only,
+  // and easy to overwrite per row before uploading.
   function estimateWeightKg(items: { quantity: number }[]): string {
     const totalUnits = items.reduce((sum, i) => sum + i.quantity, 0);
     const weightKg = Math.max(0.1, totalUnits * 0.05 + 0.05);

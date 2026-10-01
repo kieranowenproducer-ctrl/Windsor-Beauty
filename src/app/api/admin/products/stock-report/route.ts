@@ -11,7 +11,7 @@ import { PRODUCTS, mergeProducts } from '@/data/products';
 
 export const dynamic = 'force-dynamic';
 
-// One row per dosage/variant — not per product — so the report shows
+// One row per size/variant — not per product — so the report shows
 // exactly what's trackable in the admin panel: Retatrutide 5mg/10mg/30mg
 // each get their own row with their own stock number.
 export interface StockReportRow {

@@ -104,10 +104,9 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Research disclaimer */}
+        {/* Product note */}
         <div className="border-t border-gold-100 pt-8 mb-6">
           <p className="text-[10px] text-stone-500 leading-relaxed max-w-3xl">
-            <span className="font-semibold text-stone-500">For Research Use Only.</span>{' '}
             {footer.disclaimer}
           </p>
         </div>

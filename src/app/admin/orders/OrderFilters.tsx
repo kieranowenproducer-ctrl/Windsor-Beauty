@@ -91,7 +91,7 @@ export default function OrderFilters({
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search, eg Amber Reta"
+              placeholder="Search, eg Amber serum"
               aria-label="Search orders"
               className="min-w-0 flex-1 sm:flex-none border border-stone-200 focus:border-gold-400 outline-none px-3 py-2 text-sm text-stone-700 bg-white transition-colors sm:w-56"
             />
@@ -159,8 +159,8 @@ export default function OrderFilters({
           {/* Says out loud what the search will now do, because nobody guesses it. */}
           <p className="text-[11px] text-stone-500 pb-3">
             Search takes more than one word, and every word has to be on the order somewhere.
-            <span className="text-stone-700 font-medium"> Amber Reta</span> finds Amber&rsquo;s Reta order,
-            <span className="text-stone-700 font-medium"> hgh or aod</span> finds either.
+            <span className="text-stone-700 font-medium"> Amber serum</span> finds Amber&rsquo;s serum order,
+            <span className="text-stone-700 font-medium"> serum or cleanser</span> finds either.
             Short names work both ways, and searching looks in Archived orders too.
           </p>
 

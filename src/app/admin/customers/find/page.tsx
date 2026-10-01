@@ -155,8 +155,8 @@ export default function FindCustomersPage() {
               <Field label="Joined up to">
                 <input type="date" value={filters.joinedTo} onChange={e => set('joinedTo', e.target.value)} className={inputClass} />
               </Field>
-              <Field label="Anything about how they heard" hint="Finds a name however it was typed: PAG, Pag gym, PAG - John Berry.">
-                <input value={filters.referredByContains} onChange={e => set('referredByContains', e.target.value)} placeholder="e.g. PAG, Ross" className={inputClass} />
+              <Field label="Anything about how they heard" hint="Finds a name however it was typed, in capitals or not, with or without extra words.">
+                <input value={filters.referredByContains} onChange={e => set('referredByContains', e.target.value)} placeholder="e.g. a salon or partner name" className={inputClass} />
               </Field>
 
               <Field label="How they heard about us">

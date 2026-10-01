@@ -44,14 +44,14 @@ export default function AdminContentPage() {
   const [storageDefaultsSaving, setStorageDefaultsSaving] = useState(false);
   const [storageDefaultsMessage, setStorageDefaultsMessage] = useState('');
 
-  // Homepage trust badges (99% Purity / CoA Included / UK Supplier / Lab Tested)
+  // Homepage trust badges
   const [trustBadges, setTrustBadges] = useState<TrustBadge[]>(DEFAULT_TRUST_BADGES);
   const [trustBadgesOverridden, setTrustBadgesOverridden] = useState(false);
   const [trustBadgesSaving, setTrustBadgesSaving] = useState(false);
   const [trustBadgesMessage, setTrustBadgesMessage] = useState('');
 
   // Footer / nav content (description, contact emails, nav + legal links,
-  // research disclaimer, copyright/bottom-right text)
+  // footer note, copyright/bottom-right text)
   const [footerContent, setFooterContent] = useState<FooterContent>(DEFAULT_FOOTER_CONTENT);
   const [footerOverridden, setFooterOverridden] = useState(false);
   const [footerSaving, setFooterSaving] = useState(false);
@@ -548,8 +548,6 @@ export default function AdminContentPage() {
               { label: 'Refund Policy', href: '#section-refund-policy' },
               { label: 'Cookie Policy', href: '#section-cookies' },
               { label: 'Disclaimer', href: '#section-disclaimer' },
-              { label: 'Research Disclaimer', href: '#section-research-disclaimer' },
-              { label: 'Age Restriction', href: '#section-age-restriction' },
               { label: 'Payment Policy', href: '#section-payment-policy' },
               { label: 'Contact Policy', href: '#section-contact-policy' },
             ].map(({ label, href }) => (

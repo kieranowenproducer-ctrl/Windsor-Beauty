@@ -62,10 +62,10 @@ export default async function ContactPage() {
 
           <div className="border-t border-gold-100 pt-6">
             <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold mb-2">
-              Research Use Only
+              Product Advice
             </p>
             <p className="text-xs text-stone-500 leading-relaxed">
-              All products are strictly for laboratory and in vitro research use. Not for human consumption.
+              Our products are cosmetics for external use only. We cannot give medical advice. If you have a skin condition, please speak to a pharmacist or doctor.
             </p>
           </div>
         </div>

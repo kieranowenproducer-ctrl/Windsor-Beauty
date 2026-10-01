@@ -6,7 +6,7 @@ interface PolicyLayoutProps {
   children: React.ReactNode;
 }
 
-const LAST_UPDATED = '6 June 2026';
+const LAST_UPDATED = '1 October 2026';
 
 export default function PolicyLayout({ title, intro, children }: PolicyLayoutProps) {
   return (

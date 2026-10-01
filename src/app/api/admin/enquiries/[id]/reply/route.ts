@@ -79,7 +79,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
     }
   }
 
-  const subject = `Re: ${enquiry.subject_label} — Windsor Beauty`;
+  const subject = `Re: ${enquiry.subject_label}, Windsor Beauty`;
   const sentMessage = message;
   const automaticGreeting = emailGreeting(enquiry.name);
   const addAutomaticGreeting = !messageStartsWithGreeting(sentMessage);
@@ -112,19 +112,13 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
       replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
       subject,
       text: `${standardText}\n\n` +
-          `— Windsor Beauty\nwindsorbeauty.co.uk\n\n` +
-          `All products are supplied strictly for research purposes only. Not for human use.\n\n` +
+          `Windsor Beauty\nwindsorbeauty.co.uk\n\n` +
           `--- Your original message ---\n${enquiry.message}\n`,
       html: emailDocument({
         title: subject,
         headerLabel: 'Windsor Beauty',
-        // No footerText override, deliberately. This goes to a CUSTOMER, and
-        // the override replaced the research-use disclaimer with a bare address
-        // line — so the one kind of email most likely to be ABOUT a product was
-        // the one kind carrying no disclaimer (task 8a498491). The shared
-        // default carries the disclaimer, and the brand line it prints above it
-        // is already "Windsor Beauty — windsorbeauty.co.uk", which is all the override
-        // was adding.
+        // No footerText override: the shared footer already prints
+        // "Windsor Beauty, windsorbeauty.co.uk", which is all this email needs.
         bodyHtml: `
         <tr>
           <td style="padding:40px 40px 32px">

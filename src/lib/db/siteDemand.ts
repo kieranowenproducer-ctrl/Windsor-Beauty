@@ -189,7 +189,7 @@ export async function listDemand(days = 30): Promise<DemandReport> {
   const categoryMap = new Map<string, CategoryDemandRow>();
   const categoryAddresses = new Map<string, Set<string>>();
   for (const product of products) {
-    for (const category of product.categories.filter((name) => name !== 'Peptides')) {
+    for (const category of product.categories) {
       const row = categoryMap.get(category) ?? { name: category, pageViews: 0, visitors: 0, basketAdds: 0, orders: 0, products: 0 };
       row.pageViews += product.pageViews;
       const addresses = categoryAddresses.get(category) ?? new Set<string>();
@@ -352,7 +352,7 @@ export async function listDemandTrends(): Promise<DemandTrends> {
     row.topProduct = products[0]?.name ?? null;
     const categories = new Map<string, number>();
     for (const product of products) {
-      for (const category of product.categories.filter((name) => name !== 'Peptides')) {
+      for (const category of product.categories) {
         categories.set(category, (categories.get(category) ?? 0) + product.pageViews);
       }
     }

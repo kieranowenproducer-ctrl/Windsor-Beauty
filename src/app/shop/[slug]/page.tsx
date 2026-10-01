@@ -12,7 +12,7 @@ import ProductPageClient from './ProductPageClient';
  * WHY THIS FILE IS A SERVER COMPONENT AND THE PAGE ITSELF IS NEXT DOOR. Until 10 August 2026 the
  * whole page began with `'use client'`, and a client component cannot export `generateMetadata`.
  * So Next fell back to the root layout for every one of the 61 products: /shop/aod-9604 and
- * /shop/bpc-157 were both titled "Windsor Beauty | Premium Research Compounds" and both carried the
+ * /shop/bpc-157 were both titled "Windsor Beauty | Premium Skincare" and both carried the
  * homepage's description. Nothing on either page said which product it was about. There was no
  * h1, no canonical, no price, no structured data. The shop was discoverable and illegible, which
  * is the worse half of the pair, because it looks fine from inside a browser.
@@ -34,20 +34,16 @@ interface ProductPageProps {
 /**
  * The sentence a search result shows under the title.
  *
- * COMPLIANCE. Every word here is the shop's own existing copy: `shortDescription` is what the
- * product page already displays, and the tail repeats only what the compliance banner and the
- * spec block already say. NOTHING is generated about what a compound does. A meta description is
- * customer-facing text and the same boundary applies to it as to the page, so this composes
- * approved sentences and never writes a new claim. If a product ever arrives with no description
- * at all, the fallback names it and stops.
+ * Every word here is the shop's own existing copy: `shortDescription` is what the product page
+ * already displays. NOTHING is generated about what a product does for skin. A meta description
+ * is customer-facing text, so this reuses approved sentences and never writes a new claim. If a
+ * product ever arrives with no description at all, the fallback names it and stops.
  */
 function describe(product: Product): string {
   const own = (product.shortDescription ?? '').trim()
     || (product.fullDescription ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split('. ')[0];
-  const purity = product.purity ? `${product.purity} purity. ` : '';
   const opening = own ? `${own.replace(/\.?$/, '.')} ` : `${product.name} from Windsor Beauty. `;
-  return `${opening}${purity}Supplied for laboratory research use only, not for human consumption, `
-    + 'with a certificate of analysis.';
+  return `${opening}Premium skincare from Windsor Beauty.`;
 }
 
 function imageUrl(product: Product): string {
@@ -84,7 +80,7 @@ export async function generateMetadata(props: ProductPageProps): Promise<Metadat
 /**
  * The Product block, which is what turns a page into a listing Google can show a price for.
  *
- * One Offer per dosage, cheapest first, each with its own availability, because stock is counted
+ * One Offer per size, cheapest first, each with its own availability, because stock is counted
  * per strength here: a product whose 5mg is gone and whose 10mg is on the shelf is not out of
  * stock, and saying so would be both wrong and a lost sale. Prices are the real catalogue prices
  * after admin edits, which is why this page reads the database rather than the static file.

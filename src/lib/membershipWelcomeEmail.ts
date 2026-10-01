@@ -35,7 +35,7 @@ export async function sendMembershipWelcomeEmail(params: MembershipWelcomeEmailP
         `Welcome to Windsor Beauty. Your account is set up and your 10% first-order discount code is ready:\n\n` +
         `${params.discountCode}\n\n` +
         `Use it at checkout on your first order. This code is unique to your account.\n\n` +
-        (params.rafCode ? `Raf also invited you to Windsor Beauty. Your personal 5% Raf code for later product orders of £30 or more is ${params.rafCode}. It belongs only to your account. Use one code per order; the 10% welcome offer and 5% Raf offer cannot be combined.\n\n` : '') +
+        (params.rafCode ? `You joined by invitation, so you also have a personal 5% code for later product orders of £30 or more: ${params.rafCode}. It belongs only to your account. Use one code per order. The 10% welcome offer and the 5% code cannot be combined.\n\n` : '') +
         `Thanks,\nWindsor Beauty`,
       html: emailDocument({
         title: 'Welcome to Windsor Beauty',
@@ -48,9 +48,9 @@ export async function sendMembershipWelcomeEmail(params: MembershipWelcomeEmailP
             <p style="margin:0 0 16px;">Welcome to Windsor Beauty. Your account is set up and your 10% first-order discount code is ready:</p>
             <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#b8902a;">${escapeHtml(params.discountCode)}</p>
             <p style="margin:0 0 16px;">Use it at checkout on your first order. This code is unique to your account.</p>
-            ${params.rafCode ? `<p style="margin:0 0 16px;">Raf also invited you to Windsor Beauty. Your personal 5% Raf code for later product orders of £30 or more is:</p>
+            ${params.rafCode ? `<p style="margin:0 0 16px;">You joined by invitation, so you also have a personal 5% code for later product orders of £30 or more:</p>
             <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#b8902a;">${escapeHtml(params.rafCode)}</p>
-            <p style="margin:0 0 16px;">This code belongs only to your account. Use one code per order; the 10% welcome offer and 5% Raf offer cannot be combined.</p>` : ''}
+            <p style="margin:0 0 16px;">This code belongs only to your account. Use one code per order. The 10% welcome offer and the 5% code cannot be combined.</p>` : ''}
             <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>
         </tr>`,

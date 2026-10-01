@@ -30,7 +30,7 @@ export default function AnnouncementTicker({ text }: { text: string }) {
       {/* w-max sizes the strip to its content (3 copies), so the ticker's
           translateX(-33.333%) moves by exactly one copy and loops seamlessly.
           Without it the strip is viewport-width, so on mobile it reset a third
-          of the screen in — cutting off the tail (…Certificate of Analysis). */}
+          of the screen in — cutting off the tail of the message. */}
       <div
         className={`flex w-max whitespace-nowrap animate-ticker group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused] ${
           paused ? '[animation-play-state:paused]' : ''

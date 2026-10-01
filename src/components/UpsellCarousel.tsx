@@ -222,7 +222,7 @@ export default function UpsellCarousel({ extraTriggerSlug, primarySlug, compact 
         {recommendations.map(rec => (
           // Two distinct surfaces (task 3e612c60): tapping the PRODUCT (image,
           // name, price — anywhere except the gold bar) opens its product page;
-          // only the "+ Add" button adds to basket (with the dosage picker for
+          // only the "+ Add" button adds to basket (with the size picker for
           // multi-variant items). Built with the stretched-link pattern — an
           // absolutely-positioned link fills the card and the Add button sits
           // above it (z-10) — so there is no invalid nested-interactive markup

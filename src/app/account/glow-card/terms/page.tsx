@@ -9,9 +9,9 @@ export default async function DemoGlowCardTerms() {
   const customer = await resolveCustomerFromRequest(request);
   if (!customer || !glowCardDemoDesign(customer.email)) notFound();
   return <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
-    <Link href="/account/glow-card" className="text-sm text-gold-700 underline underline-offset-4">Back to my Glow Card</Link>
+    <Link href="/account/glow-card" className="text-sm text-gold-700 underline underline-offset-4">Back to my Beauty Card</Link>
     <p className="text-[10px] uppercase tracking-[0.23em] text-gold-700 mt-10">Member rewards</p>
-    <h1 className="font-serif text-4xl text-stone-900 mt-3">Glow Card terms preview</h1>
+    <h1 className="font-serif text-4xl text-stone-900 mt-3">Beauty Card terms preview</h1>
     <p className="border border-gold-200 bg-gold-50 p-4 text-sm text-stone-700 mt-6">This page is part of the three-account design demo. The wider scheme is not open, and demo stamps or codes cannot be used to pay for an order.</p>
     <div className="space-y-6 mt-8 text-sm leading-relaxed text-stone-700">
       <p>Each member can share one personal invitation link. A new member must join through that link, verify their email, sign in and place their first order. The product subtotal must be at least £30 before discounts. Delivery does not count towards the £30.</p>

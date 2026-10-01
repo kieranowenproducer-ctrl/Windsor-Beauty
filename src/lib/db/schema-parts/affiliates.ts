@@ -1,6 +1,6 @@
 import type { requireDb } from '../client';
 
-/** RAF-style paid affiliates. Kept separate from the customer Glow Card referral scheme. */
+/** Paid affiliates. Kept separate from the customer Beauty Card referral scheme. */
 export async function ensureAffiliates(db: ReturnType<typeof requireDb>) {
   await db`
     CREATE TABLE IF NOT EXISTS affiliate_profiles (

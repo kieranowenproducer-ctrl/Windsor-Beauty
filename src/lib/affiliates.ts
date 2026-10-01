@@ -24,7 +24,7 @@ function inviteHash(token: string): string | null {
   return INVITE_TOKEN.test(clean) ? createHash('sha256').update(clean).digest('hex') : null;
 }
 
-/** How many invitations Raf can create himself in one day, whether emailed or link-only. */
+/** How many invitations an affiliate can create themselves in one day, whether emailed or link-only. */
 export const AFFILIATE_DAILY_INVITATIONS = 20;
 
 export async function createAffiliateInvitation(
@@ -88,10 +88,10 @@ export function affiliateInvitationLink(request: Request, token: string): string
   return link.toString();
 }
 
-/** The ready-made message Raf sends from his own phone when he shares a link himself. */
+/** The ready-made message an affiliate sends from their own phone when they share a link themselves. */
 export function affiliateShareMessage(affiliateName: string, recipientEmail: string, link: string): string {
-  const name = affiliateName.trim() || 'Raf';
-  return `Hi, it's ${name}. Here is your private invitation to Windsor Beauty. Join with this email address: ${recipientEmail}. You get 10% off your first order. The link works once and lasts 7 days: ${link}`;
+  const name = affiliateName.trim();
+  return `${name ? `Hi, it's ${name}.` : 'Hi.'} Here is your private invitation to Windsor Beauty. Join with this email address: ${recipientEmail}. You get 10% off your first order. The link works once and lasts 7 days: ${link}`;
 }
 
 export type AffiliateInvitationState = 'joined' | 'replaced' | 'expired' | 'email_failed' | 'delivered' | 'sent' | 'sending' | 'link_only';
@@ -275,11 +275,9 @@ export async function getAffiliateCustomerCode(customerId: number) {
 }
 
 function displayName(profile: Record<string, unknown>): Record<string, unknown> {
-  // Correct Raf's legacy label for display only. Leave every other affiliate's
-  // chosen display name untouched, including initials and all-capital names.
-  const rafId = profile.customer_id ?? profile.affiliate_customer_id;
-  if (Number(rafId) !== 83 || (profile.display_name !== 'RAF' && profile.display_name !== 'RAF Christian')) return profile;
-  return { ...profile, display_name: 'Raf' };
+  // Every affiliate's chosen display name is shown exactly as it was saved,
+  // including initials and all-capital names.
+  return profile;
 }
 
 function personalCode(): string {
@@ -387,7 +385,7 @@ export async function recordAffiliateOrder(params: {
     JOIN affiliate_profiles ap ON ap.customer_id = ar.affiliate_customer_id
     WHERE ar.referred_customer_id = ${params.customerId}
       AND ar.status = 'active' AND ap.status = 'active'
-      -- Only an order paid with this customer's own RAF code earns (Samuel, 27 Sep 2026).
+      -- Only an order paid with this customer's own personal affiliate code earns.
       AND EXISTS (
         SELECT 1 FROM affiliate_customer_codes acc
         WHERE acc.referral_id = ar.id AND acc.customer_id = ${params.customerId}
@@ -453,8 +451,8 @@ export async function getAffiliateDashboard(customerId: number) {
   `;
   const payouts = await db`SELECT * FROM affiliate_payout_requests WHERE affiliate_customer_id = ${customerId} ORDER BY requested_at DESC`;
   const ledger = await db`SELECT * FROM affiliate_ledger WHERE affiliate_customer_id = ${customerId} ORDER BY created_at DESC LIMIT 100`;
-  // Raf sees the addresses he typed himself. Someone who asked on his request page typed their own
-  // address to Windsor Beauty, not to Raf, so he sees only a masked version of it.
+  // The affiliate sees the addresses they typed themselves. Someone who asked on the request page typed
+  // their own address to Windsor Beauty, not to the affiliate, so the affiliate sees only a masked version.
   const invitations = (await listInvitations(customerId, 30)).map(row => ({
     id: row.id, created_source: row.created_source, created_at: row.created_at, expires_at: row.expires_at, state: row.state,
     recipient_email: row.created_source === 'recipient' ? maskEmail(String(row.recipient_email)) : row.recipient_email,

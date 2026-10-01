@@ -12,6 +12,7 @@ const AdminCertificateEdit = dynamic(() => import('@/components/admin/AdminCerti
 import type { Product, ProductCertificate } from '@/data/products';
 import { DEFAULT_PRODUCT_SPECS, DEFAULT_CERTIFICATE_CAUTION, cardImage } from '@/data/products';
 import type { CertificateFieldIssue, CertificateFieldKey } from '@/lib/certificateAudit';
+import { BATCH_ROW_MATCH, DATE_ROW_MATCH } from '@/lib/certificateStandards';
 
 // ─── Staff-only review marking ───────────────────────────────────────────────
 // Telling an admin a certificate has a problem and then showing them a
@@ -25,9 +26,9 @@ import type { CertificateFieldIssue, CertificateFieldKey } from '@/lib/certifica
 export interface CertificateReview {
   /** Problems belonging to the certificate actually on screen. */
   issues: CertificateFieldIssue[];
-  /** Which dosage this certificate is for, when the product has more than one. */
+  /** Which size this certificate is for, when the product has more than one. */
   shownDosage?: string;
-  /** Other dosages of the same product that have problems of their own. */
+  /** Other sizes of the same product that have problems of their own. */
   otherDosages?: string[];
   /**
    * Every certificate this product has, so the viewer can offer a choice instead of guessing
@@ -36,7 +37,7 @@ export interface CertificateReview {
    * shown a certificate with nothing wrong on it.
    */
   dosageOptions?: { dosage: string; issueCount: number; hasCertificate: boolean }[];
-  /** Switch the certificate on screen to another dosage. */
+  /** Switch the certificate on screen to another size. */
   onSelectDosage?: (dosage: string) => void;
   /** Where to send the admin to fix them. */
   editHref?: string;
@@ -53,7 +54,7 @@ function DosagePicker({ review }: { review: CertificateReview }) {
   return (
     <div className="mb-6 border border-stone-200 bg-stone-50 px-4 py-3 print:hidden">
       <p className="text-[10px] tracking-[0.18em] uppercase text-stone-500 font-semibold mb-2">
-        This product has a certificate for each dosage
+        This product has a certificate for each size
       </p>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => {
@@ -99,8 +100,8 @@ const findIssue = (review: CertificateReview | undefined, key: CertificateFieldK
 /** The one-line correction shown under a marked row. */
 function issueNote(issue: CertificateFieldIssue) {
   return issue.kind === 'missing'
-    ? `Missing — this needs the real value, e.g. ${issue.example}`
-    : `${issue.reason}. It should be something like ${issue.example}`;
+    ? `Not filled in. This needs ${issue.example}.`
+    : `${issue.reason}. This needs ${issue.example}.`;
 }
 
 // Every mark below is screen-only. Print / Save as PDF must produce the clean
@@ -181,31 +182,24 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
   ];
   const visibleSpecRows = specRows.filter((row) => row.value || (review && row.key && findIssue(review, row.key)));
 
-  // The two Verification Summary rows every certificate must carry, and the
-  // three Test Results rows, shown as missing when they are not there at all.
+  // The two details rows every typed certificate must carry (batch and date),
+  // shown as missing when they are not there at all. No test row is required.
   const missingSummary = review
-    ? ([{ key: 'batch' as const, label: 'Batch / Lot' }, { key: 'testDate' as const, label: 'Test Date' }])
+    ? ([{ key: 'batch' as const, label: 'Batch / Lot' }, { key: 'testDate' as const, label: 'Certificate Date' }])
         .map((row) => ({ ...row, issue: findIssue(review, row.key) }))
-        .filter((row) => row.issue && !(cert.verificationSummary ?? []).some((r) => new RegExp(row.key === 'batch' ? 'batch|lot' : 'test.?date|date.?test|^date$|tested', 'i').test(r.label)))
+        .filter((row) => row.issue && !(cert.verificationSummary ?? []).some((r) => (row.key === 'batch' ? BATCH_ROW_MATCH : DATE_ROW_MATCH).test(r.label)))
     : [];
-  const missingTests = review
-    ? ([{ key: 'appearance' as const, label: 'Appearance' }, { key: 'purity' as const, label: 'Purity (HPLC)' }, { key: 'content' as const, label: 'Content' }])
-        .map((row) => ({ ...row, issue: findIssue(review, row.key) }))
-        .filter((row) => row.issue && !cert.testRows.some((r) => new RegExp(row.key === 'appearance' ? 'appear' : row.key === 'purity' ? 'purit' : 'content|assay', 'i').test(r.test)))
-    : [];
+  const missingTests: { key: CertificateFieldKey; label: string; issue?: CertificateFieldIssue }[] = [];
 
   /** Which issue, if any, belongs to a row already printed on the certificate. */
   const testRowIssue = (name: string) => {
-    if (!review) return undefined;
-    if (/appear/i.test(name)) return findIssue(review, 'appearance');
-    if (/purit/i.test(name)) return findIssue(review, 'purity');
-    if (/content|assay/i.test(name)) return findIssue(review, 'content');
-    return undefined;
+    void name;
+    return undefined as CertificateFieldIssue | undefined;
   };
   const summaryRowIssue = (label: string) => {
     if (!review) return undefined;
-    if (/batch|lot/i.test(label)) return findIssue(review, 'batch');
-    if (/test.?date|date.?test|^date$|tested/i.test(label)) return findIssue(review, 'testDate');
+    if (BATCH_ROW_MATCH.test(label)) return findIssue(review, 'batch');
+    if (DATE_ROW_MATCH.test(label)) return findIssue(review, 'testDate');
     return undefined;
   };
 
@@ -227,7 +221,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
             {review.issues.map((issue, i) => (
               <li key={i} className="text-xs text-red-700 leading-snug">
                 <span className="font-semibold">{issue.field}</span>
-                {issue.kind === 'missing' ? ' is not filled in' : ` — ${issue.reason}`}
+                {issue.kind === 'missing' ? ' is not filled in' : `: ${issue.reason}`}
               </li>
             ))}
           </ul>
@@ -249,14 +243,14 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
           </p>
         </div>
       )}
-      {/* Other dosages with problems of their own. Only worth saying when there are no buttons
+      {/* Other sizes with problems of their own. Only worth saying when there are no buttons
           above to press: with the picker there, the counts are already on screen. */}
       {review && (review.otherDosages?.length ?? 0) > 0 && !review.onSelectDosage && (
         <div className="mb-6 border-2 border-amber-500 bg-amber-50 px-5 py-4 print:hidden">
           <p className="text-sm text-amber-900">
             {review.otherDosages!.join(' and ')} {review.otherDosages!.length === 1 ? 'has' : 'have'} a
             separate certificate with problems of {review.otherDosages!.length === 1 ? 'its' : 'their'} own.
-            Pick that dosage in the editor to see {review.otherDosages!.length === 1 ? 'it' : 'them'}.
+            Pick that size in the editor to see {review.otherDosages!.length === 1 ? 'it' : 'them'}.
           </p>
         </div>
       )}
@@ -274,7 +268,7 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
 
       {/* Header bar */}
       <div className="bg-gradient-to-r from-gold-500 to-gold-400 text-white px-5 py-4 flex items-center justify-between gap-4 mb-2">
-        <span className="font-serif text-xl sm:text-2xl tracking-wide">Certificate of Analysis</span>
+        <span className="font-serif text-xl sm:text-2xl tracking-wide">Product Certificate</span>
         {cert.certificateId && (
           <span className="text-xs sm:text-sm tracking-[0.18em] uppercase font-bold whitespace-nowrap">{cert.certificateId}</span>
         )}
@@ -302,14 +296,13 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
         ))}
       </div>
 
-      {/* Verification summary — optional, for mass-spec/lab-verification
-          style certificates (e.g. issue date, batch/lot, instrument) that
-          don't fit the Product Specifications rows above. */}
+      {/* Certificate details: optional rows such as the date and batch/lot
+          that don't fit the Product Specifications rows above. */}
       {showSummary && (
         // When the only rows here are the missing ones, the whole section is
         // review-only: its rows do not print, so neither must its heading.
         <div className={(cert.verificationSummary?.length ?? 0) === 0 ? 'print:hidden' : undefined}>
-          <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Verification Summary</h3>
+          <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Certificate Details</h3>
           <div className="border border-gold-100 mb-8 text-sm">
             {(cert.verificationSummary ?? []).map((row, i) => (
               <ReviewMark key={i} issue={summaryRowIssue(row.label)}>
@@ -354,12 +347,11 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
         </div>
       )}
 
-      {/* Analytical results — optional, for fields a lab report includes
-          that don't fit the test/specification/result shape above (e.g.
-          Main Peak, Total Peaks, MS Verification, Detection wavelength). */}
+      {/* Additional information: optional rows that don't fit the
+          test/specification/result shape above. */}
       {cert.analyticalResults && cert.analyticalResults.length > 0 && (
         <>
-          <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Analytical Results</h3>
+          <h3 className="font-serif text-lg text-stone-800 font-semibold mb-3">Additional Information</h3>
           <div className="border border-gold-100 mb-8 text-sm">
             {cert.analyticalResults.map((row, i) => (
               <div
@@ -374,9 +366,9 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
         </>
       )}
 
-      {/* Caution / disclaimer */}
+      {/* Closing note */}
       <p className="text-xs font-bold uppercase tracking-wide text-stone-800 leading-relaxed mb-10">
-        Caution: {cert.caution || DEFAULT_CERTIFICATE_CAUTION}
+        Note: {cert.caution || DEFAULT_CERTIFICATE_CAUTION}
       </p>
 
       {/* Product image */}
@@ -395,11 +387,8 @@ export function CertificateBody({ product, cert, review }: { product: Product; c
         ) : (
           <div className="w-full max-w-xs h-56 rounded-md bg-white flex flex-col items-center justify-center gap-1">
             <span className="text-[9px] tracking-widest text-gold-700 text-center leading-tight font-semibold">
-              WINDSOR&nbsp;GLOW
+              WINDSOR&nbsp;BEAUTY
             </span>
-            {product.purity && (
-              <span className="text-[8px] text-stone-500 tracking-[0.2em] uppercase">{product.purity} Purity</span>
-            )}
           </div>
         )}
       </div>
@@ -428,19 +417,19 @@ export function ExternalCertificateBody({ images, caution }: { images: string[];
           <img src={src} alt={`Certificate page ${i + 1}`} className="w-full border border-gold-100" />
         </div>
       ))}
-      {/* Uploaded supplier pages carry their own data, but the disclaimer is
-          Windsor Beauty's own legal wording, not the supplier's — every
-          certificate must show it regardless of mode. */}
+      {/* Uploaded supplier pages carry their own data, but the closing note is
+          Windsor Beauty's own wording, so every certificate shows it
+          regardless of mode. */}
       <p className="text-xs font-bold uppercase tracking-wide text-stone-800 leading-relaxed">
-        Caution: {caution || DEFAULT_CERTIFICATE_CAUTION}
+        Note: {caution || DEFAULT_CERTIFICATE_CAUTION}
       </p>
     </div>
   );
 }
 
-// Branded Certificate of Analysis viewer — opened from the "Show Certificate"
+// Branded product certificate viewer, opened from the "Show Certificate"
 // button on a product page when product.certificate?.enabled is true. Mirrors
-// the CalculatorModal overlay pattern, with a hidden print-only copy of the
+// the shop's usual overlay pattern, with a hidden print-only copy of the
 // certificate (.certificate-print) so "Print / Save as PDF" produces a clean
 // single A4 page via the @media print rules in globals.css. When the product
 // has an external certificate (cert.mode === 'external') with at least one
@@ -462,7 +451,7 @@ export default function CertificateModal({ open, onClose, product, certificate, 
   // page underneath anything else that was still open. See viewportOwner.ts.
   useOverflowLock(open, 'certificate-modal');
 
-  const dialog = useDialog({ open, label: 'Certificate of Analysis' });
+  const dialog = useDialog({ open, label: 'Product certificate' });
 
   if (!open) return null;
   const cert = certificate ?? product.certificate;
@@ -482,7 +471,7 @@ export default function CertificateModal({ open, onClose, product, certificate, 
         <div {...dialog} className="relative bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl outline-none">
           {/* Controls */}
           <div className="sticky top-0 bg-white border-b border-gold-100 px-6 py-3 flex items-center justify-between z-10">
-            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700">Certificate of Analysis</p>
+            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700">Product Certificate</p>
             <div className="flex items-center gap-4">
               {/* "Fix these 2" used to be a link to the back-office product editor, which left the
                   certificate — and the red marks that had just been pointed out — behind on

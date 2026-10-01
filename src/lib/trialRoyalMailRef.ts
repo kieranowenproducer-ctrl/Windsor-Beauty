@@ -6,11 +6,10 @@
 // automatically be assigned a simple unique neutral name such as Product 37... That reference
 // becomes permanently associated with that product."
 //
-// WHAT IT WAS BEFORE. The real name never reached Royal Mail: a trial line arrives at the shipment
-// builder with its slug already stripped by anonymiseTrialLines, so genericNameFor found nothing to
-// match and fell through to DEFAULT_GENERIC_NAME. Every trial product on every consignment read
-// "Cosmetic Item", identically. Safe, and useless for telling two dispatches apart, which is the
-// whole point of this task.
+// HOW IT REACHES ROYAL MAIL. A trial line arrives at the shipment builder with its name and slug
+// already removed by anonymiseTrialLines. Its reference travels with it instead, and
+// outboundItemName in src/lib/genericNames.ts sends that reference before anything else, so two
+// trial dispatches can still be told apart.
 //
 // PERMANENT CODES NOW LIVE IN THE TRIAL TABLE
 // The old derived reference is retained for historic Trial rows and orders.

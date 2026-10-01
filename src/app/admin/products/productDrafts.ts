@@ -135,12 +135,12 @@ export function certificateDraftToPayload(draft: CertificateDraft): ProductCerti
     molecularFormula: draft.molecularFormula.trim() || undefined,
     molecularWeight: draft.molecularWeight.trim() || undefined,
     storage: draft.storage.trim() || undefined,
-    // The standard rows (Appearance / Purity / Content, and Batch / Test Date
+    // The standard rows (Batch / Lot and Certificate Date
     // in the summary) are shown on every certificate in the editor whether the
     // product has them or not, so the same four never have to be typed out
     // again. A row nobody has actually filled in is dropped here rather than
     // saved: otherwise every product would gain rows that print blank on the
-    // customer's certificate, and a dosage with no certificate of its own
+    // customer's certificate, and a size with no certificate of its own
     // would stop falling back to the shared one.
     testRows: draft.testRows
       .filter(row => !isUntouchedStandardTestRow(row))
@@ -154,8 +154,8 @@ export function certificateDraftToPayload(draft: CertificateDraft): ProductCerti
   };
 }
 
-// A per-dosage certificate is only worth storing when it actually carries content.
-// An empty draft (no id, no test rows, no uploaded pages) means "this dosage has no
+// A per-size certificate is only worth storing when it actually carries content.
+// An empty draft (no id, no test rows, no uploaded pages) means "this size has no
 // certificate of its own" — we store undefined so it falls back to the shared
 // product-level certificate rather than persisting a hollow record.
 export function certificatePayloadHasContent(cert: ProductCertificate): boolean {

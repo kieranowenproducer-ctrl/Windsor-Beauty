@@ -34,7 +34,7 @@ export default function BackInStockForm({ slug }: { slug: string }) {
     return (
       <div className="border border-gold-200 bg-gold-50/40 px-5 py-4 mb-6 text-center">
         <p className="text-xs text-stone-600">
-          You&rsquo;re on the list — we&rsquo;ll email you the moment this is back in stock.
+          You&rsquo;re on the list. We&rsquo;ll email you the moment this is back in stock.
         </p>
       </div>
     );
