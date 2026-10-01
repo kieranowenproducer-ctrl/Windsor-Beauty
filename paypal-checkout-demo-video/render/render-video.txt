@@ -1,0 +1,9 @@
+[0:v]scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=#fbfaf7,setsar=1,fps=30,drawbox=x=55:y=1690:w=970:h=150:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='1. Choose PayPal at checkout':fontcolor=#1c1917:fontsize=46:x=(w-text_w)/2:y=1740[v0];
+[1:v]scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=#fbfaf7,setsar=1,fps=30,drawbox=x=55:y=1690:w=970:h=150:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='2. Confirm the order details':fontcolor=#1c1917:fontsize=46:x=(w-text_w)/2:y=1740[v1];
+[2:v]scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=#fbfaf7,setsar=1,fps=30,drawbox=x=55:y=1690:w=970:h=150:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='3. The order is reserved instantly':fontcolor=#1c1917:fontsize=43:x=(w-text_w)/2:y=1742[v2];
+[3:v]scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=#fbfaf7,setsar=1,fps=30,drawbox=x=55:y=1690:w=970:h=150:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='4. Press Continue to PayPal':fontcolor=#1c1917:fontsize=45:x=(w-text_w)/2:y=1740[v3];
+[4:v]scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=#f4f8fb,setsar=1,fps=30,drawbox=x=55:y=1690:w=970:h=150:color=white@0.94:t=fill,drawtext=fontfile='C\:/Windows/Fonts/arialbd.ttf':text='5. Pay securely with PayPal or card':fontcolor=#1c1917:fontsize=42:x=(w-text_w)/2:y=1742[v4];
+[v0][v1]xfade=transition=fade:duration=0.45:offset=2.55[x1];
+[x1][v2]xfade=transition=fade:duration=0.45:offset=5.10[x2];
+[x2][v3]xfade=transition=fade:duration=0.45:offset=7.65[x3];
+[x3][v4]xfade=transition=fade:duration=0.45:offset=10.20,format=yuv420p[outv]

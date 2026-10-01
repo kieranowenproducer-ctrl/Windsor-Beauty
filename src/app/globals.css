@@ -1,0 +1,238 @@
+/* @import must be the very first rule in the stylesheet — CSS spec requires
+   it to precede every other rule, and Tailwind's @tailwind directives below
+   expand into real CSS rules at build time. With @import listed AFTER them
+   (as it was previously), the compiled output had real rules before it and
+   browsers silently drop an @import in that position — meaning Outfit,
+   Cormorant Garamond, and Pinyon Script were never actually loading; the
+   whole site has been rendering on system font fallbacks (Georgia/
+   system-ui) this entire time. Found while adding Pinyon Script for the
+   Coming Soon redesign — the fallback "cursive" font looked plausible
+   enough at a glance to go unnoticed until checked directly. */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Pinyon+Script&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: #ffffff;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Guard against horizontal page scroll on mobile: a single wide element (a
+     whitespace-nowrap button, a card, an image) could otherwise push the whole
+     page wider than the screen, so content runs off the right edge on iOS Safari
+     (seen on the admin dashboard). `clip` (NOT `hidden`) is deliberate: on body,
+     `overflow-x: hidden` forces the used `overflow-y` to `auto`, which would make
+     body a scroll container and break the sticky header stack (StickyHeaderStack).
+     `clip` prevents the horizontal scroll without creating a scroll container, so
+     sticky headers, vertical scroll and inner overflow containers all keep working.
+     Supported on Safari 16+ / Chrome 90+; older browsers fall back to no clip. */
+  overflow-x: clip;
+}
+
+.font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+::selection {
+  background: #B8902A;
+  color: #fff;
+}
+
+/* Keyboard focus must be visible everywhere. Several components set
+   outline-none on inputs and rely on a 1px border-colour change, which a
+   keyboard user cannot follow. :focus-visible only fires for keyboard/
+   assistive navigation, so mouse clicks stay clean. gold-700 is the one
+   gold shade that passes WCAG AA on white. */
+:focus-visible {
+  outline: 2px solid #8B6914;
+  outline-offset: 2px;
+}
+
+/* Smooth input transitions */
+input, textarea, select {
+  transition: border-color 0.15s ease;
+}
+
+/* iOS Safari auto-zooms the whole page on focus when a form field's
+   font-size is under 16px — most inputs/selects/textareas across the site
+   use Tailwind's text-sm (14px), which triggers it on checkout, login, the
+   coming-soon page, etc. Forcing 16px on mobile only removes that
+   involuntary zoom/jump without touching desktop sizing or disabling the
+   user's own pinch-zoom. !important is required since a plain element
+   selector can't outrank Tailwind's text-sm class on the same tag. */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Announcement ticker runs noticeably slower on narrow viewports at the
+   default duration — speed it up on mobile so it feels closer to desktop. */
+@media (max-width: 767px) {
+  .animate-ticker {
+    animation-duration: 12s;
+  }
+}
+
+/* Someone who has asked their phone or computer for reduced motion has usually
+   done it because movement makes them ill, not because they dislike it. The
+   list below used to name three animation classes; it missed the two biggest
+   movements on the site — the announcement strip, which scrolls without ever
+   stopping, and the whole-page glide on every in-page link. Both are off now.
+   `!important` on the ticker is needed because the paused/hover states are
+   Tailwind arbitrary properties on the same element. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-flash,
+  .animate-bounce,
+  .animate-pulse,
+  .animate-glow,
+  .animate-flashGold {
+    animation: none;
+  }
+
+  .animate-ticker {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* A blanket stop on anything else that moves. Transitions are kept but made
+     instant, so hover and focus states still change — they just do not slide. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Shared rendering for admin-authored rich text (Terms & Conditions, policy
+   pages, product descriptions, etc.) — used by the content renderers (so the
+   admin sees a true WYSIWYG preview) and RichTextContent on the live site. */
+.rich-text-content p {
+  margin: 0 0 0.85em;
+}
+
+.rich-text-content h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #44403c;
+  letter-spacing: 0.01em;
+  margin: 1.4em 0 0.5em;
+}
+
+.rich-text-content h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #57534e;
+  margin: 1.2em 0 0.4em;
+}
+
+.rich-text-content h2:first-child,
+.rich-text-content h3:first-child {
+  margin-top: 0;
+}
+
+.rich-text-content ul,
+.rich-text-content ol {
+  margin: 0 0 0.85em 1.25em;
+}
+
+.rich-text-content ul {
+  list-style: disc;
+}
+
+.rich-text-content ol {
+  list-style: decimal;
+}
+
+.rich-text-content li {
+  margin-bottom: 0.3em;
+}
+
+.rich-text-content strong {
+  font-weight: 600;
+}
+
+.rich-text-content em {
+  font-style: italic;
+}
+
+.rich-text-content mark {
+  background-color: #FEF3C7;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0.05em 0.15em;
+}
+
+.rich-text-content > *:last-child {
+  margin-bottom: 0;
+}
+
+.rich-text-content .ProseMirror:focus {
+  outline: none;
+}
+
+.rich-text-content .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #d6d3d1;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+/* Certificate of Analysis — printing/Save as PDF prints only the
+   .certificate-print element, laid out on a single A4 page regardless of
+   what else is on the underlying product page or how the on-screen modal
+   is scrolled/sized. */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .certificate-print,
+  .certificate-print * {
+    visibility: visible;
+  }
+
+  .certificate-print {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* External (multi-image) certificates: force each page but the last onto
+     its own sheet so an admin-uploaded multi-page certificate prints the
+     same way it was supplied, instead of being squashed onto one A4 page. */
+  .certificate-print-page-break {
+    break-after: page;
+  }
+}

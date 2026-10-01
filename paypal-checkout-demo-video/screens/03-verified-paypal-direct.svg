@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1265" height="712" viewBox="0 0 1265 712">
+  <rect width="1265" height="712" fill="#f4f8fb"/>
+  <text x="632.5" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.5" fill="#0070ba">LIVE PAYPAL PAGE VERIFIED</text>
+  <rect x="382" y="66" width="501" height="596" rx="12" fill="#ffffff" stroke="#d8dfe3"/>
+  <text x="632.5" y="129" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="700" font-style="italic" fill="#003087">Pay<tspan fill="#0070ba">Pal</tspan></text>
+  <text x="632.5" y="174" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#2c2e2f">£62.10 GBP</text>
+  <text x="632.5" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#2c2e2f">Log in to PayPal</text>
+  <text x="632.5" y="257" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#687173">Enter your email address to get started.</text>
+  <rect x="446" y="284" width="373" height="56" rx="6" fill="#ffffff" stroke="#9da3a6"/>
+  <text x="466" y="318" font-family="Arial, sans-serif" font-size="14" fill="#687173">Email address or mobile number</text>
+  <rect x="446" y="358" width="373" height="52" rx="26" fill="#0070e0"/>
+  <text x="632.5" y="391" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Next</text>
+  <line x1="446" y1="444" x2="602" y2="444" stroke="#cbd2d6"/>
+  <text x="632.5" y="449" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#687173">or</text>
+  <line x1="663" y1="444" x2="819" y2="444" stroke="#cbd2d6"/>
+  <rect x="446" y="474" width="373" height="52" rx="26" fill="#ffffff" stroke="#142c8e" stroke-width="2"/>
+  <text x="632.5" y="507" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#142c8e">Pay by Debit or Credit Card</text>
+  <rect x="446" y="556" width="373" height="66" rx="5" fill="#f7f9fa"/>
+  <circle cx="476" cy="589" r="14" fill="#2f9e44"/>
+  <path d="M469 589l5 5 9-11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="501" y="586" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#2c2e2f">Straight from checkout to PayPal</text>
+  <text x="501" y="606" font-family="Arial, sans-serif" font-size="11" fill="#687173">No extra Windsor Glow payment page</text>
+  <text x="632.5" y="687" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#687173">No payment was made during this demonstration.</text>
+</svg>

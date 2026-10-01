@@ -1,0 +1,36 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/royal-mail-sync",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/sentinel",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/verification-reminders",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/concierge-retention",
+      "schedule": "30 3 * * *"
+    },
+    {
+      "path": "/api/cron/data-retention",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/ads",
+      "schedule": "30 6 * * *"
+    },
+    {
+      "path": "/api/cron/unpaid-orders",
+      "schedule": "15 * * * *"
+    },
+    {
+      "path": "/api/cron/affiliate-code-reminders",
+      "schedule": "30 9 * * *"
+    }
+  ]
+}

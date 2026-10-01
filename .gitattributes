@@ -1,0 +1,3 @@
+# The shared cost modules are byte-compared against the social engine's copies
+# (scripts/check-cost-modules.mjs), so git must never rewrite their line endings.
+src/lib/costs/* text eol=lf
