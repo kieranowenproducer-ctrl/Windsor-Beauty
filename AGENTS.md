@@ -29,3 +29,7 @@ Read [README.md](README.md) first. The short version:
 - A database address on `localhost` uses the stand-in in `src/lib/db/localClient.ts`; a hosted one uses Neon's driver.
 - Never run `next build` while `next dev` is running in this folder.
 - Plain English in everything a person reads, including emails and admin labels. No em dashes.
+- **Colours are "Blush and Plum"** (Kieran's choice): deep cream pages, blush bands, plum buttons, no white. They are set
+  once in `tailwind.config.js` by redefining the `gold`, `stone` and `white` scales. `gold-700` is plum, `white` is cream.
+  Never hard-code a colour; never bring back Windsor Glow's gold on white.
+- What is left to do is listed in `../CODEX-HANDOVER-2026-10-01/00-START-HERE.md`.
