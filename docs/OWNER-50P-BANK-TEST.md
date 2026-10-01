@@ -1,54 +1,39 @@
 # Owner's 50p bank payment check
 
-> **Purpose:** Prepare one private bank payment check without sending an email or ordering a parcel.
-> **Status:** Prepared locally and live. The live draft is unsent; no payment request exists.
+> **Purpose:** Complete one private bank payment check without ordering a parcel.
+> **Status:** Fena is connected. The real 50p payment page is ready; the owner has not paid.
 > **Related:** Windsor Beauty handover, 1 October 2026.
-> **Dependencies:** Windsor Beauty's own Fena key must be connected before the live payment check.
+> **Dependencies:** Kieran must approve the bank payment. Fena's own paid notice is not proved yet.
 > **Decisions:** Exactly 50p, collection, no postage, owner email only. Keep the product hidden and the holding screen on.
-> **Next steps:** Connect Fena, then give Kieran the private payment page.
+> **Next steps:** Finish the notification checks, then Kieran completes the existing payment.
 > **Last updated:** 2026-10-01
 
-The local draft is **INV-YRUFCR**, at `http://localhost:3002/admin/invoices/1/edit`.
-It contains one hidden **Owner bank payment test** product, priced at 50p.
-Delivery is zero. The invoice fixes the amount at 50p, so guest pricing does not increase it.
-All four automatic actions are off. There is no shop order, bank request, email or parcel.
+## The existing test
 
-## Prepare the live draft
+Live invoice **INV-UZ5C7Y** and order **WB-UCSSFU** are unpaid. Review the invoice at
+[the saved invoice](https://www.windsorbeauty.co.uk/admin/invoices/1/edit).
+The hidden **Owner bank payment test** item is exactly **£0.50**, with **£0.00** delivery.
+The invoice fixes the price, so guest pricing does not increase it. It is marked for collection.
+No email or parcel was created when the bank payment page was prepared.
 
-For the assistant taking over, run this from the Windsor Beauty website folder after confirming
-the live project is still connected to Windsor Beauty's own database:
+**Keep this invoice, order and hidden product until the owner's real payment check finishes.**
+Do not run the preparation script again to create another payment.
 
-```powershell
-node scripts/prepare-beauty-bank-test.mjs --live --owner-email=kieranowenproducer@gmail.com
-```
+The invoice page and direct Fena link are saved privately in `OWNER-50P-PAYMENT.local.txt`.
+Do not print the private tokens in logs or commit the file. The new Fena credentials are in
+`.env.fena.local` and sensitive production settings. The old Windsor Glow key was not changed.
 
-The script signs in using the shared admin settings for live preparation, or local settings for local preparation without displaying them. It only calls
-Windsor Beauty's staff routes. It hides the product before creating it, creates an unsent draft,
-then checks the price, delivery and all four switches. Running it twice reuses the same draft.
-It stops if that draft has already been sent or paid.
-
-The live command created draft **INV-UZ5C7Y**. Review it at [the saved invoice](https://www.windsorbeauty.co.uk/admin/invoices/1/edit). It is exactly £0.50 with no delivery or automatic actions. No shop order, email, bank request or parcel was created. The default local command was run twice and reused one draft.
-
-## Make the private payment page ready
-
-These steps are for the assistant, after the new Fena key and its notification address are proven:
-
-1. Read the prepared live invoice again. Confirm the owner email, total of £0.50, zero delivery,
-   collection, and all four automatic switches off.
-2. Use the existing invoice send action while `sendPaymentLink` is still false. Despite the
-   action's name, that setting makes it create only the linked order. It does not call Fena or
-   send an email. Verify its result reports `emailSent: false` and no Fena link.
-3. Save the same invoice with only `sendPaymentLink` set to true. Keep `sendConfirmation`,
-   `triggerRoyalMail` and `sendDispatchEmail` false. Do not press Send again.
-4. Give Kieran the existing private invoice page at `/pay/` followed by that invoice's private
-   token. Keep the token out of logs and committed notes. Opening this page creates the bank
-   payment request through the existing invoice flow. It does not approve a payment.
-5. Do not use a normal basket checkout for this check: guest pricing and standard delivery would
-   change the amount. Do not choose PayPal, which adds its surcharge.
+Fena payment-page creation succeeded after deployment `dpl_GpcNcfNgyEENZbW9yqzTj47nPVQZ`
+from tested source `f1709d3`. This does not prove a bank payment or Fena's own paid notice.
+The separate live simulated-notice test passed: wrong secret refused, rejection left unpaid,
+paid confirmed once, and a repeat made no second confirmation. Its temporary records were
+deleted. The owner's unpaid order was not used. The confirmation-email switch repair passed its focused Fena regression test, type check,
+standard checks and full production build. It is ready to publish; the final hosting result
+will be recorded in the workspace handover.
 
 ## Kieran's steps
 
-1. Open the private link supplied after Fena is connected.
+1. Open the existing private invoice link supplied by the assistant.
 2. If the holding screen appears, enter **1379**.
 3. Check that the total is **£0.50** and delivery is **£0.00**.
 4. Read and accept the terms, then choose **Pay by Bank**.
@@ -56,6 +41,21 @@ These steps are for the assistant, after the new Fena key and its notification a
 6. Return to Windsor Beauty. Tell the assistant you have paid so it can check the invoice and
    order both say paid, that only one payment was recorded, and that no parcel was created.
 
-After verification, the assistant must remove the test invoice, shop order and hidden test product,
-and any Royal Mail test order if one was unexpectedly created. Do not delete or alter the real
-payment in the bank account. Record the 50p test outcome before removing the shop test records.
+Do not use a normal basket checkout for this check. Guest pricing and standard delivery would
+change the amount. Do not choose PayPal, which adds its surcharge.
+
+## After the payment
+
+Confirm a genuine Fena notice reached the shop and matched the 50p amount. Record the outcome.
+Only then remove the test invoice, shop order and hidden product, plus any Royal Mail test order
+if one was unexpectedly created. Do not delete or alter the real payment in the bank account.
+
+## Preparation history
+
+The local draft was **INV-YRUFCR**, at `http://localhost:3002/admin/invoices/1/edit`.
+The local preparation script ran twice and reused one draft. It then prepared the live draft
+INV-UZ5C7Y without sending anything. That same live draft was later linked to WB-UCSSFU and
+used to request the existing 50p Fena page. No second owner test is needed.
+
+The source helper `scripts/prepare-beauty-bank-test.mjs` is kept for reference. It stops when the
+matching draft has already been sent or paid. It must not be changed to evade that safeguard.

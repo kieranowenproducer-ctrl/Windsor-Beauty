@@ -37,7 +37,7 @@ Decided by Kieran on 1 October 2026: the two shops are run by the same people, s
 - Admin sign-in: the same username and password as Windsor Glow. If the password is ever changed, change it on both sites.
 - Royal Mail Click & Drop: the same account. Windsor Beauty orders arrive with a reference starting `WB-`.
 - PayPal: the same receiving account. Customers pay on the website. No PayPal payment-link email is sent.
-- Fena Pay by Bank: to be the same account. **Not connected yet**, see "Before the shop can open".
+- Fena Pay by Bank: the same account, using a new key named `windsor beauty website`. Payment-page creation works. The real bank payment and Fena-originated paid notice still need checking.
 
 **Never shared:** the database (orders, customers, products, stock), the image store, the admin
 session, and the website itself. "Run Database Setup" refuses a database that already holds another shop.
@@ -89,12 +89,10 @@ PayPal and email (sent from windsorbeauty.co.uk).
 
 Still owed:
 
-1. **Fena.** Windsor Glow's Fena keys cannot be read back from the host, and they are not saved on
-   the laptop. Fena also sends "paid" notices to one web address per integration, and that address
-   is Windsor Glow's. Needed from the Fena dashboard: an integration ID and secret for Windsor
-   Beauty, with its notification address set to
-   `https://www.windsorbeauty.co.uk/api/webhooks/fena?key=<a new secret>`. Until then Pay by Bank
-   says "Payment is not configured" and PayPal is the working payment method.
+1. **Real bank payment.** Fena is connected using the new Beauty key. The existing 50p invoice
+   INV-UZ5C7Y and linked order WB-UCSSFU have a real payment page and remain unpaid. Kieran must
+   approve 50p in his bank, then the shop must receive Fena's own paid notice. Do not delete the
+   records or create another test payment. See `docs/OWNER-50P-BANK-TEST.md`.
 2. Real delivery prices (Shipping Settings), and whether guest and member pricing should stay.
 3. A read of the policy pages, with the company's legal details added.
 4. Social media links.
@@ -119,6 +117,6 @@ Emails and the holding screen use the approved logo and Blush and Plum colours. 
 
 The daily Royal Mail job requires its secret even when one is missing from settings. Product weights remain estimates that need measuring before launch. Print documents use true white; packing slips escape typed text and include discounts and fees.
 
-Fena remains unconnected: Edge showed the signed-in account but was unavailable to this chat. Existing Fena keys were untouched. An unsent live 50p invoice, INV-UZ5C7Y, is ready with a hidden test product, zero delivery and all automatic actions off. See [the bank test instructions](docs/OWNER-50P-BANK-TEST.md).
+Fena is now connected: Kieran created a new Beauty key, saved as sensitive production settings. The old key was untouched. Deployment `dpl_GpcNcfNgyEENZbW9yqzTj47nPVQZ` is READY from tested source `f1709d3`. Invoice INV-UZ5C7Y and order WB-UCSSFU have a real Fena payment page, zero delivery and no email or parcel. They remain unpaid and must be kept for Kieran's bank check. See [the bank test instructions](docs/OWNER-50P-BANK-TEST.md).
 
 See [the check record](docs/CODEX-CHECKS-2026-10-01.md) for tested behaviour and remaining checks. Keep the holding screen on until Kieran explicitly says to launch.

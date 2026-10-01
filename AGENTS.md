@@ -16,7 +16,7 @@ Read [README.md](README.md) first. The short version:
   `src/proxy.ts`) stays on until Kieran says launch. Never set `MAINTENANCE_MODE=off`, never weaken
   the gate, and never publish this branch, without his clear word.
 - **Shared with Windsor Glow on Kieran's word (1 Oct 2026):** admin sign-in, Royal Mail, PayPal and
-  (when its keys arrive) Fena. **Never shared:** the database, image store, sessions or data. Never
+  Fena, using its own new Beauty key. **Never shared:** the database, image store, sessions or data. Never
   point this project at Windsor Glow's database. See README, "What Windsor Beauty shares".
 - **Product names are sent to Royal Mail and the payment provider unchanged.** Do not bring back
   Windsor Glow's name swapping.
@@ -39,5 +39,5 @@ Read [README.md](README.md) first. The short version:
 - Customer PayPal payment-link emails are forbidden, including automatic reminders. Keep the direct payment page, on-screen resume link and staff notice.
 - Retired affiliate, referral, loyalty and old launch routes are blocked in `src/proxy.ts`. Their shared data code is retained. Do not re-enable them.
 - Email colours and the holding screen read the shared Tailwind palette. Print documents and QR backgrounds use true white deliberately.
-- Fena is still unconnected. The owner-only 50p draft is recorded in `docs/OWNER-50P-BANK-TEST.md`; it must never ship or send automatic emails.
+- Fena is connected and a real payment page was created. The unpaid owner-only 50p invoice INV-UZ5C7Y and order WB-UCSSFU are recorded in `docs/OWNER-50P-BANK-TEST.md`. Preserve them for Kieran's real bank check. They must never ship or send automatic emails. Fena's own paid notice is still unproved.
 - Before publishing run type check, `npm run check`, production build and the relevant `test-beauty-*` checks. The PayPal test requires the private local database.

@@ -325,38 +325,42 @@ ${existingNotes}` : notice.note)
   // returns false. Check the boolean explicitly so a silent false (missing key,
   // unverified domain) gets recorded in automation_failures and shows up in
   // the System Health admin page.
-  const confirmationSent = await sendOrderConfirmationEmail({
-    to:             order.email,
-    customerName:   order.customer_name,
-    orderNumber:    order.order_number,
-    items:          order.items,
-    subtotal:       Number(order.subtotal),
-    discountCode:   order.discount_code,
-    discountAmount: Number(order.discount_amount),
-    ruleDiscountAmount: Number(order.rule_discount_amount),
-    shippingLabel:  order.shipping_label,
-    shippingCost:   Number(order.shipping_cost),
-    paypalFee:      Number(order.paypal_fee),
-    total:          Number(order.total),
-    shippingAddress,
-    glowCard: glowCard?.enabled ? {
-      earnedPoint: glowCard.earnedPoint,
-      reason: glowCard.reason === 'disabled' ? 'not_eligible' : glowCard.reason,
-      points: glowCard.card?.points ?? null,
-      cycle: glowCard.card?.cycle ?? null,
-      nextMilestone: glowCard.card?.nextMilestone ?? null,
-      nextRewardAmount: glowCard.card?.nextRewardAmount ?? null,
-      pointsAway: glowCard.card?.pointsAway ?? 0,
-    } : null,
-  }).catch(err => {
-    console.error('[webhooks/fena] Confirmation email threw:', err);
-    return false as const;
-  });
-  if (!confirmationSent) {
-    await logAutomationFailure('customer_email', 'Order confirmation email failed to send', {
-      orderNumber: order.order_number,
-      detail: 'sendOrderConfirmationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+  // Invoice staff can turn confirmation emails off. A deliberate skip is not a send failure.
+  // Ordinary checkout orders have no flag and keep their existing confirmation.
+  if (order.automation_flags?.sendConfirmation !== false) {
+    const confirmationSent = await sendOrderConfirmationEmail({
+      to:             order.email,
+      customerName:   order.customer_name,
+      orderNumber:    order.order_number,
+      items:          order.items,
+      subtotal:       Number(order.subtotal),
+      discountCode:   order.discount_code,
+      discountAmount: Number(order.discount_amount),
+      ruleDiscountAmount: Number(order.rule_discount_amount),
+      shippingLabel:  order.shipping_label,
+      shippingCost:   Number(order.shipping_cost),
+      paypalFee:      Number(order.paypal_fee),
+      total:          Number(order.total),
+      shippingAddress,
+      glowCard: glowCard?.enabled ? {
+        earnedPoint: glowCard.earnedPoint,
+        reason: glowCard.reason === 'disabled' ? 'not_eligible' : glowCard.reason,
+        points: glowCard.card?.points ?? null,
+        cycle: glowCard.card?.cycle ?? null,
+        nextMilestone: glowCard.card?.nextMilestone ?? null,
+        nextRewardAmount: glowCard.card?.nextRewardAmount ?? null,
+        pointsAway: glowCard.card?.pointsAway ?? 0,
+      } : null,
+    }).catch(err => {
+      console.error('[webhooks/fena] Confirmation email threw:', err);
+      return false as const;
     });
+    if (!confirmationSent) {
+      await logAutomationFailure('customer_email', 'Order confirmation email failed to send', {
+        orderNumber: order.order_number,
+        detail: 'sendOrderConfirmationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+      });
+    }
   }
 
   for (const unlocked of glowCard?.newlyUnlockedMilestones ?? []) {

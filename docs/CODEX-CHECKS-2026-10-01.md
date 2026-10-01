@@ -5,7 +5,7 @@
 > **Related:** README.md and OWNER-50P-BANK-TEST.md.
 > **Dependencies:** Existing Vercel, Royal Mail and email accounts.
 > **Decisions:** Holding screen stays on. Windsor Glow remains unchanged. No new paid service.
-> **Next steps:** Connect a separate Fena key and complete the owner's bank test.
+> **Next steps:** Complete the owner's bank test and prove Fena's own paid notice reaches the shop.
 > **Last updated:** 2026-10-01
 
 ## Completed
@@ -25,9 +25,9 @@
 
 ## Still needed
 
-Fena could not be connected because the signed-in Edge session was unavailable to the browser tools. The existing key was untouched. No live Fena notification or real bank payment was tested.
+Fena was initially skipped because the signed-in Edge session was unavailable. Kieran then created the new Beauty key and supplied its values privately. Sensitive production settings were saved and deployment dpl_GpcNcfNgyEENZbW9yqzTj47nPVQZ is READY from tested source f1709d3. Fena created a real 50p payment page successfully. The existing Glow key was untouched. A real bank payment and Fena-originated paid notice are still unproved.
 
-The hidden 50p product and unsent live invoice INV-UZ5C7Y are ready. No linked shop order, email, payment request or parcel was created. Follow OWNER-50P-BANK-TEST.md after Fena is connected.
+The hidden 50p product, unpaid invoice INV-UZ5C7Y and linked order WB-UCSSFU are reserved for Kieran's real bank check. The payment page is ready. No email or parcel was created. Do not delete these records while waiting for the owner. Follow OWNER-50P-BANK-TEST.md.
 
 Actual Gmail and Outlook appearance, physical printing and QR scanning, real postage label download, customer account journeys and every remaining admin button still need checking. Do not describe this as a complete end-to-end launch test.
 
@@ -36,3 +36,18 @@ Kieran must confirm the logo and colours; guest versus member pricing; the 3.5 p
 ## Transfer
 
 The website source travels through its own GitHub repository. Local settings, the private Fena notification address, Vercel project connection and Glow's shared local settings must travel on the hard drive. Do not copy the disposable local database or build caches. The existing PC transfer start page records the route.
+
+
+## Fena follow-up still being checked
+
+A separate collection-only record passed the live simulated-notice checks: a wrong secret was
+refused, a rejected notice left it unpaid, a paid notice confirmed the invoice, and a repeat
+returned already processed with the same confirmation time. The temporary invoice and order
+were deleted and their absence verified. The owner's unpaid invoice was not used. No parcel
+was created. The current proof does not cover
+a real bank approval, a Fena-originated paid notice or a new Royal Mail parcel. The confirmation-email switch issue found during this work is fixed. The focused Fena
+regression test, type check, standard checks and full production build all passed. This repair
+is ready to publish; hosting confirmation will be recorded in the workspace handover.
+
+Private transfer now also includes `.env.fena.local` and `OWNER-50P-PAYMENT.local.txt`. Never
+commit those files or print their contents. Keep the pending owner test intact after transfer.
