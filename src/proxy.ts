@@ -170,7 +170,12 @@ export function proxy(request: NextRequest) {
       if (!isStaff) return holdingResponse(pathname, true);
     }
     const hasPreview = request.cookies.get(PREVIEW_COOKIE)?.value === previewAccessCode();
-    if (!isStaff && !hasPreview && (pathname.startsWith('/api/') || !HOLDING_SAFE_ASSET_PATTERN.test(pathname))) {
+    // Payment notifications and scheduled jobs come from machines, not visitors, and
+    // each checks its own secret (the webhook key, the CRON_SECRET bearer). They must
+    // get through while the shop is closed, or an order paid by somebody with the
+    // access code would never be marked paid or sent on to Royal Mail.
+    const isMachineRoute = pathname.startsWith('/api/webhooks/') || pathname.startsWith('/api/cron/');
+    if (!isStaff && !hasPreview && !isMachineRoute && (pathname.startsWith('/api/') || !HOLDING_SAFE_ASSET_PATTERN.test(pathname))) {
       return holdingResponse(pathname);
     }
   }
