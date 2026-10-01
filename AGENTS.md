@@ -15,8 +15,12 @@ Read [README.md](README.md) first. The short version:
 - **The shop is closed on purpose.** The holding screen (`src/lib/holdingScreen.ts`, top of
   `src/proxy.ts`) stays on until Kieran says launch. Never set `MAINTENANCE_MODE=off`, never weaken
   the gate, and never publish this branch, without his clear word.
-- **Windsor Beauty and Windsor Glow share nothing.** Never put a Windsor Glow database address,
-  key, token or password in this project. Never copy data between the two.
+- **Shared with Windsor Glow on Kieran's word (1 Oct 2026):** admin sign-in, Royal Mail, PayPal and
+  (when its keys arrive) Fena. **Never shared:** the database, image store, sessions or data. Never
+  point this project at Windsor Glow's database. See README, "What Windsor Beauty shares".
+- **Product names are sent to Royal Mail and the payment provider unchanged.** Do not bring back
+  Windsor Glow's name swapping.
+- **A push to `main` publishes to the live domain.** The access code for the holding screen is 1379.
 - **BRIAN owns** PEARL, the AI assistant, verification logs, email marketing, ad results and tasks.
   Do not rebuild them here.
 - Never invent, alter or vary a lab value or a certificate.

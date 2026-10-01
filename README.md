@@ -29,17 +29,22 @@ assistant, verification logs, email marketing, advertising results and tasks. Do
 in this project. Website Enquiries and Visitor Demand stay here for now and are expected to move to
 BRIAN later.
 
-## Windsor Beauty and Windsor Glow never share anything
+## What Windsor Beauty shares with Windsor Glow, and what it does not
 
-This is the rule that matters most. The two shops have separate databases, email keys, payment
-keys, postage keys, image storage, admin passwords and websites. Never paste a Windsor Glow value
-into Windsor Beauty's settings, and never the other way round.
+Decided by Kieran on 1 October 2026: the two shops are run by the same people, so they share accounts.
 
-Two guards back this up:
+**Shared (same accounts, set as Windsor Beauty's own live settings):**
+- Admin sign-in: the same username and password as Windsor Glow. If the password is ever changed, change it on both sites.
+- Royal Mail Click & Drop: the same account. Windsor Beauty orders arrive with a reference starting `WB-`.
+- PayPal: the same receiving account, and the same email account for the PayPal instructions email.
+- Fena Pay by Bank: to be the same account. **Not connected yet**, see "Before the shop can open".
 
-- "Run Database Setup" refuses to run against a database that already holds another shop.
-- Every optional key that is missing switches its feature off safely: no emails, no payments, no
-  postage labels, no uploads.
+**Never shared:** the database (orders, customers, products, stock), the image store, the admin
+session, and the website itself. "Run Database Setup" refuses a database that already holds another shop.
+
+**Product names go to Royal Mail and the payment provider unchanged.** Windsor Glow swaps its product
+names for plain ones before sending; Windsor Beauty does not (`src/lib/genericNames.ts`). Only a
+typed "Shipping description" on a product replaces its name.
 
 ## The holding screen
 
@@ -48,8 +53,10 @@ Two guards back this up:
 - While it is on, every page **and every back-end address** (checkout, payments, contact form,
   scheduled jobs, payment notifications) answers with the holding screen. Only the admin area
   works, behind its sign-in.
-- To look at the real shop on the live address while it is closed: sign in at `/admin/login`, then
-  browse normally. Signed-in staff see the real shop.
+- To look at the real shop on the live address while it is closed: type the access code **1379**
+  into the box on the holding screen (that browser is remembered for 30 days), or sign in at
+  `/admin/login`. The code is a short one for showing people round, not a lock.
+- Payment notifications and scheduled jobs are let through, because each checks its own secret.
 - On your own computer `npm run dev` always shows the real shop.
 
 The code is in `src/lib/holdingScreen.ts` and the top of `src/proxy.ts`.
@@ -79,15 +86,20 @@ with the real catalogue through the admin panel.
 
 ## Before the shop can open
 
-These are owed by the business, not by the code. Until each is supplied its feature stays off.
+Live and connected already: its own database and image store, the shared admin sign-in, Royal Mail,
+PayPal and email (sent from windsorbeauty.co.uk).
 
-1. A live database for Windsor Beauty (its own Neon database).
-2. An email key for the windsorbeauty.co.uk domain (Resend), and which mailboxes to use.
-3. Payment details (Fena and/or PayPal) for Windsor Beauty.
-4. A Royal Mail Click & Drop key, if labels are to be booked from the admin panel.
-5. An image store (Vercel Blob) so product photos can be uploaded from the admin panel.
-6. A new admin password and session token in the live settings.
-7. A read of the policy pages by the business, with the company's legal details added.
+Still owed:
+
+1. **Fena.** Windsor Glow's Fena keys cannot be read back from the host, and they are not saved on
+   the laptop. Fena also sends "paid" notices to one web address per integration, and that address
+   is Windsor Glow's. Needed from the Fena dashboard: an integration ID and secret for Windsor
+   Beauty, with its notification address set to
+   `https://www.windsorbeauty.co.uk/api/webhooks/fena?key=<a new secret>`. Until then Pay by Bank
+   says "Payment is not configured" and PayPal is the working payment method.
+2. Real delivery prices (Shipping Settings), and whether guest and member pricing should stay.
+3. A read of the policy pages, with the company's legal details added.
+4. Social media links.
 
 ## Where things are
 
@@ -98,7 +110,5 @@ These are owed by the business, not by the code. Until each is supplied its feat
 
 ## Publishing
 
-The repository is `kieranowenproducer-ctrl/Windsor-Beauty`. Its `main` branch is what the live
-site publishes. The new platform is on the branch `platform-from-windsor-glow` and has **not** been
-merged or pushed. The old brochure-style site is still what `main` holds, behind the same holding
-screen.
+The repository is `kieranowenproducer-ctrl/Windsor-Beauty`. A push to `main` publishes to
+www.windsorbeauty.co.uk. The new platform went live there on 1 October 2026, behind the holding screen.
