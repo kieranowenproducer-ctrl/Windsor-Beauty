@@ -58,3 +58,4 @@ backups/
 
 # Windsor Beauty local test database (npm run db:local)
 /.local-db/
+*.local.txt
