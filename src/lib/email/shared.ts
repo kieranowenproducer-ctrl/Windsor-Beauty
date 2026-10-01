@@ -23,7 +23,7 @@
 
 export const EMAIL_COLORS = {
   heroBg: '#16140f',
-  gold: '#AD8E54',
+  gold: '#A9695D',
   cream: '#f3ead9',
   white: '#ffffff',
   headingDark: '#1c1917',

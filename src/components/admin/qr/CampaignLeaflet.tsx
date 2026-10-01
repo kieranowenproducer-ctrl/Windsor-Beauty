@@ -140,7 +140,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
       ? `<p style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#78716c;margin:0 0 16px;">${partnerName || campaignName}</p>`
       : '';
     const discountLine = fields.discountText
-      ? `<div style="margin-top:12px;padding:8px 16px;border:1px solid #AD8E54;display:inline-block;"><p style="font-size:11px;color:#AD8E54;letter-spacing:0.1em;margin:0;font-weight:600;">${fields.discountText}</p></div>`
+      ? `<div style="margin-top:12px;padding:8px 16px;border:1px solid #A9695D;display:inline-block;"><p style="font-size:11px;color:#A9695D;letter-spacing:0.1em;margin:0;font-weight:600;">${fields.discountText}</p></div>`
       : '';
     const bespokeLine = bespokeTitle
       ? `<p class="bespoke-title" style="font-size:${bespokeTitleFontSize(bespokeTitle, 15)}px;">${bespokeTitle}</p>`
@@ -159,20 +159,20 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
     .leaflet { width: 148mm; min-height: 210mm; display: flex; flex-direction: column; background: #fff; }
     .header { background: #1c1917; padding: 20px 24px 18px; text-align: center; }
     .header-title { font-size: 26px; letter-spacing: 0.18em; color: #fff; font-family: Georgia, serif; }
-    .header-accent { color: #AD8E54; }
-    .gold-line { height: 1px; background: linear-gradient(to right, transparent, #AD8E54, transparent); margin: 0 24px; }
+    .header-accent { color: #A9695D; }
+    .gold-line { height: 1px; background: linear-gradient(to right, transparent, #A9695D, transparent); margin: 0 24px; }
     .body { flex: 1; padding: 24px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; }
     .headline { font-size: 22px; font-weight: 700; color: #1c1917; letter-spacing: 0.04em; margin-bottom: 8px; font-family: Georgia, serif; }
-    .bespoke-title { color: #AD8E54; font-style: italic; letter-spacing: 0.02em; margin: 0 0 10px; max-width: 90%; margin-left: auto; margin-right: auto; line-height: 1.3; }
+    .bespoke-title { color: #A9695D; font-style: italic; letter-spacing: 0.02em; margin: 0 0 10px; max-width: 90%; margin-left: auto; margin-right: auto; line-height: 1.3; }
     .subheading { font-size: 12px; color: #78716c; letter-spacing: 0.06em; margin-bottom: 24px; }
     .location { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #78716c; margin-bottom: 16px; }
-    .qr-wrap { border: 1.5px solid #AD8E54; padding: 12px; margin-bottom: 10px; display: inline-block; }
+    .qr-wrap { border: 1.5px solid #A9695D; padding: 12px; margin-bottom: 10px; display: inline-block; }
     .qr-wrap img { display: block; width: 140px; height: 140px; }
-    .scan-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #AD8E54; margin-bottom: 20px; }
-    .divider { width: 60px; height: 1px; background: #AD8E54; margin: 0 auto 20px; }
+    .scan-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #A9695D; margin-bottom: 20px; }
+    .divider { width: 60px; height: 1px; background: #A9695D; margin: 0 auto 20px; }
     .cta { font-size: 13px; color: #1c1917; letter-spacing: 0.04em; margin-bottom: 8px; }
-    .discount { margin-top: 12px; padding: 8px 16px; border: 1px solid #AD8E54; display: inline-block; }
-    .discount p { font-size: 11px; color: #AD8E54; letter-spacing: 0.1em; font-weight: 600; }
+    .discount { margin-top: 12px; padding: 8px 16px; border: 1px solid #A9695D; display: inline-block; }
+    .discount p { font-size: 11px; color: #A9695D; letter-spacing: 0.1em; font-weight: 600; }
     .website { font-size: 10px; letter-spacing: 0.14em; color: #78716c; margin-top: 20px; font-family: monospace; }
     .footer { border-top: 1px solid #e7e5e4; padding: 12px 28px; text-align: center; }
     .footer p { font-size: 8px; letter-spacing: 0.08em; color: #a8a29e; }
@@ -231,11 +231,11 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
             {/* Header */}
             <div style={{ background: '#1c1917', padding: '14px 18px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 18, letterSpacing: '0.18em', color: '#ffffff' }}>
-                WINDSOR <span style={{ color: '#AD8E54' }}>BEAUTY</span>
+                WINDSOR <span style={{ color: '#A9695D' }}>BEAUTY</span>
               </div>
             </div>
             {/* Gold line */}
-            <div style={{ height: 1, background: 'linear-gradient(to right, transparent, #AD8E54, transparent)', margin: '0 18px' }} />
+            <div style={{ height: 1, background: 'linear-gradient(to right, transparent, #A9695D, transparent)', margin: '0 18px' }} />
 
             {/* Body */}
             <div style={{ flex: 1, padding: '18px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -246,7 +246,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
                 <p
                   style={{
                     fontSize: bespokeTitleFontSize(bespokeTitle, 11),
-                    color: '#AD8E54',
+                    color: '#A9695D',
                     fontStyle: 'italic',
                     letterSpacing: '0.02em',
                     marginBottom: 8,
@@ -268,7 +268,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
               )}
 
               {/* QR Code */}
-              <div style={{ border: '1.5px solid #AD8E54', padding: 8, marginBottom: 8, display: 'inline-block' }}>
+              <div style={{ border: '1.5px solid #A9695D', padding: 8, marginBottom: 8, display: 'inline-block' }}>
                 {qrDataUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element -- a QR code generated in the browser as a data: URL, on a leaflet built for printing. next/image cannot optimise a data URL and its wrapper markup breaks the print layout.
                   <img src={qrDataUrl} alt="QR Code" style={{ display: 'block', width: 120, height: 120 }} />
@@ -278,20 +278,20 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
                   </div>
                 )}
               </div>
-              <p style={{ fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#AD8E54', marginBottom: 16 }}>
+              <p style={{ fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#A9695D', marginBottom: 16 }}>
                 {fields.qrLabel}
               </p>
 
               {/* Divider */}
-              <div style={{ width: 40, height: 1, background: '#AD8E54', margin: '0 auto 14px' }} />
+              <div style={{ width: 40, height: 1, background: '#A9695D', margin: '0 auto 14px' }} />
 
               <p style={{ fontSize: 11, color: '#1c1917', letterSpacing: '0.04em', marginBottom: 6 }}>
                 {fields.cta}
               </p>
 
               {fields.discountText && (
-                <div style={{ marginTop: 10, padding: '6px 12px', border: '1px solid #AD8E54', display: 'inline-block' }}>
-                  <p style={{ fontSize: 9, color: '#AD8E54', letterSpacing: '0.1em', fontWeight: 600 }}>
+                <div style={{ marginTop: 10, padding: '6px 12px', border: '1px solid #A9695D', display: 'inline-block' }}>
+                  <p style={{ fontSize: 9, color: '#A9695D', letterSpacing: '0.1em', fontWeight: 600 }}>
                     {fields.discountText}
                   </p>
                 </div>

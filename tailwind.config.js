@@ -14,41 +14,46 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // WINDSOR BEAUTY'S OWN PALETTE (the colours of the first Windsor Beauty site):
-        // warm cream pages, charcoal type and buttons, champagne accents. The page layout
-        // came from the sister shop, and every screen there is written against a "gold"
-        // and a "stone" scale, so the two scales are redefined here rather than renaming
-        // thousands of classes. Read "gold-700" as "the main brand colour" (charcoal) and
-        // "gold-400" as "the accent" (champagne).
+        // WINDSOR BEAUTY'S PALETTE: "Blush and Plum" (chosen by Kieran, 1 October 2026).
+        // Deep cream pages, blush bands, plum buttons and bars, rose details. No white.
+        //
+        // The page layout came from the sister shop, where every screen is written against
+        // a "gold" scale, a "stone" scale and "white". Those three are redefined here, so
+        // the whole site changes colour without renaming thousands of classes. Read them as:
+        //   gold-700  the main brand colour (plum): buttons, headings, strong accents
+        //   gold-400  the detail colour (rose)
+        //   gold-50 / gold-100  blush bands and tints
+        //   stone-50  the page cream;  white  the card cream;  stone-900  plum-black text and bars
         gold: {
-          50:  '#FBF7F1', // cream
-          100: '#F1E9DD', // sand
-          200: '#E7DECE', // line
-          300: '#D9C39A',
-          400: '#C7A769', // champagne, the accent
-          500: '#B9985C',
-          600: '#AD8E54', // champagne-dark, hover
-          // 650: small accent text on white that still passes WCAG AA (4.8:1).
-          // scripts/check-admin-contrast.mjs measures it. White backgrounds only.
-          650: '#8A6D3B',
-          700: '#2B2723', // charcoal: buttons, headings, strong accents
-          800: '#4A4038', // hover on charcoal, and dark accent text
-          900: '#191613',
+          50:  '#F6E4DC',
+          100: '#EBD0C7',
+          200: '#E2C3B8',
+          300: '#CFA194',
+          400: '#B98478',
+          500: '#A9695D',
+          600: '#95574C',
+          // 650: small accent text that still passes WCAG AA on the card cream (5.5:1).
+          // scripts/check-admin-contrast.mjs measures it.
+          650: '#8A4F45',
+          700: '#4B2A3A',
+          800: '#63394D',
+          900: '#2E1823',
         },
         stone: {
-          50:  '#FBF7F1',
-          100: '#F4EEE4',
-          200: '#E7DECE',
-          300: '#D5CABA',
-          400: '#A39A8E',
-          500: '#776F66',
-          600: '#5E5750',
-          700: '#48423C',
-          800: '#37322D',
-          900: '#2B2723',
-          950: '#191613',
+          50:  '#F3E8D8',
+          100: '#EDE0CD',
+          200: '#E2D0BF',
+          300: '#D2BDAA',
+          400: '#9A858B',
+          500: '#775F66',
+          600: '#634A52',
+          700: '#523A44',
+          800: '#472F3B',
+          900: '#412636',
+          950: '#2A1A22',
         },
-        black: '#2B2723',
+        white: '#F9F1E4',
+        black: '#3A2130',
       },
       fontFamily: {
         sans: ['Outfit', 'system-ui', 'sans-serif'],

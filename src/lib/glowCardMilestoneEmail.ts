@@ -23,7 +23,7 @@ export async function sendGlowCardMilestoneEmail(params: {
       <p style="margin:0 0 18px;font-size:13px;color:#57534e;line-height:1.6">Congratulations ${escapeHtml(params.customerName.split(' ')[0])}, you reached ${params.milestone} points on your Beauty Card.</p>
       <div style="margin:0 0 18px">${buildGlowCardEmailVisual(params.milestone)}</div>
       <p style="margin:0 0 18px;font-size:13px;color:#57534e;line-height:1.6">${next}</p>
-      <p style="margin:0"><a href="https://www.windsorbeauty.co.uk/account/glow-card" style="display:inline-block;background:#AD8E54;color:#fff;padding:12px 18px;text-decoration:none;font-size:12px">View your Beauty Card</a></p>
+      <p style="margin:0"><a href="https://www.windsorbeauty.co.uk/account/glow-card" style="display:inline-block;background:#A9695D;color:#fff;padding:12px 18px;text-decoration:none;font-size:12px">View your Beauty Card</a></p>
     </td></tr>`,
   });
   const text = `Congratulations ${params.customerName.split(' ')[0]}, you reached ${params.milestone} Beauty Points. Your £${params.amount} reward is ready and includes half-price standard UK delivery. ${next}\n\nView your Beauty Card: https://www.windsorbeauty.co.uk/account/glow-card`;

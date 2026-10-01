@@ -46,10 +46,10 @@ export async function sendMembershipWelcomeEmail(params: MembershipWelcomeEmailP
           <td style="padding:40px;font-size:14px;color:#44403c;line-height:1.6">
             <p style="margin:0 0 16px;">${escapeHtml(emailGreeting(params.customerName))}</p>
             <p style="margin:0 0 16px;">Welcome to Windsor Beauty. Your account is set up and your 10% first-order discount code is ready:</p>
-            <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#AD8E54;">${escapeHtml(params.discountCode)}</p>
+            <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#A9695D;">${escapeHtml(params.discountCode)}</p>
             <p style="margin:0 0 16px;">Use it at checkout on your first order. This code is unique to your account.</p>
             ${params.rafCode ? `<p style="margin:0 0 16px;">You joined by invitation, so you also have a personal 5% code for later product orders of £30 or more:</p>
-            <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#AD8E54;">${escapeHtml(params.rafCode)}</p>
+            <p style="margin:0 0 16px;font-size:18px;font-weight:bold;letter-spacing:1px;color:#A9695D;">${escapeHtml(params.rafCode)}</p>
             <p style="margin:0 0 16px;">This code belongs only to your account. Use one code per order. The 10% welcome offer and the 5% code cannot be combined.</p>` : ''}
             <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>

@@ -21,11 +21,11 @@ import path from 'node:path';
 const ROOTS = ['src/app/admin', 'src/components/admin'];
 
 const GOLD = {
-  300: '#D9C39A', 400: '#C7A769', 500: '#B9985C',
-  600: '#AD8E54', 650: '#8A6D3B', 700: '#2B2723', 800: '#4A4038',
+  300: '#CFA194', 400: '#B98478', 500: '#A9695D',
+  600: '#95574C', 650: '#8A4F45', 700: '#4B2A3A', 800: '#63394D',
 };
-const WHITE = '#FFFFFF';
-const GOLD_50 = '#FBF7F1';
+const WHITE = '#F9F1E4';
+const GOLD_50 = '#F6E4DC';
 
 const channel = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 const luminance = (h) => {
@@ -104,7 +104,7 @@ if (GOLD_650_ON_WHITE < 4.5) {
   console.log(`  FAIL  tailwind.config.js  gold-650 (${GOLD[650]})`);
   console.log(`        gold-650 as text on white is ${GOLD_650_ON_WHITE.toFixed(2)}:1, under the `
     + '4.5:1 AA needs. It carries the admin sidebar section headings at 7px. Darken it back '
-    + 'towards #8A6D3B, or take the headings off it.');
+    + 'towards #8A4F45, or take the headings off it.');
 }
 
 console.log('');

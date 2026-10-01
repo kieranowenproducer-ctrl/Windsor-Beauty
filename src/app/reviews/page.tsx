@@ -139,9 +139,9 @@ export default function ReviewsPage() {
           <div
             className="mb-10"
             style={{
-              background: 'linear-gradient(160deg, #fefcf6 0%, #fffdf8 60%, #FBF7F1 100%)',
-              border: '1px solid #C7A769',
-              boxShadow: '0 4px 32px 0 rgba(173,142,84,0.08), 0 1px 4px 0 rgba(173,142,84,0.10)',
+              background: 'linear-gradient(160deg, #fefcf6 0%, #fffdf8 60%, #F3E8D8 100%)',
+              border: '1px solid #B98478',
+              boxShadow: '0 4px 32px 0 rgba(169,105,93,0.08), 0 1px 4px 0 rgba(169,105,93,0.10)',
             }}
           >
             {/* Score / stars / label */}
@@ -183,9 +183,9 @@ export default function ReviewsPage() {
           <div
             className="mb-10"
             style={{
-              background: 'linear-gradient(160deg, #fefcf6 0%, #fffdf8 60%, #FBF7F1 100%)',
-              border: '1px solid #C7A769',
-              boxShadow: '0 4px 32px 0 rgba(173,142,84,0.08), 0 1px 4px 0 rgba(173,142,84,0.10)',
+              background: 'linear-gradient(160deg, #fefcf6 0%, #fffdf8 60%, #F3E8D8 100%)',
+              border: '1px solid #B98478',
+              boxShadow: '0 4px 32px 0 rgba(169,105,93,0.08), 0 1px 4px 0 rgba(169,105,93,0.10)',
             }}
           >
             <div className="text-center py-10 px-8 sm:py-12 sm:px-14">

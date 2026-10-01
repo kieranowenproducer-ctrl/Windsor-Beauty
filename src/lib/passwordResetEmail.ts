@@ -48,7 +48,7 @@ export async function sendPasswordResetEmail(params: PasswordResetEmailParams): 
             <p style="margin:0 0 16px;">${escapeHtml(emailGreeting(params.customerName))}</p>
             <p style="margin:0 0 16px;">We received a request to reset the password for your Windsor Beauty account.</p>
             <p style="margin:0 0 16px;">
-              <a href="${params.resetUrl}" style="color:#AD8E54;">Reset your password &rarr;</a>
+              <a href="${params.resetUrl}" style="color:#A9695D;">Reset your password &rarr;</a>
             </p>
             <p style="margin:0 0 16px;">This link will expire in one hour. If you did not request a password reset, you can safely ignore this email. Your password will not be changed.</p>
             <p style="margin:0;">Thanks,<br />Windsor Beauty</p>

@@ -41,7 +41,7 @@ export function buildShippingConfirmationEmail(
         <!-- Body -->
         <tr>
           <td style="padding:40px 40px 32px">
-            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#AD8E54">On Its Way</p>
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#A9695D">On Its Way</p>
             <h1 style="margin:0 0 20px;font-size:28px;font-weight:normal;color:#1c1917;letter-spacing:0.02em">Your order is on its way, ${firstName}.</h1>
             <p style="margin:0 0 24px;font-size:13px;color:#57534e;line-height:1.6">
               Your Windsor Beauty order has been dispatched with ${escapeHtml(params.carrierName)} and is on its way to you.
@@ -52,7 +52,7 @@ export function buildShippingConfirmationEmail(
               <tr>
                 <td style="border:1px solid #e7dcc8;background:#fefce8;padding:10px 20px">
                   <p style="margin:0;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#a8a29e;margin-bottom:2px">Order Reference</p>
-                  <p style="margin:0;font-size:14px;font-family:monospace;font-weight:bold;color:#AD8E54;letter-spacing:0.1em">${escapeHtml(params.orderNumber)}</p>
+                  <p style="margin:0;font-size:14px;font-family:monospace;font-weight:bold;color:#A9695D;letter-spacing:0.1em">${escapeHtml(params.orderNumber)}</p>
                 </td>
               </tr>
             </table>
@@ -66,11 +66,11 @@ export function buildShippingConfirmationEmail(
                     <strong>Carrier:</strong> ${escapeHtml(params.carrierName)}
                   </p>
                   <p style="margin:0 0 12px;font-size:12px;color:#57534e;line-height:1.6">
-                    <strong>Tracking Number:</strong> <span style="font-family:monospace;color:#AD8E54">${escapeHtml(params.trackingNumber)}</span>
+                    <strong>Tracking Number:</strong> <span style="font-family:monospace;color:#A9695D">${escapeHtml(params.trackingNumber)}</span>
                   </p>
                   <table cellpadding="0" cellspacing="0">
                     <tr>
-                      <td style="background:#AD8E54;padding:10px 24px">
+                      <td style="background:#A9695D;padding:10px 24px">
                         <a href="${url}" style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#ffffff;text-decoration:none;display:block">
                           Track Your Parcel &rarr;
                         </a>
@@ -87,8 +87,8 @@ export function buildShippingConfirmationEmail(
             <p style="margin:0 0 24px;font-size:12px;color:#57534e;line-height:1.6">Express Tracked 24: typically next working day.</p>
 
             <p style="margin:0;font-size:13px;color:#57534e;line-height:1.6">
-              You can also view this order any time from your <a href="https://www.windsorbeauty.co.uk/account" style="color:#AD8E54;text-decoration:none">Windsor Beauty account</a>.
-              Questions? Contact us at <a href="mailto:sales@windsorbeauty.co.uk" style="color:#AD8E54;text-decoration:none">sales@windsorbeauty.co.uk</a>.
+              You can also view this order any time from your <a href="https://www.windsorbeauty.co.uk/account" style="color:#A9695D;text-decoration:none">Windsor Beauty account</a>.
+              Questions? Contact us at <a href="mailto:sales@windsorbeauty.co.uk" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.co.uk</a>.
             </p>
           </td>
         </tr>`;

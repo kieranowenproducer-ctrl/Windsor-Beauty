@@ -237,7 +237,7 @@ export default function VideoTestimonials({ layout = 'spotlight', heading = true
           width: min(78vw, 318px);
           z-index: 20;
           transform: translate(-50%, -50%) scale(1);
-          border-color: #C7A769;
+          border-color: #B98478;
           box-shadow: 0 24px 70px rgba(91, 66, 17, 0.2), 0 0 0 5px rgba(212, 175, 90, 0.08);
         }
         .spotlight-right,
@@ -254,7 +254,7 @@ export default function VideoTestimonials({ layout = 'spotlight', heading = true
           z-index: 20;
           transform: translate(-76%, -50%);
           border-radius: 28px 8px 28px 28px;
-          border-color: #C7A769;
+          border-color: #B98478;
         }
         .editorial-side {
           width: min(50vw, 205px);
@@ -272,7 +272,7 @@ export default function VideoTestimonials({ layout = 'spotlight', heading = true
         .duet-active {
           transform: scale(1);
           z-index: 20;
-          border-color: #C7A769;
+          border-color: #B98478;
         }
         .duet-side {
           transform: scale(0.88);

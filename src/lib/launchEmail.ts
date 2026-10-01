@@ -49,18 +49,18 @@ function renderLaunchEmailHtml(discountCode: string | null, sender?: MarketingSe
   const discountBlock = discountCode
     ? `
             <p style="margin:0; font-size:14px; font-weight:bold; color:#1c1917; line-height:1.6;">As a thank-you for signing up early,</p>
-            <p style="margin:0; font-size:14px; font-weight:bold; color:#1c1917; line-height:1.6;">here is your unique <span style="color:#AD8E54;">10% discount code</span></p>
+            <p style="margin:0; font-size:14px; font-weight:bold; color:#1c1917; line-height:1.6;">here is your unique <span style="color:#A9695D;">10% discount code</span></p>
             <p style="margin:0 0 20px; font-size:14px; font-weight:bold; color:#1c1917; line-height:1.6;">for your first order:</p>
 
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
               <tr>
-                <td class="wb-code-box" bgcolor="#fffdf9" style="border:1.5px solid #AD8E54; background:#fffdf9; padding:22px 14px; text-align:center;">
+                <td class="wb-code-box" bgcolor="#fffdf9" style="border:1.5px solid #A9695D; background:#fffdf9; padding:22px 14px; text-align:center;">
                   <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 12px;">
-                    <tr><td bgcolor="#AD8E54" style="width:38px; height:38px; background:#AD8E54; border-radius:50%; text-align:center; vertical-align:middle;">
+                    <tr><td bgcolor="#A9695D" style="width:38px; height:38px; background:#A9695D; border-radius:50%; text-align:center; vertical-align:middle;">
                       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" height="38"><tr><td align="center" valign="middle">${icon('gift', 18, 'Gift')}</td></tr></table>
                     </td></tr>
                   </table>
-                  <p class="wb-code" style="margin:0 0 10px; font-size:21px; font-weight:bold; letter-spacing:0.5px; color:#AD8E54; white-space:nowrap; -webkit-user-select:text; user-select:text;">${escapeHtml(discountCode)}</p>
+                  <p class="wb-code" style="margin:0 0 10px; font-size:21px; font-weight:bold; letter-spacing:0.5px; color:#A9695D; white-space:nowrap; -webkit-user-select:text; user-select:text;">${escapeHtml(discountCode)}</p>
                   <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;"><tr>
                     <td style="font-size:10px; letter-spacing:0.08em; color:#a8a29e; padding-right:5px;">Tap and hold to copy your code</td>
                   </tr></table>
@@ -88,7 +88,7 @@ function renderLaunchEmailHtml(discountCode: string | null, sender?: MarketingSe
         <!-- Body -->
         <tr>
           <td class="wb-body-pad" style="padding:40px 40px 32px;text-align:center">
-            <p style="margin:0 0 8px;font-size:9px;font-weight:bold;letter-spacing:0.3em;text-transform:uppercase;color:#AD8E54">The Wait Is Over</p>
+            <p style="margin:0 0 8px;font-size:9px;font-weight:bold;letter-spacing:0.3em;text-transform:uppercase;color:#A9695D">The Wait Is Over</p>
             <h1 class="wb-headline" style="margin:0 0 24px;font-size:30px;font-weight:bold;color:#1c1917;letter-spacing:0.01em;line-height:1.25">Windsor Beauty is now live.</h1>
 
             <p style="margin:0 0 28px;font-size:13px;color:#57534e;line-height:1.7">
@@ -99,7 +99,7 @@ ${discountBlock}
 
             <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 32px">
               <tr>
-                <td bgcolor="#AD8E54" style="background:#AD8E54; border-radius:4px;">
+                <td bgcolor="#A9695D" style="background:#A9695D; border-radius:4px;">
                   <a href="${SITE_URL}" style="display:inline-block;padding:14px 36px;font-size:11px;font-weight:bold;letter-spacing:0.2em;text-transform:uppercase;color:#ffffff;text-decoration:none;">
                     Visit Windsor Beauty
                   </a>

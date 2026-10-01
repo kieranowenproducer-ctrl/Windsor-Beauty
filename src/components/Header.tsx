@@ -88,7 +88,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gold-100">
+    <header className="bg-stone-50 border-b border-gold-100">
       {/* relative container so nav can be absolutely centered on full width */}
       {/* EXPERIMENTAL MOBILE NAV REDESIGN (2026-06-18): height was a flat h-[96px]
           for both breakpoints. Mobile now uses a shorter h-16 (64px, tightened
@@ -217,7 +217,7 @@ export default function Header() {
         <nav
           aria-label="Main, compact"
           ref={mobileNavRef}
-          className="h-10 bg-white overflow-x-auto overscroll-x-contain [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
+          className="h-10 bg-stone-50 overflow-x-auto overscroll-x-contain [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
         >
           <div className="flex items-center justify-center h-full px-1 w-max min-w-full">
             {navLinks.map(({ label, href, highlight }) => {

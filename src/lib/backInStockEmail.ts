@@ -41,7 +41,7 @@ async function sendBackInStockEmail(params: BackInStockEmailParams): Promise<boo
           <td style="padding:40px;font-size:14px;color:#44403c;line-height:1.6">
             <p style="margin:0 0 16px;">Good news. <strong>${escapeHtml(params.productName)}</strong> is back in stock at Windsor Beauty.</p>
             <p style="margin:0 0 16px;">
-              <a href="${params.productUrl}" style="color:#AD8E54;">Order now &rarr;</a>
+              <a href="${params.productUrl}" style="color:#A9695D;">Order now &rarr;</a>
             </p>
             <p style="margin:0;">Thanks,<br />Windsor Beauty</p>
           </td>

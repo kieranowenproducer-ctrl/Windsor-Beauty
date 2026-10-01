@@ -73,8 +73,8 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   <title>Packing Slip ${order.order_number}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #2B2723; padding: 32px 40px; max-width: 720px; margin: auto; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #2B2723; padding-bottom: 16px; margin-bottom: 24px; }
+    body { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #3A2630; padding: 32px 40px; max-width: 720px; margin: auto; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #3A2630; padding-bottom: 16px; margin-bottom: 24px; }
     .brand { font-size: 22px; font-weight: bold; letter-spacing: 0.5px; }
     .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #666; margin-top: 2px; }
     .order-ref { text-align: right; }
@@ -90,7 +90,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
     td { padding: 8px 0; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.4; }
     .totals { margin-left: auto; width: 260px; }
     .totals td { border: none; padding: 4px 0; font-size: 12px; }
-    .totals .grand-total td { font-size: 14px; font-weight: bold; border-top: 2px solid #2B2723; padding-top: 8px; }
+    .totals .grand-total td { font-size: 14px; font-weight: bold; border-top: 2px solid #3A2630; padding-top: 8px; }
     .shipping-bar { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 10px 14px; border-radius: 4px; margin-bottom: 24px; font-size: 12px; }
     .shipping-bar strong { display: block; margin-bottom: 2px; }
     .footer { border-top: 1px solid #ccc; padding-top: 16px; font-size: 10px; color: #888; line-height: 1.6; text-align: center; }
@@ -176,7 +176,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   </div>
 
   <div class="no-print" style="text-align:center;margin-top:24px">
-    <button onclick="window.print()" style="padding:10px 24px;background:#2B2723;color:white;border:none;cursor:pointer;font-size:14px;border-radius:4px">
+    <button onclick="window.print()" style="padding:10px 24px;background:#3A2630;color:white;border:none;cursor:pointer;font-size:14px;border-radius:4px">
       Print / Save as PDF
     </button>
   </div>
