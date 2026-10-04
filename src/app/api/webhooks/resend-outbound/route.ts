@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { verifyWebhookSignature } from '@/lib/replyCapture';
 import { updateCustomerEmailDelivery } from '@/lib/db/customerEmails';
 import { markInvitationEmailFailedByProvider } from '@/lib/affiliates';
+import { recordVerifiedBeautySmtpMetadata } from '@/lib/db/beautyEmailThreads';
+import { bareEmail, retrieveBeautySentMetadata } from '@/lib/email/beautySentMetadata';
+import { normaliseMessageId } from '@/lib/email/threadReferences';
+import type { ParsedResendOutboundWebhook } from '@/lib/email/resendMetadataContract';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,9 +17,11 @@ const TRACKED = new Set([
 export async function POST(request: Request) {
   const payload = await request.text();
   const secrets = [
-    process.env.RESEND_OUTBOUND_WEBHOOK_SECRET,
-    process.env.RESEND_OUTBOUND_WEBHOOK_SECRET_PAYPAL,
-  ].filter((value): value is string => Boolean(value));
+    {secret:process.env.RESEND_OUTBOUND_WEBHOOK_SECRET_BEAUTY_IS, dedicated:true},
+    {secret:process.env.RESEND_OUTBOUND_WEBHOOK_SECRET,dedicated:false},
+    {secret:process.env.RESEND_OUTBOUND_WEBHOOK_SECRET_PAYPAL,dedicated:false},
+  ].filter(value=>Boolean(value.secret));
+  if(secrets[0]?.dedicated && secrets.slice(1).some(value=>value.secret===secrets[0].secret))return NextResponse.json({error:'Dedicated Beauty callback signing identity is not isolated.'},{status:503});
   if (!secrets.length) {
     return NextResponse.json({ error: 'Outbound email tracking is not configured.' }, { status: 503 });
   }
@@ -26,16 +32,36 @@ export async function POST(request: Request) {
     signatureHeader: request.headers.get('svix-signature') ?? '',
     payload,
   };
-  if (!secrets.some(secret => verifyWebhookSignature({ secret, ...signature }))) {
+  const verified=secrets.find(value=>verifyWebhookSignature({secret:value.secret!,...signature}));
+  if (!verified) {
     return NextResponse.json({ error: 'Invalid signature.' }, { status: 401 });
   }
 
-  let event: { type?: string; created_at?: string; data?: { email_id?: string } };
+  let event: ParsedResendOutboundWebhook;
   try { event = JSON.parse(payload); }
   catch { return NextResponse.json({ error: 'Not JSON.' }, { status: 400 }); }
 
   if (!event.type || !TRACKED.has(event.type) || !event.data?.email_id) {
     return NextResponse.json({ ignored: true });
+  }
+  const from=typeof event.data.from==='string'?bareEmail(event.data.from):'';
+  if(from && !from.endsWith('@windsorbeauty.is')&&!from.endsWith('@windsorbeauty.co.uk'))return NextResponse.json({ignored:true,reason:'other_business'});
+  if(verified.dedicated){
+    if(!from.endsWith('@windsorbeauty.is'))return NextResponse.json({error:'Beauty .is sender metadata missing.'},{status:503});
+    if(['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`))try{
+      if(event.data.reply_to && event.data.reply_to.length>1)throw new Error('Ambiguous Beauty Reply-To.');
+      const to=event.data.to;
+      const metadata=event.data.message_id && Array.isArray(to)&&to.length===1 && Array.isArray(event.data.reply_to)&&event.data.reply_to.length===1
+        ? {messageId:event.data.message_id,from,customerTo:bareEmail(to[0]),replyTo:bareEmail(event.data.reply_to![0])}
+        : await retrieveBeautySentMetadata(event.data.email_id);
+      if(!metadata)return NextResponse.json({error:'Exact Beauty SMTP metadata is pending.'},{status:503});
+      if(event.data.message_id && normaliseMessageId(event.data.message_id)!==normaliseMessageId(metadata.messageId))throw new Error('Provider SMTP identity mismatch.');
+      if(metadata.from!==from)throw new Error('Provider sender mismatch.');
+      if(!['info','sales','accounts','orders','beautiful'].some(local=>metadata.replyTo===`${local}@windsorbeauty.is`))throw new Error('Provider Reply-To is not an approved Beauty public mailbox.');
+      if(Array.isArray(to) && (to.length!==1 || bareEmail(to[0])!==metadata.customerTo))throw new Error('Provider recipient mismatch.');
+      if(event.data.reply_to?.length===1 && bareEmail(event.data.reply_to[0])!==metadata.replyTo)throw new Error('Provider Reply-To mismatch.');
+      await recordVerifiedBeautySmtpMetadata({providerId:event.data.email_id,...metadata});
+    }catch{return NextResponse.json({error:'Beauty thread metadata could not be verified or saved. Retry required.'},{status:503});}
   }
   const status = event.type.replace('email.', '');
   const matched = await updateCustomerEmailDelivery(event.data.email_id, status, event.created_at ?? null).catch(() => false);

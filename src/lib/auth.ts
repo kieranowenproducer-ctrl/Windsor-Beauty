@@ -65,5 +65,6 @@ export async function resolveCustomerFromRequest(request: Request): Promise<Cust
   if (!isDbConfigured()) return null;
   const token = getSessionTokenFromRequest(request, CUSTOMER_SESSION_COOKIE);
   if (!token) return null;
-  return findCustomerByValidSessionToken(token);
+  const customer = await findCustomerByValidSessionToken(token);
+  return customer?.account_status === 'active' && !customer.banned_at ? customer : null;
 }

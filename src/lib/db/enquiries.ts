@@ -350,7 +350,7 @@ export async function recordInboundEnquiryReply(params: {
       SELECT * FROM enquiry_replies WHERE provider_message_id = ${params.providerMessageId} LIMIT 1
     `;
     const seen = (already[0] as EnquiryReplyRow) ?? null;
-    if (seen) return seen.enquiry_id === params.enquiryId ? { reply: seen, created: false } : null;
+    if (seen) return seen.enquiry_id === params.enquiryId && seen.direction === 'in' && seen.from_address.toLowerCase() === params.fromAddress.toLowerCase() ? { reply: seen, created: false } : null;
   }
 
   const rows = await db`
@@ -358,12 +358,14 @@ export async function recordInboundEnquiryReply(params: {
       INSERT INTO enquiry_replies (enquiry_id, body, from_address, provider_message_id, direction, inbound_attachments)
       VALUES (${params.enquiryId}, ${params.body}, ${params.fromAddress.toLowerCase()},
               ${params.providerMessageId}, 'in', ${JSON.stringify(params.attachments ?? [])}::jsonb)
+      ON CONFLICT (provider_message_id) WHERE provider_message_id IS NOT NULL DO NOTHING
       RETURNING *
     ), reopened AS (
       UPDATE enquiries
       SET status = CASE WHEN ${params.closeAsAcknowledged ?? false} THEN 'closed' ELSE 'new' END,
           updated_at = now()
       WHERE id = ${params.enquiryId}
+        AND EXISTS (SELECT 1 FROM saved_reply)
       RETURNING id
     )
     SELECT saved_reply.*
@@ -371,7 +373,11 @@ export async function recordInboundEnquiryReply(params: {
     JOIN reopened ON reopened.id = saved_reply.enquiry_id
   `;
   const reply = (rows[0] as EnquiryReplyRow) ?? null;
-  return reply ? { reply, created: true } : null;
+  if (reply) return { reply, created: true };
+  if (!params.providerMessageId) return null;
+  const existing = await db`SELECT * FROM enquiry_replies WHERE provider_message_id=${params.providerMessageId} LIMIT 1`;
+  const saved = (existing[0] as EnquiryReplyRow) ?? null;
+  return saved && saved.enquiry_id===params.enquiryId && saved.direction==='in' && saved.from_address.toLowerCase()===params.fromAddress.toLowerCase() ? {reply:saved,created:false} : null;
 }
 
 /**

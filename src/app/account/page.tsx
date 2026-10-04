@@ -1,5 +1,7 @@
 'use client';
 
+import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -39,6 +41,7 @@ interface AccountData {
     firstName: string | null;
     lastName: string | null;
     phone: string | null;
+    addressCountry: string | null;
     marketingConsent: boolean;
     instagramProfile: string | null;
     facebookProfile: string | null;
@@ -95,8 +98,6 @@ export default function AccountDashboardPage() {
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [instagramProfile, setInstagramProfile] = useState('');
   const [facebookProfile, setFacebookProfile] = useState('');
-  const [instagramMarketingConsent, setInstagramMarketingConsent] = useState(false);
-  const [facebookMarketingConsent, setFacebookMarketingConsent] = useState(false);
   const [phoneMarketingConsent, setPhoneMarketingConsent] = useState(false);
   const [editingMarketing, setEditingMarketing] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
@@ -122,8 +123,6 @@ export default function AccountDashboardPage() {
         setMarketingConsent(json.customer.marketingConsent);
         setInstagramProfile(json.customer.instagramProfile || '');
         setFacebookProfile(json.customer.facebookProfile || '');
-        setInstagramMarketingConsent(json.customer.instagramMarketingConsent);
-        setFacebookMarketingConsent(json.customer.facebookMarketingConsent);
         setPhoneMarketingConsent(json.customer.phoneMarketingConsent);
       })
       .finally(() => { if (!cancelled) setLoading(false); });
@@ -156,6 +155,9 @@ export default function AccountDashboardPage() {
 
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
+    if (phone.trim() && !normalisePhoneNumber(phone, data?.customer.addressCountry || 'GB')) {
+      setProfileMessage(PHONE_ERROR); return;
+    }
     setSavingProfile(true);
     setProfileMessage('');
     try {
@@ -163,16 +165,15 @@ export default function AccountDashboardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone, marketingConsent, instagramProfile, facebookProfile,
-          instagramMarketingConsent, facebookMarketingConsent, phoneMarketingConsent }),
+          phoneMarketingConsent }),
       });
       const json = await res.json().catch(() => null);
       if (res.ok) {
         setProfileMessage('Your details have been updated.');
         if (json?.customer) {
           setData(previous => previous ? { ...previous, customer: { ...previous.customer, ...json.customer } } : previous);
+          setPhone(json.customer.phone || '');
           setMarketingConsent(json.customer.marketingConsent);
-          setInstagramMarketingConsent(json.customer.instagramMarketingConsent);
-          setFacebookMarketingConsent(json.customer.facebookMarketingConsent);
           setPhoneMarketingConsent(json.customer.phoneMarketingConsent);
         }
         setEditingMarketing(false);
@@ -428,7 +429,7 @@ export default function AccountDashboardPage() {
                 </div>
                 {!editingMarketing ? (
                   <p className="text-xs text-stone-500 leading-relaxed">
-                    Email {marketingConsent ? 'on' : 'off'} · Instagram {instagramMarketingConsent ? 'on' : 'off'} · Facebook {facebookMarketingConsent ? 'on' : 'off'} · Phone {phoneMarketingConsent ? 'on' : 'off'}
+                    Email {marketingConsent ? 'on' : 'off'} · Phone {phoneMarketingConsent ? 'on' : 'off'}
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -444,8 +445,6 @@ export default function AccountDashboardPage() {
                     </div>
                     {[
                       { label: 'Email offers', checked: marketingConsent, change: setMarketingConsent, disabled: false },
-                      { label: 'Instagram messages', checked: instagramMarketingConsent, change: setInstagramMarketingConsent, disabled: !instagramProfile.trim() },
-                      { label: 'Facebook messages', checked: facebookMarketingConsent, change: setFacebookMarketingConsent, disabled: !facebookProfile.trim() },
                       { label: 'Telephone offers', checked: phoneMarketingConsent, change: setPhoneMarketingConsent, disabled: !phone.trim() },
                     ].map(choice => (
                       <label key={choice.label} className="flex items-center gap-2.5 text-xs text-stone-600">

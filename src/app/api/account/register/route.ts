@@ -1,3 +1,5 @@
+import { verifyPassword } from '@/lib/auth';
+import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
 import { after, NextResponse } from 'next/server';
 import { COMPLIANCE_CONFIRMATIONS_ERROR } from '@/lib/complianceConfirmations';
 import {
@@ -34,7 +36,6 @@ import { glowCardLoyaltyEnabled } from '@/lib/glowCardLoyalty';
 import { affiliatesEnabled, createAffiliateReferralFromInvitation, findAffiliateInvitation } from '@/lib/affiliates';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_PATTERN = /^[+\d][\d\s()-]{6,19}$/;
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
   const password = typeof body?.password === 'string' ? body.password : '';
   const firstName = typeof body?.firstName === 'string' ? body.firstName.trim() : '';
   const lastName = typeof body?.lastName === 'string' ? body.lastName.trim() : '';
-  const phone = typeof body?.phone === 'string' ? body.phone.trim() : '';
+  const phone = normalisePhoneNumber(body?.phone, body?.addressCountry) || '';
   const referredBy = typeof body?.referredBy === 'string' ? body.referredBy.trim() : '';
   const socialProfile = cleanSocialProfile(body?.socialProfile);
   const instagramProfile = cleanSocialProfile(body?.instagramProfile);
@@ -81,8 +82,8 @@ export async function POST(request: Request) {
   if (!email || !EMAIL_PATTERN.test(email)) {
     return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 });
   }
-  if (!PHONE_PATTERN.test(phone)) {
-    return NextResponse.json({ error: 'Please enter a valid phone number.' }, { status: 400 });
+  if (!phone) {
+    return NextResponse.json({ error: PHONE_ERROR }, { status: 400 });
   }
   if (!addressLine1 || !addressCity || !addressPostcode) {
     return NextResponse.json({ error: 'Please enter your full address, including postcode.' }, { status: 400 });
@@ -185,6 +186,9 @@ export async function POST(request: Request) {
 
   try {
     const existing = await findCustomerByEmail(email);
+    if (existing?.account_status === 'pending_password' && (!existing.password_hash || !verifyPassword(password, existing.password_hash))) {
+      return NextResponse.json({ error: 'Please use Forgot password to confirm your email and set a password before completing registration.', redirect: '/account/forgot-password' }, { status: 403 });
+    }
     if (existing && existing.account_status !== 'pending_password') {
       return NextResponse.json(
         { error: 'This email is already registered. Please log in, or use "Forgot password" if you need to reset it.' },

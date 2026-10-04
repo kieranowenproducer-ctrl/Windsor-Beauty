@@ -1,5 +1,7 @@
 'use client';
 
+import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
@@ -331,6 +333,7 @@ export default function CheckoutPage() {
   }
 
   async function handlePay() {
+    if (!normalisePhoneNumber(details.phone, details.country)) { setOrderError(PHONE_ERROR); return; }
     trackShopAction('checkout_pay_pressed');
     setPlacingOrder(true);
     setOrderError('');
@@ -560,7 +563,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label htmlFor="checkout-phone" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Phone Number</label>
-                  <input id="checkout-phone" type="tel" value={details.phone} onChange={updateDetails('phone')} readOnly={savedProfileLocked && Boolean(savedCustomer?.phone)} required className={inputClass} />
+                  <input id="checkout-phone" type="tel" value={details.phone} onChange={updateDetails('phone')} required className={inputClass} />
                 </div>
 
                 <div className="border-t border-gold-100 pt-4">

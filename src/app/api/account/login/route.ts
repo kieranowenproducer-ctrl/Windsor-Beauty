@@ -70,6 +70,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Incorrect email/username or password.' }, { status: 401 });
     }
 
+    if (customer.account_status === 'pending_password') {
+      return NextResponse.json({ error: 'needsPassword', redirect: '/account/register' }, { status: 403 });
+    }
+
     // A banned account (task 9cd55f28). Checked AFTER the password, so a wrong password never
     // reveals that an address belongs to a banned account, and worded without the reason: the
     // reason is staff's, and telling somebody exactly what gave them away only teaches them to

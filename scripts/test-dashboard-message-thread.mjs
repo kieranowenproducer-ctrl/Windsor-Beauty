@@ -32,10 +32,11 @@ assert.match(body, /status = 'replied'/);
 // Recording the conversation must never fail a message that has already gone out.
 assert.match(body, /catch \{\s*return null;\s*\}/);
 
-// A reply that opens a fresh case brings what we already said onto it, so conversations sent
-// before any of this still read as conversations.
+// Incoming replies resolve exact durable provider ownership. A fresh case must
+// never import unrelated recent history merely because the sender matches.
 const hook = readFileSync(new URL('../src/app/api/webhooks/resend-inbound/route.ts', import.meta.url), 'utf8');
-assert.match(hook, /attachEarlierSentMessages\(\{ enquiryId, email: fromAddress \}\)/);
+assert.doesNotMatch(hook, /attachEarlierSentMessages|findEnquiryForCustomerEmail/);
+assert.match(hook, /findExactBeautyEmailThread/);
 const history = enquiries.slice(enquiries.indexOf('export async function attachEarlierSentMessages'));
 const historyBody = history.slice(0, history.indexOf('\nexport '));
 assert.match(historyBody, /ce\.direction = 'sent'/);
@@ -43,4 +44,4 @@ assert.match(historyBody, /'history-' \|\| ce\.id::text/);
 assert.match(historyBody, /ORDER BY ce\.created_at/);
 assert.match(historyBody, /NOT EXISTS/);
 
-console.log('A dashboard message is kept as a thread, a reply lands on it, and older messages come with it.');
+console.log('Dashboard messages remain recorded; incoming replies require exact ownership without copying unrelated history.');

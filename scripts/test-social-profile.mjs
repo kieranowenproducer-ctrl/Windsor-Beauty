@@ -29,7 +29,8 @@ assert.match(registration, /cleanSocialProfile\(body\?\.facebookProfile\)/);
 const form = await readFile(new URL('../src/components/MemberRegistrationForm.tsx', import.meta.url), 'utf8');
 assert.match(form, /id="instagramProfile"/);
 assert.match(form, /id="facebookProfile"/);
-assert.match(form, /<SocialProfilePrompt/);
+assert.doesNotMatch(form, /<SocialProfilePrompt/);
+assert.match(form, /normalisePhoneNumber\(/);
 assert.doesNotMatch(form, /socialProfileLabel/);
 // Samuel, 27 Sep 2026: the tick box names no channels (the terms do), and it sits above the
 // Instagram and Facebook boxes, since those are only used for offers once it is ticked.
@@ -49,13 +50,15 @@ assert.match(schema, /ADD COLUMN IF NOT EXISTS facebook_profile TEXT/);
 assert.match(schema, /ADD COLUMN IF NOT EXISTS instagram_marketing_consent BOOLEAN/);
 
 const database = await readFile(new URL('../src/lib/db.ts', import.meta.url), 'utf8');
-assert.match(database, /params\.marketingConsent && Boolean\(params\.instagramProfile\)/);
-assert.match(database, /params\.marketingConsent && Boolean\(params\.facebookProfile\)/);
+assert.doesNotMatch(database, /params\.marketingConsent && Boolean\(params\.instagramProfile\)/);
+assert.match(database, /instagram_marketing_consent = \$\{params\.instagramMarketingConsent\}/);
+assert.doesNotMatch(database, /params\.marketingConsent && Boolean\(params\.facebookProfile\)/);
+assert.match(database, /facebook_marketing_consent = \$\{params\.facebookMarketingConsent\}/);
 assert.match(database, /params\.marketingConsent && Boolean\(params\.phone\)/);
 
 const account = await readFile(new URL('../src/app/account/page.tsx', import.meta.url), 'utf8');
-assert.match(account, /Instagram messages/);
-assert.match(account, /Facebook messages/);
+assert.doesNotMatch(account, /Instagram messages/);
+assert.doesNotMatch(account, /Facebook messages/);
 assert.match(account, /Telephone offers/);
 
 const customerApi = await readFile(new URL('../src/app/api/admin/customers/route.ts', import.meta.url), 'utf8');

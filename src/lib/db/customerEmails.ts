@@ -103,6 +103,7 @@ export async function recordCustomerEmail(params: {
             ${params.ourAddress}, ${params.subject}, ${params.bodyText}, ${params.bodyHtml ?? null},
             ${params.providerId ?? null}, ${params.orderRef ?? null}, ${params.emailType ?? null},
             ${params.deliveryStatus ?? null}, ${params.deliveryStatus ? new Date().toISOString() : null})
+    ON CONFLICT (provider_id) WHERE provider_id IS NOT NULL DO NOTHING
   `;
 }
 

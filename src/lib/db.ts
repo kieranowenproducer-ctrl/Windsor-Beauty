@@ -566,8 +566,8 @@ export async function createCustomer(params: {
       ${params.email}, ${params.passwordHash}, ${params.firstName}, ${params.lastName},
       ${params.phone}, ${params.marketingConsent}, ${params.referredBy ?? null}, ${params.socialProfile ?? null},
       ${params.instagramProfile ?? null}, ${params.facebookProfile ?? null},
-      ${params.marketingConsent && Boolean(params.instagramProfile)},
-      ${params.marketingConsent && Boolean(params.facebookProfile)},
+      ${false},
+      ${false},
       ${params.marketingConsent && Boolean(params.phone)},
       ${params.addressLine1 ?? null}, ${params.addressLine2 ?? null}, ${params.addressCity ?? null},
       ${params.addressPostcode ?? null}, ${params.addressCountry ?? null},
@@ -631,8 +631,6 @@ export async function completePendingCustomer(
       social_profile = COALESCE(${params.socialProfile ?? null}, social_profile),
       instagram_profile = ${params.instagramProfile ?? null},
       facebook_profile = ${params.facebookProfile ?? null},
-      instagram_marketing_consent = ${Boolean(params.marketingConsent && params.instagramProfile)},
-      facebook_marketing_consent = ${Boolean(params.marketingConsent && params.facebookProfile)},
       phone_marketing_consent = ${Boolean(params.marketingConsent && params.phone)},
       address_line1 = COALESCE(${params.addressLine1 ?? null}, address_line1),
       address_line2 = COALESCE(${params.addressLine2 ?? null}, address_line2),
@@ -691,9 +689,9 @@ export async function updateCustomerProfile(
     UPDATE customers
     SET phone = ${params.phone}, marketing_consent = ${params.marketingConsent},
         instagram_profile = ${params.instagramProfile}, facebook_profile = ${params.facebookProfile},
-        instagram_marketing_consent = ${params.instagramMarketingConsent && Boolean(params.instagramProfile)},
-        facebook_marketing_consent = ${params.facebookMarketingConsent && Boolean(params.facebookProfile)},
-        phone_marketing_consent = ${params.phoneMarketingConsent && Boolean(params.phone)}
+        instagram_marketing_consent = ${params.instagramMarketingConsent},
+        facebook_marketing_consent = ${params.facebookMarketingConsent},
+        phone_marketing_consent = ${params.phoneMarketingConsent}
     WHERE id = ${id}
     RETURNING *
   `;
@@ -972,6 +970,22 @@ export async function findValidPasswordResetToken(token: string): Promise<Passwo
 export async function markPasswordResetTokenUsed(token: string): Promise<void> {
   const db = requireDb();
   await db`UPDATE password_reset_tokens SET used_at = now() WHERE token = ${token}`;
+}
+
+/** Consume recovery evidence and change its owner's password in one database statement. */
+export async function resetCustomerPasswordByToken(token: string, passwordHash: string): Promise<CustomerRow | null> {
+  const rows = await requireDb()`
+    WITH claimed AS (
+      UPDATE password_reset_tokens t SET used_at = now()
+      WHERE t.token = ${token} AND t.expires_at > now() AND t.used_at IS NULL
+        AND EXISTS (SELECT 1 FROM customers c WHERE c.id = t.customer_id AND c.banned_at IS NULL)
+      RETURNING t.customer_id
+    )
+    UPDATE customers c SET password_hash = ${passwordHash}
+    FROM claimed WHERE c.id = claimed.customer_id
+    RETURNING c.*
+  `;
+  return (rows[0] as CustomerRow) ?? null;
 }
 
 // ─── Email verification tokens ───────────────────────────────────────────────

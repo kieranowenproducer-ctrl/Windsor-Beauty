@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { findCustomerByEmail, isDbConfigured, logAutomationFailure } from '@/lib/db';
 import { recordCustomerEmail } from '@/lib/db/customerEmails';
-import { attachEarlierSentMessages, createInboundEmailEnquiry, findEnquiryForCustomerEmail, recordInboundEnquiryReply, type InboundAttachment } from '@/lib/db/enquiries';
+import { createInboundEmailEnquiry, findEnquiryById, recordInboundEnquiryReply, type InboundAttachment } from '@/lib/db/enquiries';
+import { findExactBeautyEmailThread, claimBeautyInboundRoute, completeBeautyInboundRoute, inboundRouteHash } from '@/lib/db/beautyEmailThreads';
+import { emailThreadReferences, emailDirectParents, normaliseMessageId } from '@/lib/email/threadReferences';
 import { findOrderRef, verifyWebhookSignature } from '@/lib/replyCapture';
 import { sendEmail } from '@/lib/email/send';
 import { enquiryAlertRecipients, isUrgentCustomerEmail } from '@/lib/email/enquiryAlerts';
-import { isCapturedThreadReply, isIgnoredInboundSender, isSimpleAcknowledgement, visibleInboundEmailText } from '@/lib/email/inboundRouting';
+import { isIgnoredInboundSender, isSimpleAcknowledgement, visibleInboundEmailText } from '@/lib/email/inboundRouting';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +16,7 @@ export const dynamic = 'force-dynamic';
 // becomes a dashboard case; replies to an open captured thread re-open it.
 //
 // Deliberately NOT behind the admin login: Resend calls it from outside. The
-// svix signature (RESEND_INBOUND_WEBHOOK_SECRET) is the authentication — an
+// svix signature (RESEND_INBOUND_WEBHOOK_SECRET_BEAUTY_IS) is the authentication — an
 // unsigned or mis-signed request is refused.
 //
 // The original mailbox keeps its original message. A short staff action alert
@@ -23,6 +25,8 @@ export const dynamic = 'force-dynamic';
 const FORWARD_FROM = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
 
 interface ReceivedEmailContent {
+  id: string;
+  message_id?: string;
   from: string;
   to: string[] | string;
   subject: string;
@@ -35,7 +39,7 @@ interface ReceivedEmailContent {
 
 // The webhook only says an email exists; its words live behind the API.
 async function fetchReceivedEmail(emailId: string): Promise<ReceivedEmailContent | null> {
-  const receivingKey = process.env.RESEND_INBOUND_API_KEY || process.env.RESEND_API_KEY;
+  const receivingKey = process.env.RESEND_INBOUND_API_KEY_BEAUTY_IS?.trim();
   if (!receivingKey) return null;
   try {
     const res = await fetch(`https://api.resend.com/emails/receiving/${emailId}`, {
@@ -55,7 +59,7 @@ function bareAddress(value: string): string {
 }
 
 export async function POST(request: Request) {
-  const secret = process.env.RESEND_INBOUND_WEBHOOK_SECRET;
+  const secret = process.env.RESEND_INBOUND_WEBHOOK_SECRET_BEAUTY_IS;
   if (!secret) {
     // Capture is not switched on. Saying so plainly beats a mystery 500.
     return NextResponse.json({ error: 'Inbound email capture is not configured.' }, { status: 503 });
@@ -73,7 +77,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid signature.' }, { status: 401 });
   }
 
-  let event: { type?: string; data?: { email_id?: string; from?: string; to?: string[]; subject?: string } };
+  let event: { type?: string; data?: { email_id?: string; message_id?: string; received_for?: string[]; from?: string; to?: string[]; subject?: string } };
   try {
     event = JSON.parse(payload);
   } catch {
@@ -88,14 +92,41 @@ export async function POST(request: Request) {
   const meta = event.data;
   const emailId = meta.email_id;
   if (!emailId) return NextResponse.json({ error: 'Missing received email id.' }, { status: 400 });
+  // A public To header alone does not prove a business route. The approved
+  // capture target must agree in the signed event and fetched provider envelope.
+  // Keep this callback off until the dedicated Beauty forward is proved.
+  const approvedCapture = process.env.BEAUTY_INBOUND_CAPTURE_ADDRESS?.trim().toLowerCase();
+  if (approvedCapture !== 'windsor-beauty@ilkaik.resend.app' || !process.env.RESEND_INBOUND_API_KEY_BEAUTY_IS?.trim()) {
+    return NextResponse.json({ error: 'Dedicated Beauty receiving is not configured.' }, { status: 503 });
+  }
+  // Account-level callbacks can include the existing Glow capture. A known
+  // foreign envelope is acknowledged without reading or ingesting its mail.
+  if(Array.isArray(meta.received_for) && meta.received_for.length===1 && bareAddress(meta.received_for[0])==='windsor-glow@ilkaik.resend.app')return NextResponse.json({ignored:true,reason:'other_business_transport'});
   const content = await fetchReceivedEmail(emailId);
   if (!content) return NextResponse.json({ error: 'Received email could not be read yet.' }, { status: 503 });
+  if(content.id!==emailId || !meta.from || !content.from || bareAddress(meta.from)!==bareAddress(content.from))return NextResponse.json({error:'Provider message identity does not agree.'},{status:503});
+  const exactCapture = (values: unknown) => Array.isArray(values) && values.length === 1 && typeof values[0] === 'string' && bareAddress(values[0]) === approvedCapture;
+  if (!exactCapture(meta.received_for) || !exactCapture(content.received_for)) {
+    return NextResponse.json({ error: 'Provider capture routing is unknown or ambiguous.' }, { status: 503 });
+  }
+  const fromAddress = bareAddress(content.from || meta.from || '');
+  if (!fromAddress) return NextResponse.json({ ignored: true });
+
+  // Internal mail from either business must not become a customer case or
+  // trigger an action alert. The original message stays in its mailbox.
+  const internalDomains = ['@windsorbeauty.co.uk', '@windsorbeauty.is', '@windsorglow.com', '@windsorglow.co.uk', '@windsorglow.is'];
+  const internalCaptures = ['windsor-beauty@ilkaik.resend.app', 'windsor-glow@ilkaik.resend.app'];
+  if (internalDomains.some(domain => fromAddress.endsWith(domain)) || internalCaptures.includes(fromAddress)) {
+    return NextResponse.json({ ignored: true, reason: 'internal_sender' });
+  }
+
   if (!isDbConfigured()) return NextResponse.json({ error: 'Email queue is not configured.' }, { status: 503 });
   // Verified provider content preserves Zoho's original public To in headers;
   // the top-level To is the forwarding capture address, not the public mailbox.
   const recipientHeaders = Object.entries(content.headers ?? {}).filter(([name]) =>
     ['to','x-zohomail-delivered-to'].includes(name.toLowerCase())).map(([,value]) => value);
-  const recipientValues = recipientHeaders.length ? recipientHeaders : (Array.isArray(content.to) ? content.to : [content.to]);
+  const providerPublicTo = [...(Array.isArray(meta.to)?meta.to:[]),...(Array.isArray(content.to)?content.to:[content.to])].filter(value=>typeof value==='string'&&bareAddress(value)!==approvedCapture);
+  const recipientValues = [...recipientHeaders,...providerPublicTo];
   const originalTo = Array.from(new Set(recipientValues.filter((value): value is string => typeof value === 'string')
     .flatMap(value => value.split(',')).map(bareAddress).filter(Boolean)));
   const ownDomains = ['@windsorbeauty.co.uk', '@windsorbeauty.is'];
@@ -109,15 +140,16 @@ export async function POST(request: Request) {
   if (!ownRecipients.length || foreignRecipients.length || unknownRecipients.length) {
     return NextResponse.json({ error: 'Original mailbox routing is unknown or ambiguous.' }, { status: 503 });
   }
-  const fromAddress = bareAddress(content.from || meta.from || '');
-  if (!fromAddress) return NextResponse.json({ ignored: true });
-
-  // Never ingest or forward our own outbound addresses — that way a bounce,
-  // an auto-reply loop or a misdirected internal email cannot echo around.
-  if (['@windsorbeauty.co.uk', '@windsorbeauty.is'].some(domain => fromAddress.endsWith(domain))) {
-    return NextResponse.json({ ignored: true });
+  // Different public aliases need an explicit reviewed mapping. Never silently
+  // replace the original mailbox with the capture address or another alias.
+  const approvedPublicMailboxes = new Set(['info', 'sales', 'accounts'].flatMap(local =>
+    [`${local}@windsorbeauty.is`, `${local}@windsorbeauty.co.uk`]));
+  // Established .is receiving aliases on Info; no guessed historical aliases.
+  approvedPublicMailboxes.add('orders@windsorbeauty.is');
+  approvedPublicMailboxes.add('beautiful@windsorbeauty.is');
+  if (ownRecipients.length !== 1 || !approvedPublicMailboxes.has(ownRecipients[0])) {
+    return NextResponse.json({ error: 'Original public mailbox is unknown or ambiguous.' }, { status: 503 });
   }
-
   // Royal Mail sends receipts, label confirmations and Click & Drop notices to
   // the shared mailbox. They are operational emails, not customer questions.
   // Leave the original message in the mailbox, but do not create an enquiry,
@@ -139,8 +171,10 @@ export async function POST(request: Request) {
     ?? (content.html ? content.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '')
     ?? '';
   const bodyText = visibleInboundEmailText(rawBodyText);
-  const ourAddress = content.received_for?.[0] ? bareAddress(content.received_for[0]) :
-    (Array.isArray(meta.to) && meta.to.length ? bareAddress(meta.to[0]) : null);
+  const receivedCaptureAddress = bareAddress(content.received_for![0]);
+  // Customer history records the verified original public mailbox. The
+  // provider envelope remains a separate transport value for reply detection.
+  const ourAddress = ownRecipients[0];
   const attachments: InboundAttachment[] = (content.attachments ?? [])
     .filter(item => item.id && item.filename)
     .map(item => ({ id: item.id, emailId, filename: item.filename, contentType: item.content_type, size: item.size }));
@@ -156,29 +190,31 @@ export async function POST(request: Request) {
   let autoClosedAcknowledgement = false;
 
   try {
+    const references = emailThreadReferences(content.headers);
+    const explicitParents=emailDirectParents(content.headers);
+    // References is chronological; its last exact mapped ID is the parent
+    // when a mail client omits In-Reply-To. All ancestors still require proof.
+    const directParents=explicitParents.length?explicitParents:references.slice(-1);
+    const headerSmtp=Object.entries(content.headers||{}).find(([name])=>name.toLowerCase()==='message-id')?.[1];
+    const smtpId=normaliseMessageId(content.message_id || headerSmtp);
+    if(!smtpId || !normaliseMessageId(content.message_id) || !normaliseMessageId(meta.message_id) || normaliseMessageId(meta.message_id)!==smtpId || (content.message_id && headerSmtp && normaliseMessageId(headerSmtp)!==smtpId))throw new Error('Incoming SMTP identity is missing or conflicting.');
+    const appearsReply = references.length > 0 || /^\s*re\s*:/i.test(subject);
+    const exactThread = references.length ? await findExactBeautyEmailThread(fromAddress, ourAddress, references,directParents) : null;
+    if (appearsReply && !exactThread) {
+      return NextResponse.json({ error: 'Exact email thread ownership is missing or ambiguous. Retry required.' }, { status: 503 });
+    }
+    const pinnedCase = await claimBeautyInboundRoute({providerId: emailId,smtpId,
+      hash: inboundRouteHash({smtpId,fromAddress,ourAddress,receivedCaptureAddress,subject,bodyText,attachments,references,directParents}),
+      sender: fromAddress,mailbox: ourAddress,capture: receivedCaptureAddress,target: exactThread?.id ?? null});
+    const enquiry = pinnedCase ? await findEnquiryById(pinnedCase) : exactThread;
+    if (pinnedCase && (!enquiry || enquiry.email.trim().toLowerCase() !== fromAddress)) throw new Error('Recorded email case ownership changed.');
     const customer = await findCustomerByEmail(fromAddress).catch(() => null);
     const knownName = `${customer?.first_name ?? ''} ${customer?.last_name ?? ''}`.trim();
     if (!suppliedName && knownName) name = knownName;
-    await recordCustomerEmail({
-      direction: 'received',
-      customerId: customer?.id ?? null,
-      email: fromAddress,
-      ourAddress,
-      subject,
-      bodyText: bodyText || '(See attached files.)',
-      providerId: emailId,
-      orderRef,
-    });
-
-    // Replies to a dashboard thread return to that thread. A new direct message
-    // gets its own case rather than being hidden under customer email history.
-    const captureAddress = process.env.REPLY_CAPTURE_ADDRESS?.trim().toLowerCase();
-    const originalRecipients = (Array.isArray(content.to) ? content.to : [content.to]).map(bareAddress);
-    const isThreadReply = isCapturedThreadReply({
-      captureAddress, receivedFor: ourAddress, originalRecipients, headers: content.headers,
-    });
-    const enquiry = isThreadReply ? await findEnquiryForCustomerEmail(fromAddress) : null;
-    if (enquiry) {
+    if (pinnedCase) {
+      enquiryId = pinnedCase;
+      autoClosedAcknowledgement = isSimpleAcknowledgement(bodyText);
+    } else if (enquiry) {
       autoClosedAcknowledgement = isSimpleAcknowledgement(bodyText);
       const attached = await recordInboundEnquiryReply({
         enquiryId: enquiry.id, body: bodyText || '(See attached files.)', fromAddress,
@@ -193,13 +229,13 @@ export async function POST(request: Request) {
         orderNumber: orderRef, message: bodyText || '(See attached files.)',
         attachments, priority: urgent ? 'urgent' : 'high',
       });
-      if (!recorded) throw new Error('Could not create incoming email enquiry.');
+      if (!recorded || recorded.enquiry.email.trim().toLowerCase() !== fromAddress) throw new Error('Could not create incoming email enquiry safely.');
       enquiryId = recorded.enquiry.id;
-      // Anything we already said to them goes on the thread above their message, so whoever opens
-      // the case reads a conversation rather than one side of one.
-      if (recorded.created) await attachEarlierSentMessages({ enquiryId, email: fromAddress });
       newlyRecorded = recorded.created;
     }
+    await completeBeautyInboundRoute(emailId, enquiryId);
+    await recordCustomerEmail({direction:'received',customerId:customer?.id ?? null,email:fromAddress,
+      ourAddress,subject,bodyText:bodyText || '(See attached files.)',providerId:emailId,orderRef});
   } catch (err) {
     console.error('[resend-inbound] queue failed:', err);
     return NextResponse.json({ error: 'Incoming email was not queued. Retry required.' }, { status: 503 });

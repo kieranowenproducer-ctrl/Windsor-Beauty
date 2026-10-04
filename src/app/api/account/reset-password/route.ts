@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import {
   createCustomerSession,
   deleteCustomerSessionsByCustomerId,
-  findValidPasswordResetToken,
+  resetCustomerPasswordByToken,
   isDbConfigured,
-  markPasswordResetTokenUsed,
-  updateCustomerPassword,
 } from '@/lib/db';
 import { recordMemberLogin } from '@/lib/db/memberLogins';
 import {
@@ -37,26 +35,29 @@ export async function POST(request: Request) {
   }
 
   try {
-    const resetToken = await findValidPasswordResetToken(token);
-    if (!resetToken) {
+    const recovered = await resetCustomerPasswordByToken(token, hashPassword(password));
+    if (!recovered) {
       return NextResponse.json(
         { error: 'This password reset link is invalid or has expired. Please request a new one.' },
         { status: 400 }
       );
     }
 
-    await updateCustomerPassword(resetToken.customer_id, hashPassword(password));
-    await markPasswordResetTokenUsed(token);
-
     // A password reset is a strong signal the old password may be compromised —
     // sign the customer out everywhere and issue one fresh session below.
-    await deleteCustomerSessionsByCustomerId(resetToken.customer_id);
+    await deleteCustomerSessionsByCustomerId(recovered.id);
+
+    // Recovery confirms email ownership, but a lead must still complete the
+    // full registration checks before receiving an account session.
+    if (recovered.account_status === 'pending_password') {
+      return NextResponse.json({ success: true, redirect: '/account/register' });
+    }
 
     const sessionToken = generateSessionToken();
     const expiresAt = new Date(Date.now() + CUSTOMER_SESSION_DURATION_MS);
-    await createCustomerSession({ customerId: resetToken.customer_id, token: sessionToken, expiresAt });
+    await createCustomerSession({ customerId: recovered.id, token: sessionToken, expiresAt });
     recordMemberLogin({
-      customerId: resetToken.customer_id,
+      customerId: recovered.id,
       method: 'password_reset',
       request,
     }).catch(() => {});

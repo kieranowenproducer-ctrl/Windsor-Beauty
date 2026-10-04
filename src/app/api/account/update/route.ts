@@ -1,8 +1,8 @@
+import { customerProfileEdit } from '@/lib/customerProfileEdit';
 import { after, NextResponse } from 'next/server';
 import { setMarketingConsentByEmail, updateCustomerProfile, upsertMarketingContact } from '@/lib/db';
 import { resolveCustomerFromRequest } from '@/lib/auth';
 import { createSecurityReviewCase } from '@/lib/db/securityReviews';
-import { cleanSocialProfile } from '@/lib/referralSources';
 
 export async function POST(request: Request) {
   const customer = await resolveCustomerFromRequest(request);
@@ -11,30 +11,15 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => null);
-  const phone = typeof body?.phone === 'string' && body.phone.trim() ? body.phone.trim() : null;
-  const marketingConsent = body?.marketingConsent === true;
-  const has = (key: string) => Object.prototype.hasOwnProperty.call(body ?? {}, key);
-  const instagramProfile = has('instagramProfile') ? cleanSocialProfile(body.instagramProfile) : customer.instagram_profile;
-  const facebookProfile = has('facebookProfile') ? cleanSocialProfile(body.facebookProfile) : customer.facebook_profile;
-  if ((typeof body?.instagramProfile === 'string' && body.instagramProfile.trim() && !instagramProfile)
-    || (typeof body?.facebookProfile === 'string' && body.facebookProfile.trim() && !facebookProfile)) {
-    return NextResponse.json({ error: 'Please enter a shorter social profile name.' }, { status: 400 });
-  }
-
-  const updated = await updateCustomerProfile(customer.id, {
-    phone,
-    marketingConsent,
-    instagramProfile,
-    facebookProfile,
-    instagramMarketingConsent: has('instagramMarketingConsent') ? body.instagramMarketingConsent === true : customer.instagram_marketing_consent,
-    facebookMarketingConsent: has('facebookMarketingConsent') ? body.facebookMarketingConsent === true : customer.facebook_marketing_consent,
-    phoneMarketingConsent: has('phoneMarketingConsent') ? body.phoneMarketingConsent === true : customer.phone_marketing_consent,
-  });
+  const edit = customerProfileEdit(body && typeof body === 'object' ? body : {}, customer);
+  if ('error' in edit) return NextResponse.json({ error: edit.error }, { status: 400 });
+  const { marketingConsent } = edit.params;
+  const updated = await updateCustomerProfile(customer.id, edit.params);
   if (!updated) {
     return NextResponse.json({ error: 'Could not update your details. Please try again.' }, { status: 500 });
   }
 
-  if (marketingConsent) {
+  if (marketingConsent !== customer.marketing_consent && marketingConsent) {
     await upsertMarketingContact({
       email: updated.email,
       firstName: updated.first_name,
@@ -43,7 +28,7 @@ export async function POST(request: Request) {
       customerId: updated.id,
       source: 'account',
     }).catch(() => {});
-  } else {
+  } else if (marketingConsent !== customer.marketing_consent) {
     await setMarketingConsentByEmail(updated.email, false).catch(() => {});
   }
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { findOrderByNumber, isDbConfigured } from '@/lib/db';
 import { findLatestOrderByEmail, type OrderRow } from '@/lib/db/orders';
 import { findEnquiryById, findLatestCustomerReply } from '@/lib/db/enquiries';
+import { findOrderRef } from '@/lib/replyCapture';
 import {
   enquiryNeedsHumanAction,
   enquiryNeedsPersonalAdvice,
@@ -13,13 +14,18 @@ import {
 export const dynamic = 'force-dynamic';
 
 function orderNumberIn(message: string): string | null {
-  return message.match(/\bWG-[A-Z0-9]{4,}\b/i)?.[0]?.toUpperCase() ?? null;
+  return findOrderRef(message);
 }
 
 async function relatedOrder(enquiry: { order_number: string | null; message: string; email: string }): Promise<OrderRow | null> {
+  // A Glow reference is never an instruction to use Beauty's latest order.
+  // Keep mixed-business enquiries for a person to check.
+  if (/\bWG-[A-Z0-9]{4,}(?:-[A-Z0-9]+)*\b/i.test(`${enquiry.order_number || ''}\n${enquiry.message}`)) return null;
   const reference = enquiry.order_number || orderNumberIn(enquiry.message);
   if (reference) {
-    const order = await findOrderByNumber(reference).catch(() => null);
+    const normalized = reference.trim().toUpperCase();
+    if (findOrderRef(normalized) !== normalized) return null;
+    const order = await findOrderByNumber(normalized).catch(() => null);
     return order?.email.toLowerCase() === enquiry.email.toLowerCase() ? order : null;
   }
   return findLatestOrderByEmail(enquiry.email).catch(() => null);

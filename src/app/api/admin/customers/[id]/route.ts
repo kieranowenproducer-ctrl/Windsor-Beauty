@@ -1,3 +1,4 @@
+import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
 import { NextResponse } from 'next/server';
 import {
   deleteCustomer,
@@ -61,11 +62,15 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
 
   const sent = (key: string) => Object.prototype.hasOwnProperty.call(body ?? {}, key);
 
+  if (sent('phone') && body.phone !== null && typeof body.phone !== 'string') return NextResponse.json({ error: PHONE_ERROR }, { status: 400 });
+  const phone = sent('phone') ? (optional(body.phone) ? normalisePhoneNumber(body.phone, body.addressCountry || existing.address_country || 'GB') : null) : existing.phone;
+  if (sent('phone') && optional(body.phone) && !phone) return NextResponse.json({ error: PHONE_ERROR }, { status: 400 });
+
   const updated = await updateCustomerDetails(id, {
     firstName,
     lastName,
     email,
-    phone: sent('phone') ? optional(body.phone) : existing.phone,
+    phone,
     referredBy: sent('referredBy') ? optional(body.referredBy) : existing.referred_by,
     addressLine1: sent('addressLine1') ? optional(body.addressLine1) : existing.address_line1,
     addressLine2: sent('addressLine2') ? optional(body.addressLine2) : existing.address_line2,

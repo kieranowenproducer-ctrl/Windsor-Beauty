@@ -3,14 +3,13 @@
 import { useEffect, useState } from 'react';
 import CountrySelect from '@/components/CountrySelect';
 import MarketingOptInPrompt from '@/components/MarketingOptInPrompt';
-import SocialProfilePrompt from '@/components/SocialProfilePrompt';
 import Link from 'next/link';
 import {
   REFERRAL_SOURCES, composeReferral, referralNeedsDetail,
 } from '@/lib/referralSources';
 import { COMPLIANCE_CONFIRMATIONS, COMPLIANCE_CONFIRMATIONS_ERROR, type ComplianceKey } from '@/lib/complianceConfirmations';
 
-const PHONE_PATTERN = /^[+\d][\d\s()-]{6,19}$/;
+import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
 
 // The one mandatory confirmation before an account can be created: the Terms and Conditions and
 // the Privacy Policy. The wording lives in src/lib/complianceConfirmations.ts, and its key matches
@@ -88,8 +87,6 @@ export default function MemberRegistrationForm({
    * which is the difference between a fair nudge and the thing that stops consent counting. */
   const [showOptIn, setShowOptIn] = useState(false);
   const [optInAsked, setOptInAsked] = useState(false);
-  const [showSocialPrompt, setShowSocialPrompt] = useState(false);
-  const [socialPromptAsked, setSocialPromptAsked] = useState(false);
 
   /* WHERE THEY HEARD ABOUT US, held as two answers and saved as one (task 38962e15).
    *
@@ -153,8 +150,8 @@ export default function MemberRegistrationForm({
     e.preventDefault();
     setValidationError('');
 
-    if (!PHONE_PATTERN.test(form.phone.trim())) {
-      setValidationError('Please enter a valid phone number.');
+    if (!normalisePhoneNumber(form.phone, form.addressCountry)) {
+      setValidationError(PHONE_ERROR);
       return;
     }
     if (!form.addressLine1.trim() || !form.addressCity.trim() || !form.addressPostcode.trim()) {
@@ -203,17 +200,11 @@ export default function MemberRegistrationForm({
      * password, and would meet it all over again on the next press. One ask, once, and only when
      * the press was otherwise going to create the account.
      */
-    if (!form.instagramProfile.trim() && !form.facebookProfile.trim() && !socialPromptAsked) {
-      setSocialPromptAsked(true);
-      setShowSocialPrompt(true);
-      return;
-    }
 
     await finishSubmit();
   }
 
   async function finishSubmit() {
-    setShowSocialPrompt(false);
     if (!marketingConsent && !optInAsked) {
       setOptInAsked(true);
       setShowOptIn(true);
@@ -511,7 +502,7 @@ export default function MemberRegistrationForm({
           </span>
         </label>
         <p className="text-xs text-stone-600 leading-relaxed">
-          Add your social profiles to hear about Windsor Beauty offers there.
+          Social profiles are optional. Adding one does not subscribe you to social messages.
         </p>
         <div>
           <label className={labelCls} htmlFor="instagramProfile">Instagram username</label>
@@ -616,15 +607,6 @@ export default function MemberRegistrationForm({
       busy={submitting}
       onOptIn={() => { setMarketingConsent(true); void submitWith(true); }}
       onDecline={() => { void submitWith(false); }}
-    />
-    <SocialProfilePrompt
-      open={showSocialPrompt}
-      busy={submitting}
-      onAdd={() => {
-        setShowSocialPrompt(false);
-        document.getElementById('instagramProfile')?.focus();
-      }}
-      onContinue={() => { void finishSubmit(); }}
     />
     </>
   );

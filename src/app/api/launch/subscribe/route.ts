@@ -1,3 +1,5 @@
+import { verifyPassword } from '@/lib/auth';
+import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
 import { after, NextResponse } from 'next/server';
 import { COMPLIANCE_CONFIRMATIONS_ERROR } from '@/lib/complianceConfirmations';
 import {
@@ -26,7 +28,6 @@ import {
 export const dynamic = 'force-dynamic';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_PATTERN = /^[+\d][\d\s()-]{6,19}$/;
 
 const ALREADY_MEMBER_MESSAGE =
   'This email is already registered. Please sign in to your account, or use "Forgot password" on the login page if you need to reset it.';
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
   if (glowCardDemoDesign(email)) return NextResponse.json({ status: 'error', message: 'This email address is reserved.' }, { status: 400 });
   const firstName  = typeof body?.firstName  === 'string' ? body.firstName.trim()           : '';
   const lastName   = typeof body?.lastName   === 'string' ? body.lastName.trim()            : '';
-  const phone      = typeof body?.phone      === 'string' ? body.phone.trim()               : '';
+  const phone = normalisePhoneNumber(body?.phone, body?.addressCountry) || '';
   const referredBy = typeof body?.referredBy === 'string' ? body.referredBy.trim()          : '';
   const socialProfile = cleanSocialProfile(body?.socialProfile);
   const password   = typeof body?.password   === 'string' ? body.password                   : '';
@@ -81,9 +82,9 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  if (!PHONE_PATTERN.test(phone)) {
+  if (!phone) {
     return NextResponse.json(
-      { status: 'error', message: 'Please enter a valid mobile number.' },
+      { status: 'error', message: PHONE_ERROR },
       { status: 400 }
     );
   }
@@ -140,6 +141,12 @@ export async function POST(request: Request) {
     let customerEmailVerified = false;
     let accountAlreadyActive = false;
     const existingCustomer = await findCustomerByEmail(email);
+    if (existingCustomer && existingCustomer.account_status !== 'pending_password') {
+      return NextResponse.json({ status: 'existing', message: ALREADY_MEMBER_MESSAGE });
+    }
+    if (existingCustomer?.account_status === 'pending_password' && (!existingCustomer.password_hash || !verifyPassword(password, existingCustomer.password_hash))) {
+      return NextResponse.json({ message: 'Please use Forgot password to confirm your email and set a password before completing registration.', redirect: '/account/forgot-password' }, { status: 403 });
+    }
 
     if (existingCustomer) {
       if (existingCustomer.account_status === 'pending_password') {

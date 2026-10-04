@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "backup": "node scripts/backup-database.mjs",
-    "check": "npm run check:shipping && npm run check:system-health && npm run check:data-integrity && npm run check:order-counting && npm run check:contrast && npm run check:account-link && npm run check:invoice-number-fields && npm run check:invoice-addresses && npm run check:seo && npm run test:site-visits && npm run test:tracking-reliability && npm run test:enquiry-auto-draft && npm run test:enquiry-reply-recording && npm run test:trial-rm-ref && npm run test:trial-anonymity && npm run test:trial-text-guard && npm run test:discount-refusal-reporting && npm run test:dashboard-message-thread && npm run test:admin-search && npm run test:code-checks-at-order && npm run test:is-migration",
+    "check": "npm run check:shipping && npm run check:system-health && npm run check:data-integrity && npm run check:order-counting && npm run check:contrast && npm run check:account-link && npm run check:invoice-number-fields && npm run check:invoice-addresses && npm run check:seo && npm run test:site-visits && npm run test:tracking-reliability && npm run test:enquiry-auto-draft && npm run test:enquiry-reply-recording && npm run test:trial-rm-ref && npm run test:trial-anonymity && npm run test:trial-text-guard && npm run test:discount-refusal-reporting && npm run test:dashboard-message-thread && npm run test:admin-search && npm run test:code-checks-at-order && npm run test:is-migration && npm run test:signup-validation && npm run test:pending-account-security && npm run test:enquiry-order-reference && npm run test:inbound-isolation",
     "check:invoice-number-fields": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/check-invoice-number-fields.mjs",
     "check:invoice-addresses": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/check-invoice-addresses.mjs",
     "check:seo": "node --import ./scripts/alias-loader.mjs scripts/check-seo.mjs",
@@ -67,7 +67,11 @@
     "check:search": "node scripts/check-admin-search-ui.mjs",
     "test:member-savings": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-member-savings.mjs",
     "db:local": "node scripts/local-db.mjs",
-    "test:is-migration": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-is-migration.mjs && node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-operational-addresses.mjs && node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-sending-key.mjs"
+    "test:is-migration": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-is-migration.mjs && node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-operational-addresses.mjs && node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-sending-key.mjs",
+    "test:signup-validation": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-signup-validation.mjs",
+    "test:pending-account-security": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-pending-account-security.mjs",
+    "test:enquiry-order-reference": "node --experimental-strip-types --no-warnings --test scripts/test-beauty-enquiry-order-reference.mjs",
+    "test:inbound-isolation": "node --experimental-strip-types --no-warnings --test scripts/test-beauty-inbound-isolation.mjs scripts/test-beauty-outbound-threading.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
@@ -80,7 +84,8 @@
     "recharts": "^3.8.1",
     "resend": "^6.12.4",
     "sanitize-html": "^2.17.5",
-    "pg": "^8.23.1"
+    "pg": "^8.23.1",
+    "libphonenumber-js": "^1.13.14"
   },
   "devDependencies": {
     "@types/node": "^20",

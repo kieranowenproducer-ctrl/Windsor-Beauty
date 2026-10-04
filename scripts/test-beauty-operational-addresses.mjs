@@ -45,7 +45,12 @@ assert.match(queries.at(-1).values[2], /windsorbeauty\.is/);
 assert.doesNotMatch(queries.at(-1).values[2], /windsorbeauty\.co\.uk/);
 
 // Every old-domain source occurrence must have a narrow compatibility purpose.
-const retained = new Set(['src/lib/operationalAddress.ts', 'src/lib/db/siteVisits.ts', 'src/app/api/webhooks/resend-inbound/route.ts']);
+const retained = new Set(['src/lib/operationalAddress.ts', 'src/lib/db/siteVisits.ts', 'src/app/api/webhooks/resend-inbound/route.ts', 'src/app/api/webhooks/resend-outbound/route.ts','src/lib/email/threadReferences.ts']);
+// Historical provider delivery events may name an old Beauty sender. This
+// compatibility check must never become a new sending/template default.
+const outboundCompatibility = readFileSync('src/app/api/webhooks/resend-outbound/route.ts','utf8').split('\n').filter(line=>line.includes('windsorbeauty.co.uk'));
+assert.equal(outboundCompatibility.length,1);
+assert.match(outboundCompatibility[0], /if\(from && .*from\.endsWith\('@windsorbeauty\.co\.uk'\)/);
 function audit(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = `${dir}/${entry.name}`;

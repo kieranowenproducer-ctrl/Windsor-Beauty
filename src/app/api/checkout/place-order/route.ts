@@ -1,3 +1,4 @@
+import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
 import { after, NextResponse } from 'next/server';
 import { canSpendWelcomeCode } from '@/lib/welcomeDiscount';
 import { reportRefusedDiscount } from '@/lib/discountRefusalAlert';
@@ -147,7 +148,7 @@ export async function POST(request: Request) {
   const shippingCountry = typeof addr.country === 'string' ? addr.country.trim() : null;
   const shippingRecipient = typeof body?.shippingRecipient === 'string' && body.shippingRecipient.trim()
     ? body.shippingRecipient.trim().slice(0, 160) : null;
-  let phone = typeof body?.phone === 'string' && body.phone.trim() ? body.phone.trim() : null;
+  const phone = normalisePhoneNumber(body?.phone, body?.address?.country || 'GB');
   const clientShippingCost = typeof body?.shippingCost === 'number' ? body.shippingCost : 0;
   const clientSubtotal = typeof body?.subtotal === 'number' ? body.subtotal : 0;
   const discountCode = typeof body?.discountCode === 'string' && body.discountCode ? body.discountCode : null;
@@ -165,6 +166,8 @@ export async function POST(request: Request) {
    * one confirmation; nothing else is required here. */
   const confirmedTerms = body?.confirmations?.terms === true;
 
+
+  if (!phone) return NextResponse.json({ error: PHONE_ERROR }, { status: 400 });
 
   if (!items.length || !email || !customerName || !phone || !shippingAddress || !shippingLabel) {
     return NextResponse.json({ error: 'Your order details are incomplete. Please review and try again.' }, { status: 400 });
@@ -184,7 +187,6 @@ export async function POST(request: Request) {
     // Signed-in identity comes from the session, never editable checkout fields.
     email = customer.email.trim().toLowerCase();
     if (customer.first_name && customer.last_name) customerName = `${customer.first_name} ${customer.last_name}`;
-    if (customer.phone) phone = customer.phone;
   }
 
   // Re-derive item prices, subtotal and shipping cost from the live catalogue
