@@ -7,6 +7,7 @@ import ts from 'typescript';
 import * as phone from '../src/lib/phoneNumber.ts';
 import * as referrals from '../src/lib/referralSources.ts';
 import { customerProfileEdit } from '../src/lib/customerProfileEdit.ts';
+import * as operationalAddress from '../src/lib/operationalAddress.ts';
 
 // Execute the real handlers with isolated in-memory dependencies. No database,
 // provider, environment credential or customer email is read or contacted.
@@ -21,7 +22,7 @@ function load(file, modules, env = {}, globals = {}) {
   const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
   const result = { exports: {} };
   vm.runInNewContext(compiled, { exports: result.exports, module: result,
-    require(name) { if (name === 'crypto') return nativeRequire(name); if (name in modules) return modules[name]; throw new Error(`Unexpected dependency ${name}`); },
+    require(name) { if (name === '@/lib/operationalAddress') return operationalAddress; if (name === 'crypto') return nativeRequire(name); if (name in modules) return modules[name]; throw new Error(`Unexpected dependency ${name}`); },
     Buffer, Date, URL, process: { env }, console, ...globals,
   }, { filename: file });
   return result.exports;

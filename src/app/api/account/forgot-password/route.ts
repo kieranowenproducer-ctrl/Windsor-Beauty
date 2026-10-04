@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { NextResponse } from 'next/server';
 import { createPasswordResetToken, findCustomerByEmail, isDbConfigured, logAutomationFailure } from '@/lib/db';
 import { generateSessionToken, PASSWORD_RESET_TOKEN_DURATION_MS } from '@/lib/auth';
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
       const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_DURATION_MS);
       await createPasswordResetToken({ customerId: customer.id, token, expiresAt });
 
-      const origin = new URL(request.url).origin;
+      const origin = beautyOperationalAddress(new URL(request.url).origin);
       const resetUrl = `${origin}/account/reset-password?token=${token}`;
       await sendPasswordResetEmail({
         to: customer.email,

@@ -46,7 +46,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
    * it can be read down the phone if email is the thing that is broken. */
   const discountCode = await ensureMemberDiscountCode(customer);
 
-  const origin = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || new URL(request.url).origin;
+  const origin = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || beautyOperationalAddress(new URL(request.url).origin);
   const sent = await deliverVerificationEmail({
     to: customer.email,
     customerName: customer.first_name || customer.email.split('@')[0],

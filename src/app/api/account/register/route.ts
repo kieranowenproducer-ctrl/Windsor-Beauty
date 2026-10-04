@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { verifyPassword } from '@/lib/auth';
 import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
 import { after, NextResponse } from 'next/server';
@@ -299,7 +300,7 @@ export async function POST(request: Request) {
       const verifyExpiresAt = new Date(Date.now() + EMAIL_VERIFICATION_TOKEN_DURATION_MS);
       await createEmailVerificationToken({ customerId: customer.id, token: verifyToken, expiresAt: verifyExpiresAt });
 
-      const origin = new URL(request.url).origin;
+      const origin = beautyOperationalAddress(new URL(request.url).origin);
       const verifyUrl = `${origin}/account/verify-email?token=${verifyToken}`;
       // Retries once, and records + alerts if it still will not send, so a
       // customer never again silently ends up without their code.

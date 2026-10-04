@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { NextResponse } from 'next/server';
 import { createEmailVerificationToken } from '@/lib/db';
 import { EMAIL_VERIFICATION_TOKEN_DURATION_MS, generateSessionToken, resolveCustomerFromRequest } from '@/lib/auth';
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     const expiresAt = new Date(Date.now() + EMAIL_VERIFICATION_TOKEN_DURATION_MS);
     await createEmailVerificationToken({ customerId: customer.id, token, expiresAt });
 
-    const origin = new URL(request.url).origin;
+    const origin = beautyOperationalAddress(new URL(request.url).origin);
     const verifyUrl = `${origin}/account/verify-email?token=${token}`;
     const sent = await deliverVerificationEmail({
       to: customer.email,
