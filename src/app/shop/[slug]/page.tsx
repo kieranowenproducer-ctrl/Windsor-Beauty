@@ -65,6 +65,7 @@ export async function generateMetadata(props: ProductPageProps): Promise<Metadat
 
   return {
     title: `${product.name} | Windsor Beauty`,
+    ...(data.membersOnly?.includes(product.slug) ? { robots: { index: false, follow: false } } : {}),
     description,
     alternates: { canonical },
     openGraph: {

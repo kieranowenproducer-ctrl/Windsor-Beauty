@@ -1,3 +1,5 @@
+import { filterPromotionRulesForProducts } from '@/lib/productVisibility';
+import { loadProductAccess, filterProductRecords, mayAccessProduct, productJson } from '@/lib/productAccess';
 import { NextResponse } from 'next/server';
 import { isDbConfigured, listActivePromotionRules, type OrderItemRecord } from '@/lib/db';
 import { getProductsBySlug } from '@/lib/shipping';
@@ -52,18 +54,20 @@ const EMPTY_RESPONSE: PreviewResponse = {
 // applied" before the order is placed. Returns zeros on any error.
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
-    return NextResponse.json(EMPTY_RESPONSE);
+    return productJson(EMPTY_RESPONSE);
   }
 
   const body = await request.json().catch(() => null);
   const items = Array.isArray(body?.items) ? body.items.filter(isValidPreviewItem) as PreviewItemInput[] : [];
 
   if (!items.length) {
-    return NextResponse.json(EMPTY_RESPONSE);
+    return productJson(EMPTY_RESPONSE);
   }
 
   try {
-    const [productsBySlug, customer] = await Promise.all([getProductsBySlug(), resolveCustomerFromRequest(request)]);
+    const access = await loadProductAccess(request);
+    if (items.some(item => !item.slug || !mayAccessProduct(item.slug, access))) return productJson({ error: 'An item is no longer available to this account.' }, { status: 403 });
+    const [productsBySlug, customer] = await Promise.all([getProductsBySlug(access), resolveCustomerFromRequest(request)]);
 
     const serverItems: OrderItemRecord[] = items.map((item) => {
       const product = item.slug ? productsBySlug.get(item.slug) : undefined;
@@ -82,15 +86,15 @@ export async function POST(request: Request) {
 
     const subtotal = sumMoney(serverItems.map((item) => item.price * item.quantity));
 
-    const activeRules = (await listActivePromotionRules()).map(parsePromotionRule).filter(notNull);
+    const activeRules = filterPromotionRulesForProducts((await listActivePromotionRules()).map(parsePromotionRule).filter(notNull), productsBySlug);
     if (!activeRules.length) {
-      return NextResponse.json({ ...EMPTY_RESPONSE, subtotal, subtotalAfterRules: subtotal });
+      return productJson({ ...EMPTY_RESPONSE, subtotal, subtotalAfterRules: subtotal });
     }
 
     const result = evaluateCartRules(toRuleCartItems(serverItems, productsBySlug), activeRules, productsBySlug);
     const subtotalAfterRules = sumMoney([subtotal, -result.ruleDiscountAmount]);
 
-    return NextResponse.json({
+    return productJson({
       subtotal,
       ruleDiscountAmount: result.ruleDiscountAmount,
       subtotalAfterRules,
@@ -98,6 +102,6 @@ export async function POST(request: Request) {
       freeItems: result.freeItems,
     });
   } catch {
-    return NextResponse.json(EMPTY_RESPONSE);
+    return productJson(EMPTY_RESPONSE);
   }
 }

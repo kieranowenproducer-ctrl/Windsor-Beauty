@@ -1,3 +1,4 @@
+import { loadProductAccess, filterProductRecords, mayAccessProduct, productJson } from '@/lib/productAccess';
 import { NextResponse } from 'next/server';
 import {
   getHiddenProductSlugs,
@@ -47,23 +48,25 @@ const EMPTY_RESPONSE = { enabled: false, recommendations: [] as never[], heading
 // so a product page never silently has an empty recommendations section.
 export async function GET(request: Request) {
   if (!isDbConfigured()) {
-    return NextResponse.json(EMPTY_RESPONSE);
+    return productJson(EMPTY_RESPONSE);
   }
 
   try {
+    const access = await loadProductAccess(request);
     const url = new URL(request.url);
     const basketParam = url.searchParams.get('basket') ?? '';
-    const basketSlugs = basketParam.split(',').map(s => s.trim()).filter(Boolean);
-    const primary = url.searchParams.get('primary')?.trim() || null;
+    const basketSlugs = basketParam.split(',').map(s => s.trim()).filter(s => Boolean(s) && mayAccessProduct(s, access));
+    const primaryInput = url.searchParams.get('primary')?.trim() || null;
+    const primary = primaryInput && mayAccessProduct(primaryInput, access) ? primaryInput : null;
     const context = url.searchParams.get('context') === 'basket' ? 'basket' : 'product';
     if (basketSlugs.length === 0) {
-      return NextResponse.json(EMPTY_RESPONSE);
+      return productJson(EMPTY_RESPONSE);
     }
 
     const settingsRow = await getSiteContent('upsell-settings');
     const settings = parseUpsellSettings(settingsRow?.body);
     if (!settings.enabled) {
-      return NextResponse.json(EMPTY_RESPONSE);
+      return productJson(EMPTY_RESPONSE);
     }
 
     const [csvRules, manualOverrides] = await Promise.all([
@@ -77,7 +80,7 @@ export async function GET(request: Request) {
       getHiddenProductSlugs(),
       getProductStockMap(),
     ]);
-    const catalogue = mergeProducts(PRODUCTS, overrides);
+    const catalogue = mergeProducts(PRODUCTS, overrides).filter(p => mayAccessProduct(p.slug, access));
     const hiddenSlugs = new Set(hiddenSlugList);
     const today = new Date().toISOString().slice(0, 10);
 
@@ -93,8 +96,8 @@ export async function GET(request: Request) {
       catalogue, hiddenSlugs, stockMap, today,
     });
 
-    return NextResponse.json({ enabled: true, recommendations, heading });
+    return productJson({ enabled: true, recommendations, heading });
   } catch {
-    return NextResponse.json(EMPTY_RESPONSE);
+    return productJson(EMPTY_RESPONSE);
   }
 }

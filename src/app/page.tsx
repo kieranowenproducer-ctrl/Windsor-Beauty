@@ -1,3 +1,5 @@
+import { loadShopServerData } from '@/lib/shopServerData';
+import { loadProductAccess, filterProductReviews } from '@/lib/productAccess';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -98,23 +100,20 @@ const QUICK_LINKS = [
 ];
 
 export default async function HomePage() {
+  const accessShop = await loadShopServerData();
   const hiddenSlugs = isDbConfigured() ? await getHiddenProductSlugs().catch(() => [] as string[]) : [];
-  const stockMap = isDbConfigured() ? await getProductStockMap().catch(() => ({} as Record<string, number>)) : {};
+  const stockMap = accessShop.stock;
   // Per-size numbers as well as the summed total: a card may only stamp OUT OF STOCK
   // across the photograph when every size is gone, and the total cannot tell that
   // apart from one size running out.
-  const variantStockMap = isDbConfigured()
-    ? await getProductVariantStockMap().catch(() => ({} as Record<string, Record<string, number>>))
-    : {};
-  const reviewStats = isDbConfigured()
-    ? await getReviewStatsForProducts().catch(() => ({} as Record<string, { average: number; count: number }>))
-    : {};
-  const overrides = isDbConfigured() ? await listCustomProducts().catch(() => ({} as Record<string, Product>)) : {};
+  const variantStockMap = accessShop.variantStock;
+  const reviewStats = accessShop.reviewStats;
+  const overrides = accessShop.overrides;
   // Sort the homepage's most-recent-approved set so 5-star reviews lead the
   // carousel — a stable sort, so reviews of equal rating keep their original
   // most-recent-first order from listApprovedReviews.
   const topReviews = isDbConfigured()
-    ? await listApprovedReviews(10).then(rows => [...rows].sort((a, b) => b.rating - a.rating)).catch(() => [])
+    ? await listApprovedReviews(10).then(async rows => filterProductReviews([...rows].sort((a, b) => b.rating - a.rating), await loadProductAccess())).catch(() => [])
     : [];
   // The overall score shown above the carousel. Counted across every approved
   // review, not just the ten loaded above, so the badge stays honest as reviews

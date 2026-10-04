@@ -147,6 +147,27 @@ function AdminProductsPageContent() {
     setUploadingCount(c => Math.max(0, c + (uploading ? 1 : -1)));
   }
 
+  const [membersOnlySlugs, setMembersOnlySlugs] = useState<Set<string>>(new Set());
+  const [membersOnlyLoaded, setMembersOnlyLoaded] = useState(false);
+  const [membersOnlySaving, setMembersOnlySaving] = useState<string | null>(null);
+  useEffect(() => {
+    fetch('/api/admin/products/members-only', { cache: 'no-store' }).then(async response => {
+      if (!response.ok) throw new Error('Members only settings could not be loaded.');
+      const data = await response.json();
+      if (!Array.isArray(data.membersOnly)) throw new Error('Members only settings could not be loaded.');
+      setMembersOnlySlugs(new Set<string>(data.membersOnly)); setMembersOnlyLoaded(true);
+    }).catch(() => setActionError('Members only settings could not be loaded. Refresh before changing them.'));
+  }, []);
+  async function toggleMembersOnly(product: Product, checked: boolean) {
+    setMembersOnlySaving(product.slug); setActionError('');
+    try {
+      const response = await fetch('/api/admin/products/members-only', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: product.slug, membersOnly: checked }) });
+      const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Members only could not be saved.');
+      setMembersOnlySlugs(previous => { const next = new Set(previous); if (checked) next.add(product.slug); else next.delete(product.slug); return next; });
+      setActionNotice(checked ? product.name + ' is now for members only. Hidden products stay hidden.' : product.name + ' is available to all shoppers when live.');
+    } catch (error) { setActionError(error instanceof Error ? error.message : 'Members only could not be saved.'); }
+    finally { setMembersOnlySaving(null); }
+  }
   const [hiddenSlugs, setHiddenSlugs] = useState<Set<string>>(new Set());
   const [togglingSlug, setTogglingSlug] = useState<string | null>(null);
   const [visibilitySavedSlug, setVisibilitySavedSlug] = useState<string | null>(null);
@@ -992,6 +1013,10 @@ function AdminProductsPageContent() {
           <ProductCardList
             filtered={filtered}
             hiddenSlugs={hiddenSlugs}
+            membersOnlySlugs={membersOnlySlugs}
+            membersOnlyLoaded={membersOnlyLoaded}
+            membersOnlySaving={membersOnlySaving}
+            toggleMembersOnly={toggleMembersOnly}
             stock={stock}
             soldCounts={soldCounts}
             togglingSlug={togglingSlug}
@@ -1011,6 +1036,10 @@ function AdminProductsPageContent() {
           <ProductTable
             filtered={filtered}
             hiddenSlugs={hiddenSlugs}
+            membersOnlySlugs={membersOnlySlugs}
+            membersOnlyLoaded={membersOnlyLoaded}
+            membersOnlySaving={membersOnlySaving}
+            toggleMembersOnly={toggleMembersOnly}
             stock={stock}
             soldCounts={soldCounts}
             togglingSlug={togglingSlug}

@@ -5,6 +5,7 @@
 import { PRODUCTS, mergeProducts, type Product, type ProductShipping, type PackageFormat, type ShippingService } from '@/data/products';
 import { listCustomProducts, type OrderItemRecord, type ShippingSettingsRow } from './db';
 import type { ShipmentContentItem } from './royalMail';
+import { type ProductAccess, mayAccessProduct } from './productVisibility';
 import { outboundItemName, outboundSku, logGenericNameAudit, type GenericNameAudit } from './genericNames';
 
 // Royal Mail v1 API per-package ceiling.
@@ -36,10 +37,10 @@ const FORMAT_RANK: Record<PackageFormat, number> = {
 
 // Loads the full product catalogue (static + admin overrides), keyed by slug,
 // for resolving per-product shipping data.
-export async function getProductsBySlug(): Promise<Map<string, Product>> {
+export async function getProductsBySlug(access?: ProductAccess): Promise<Map<string, Product>> {
   const overrides = await listCustomProducts();
   const merged = mergeProducts(PRODUCTS, overrides);
-  return new Map(merged.map((p) => [p.slug, p]));
+  return new Map(merged.filter(p => !access || mayAccessProduct(p.slug, access)).map((p) => [p.slug, p]));
 }
 
 export interface ItemForWeighing {

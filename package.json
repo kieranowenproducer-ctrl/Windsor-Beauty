@@ -71,7 +71,8 @@
     "test:signup-validation": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-signup-validation.mjs",
     "test:pending-account-security": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-pending-account-security.mjs",
     "test:enquiry-order-reference": "node --experimental-strip-types --no-warnings --test scripts/test-beauty-enquiry-order-reference.mjs",
-    "test:inbound-isolation": "node --experimental-strip-types --no-warnings --test scripts/test-beauty-inbound-isolation.mjs scripts/test-beauty-outbound-threading.mjs"
+    "test:inbound-isolation": "node --experimental-strip-types --no-warnings --test scripts/test-beauty-inbound-isolation.mjs scripts/test-beauty-outbound-threading.mjs",
+    "test:members-products": "node --experimental-strip-types --no-warnings --import ./scripts/alias-loader.mjs scripts/test-beauty-members-products.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

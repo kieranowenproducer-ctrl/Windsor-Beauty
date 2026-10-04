@@ -1,3 +1,4 @@
+import { loadProductAccess, filterProductRecords, mayAccessProduct, productJson } from '@/lib/productAccess';
 import { NextResponse } from 'next/server';
 import { getProductStockMap, getProductVariantStockMap, isDbConfigured } from '@/lib/db';
 
@@ -9,14 +10,15 @@ export const dynamic = 'force-dynamic';
 // is untracked and treated as unlimited); `variantStock` is the per-dosage
 // breakdown the product detail page uses so one dosage selling out doesn't
 // affect the others.
-export async function GET() {
+export async function GET(request: Request) {
   if (!isDbConfigured()) {
-    return NextResponse.json({ stock: {}, variantStock: {} });
+    return productJson({ stock: {}, variantStock: {} });
   }
   try {
     const [stock, variantStock] = await Promise.all([getProductStockMap(), getProductVariantStockMap()]);
-    return NextResponse.json({ stock, variantStock });
+    const access = await loadProductAccess(request);
+    return productJson({ stock: filterProductRecords(stock, access), variantStock: filterProductRecords(variantStock, access) });
   } catch {
-    return NextResponse.json({ stock: {}, variantStock: {} });
+    return productJson({ stock: {}, variantStock: {} });
   }
 }

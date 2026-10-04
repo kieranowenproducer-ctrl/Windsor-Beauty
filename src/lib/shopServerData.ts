@@ -1,5 +1,6 @@
 import { cache } from 'react';
 import { cookies } from 'next/headers';
+import { loadProductAccess, productAccessRules, filterProductRecords, mayAccessProduct } from '@/lib/productAccess';
 import {
   ALL_CATEGORIES, DEFAULT_STORAGE_INSTRUCTIONS_HTML, PRODUCTS, mergeProducts, type Product,
 } from '@/data/products';
@@ -38,6 +39,8 @@ import {
  * before any of this existed. Nothing here can make the shop fail to render.
  */
 export interface ShopServerData {
+  /** Only accessible restricted products, for noindex metadata. */
+  membersOnly?: string[];
   /**
    * The admin's edits and admin-created products, exactly as `/api/products/catalogue` returns
    * them. Handed to the client pages raw rather than merged, so that the merge happens in one
@@ -126,6 +129,8 @@ async function viewerFromCookies(): Promise<{ isStaff: boolean; isMember: boolea
 export const loadShopServerData = cache(async (): Promise<ShopServerData> => {
   const viewer = await viewerFromCookies();
   if (!isDbConfigured()) return { ...FALLBACK, ...viewer };
+  const access = await loadProductAccess().catch(() => null);
+  if (!access) return { ...FALLBACK, catalogue: [], overrides: {}, ...viewer };
 
   const [overrides, hidden, stock, variantStock, promo, storage, soldCounts, reviewStats, categoryRows] =
     await Promise.all([
@@ -143,15 +148,16 @@ export const loadShopServerData = cache(async (): Promise<ShopServerData> => {
   const enabled = categoryRows.filter((row) => row.enabled).map((row) => row.category);
 
   return {
-    overrides,
-    catalogue: mergeProducts(PRODUCTS, overrides),
+    membersOnly: Array.from(access.rules).filter(([slug, rule]) => rule.membersOnly && mayAccessProduct(slug, access)).map(([slug]) => slug),
+    overrides: filterProductRecords(overrides, access),
+    catalogue: mergeProducts(PRODUCTS, overrides).filter(p => mayAccessProduct(p.slug, access)),
     hidden,
-    stock,
-    variantStock,
-    saleConfig: siteSaleConfigFromPromotion(promo),
+    stock: filterProductRecords(stock, access),
+    variantStock: filterProductRecords(variantStock, access),
+    saleConfig: (() => { const sale = siteSaleConfigFromPromotion(promo); return { ...sale, scopeProductSlugs: sale.scopeProductSlugs.filter(slug => mayAccessProduct(slug, access)) }; })(),
     storageDefaults: parseStorageDefaults(storage?.body),
-    soldCounts,
-    reviewStats,
+    soldCounts: filterProductRecords(soldCounts, access),
+    reviewStats: filterProductRecords(reviewStats, access),
     categories: enabled.length > 0 ? enabled : [...ALL_CATEGORIES],
     ...viewer,
   };
@@ -193,18 +199,18 @@ export function visibleProducts(data: ShopServerData): Product[] {
  * 200 with the homepage's title; now that a hidden product properly answers 404, a sitemap naming
  * it is a crawl error reported back in Search Console.
  *
- * WHEN THE READ FAILS it falls back to the whole static catalogue, which is what this file did
- * before. Listing a page that turns out to be hidden is a smaller fault than dropping fifty real
- * products from search because one query timed out.
+ * WHEN THE READ FAILS it returns no products. A failed visibility check must never publish a
+ * restricted product in a public feed.
  */
 export async function searchableProducts(): Promise<Product[]> {
   if (!isDbConfigured()) return PRODUCTS;
-  const [overrides, hidden] = await Promise.all([
+  const [overrides, hidden, rules] = await Promise.all([
     safely(listCustomProducts, null),
     safely(getHiddenProductSlugs, null),
+    safely(productAccessRules, null),
   ]);
-  if (!overrides || !hidden) return PRODUCTS;
-  return mergeProducts(PRODUCTS, overrides).filter((p) => !hidden.includes(p.slug));
+  if (!overrides || !hidden || !rules) return [];
+  return mergeProducts(PRODUCTS, overrides).filter((p) => !hidden.includes(p.slug) && mayAccessProduct(p.slug, { rules, audience: { isAdmin: false, isMember: false } }));
 }
 
 /** The public address of a product, absolute, for canonicals and structured data. */

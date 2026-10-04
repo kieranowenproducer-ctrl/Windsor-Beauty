@@ -122,6 +122,15 @@ async function currentCartOwner(): Promise<string | null> {
   }
 }
 
+async function accessibleSavedItems(items: CartItem[]): Promise<CartItem[] | null> {
+  if (!items.length) return [];
+  const response = await fetch('/api/cart/validate', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slugs: items.map(item => item.slug) }) });
+  if (!response.ok) return null;
+  const data = await response.json();
+  if (!Array.isArray(data.allowedSlugs)) return null;
+  return items.filter(item => data.allowedSlugs.includes(item.slug));
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, { items: [], drawerOpen: false, lastAddedSlug: null });
   const isLoggedIn = useIsLoggedIn();
@@ -135,17 +144,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     const syncOwner = async () => {
       const nextOwner = await currentCartOwner();
-      if (cancelled || !nextOwner || nextOwner === ownerRef.current) return;
+      if (cancelled || !nextOwner) return;
       try {
         const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') as StoredCart | null;
         const legacy = JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY) || 'null') as CartItem[] | null;
         const savedItems = stored?.owner === nextOwner && Array.isArray(stored.items)
           ? stored.items
           : !stored && nextOwner === 'guest' && Array.isArray(legacy) ? legacy : [];
-        dispatch({ type: 'HYDRATE', items: savedItems });
+        const availableItems = await accessibleSavedItems(savedItems);
+        if (cancelled) return;
+        if (!availableItems) { dispatch({ type: 'CLEAR' }); setOwner(null); ownerRef.current = null; return; }
+        dispatch({ type: 'HYDRATE', items: availableItems });
         localStorage.removeItem(LEGACY_STORAGE_KEY);
       } catch {
-        dispatch({ type: 'CLEAR' });
+        dispatch({ type: 'CLEAR' }); setOwner(null); ownerRef.current = null; return;
       }
       ownerRef.current = nextOwner;
       setOwner(nextOwner);

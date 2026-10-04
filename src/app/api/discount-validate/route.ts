@@ -1,3 +1,4 @@
+import { loadProductAccess, filterProductRecords, mayAccessProduct, productJson } from '@/lib/productAccess';
 import { NextResponse } from 'next/server';
 import { canSpendWelcomeCode } from '@/lib/welcomeDiscount';
 import { findActiveDiscountCode, findDiscountCodeByCode, isDbConfigured } from '@/lib/db';
@@ -73,6 +74,9 @@ export async function POST(request: Request) {
   // Discount codes require an authenticated account — guests cannot apply them.
   const customer = await resolveCustomerFromRequest(request);
   const body = await request.json().catch(() => null);
+  let access: Awaited<ReturnType<typeof loadProductAccess>>;
+  try { access = await loadProductAccess(request); } catch { return productJson({ valid: false, message: 'Products are temporarily unavailable.' }, { status: 503 }); }
+  if (Array.isArray(body?.items) && body.items.some((item: { slug?: string }) => !item?.slug || !mayAccessProduct(item.slug, access))) return productJson({ valid: false, message: 'An item is no longer available to this account.' }, { status: 403 });
   const code = typeof body?.code === 'string' ? body.code.trim() : '';
   if (!customer) {
     // Signed out, so we cannot say who it was, but a visitor holding a code and being turned away
@@ -164,7 +168,7 @@ export async function POST(request: Request) {
         : code.toUpperCase().startsWith('WB-GLOW-')
           ? await glowCardVoucherDeliveryDiscountPercent(code, customer.id)
           : 0;
-      const productsBySlug: Map<string, Product> = await getProductsBySlug().catch(() => new Map());
+      const productsBySlug: Map<string, Product> = await getProductsBySlug(access).catch(() => new Map());
       const scopeItems: DiscountScopeItem[] = rawItems.map((item) => ({
         slug: item.slug ?? null,
         price: item.price,

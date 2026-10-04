@@ -4,6 +4,7 @@ import { createReview, isDbConfigured, logAutomationFailure, listCustomProducts 
 import { clientIpOf, isFormRateLimited, logFormAttempt, RATE_LIMIT_MESSAGE } from '@/lib/db/formLimits';
 import { mergeProducts, PRODUCTS, type Product } from '@/data/products';
 import { sendReviewNotificationEmail } from '@/lib/reviewNotificationEmail';
+import { loadProductAccess, mayAccessProduct, productJson } from '@/lib/productAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,6 +58,7 @@ export async function POST(request: Request) {
   const imageUrl = typeof body.imageUrl === 'string' ? body.imageUrl.trim() || null : null;
 
   try {
+    if (productSlug && !mayAccessProduct(productSlug, await loadProductAccess(request))) return productJson({ error: 'Product not found.' }, { status: 404 });
     const created = await createReview({
       customerId: customer.id,
       customerName: (`${customer.first_name ?? ''} ${customer.last_name ?? ''}`.trim()) || customer.email.split('@')[0],

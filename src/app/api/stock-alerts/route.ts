@@ -1,3 +1,4 @@
+import { loadProductAccess, filterProductRecords, mayAccessProduct, productJson } from '@/lib/productAccess';
 import { NextResponse } from 'next/server';
 import { createStockAlert, isDbConfigured } from '@/lib/db';
 import { clientIpOf, isFormRateLimited, logFormAttempt, RATE_LIMIT_MESSAGE } from '@/lib/db/formLimits';
@@ -32,6 +33,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid product.' }, { status: 400 });
   }
 
+  try {
+    const access = await loadProductAccess(request);
+    if (!mayAccessProduct(slug, access)) return productJson({ error: 'Product not found.' }, { status: 404 });
+  } catch { return productJson({ error: 'Products are temporarily unavailable.' }, { status: 503 }); }
   await createStockAlert(email, slug);
 
   return NextResponse.json({ success: true });

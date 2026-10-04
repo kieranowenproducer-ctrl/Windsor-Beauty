@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import type { MetadataRoute } from 'next';
 import { categoryUrl } from '@/lib/categoryUrls';
 import { liveCategories, searchableProducts } from '@/lib/shopServerData';

@@ -68,7 +68,7 @@ export default function ReviewsPage() {
 
   useEffect(() => {
     load();
-    fetch('/api/admin/products/catalogue')
+    fetch('/api/products/catalogue', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.overrides && typeof data.overrides === 'object') setOverrides(data.overrides);

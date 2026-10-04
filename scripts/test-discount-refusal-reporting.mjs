@@ -15,15 +15,16 @@ import { isCustomerEvent } from '../src/lib/automationFailureKinds.ts';
 const validate = fs.readFileSync(new URL('../src/app/api/discount-validate/route.ts', import.meta.url), 'utf8');
 
 // Every refusal goes through the one helper, which both answers the customer and writes it down.
-// Two lines are allowed to answer directly, and each says in the file why:
+// Four lines are allowed to answer directly, and each says in the file why:
 //   - the database being absent, which is the one refusal that cannot be recorded
 //   - an empty box, which is not a refused code at all
+//   - two product-access responses, which run before any discount code is considered
 const directRefusals = validate
   .split('\n')
   .map((line, index) => ({ line, number: index + 1 }))
   .filter(({ line }) => line.includes('valid: false'));
-assert.equal(directRefusals.length, 3,
-  `expected 3 lines mentioning "valid: false" (the helper plus two documented exceptions), found ${directRefusals.length}: `
+assert.equal(directRefusals.length, 5,
+  `expected 5 lines mentioning "valid: false" (the helper plus four documented exceptions), found ${directRefusals.length}: `
   + directRefusals.map(r => r.number).join(', '));
 assert.match(validate, /message: params\.message/);
 assert.match(validate, /temporarily unavailable/);

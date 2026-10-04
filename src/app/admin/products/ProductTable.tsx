@@ -1,4 +1,5 @@
 'use client';
+import MembersOnlyCheckbox from './MembersOnlyCheckbox';
 
 import type { ReactNode } from 'react';
 import { PRODUCTS, type Product } from '@/data/products';
@@ -12,6 +13,10 @@ import { CertificateBadge } from './CertificateBadge';
 interface Props {
   filtered: Product[];
   hiddenSlugs: Set<string>;
+  membersOnlySlugs: Set<string>;
+  membersOnlyLoaded: boolean;
+  membersOnlySaving: string | null;
+  toggleMembersOnly: (product: Product, checked: boolean) => void;
   stock: Record<string, number>;
   soldCounts: Record<string, number>;
   togglingSlug: string | null;
@@ -30,7 +35,7 @@ interface Props {
 }
 
 export default function ProductTable({
-  filtered, hiddenSlugs, stock, soldCounts,
+  filtered, hiddenSlugs, stock, soldCounts, membersOnlySlugs, membersOnlyLoaded, membersOnlySaving, toggleMembersOnly,
   togglingSlug, deletingSlug, availabilitySavingSlug, availabilitySavedSlug,
   renderPriceCell, renderStockEditor,
   toggleVisibility, startEdit, deleteProduct, updateVisibilityChoice, editCertificateFor,
@@ -96,6 +101,7 @@ export default function ProductTable({
                               <span className="text-[8px] tracking-wider uppercase text-green-600">Updated</span>
                             )}
                           </div>
+                          <MembersOnlyCheckbox product={product} checked={membersOnlySlugs.has(product.slug)} disabled={!membersOnlyLoaded || membersOnlySaving !== null} onChange={toggleMembersOnly} />
                           <div className="flex items-center gap-1.5">
                             <select
                               aria-label={`Availability for ${product.name}`}

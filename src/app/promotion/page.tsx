@@ -1,3 +1,4 @@
+import { loadShopServerData } from '@/lib/shopServerData';
 import Link from 'next/link';
 import BackToHome from '@/components/BackToHome';
 import PromotionCodeCopy from '@/components/PromotionCodeCopy';
@@ -39,16 +40,13 @@ export default async function PromotionPage() {
   const percentagePromo = isDbConfigured() ? await getActivePercentagePromotion().catch(() => null) : null;
   const saleConfig = siteSaleConfigFromPromotion(percentagePromo);
 
+  const accessShop = await loadShopServerData();
   const hiddenSlugs = isDbConfigured() ? await getHiddenProductSlugs().catch(() => [] as string[]) : [];
-  const stockMap = isDbConfigured() ? await getProductStockMap().catch(() => ({} as Record<string, number>)) : {};
+  const stockMap = accessShop.stock;
   // See the homepage: the stamp on a photograph needs per-size numbers, not a total.
-  const variantStockMap = isDbConfigured()
-    ? await getProductVariantStockMap().catch(() => ({} as Record<string, Record<string, number>>))
-    : {};
-  const reviewStats = isDbConfigured()
-    ? await getReviewStatsForProducts().catch(() => ({} as Record<string, { average: number; count: number }>))
-    : {};
-  const overrides = isDbConfigured() ? await listCustomProducts().catch(() => ({} as Record<string, Product>)) : {};
+  const variantStockMap = accessShop.variantStock;
+  const reviewStats = accessShop.reviewStats;
+  const overrides = accessShop.overrides;
   const hidden = new Set(hiddenSlugs);
   const catalogue = mergeProducts(PRODUCTS, overrides).filter(p => !hidden.has(p.slug));
   const discountedProducts = catalogue.filter(p => effectiveSalePercent(saleConfig, p) > 0);

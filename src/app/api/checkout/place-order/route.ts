@@ -1,3 +1,5 @@
+import { filterPromotionRulesForProducts } from '@/lib/productVisibility';
+import { loadProductAccess, filterProductRecords, mayAccessProduct, productJson } from '@/lib/productAccess';
 import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
 import { after, NextResponse } from 'next/server';
 import { canSpendWelcomeCode } from '@/lib/welcomeDiscount';
@@ -182,6 +184,9 @@ export async function POST(request: Request) {
   // The verified session is the only authority for member pricing. A browser
   // must never be able to submit a lower member total just by changing its
   // local basket or request body.
+  let access: Awaited<ReturnType<typeof loadProductAccess>>;
+  try { access = await loadProductAccess(request); } catch { return productJson({ error: 'Products are temporarily unavailable. Please try again.' }, { status: 503 }); }
+  if (items.some(item => !item.slug || !mayAccessProduct(item.slug, access))) return productJson({ error: 'An item is no longer available to this account. Please review your basket.' }, { status: 403 });
   const customer = await resolveCustomerFromRequest(request);
   if (customer) {
     // Signed-in identity comes from the session, never editable checkout fields.
@@ -200,7 +205,7 @@ export async function POST(request: Request) {
   let productsBySlug: Map<string, Product> | null = null;
   let shippingSettings: ShippingSettingsRow | null = null;
   try {
-    [productsBySlug, shippingSettings] = await Promise.all([getProductsBySlug(), getShippingSettings()]);
+    [productsBySlug, shippingSettings] = await Promise.all([getProductsBySlug(access), getShippingSettings()]);
     serverItems = items.map((item) => ({ ...item, price: resolveServerItemPrice(item, productsBySlug!, Boolean(customer)) }));
     subtotal = sumMoney(serverItems.map((item) => item.price * item.quantity));
     const service = resolveServiceFromLabel(shippingLabel);
@@ -232,8 +237,8 @@ export async function POST(request: Request) {
   let appliedRules: AppliedRuleSummary[] = [];
   let freeItemRecords: OrderItemRecord[] = [];
   try {
-    const pbs = productsBySlug ?? await getProductsBySlug();
-    const activeRules = isAffiliateCode ? [] : (await listActivePromotionRules()).map(parsePromotionRule).filter(notNull);
+    const pbs = productsBySlug ?? await getProductsBySlug(access);
+    const activeRules = isAffiliateCode ? [] : filterPromotionRulesForProducts((await listActivePromotionRules()).map(parsePromotionRule).filter(notNull), pbs);
     if (activeRules.length) {
       const result = evaluateCartRules(toRuleCartItems(serverItems, pbs), activeRules, pbs);
       ruleDiscountAmount = result.ruleDiscountAmount;
@@ -525,7 +530,7 @@ export async function POST(request: Request) {
     let parcelPackageFormat: string | null = null;
     let packagingWeightGrams: number | null = null;
     try {
-      const pbs = productsBySlug ?? (await getProductsBySlug());
+      const pbs = productsBySlug ?? (await getProductsBySlug(access));
       const settings = shippingSettings ?? (await getShippingSettings());
       itemsWithShipping = [...serverItems, ...freeItemRecords].map((item) => ({ ...item, ...snapshotItemShipping(item, pbs, settings) }));
       const parcel = calculateParcel(itemsWithShipping, pbs, settings);
