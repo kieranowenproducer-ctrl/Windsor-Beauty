@@ -91,12 +91,30 @@ export async function POST(request: Request) {
   const content = await fetchReceivedEmail(emailId);
   if (!content) return NextResponse.json({ error: 'Received email could not be read yet.' }, { status: 503 });
   if (!isDbConfigured()) return NextResponse.json({ error: 'Email queue is not configured.' }, { status: 503 });
+  // Verified provider content preserves Zoho's original public To in headers;
+  // the top-level To is the forwarding capture address, not the public mailbox.
+  const recipientHeaders = Object.entries(content.headers ?? {}).filter(([name]) =>
+    ['to','x-zohomail-delivered-to'].includes(name.toLowerCase())).map(([,value]) => value);
+  const recipientValues = recipientHeaders.length ? recipientHeaders : (Array.isArray(content.to) ? content.to : [content.to]);
+  const originalTo = Array.from(new Set(recipientValues.filter((value): value is string => typeof value === 'string')
+    .flatMap(value => value.split(',')).map(bareAddress).filter(Boolean)));
+  const ownDomains = ['@windsorbeauty.co.uk', '@windsorbeauty.is'];
+  const foreignDomains = ['@windsorglow.com', '@windsorglow.co.uk', '@windsorglow.is'];
+  const ownRecipients = originalTo.filter(address => address === 'windsor-beauty@ilkaik.resend.app' || ownDomains.some(domain => address.endsWith(domain)));
+  const foreignRecipients = originalTo.filter(address => address === 'windsor-glow@ilkaik.resend.app' || foreignDomains.some(domain => address.endsWith(domain)));
+  const unknownRecipients = originalTo.filter(address => ![...ownRecipients, ...foreignRecipients].includes(address));
+  if (foreignRecipients.length && !ownRecipients.length && !unknownRecipients.length) {
+    return NextResponse.json({ ignored: true, reason: 'other_business' });
+  }
+  if (!ownRecipients.length || foreignRecipients.length || unknownRecipients.length) {
+    return NextResponse.json({ error: 'Original mailbox routing is unknown or ambiguous.' }, { status: 503 });
+  }
   const fromAddress = bareAddress(content.from || meta.from || '');
   if (!fromAddress) return NextResponse.json({ ignored: true });
 
   // Never ingest or forward our own outbound addresses — that way a bounce,
   // an auto-reply loop or a misdirected internal email cannot echo around.
-  if (fromAddress.endsWith('@windsorbeauty.co.uk')) {
+  if (/@windsorbeauty\.(?:co\.uk|is)$/i.test(fromAddress)) {
     return NextResponse.json({ ignored: true });
   }
 
