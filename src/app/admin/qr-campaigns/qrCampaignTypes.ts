@@ -69,15 +69,15 @@ export interface CampaignGuest {
 }
 
 export const DESTINATION_PRESETS = [
-  { label: 'Homepage', value: 'https://www.windsorbeauty.co.uk/' },
-  { label: 'Shop - All Products', value: 'https://www.windsorbeauty.co.uk/shop' },
-  { label: 'Special Offers', value: 'https://www.windsorbeauty.co.uk/promotion' },
-  { label: 'Customer Reviews', value: 'https://www.windsorbeauty.co.uk/reviews' },
-  { label: 'Contact', value: 'https://www.windsorbeauty.co.uk/contact' },
+  { label: 'Homepage', value: 'https://www.windsorbeauty.is/' },
+  { label: 'Shop - All Products', value: 'https://www.windsorbeauty.is/shop' },
+  { label: 'Special Offers', value: 'https://www.windsorbeauty.is/promotion' },
+  { label: 'Customer Reviews', value: 'https://www.windsorbeauty.is/reviews' },
+  { label: 'Contact', value: 'https://www.windsorbeauty.is/contact' },
   { label: 'Custom URL...', value: 'custom' },
 ];
 
-export const DEFAULT_DESTINATION = 'https://www.windsorbeauty.co.uk/';
+export const DEFAULT_DESTINATION = 'https://www.windsorbeauty.is/';
 
 export function detectPreset(url: string): string {
   const match = DESTINATION_PRESETS.find(p => p.value !== 'custom' && p.value === url);

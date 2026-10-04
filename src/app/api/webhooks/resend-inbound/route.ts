@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic';
 // The original mailbox keeps its original message. A short staff action alert
 // is sent once per provider message, without forwarding customer mail in a loop.
 
-const FORWARD_FROM = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
+const FORWARD_FROM = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
 
 interface ReceivedEmailContent {
   from: string;
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
 
   // Never ingest or forward our own outbound addresses — that way a bounce,
   // an auto-reply loop or a misdirected internal email cannot echo around.
-  if (/@windsorbeauty\.(?:co\.uk|is)$/i.test(fromAddress)) {
+  if (['@windsorbeauty.co.uk', '@windsorbeauty.is'].some(domain => fromAddress.endsWith(domain))) {
     return NextResponse.json({ ignored: true });
   }
 

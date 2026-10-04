@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { NextResponse } from 'next/server';
 import { recordCronRun } from '@/lib/cronHeartbeat';
 import {
@@ -53,7 +54,7 @@ export async function GET(request: Request) {
     limit: 25,
   });
 
-  const origin = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
+  const origin = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || new URL(request.url).origin;
 
   // Tokens are minted up front so a retried send re-uses the same link, and only the sends go
   // through bulkSend. Before 2026-08-03 this was a bare loop with no pacing and no retry: fast

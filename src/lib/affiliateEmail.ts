@@ -2,8 +2,8 @@ import { sendEmail, type SendEmailResult } from '@/lib/email/send';
 import { emailGreeting } from '@/lib/email/greeting';
 import { EMAIL_COLORS, emailDocument, escapeHtml } from '@/lib/email/shared';
 
-const from = 'Windsor Beauty <sales@windsorbeauty.co.uk>';
-const invitationFrom = 'Windsor Beauty <info@windsorbeauty.co.uk>';
+const from = 'Windsor Beauty <sales@windsorbeauty.is>';
+const invitationFrom = 'Windsor Beauty <info@windsorbeauty.is>';
 
 export type AffiliateInvitationEmailParams = {
   email: string;
@@ -101,7 +101,7 @@ const RETRY_DELAY_MS = 1500;
  */
 export async function sendAffiliateInvitationEmail(params: AffiliateInvitationEmailParams & { invitationId: number }): Promise<SendEmailResult & { attempts: number }> {
   const message = affiliateInvitationEmail(params);
-  const payload = { from: invitationFrom, to: params.email, replyTo: 'info@windsorbeauty.co.uk', ...message };
+  const payload = { from: invitationFrom, to: params.email, replyTo: 'info@windsorbeauty.is', ...message };
   const options = {
     filing: { emailType: params.requested ? 'affiliate_requested_invitation' : 'affiliate_invitation' },
     idempotencyKey: `affiliate-invitation-${params.invitationId}`,

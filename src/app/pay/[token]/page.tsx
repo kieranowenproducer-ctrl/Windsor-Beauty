@@ -67,7 +67,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
         if (!r.ok || !data?.invoice) {
           setLoadError(
             r.status === 404
-              ? 'We could not find this invoice. Please use the link from your email, or contact us at sales@windsorbeauty.co.uk.'
+              ? 'We could not find this invoice. Please use the link from your email, or contact us at sales@windsorbeauty.is.'
               : 'Something went wrong loading your invoice. Please try again shortly.'
           );
           return;
@@ -207,7 +207,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
               <div className="px-6 sm:px-8 py-8 text-center">
                 <p className="text-sm text-stone-500 leading-relaxed">
                   This invoice has been cancelled and no payment is due. If you believe this is a
-                  mistake, please contact us at sales@windsorbeauty.co.uk.
+                  mistake, please contact us at sales@windsorbeauty.is.
                 </p>
               </div>
             ) : (
@@ -269,7 +269,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
                   {!payment?.fenaUrl && !payment?.paypalUrl && (
                     <p className="text-sm text-stone-500 text-center leading-relaxed">
                       Online payment is not available for this invoice. Please reply to your invoice
-                      email or contact sales@windsorbeauty.co.uk to arrange payment.
+                      email or contact sales@windsorbeauty.is to arrange payment.
                     </p>
                   )}
                 </div>
@@ -285,7 +285,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
         )}
 
         <p className="text-[10px] text-stone-500 text-center leading-relaxed mt-6">
-          Windsor Beauty, windsorbeauty.co.uk
+          Windsor Beauty, windsorbeauty.is
           <br />
           Our products are for external use only.
         </p>

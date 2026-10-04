@@ -80,7 +80,7 @@ export default function ContactPageSection({
                           type="email"
                           value={entry.email}
                           onChange={(e) => updateEmail(i, { email: e.target.value })}
-                          placeholder="name@windsorbeauty.co.uk"
+                          placeholder="name@windsorbeauty.is"
                           className="flex-1 border border-stone-200 px-3 py-2 text-xs focus:outline-none focus:border-gold-400 transition-colors"
                         />
                         <input

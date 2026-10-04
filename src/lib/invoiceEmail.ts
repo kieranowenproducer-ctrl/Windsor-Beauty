@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import type { InvoiceLineItem } from '@/lib/db';
 import { INVOICE_PAYPAL_FEE_PERCENT } from '@/lib/invoices';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
@@ -10,7 +11,7 @@ import { emailGreeting } from './email/greeting';
 // (inline-CSS HTML table layout, same colours, Resend, same from-address).
 // It is its own template rather than a reuse of paypalInstructionsEmail.ts's
 // HTML, because that one has a different single-button layout.
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
 
 export interface SendInvoiceEmailParams {
   to: string;
@@ -39,7 +40,7 @@ export interface SendInvoiceEmailParams {
 }
 
 export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   try {
     const { error } = await sendEmail(buildInvoiceEmail(params));
@@ -59,7 +60,7 @@ export function buildInvoiceEmail(params: SendInvoiceEmailParams) {
 
   // Permanent URL , works pre-launch too (wall-exempt in proxy.ts) and
   // is unchanged at launch, so the emailed terms link never goes stale.
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+  const siteUrl = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
   const termsUrl = `${siteUrl}/terms`;
 
   // Trial lines lose their name before anything is drawn (task ae168547).
@@ -196,7 +197,7 @@ export function buildInvoiceEmail(params: SendInvoiceEmailParams) {
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions about this invoice, just reply to this email, or contact
-              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.co.uk</a>
+              <a href="mailto:sales@windsorbeauty.is" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.is</a>
               quoting your invoice reference <strong style="color:#78716c">${escapeHtml(params.invoiceNumber)}</strong>.
             </p>
           </td>
@@ -235,7 +236,7 @@ export function buildInvoiceEmail(params: SendInvoiceEmailParams) {
         `(Bank transfer has no fee; PayPal adds a ${INVOICE_PAYPAL_FEE_PERCENT}% processing fee.)\n\n` +
         `By completing this payment, you confirm that you have read and agree to the Windsor Beauty Terms & Conditions: ${termsUrl}\n` +
         `\nAny questions about this invoice, just reply to this email, or contact ` +
-        `sales@windsorbeauty.co.uk quoting your invoice reference ${params.invoiceNumber}.`,
+        `sales@windsorbeauty.is quoting your invoice reference ${params.invoiceNumber}.`,
       html,
     };
 }

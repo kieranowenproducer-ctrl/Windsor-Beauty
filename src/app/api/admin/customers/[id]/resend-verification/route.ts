@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { NextResponse } from 'next/server';
 import { createEmailVerificationToken, findCustomerById, isDbConfigured } from '@/lib/db';
 import { EMAIL_VERIFICATION_TOKEN_DURATION_MS, generateSessionToken } from '@/lib/auth';
@@ -45,7 +46,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
    * it can be read down the phone if email is the thing that is broken. */
   const discountCode = await ensureMemberDiscountCode(customer);
 
-  const origin = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
+  const origin = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || new URL(request.url).origin;
   const sent = await deliverVerificationEmail({
     to: customer.email,
     customerName: customer.first_name || customer.email.split('@')[0],

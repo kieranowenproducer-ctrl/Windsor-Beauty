@@ -424,7 +424,7 @@ export default function CheckoutPage() {
           setPaymentRecovery({ orderNumber, url: recovery, message: ppData?.error || 'The payment page could not be opened.' });
           return;
         }
-        setOrderError(ppData?.error || 'Could not send your payment link. Please contact us at orders@windsorbeauty.co.uk.');
+        setOrderError(ppData?.error || 'Could not send your payment link. Please contact us at orders@windsorbeauty.is.');
       } catch {
         setOrderError('Could not send your payment link. Please check your connection and try again.');
       } finally {
@@ -457,7 +457,7 @@ export default function CheckoutPage() {
 
       setOrderError(
         fenaData?.error ||
-        'Could not connect to the payment provider. Please try again or contact us at orders@windsorbeauty.co.uk.'
+        'Could not connect to the payment provider. Please try again or contact us at orders@windsorbeauty.is.'
       );
       if (resumeUrl) setPaymentRecovery({ orderNumber, url: resumeUrl, message: 'Your order is reserved, but the bank payment page could not be opened.' });
     } catch {

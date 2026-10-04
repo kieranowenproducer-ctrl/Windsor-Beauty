@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 // Where a customer's reply to a transactional email lands.
 //
 // One constant, because on 31 July 2026 this was set to sales@ in seven files at once by a
@@ -12,7 +13,7 @@
 //
 // Bulk marketing does not use this. It routes replies to its own no-reply address on purpose,
 // so a campaign cannot flood the support inbox. See email/marketingSender.ts.
-export const SUPPORT_REPLY_TO = process.env.SUPPORT_REPLY_TO || 'Beautiful@windsorbeauty.co.uk';
+export const SUPPORT_REPLY_TO = beautyOperationalAddress(process.env.SUPPORT_REPLY_TO) || 'info@windsorbeauty.is';
 
 /**
  * Where the concierge sends a customer it cannot help, so a person picks it up.
@@ -32,4 +33,4 @@ export const SUPPORT_REPLY_TO = process.env.SUPPORT_REPLY_TO || 'Beautiful@winds
  * Neither variable is set in Windsor Beauty production, checked on 3 August, so this is genuinely
  * the address in use today and not a default nobody has looked at.
  */
-export const CONCIERGE_HANDOVER_TO = process.env.CONCIERGE_CASE_EMAIL || 'sales@windsorbeauty.co.uk';
+export const CONCIERGE_HANDOVER_TO = beautyOperationalAddress(process.env.CONCIERGE_CASE_EMAIL) || 'sales@windsorbeauty.is';

@@ -182,7 +182,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
   ${invoice.customer_notes ? `<div class="notes"><strong>Notes:</strong><br>${escapeHtml(invoice.customer_notes)}</div>` : ''}
 
   <div class="footer">
-    <p>Windsor Beauty, windsorbeauty.co.uk, sales@windsorbeauty.co.uk</p>
+    <p>Windsor Beauty, windsorbeauty.is, sales@windsorbeauty.is</p>
     ${invoice.footer_text && invoice.footer_text.trim() ? `<p style="margin-top:6px">${escapeHtml(invoice.footer_text)}</p>` : ''}
   </div>
 

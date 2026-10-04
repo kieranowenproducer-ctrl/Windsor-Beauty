@@ -1,9 +1,10 @@
-const SALES_INBOX = 'sales@windsorbeauty.co.uk';
-const INFO_INBOX = 'info@windsorbeauty.co.uk';
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
+const SALES_INBOX = 'sales@windsorbeauty.is';
+const INFO_INBOX = 'info@windsorbeauty.is';
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** One email submission alerts both team inboxes and any named colleagues. */
-export function enquiryAlertRecipients(extra = process.env.ENQUIRY_ALERT_TO): string[] {
+export function enquiryAlertRecipients(extra = beautyOperationalAddress(process.env.ENQUIRY_ALERT_TO)): string[] {
   const addresses = [SALES_INBOX, INFO_INBOX, ...(extra ?? '').split(/[;,]/)]
     .map(item => item.trim().toLowerCase())
     .filter(item => EMAIL.test(item));

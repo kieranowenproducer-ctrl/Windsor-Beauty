@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import {
   listPendingStockAlerts,
   logAutomationFailure,
@@ -8,7 +9,7 @@ import { getProductsBySlug } from '@/lib/shipping';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
 
 interface BackInStockEmailParams {
   to: string;
@@ -17,7 +18,7 @@ interface BackInStockEmailParams {
 }
 
 async function sendBackInStockEmail(params: BackInStockEmailParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   try {
     const { error } = await sendEmail(buildBackInStockEmail(params));
@@ -46,7 +47,7 @@ export async function notifyBackInStock(productSlug: string): Promise<void> {
   const product = productsBySlug.get(productSlug);
   if (!product) return;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+  const siteUrl = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
   const productUrl = `${siteUrl}/shop/${productSlug}`;
 
   const sentIds: number[] = [];

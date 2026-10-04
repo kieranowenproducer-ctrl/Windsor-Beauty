@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { buildEnquiryReplyEmail } from '@/lib/enquiryEmails';
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email/send';
@@ -23,12 +24,12 @@ export const dynamic = 'force-dynamic';
 // to, rather than in sales. Changed from sales@ on task #96 (2026-07-29).
 // Both are overridable from the environment: set ENQUIRY_REPLY_TO to a genuine
 // no-reply address if replies should be refused outright.
-const FROM_ADDRESS = process.env.ENQUIRY_REPLY_FROM || 'Windsor Beauty <info@windsorbeauty.co.uk>';
-const REPLY_TO_ADDRESS = process.env.ENQUIRY_REPLY_TO || 'info@windsorbeauty.co.uk';
+const FROM_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_FROM) || 'Windsor Beauty <info@windsorbeauty.is>';
+const REPLY_TO_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_TO) || 'info@windsorbeauty.is';
 
 export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  if (!process.env.RESEND_API_KEY) {
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) {
     return NextResponse.json({ error: 'Email sending is not configured.' }, { status: 503 });
   }
   if (!isDbConfigured()) {

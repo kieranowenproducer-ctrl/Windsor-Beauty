@@ -4,13 +4,13 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in passwordResetEmail/membershipWelcomeEmail.
-const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.is>';
 // A monitored inbox , a transactional sender with no working reply path is a
 // negative engagement signal to Gmail/Outlook and strands confused customers.
-const REPLY_TO = 'sales@windsorbeauty.co.uk';
+const REPLY_TO = 'sales@windsorbeauty.is';
 
 export function isVerifyEmailConfigured() {
-  return Boolean(process.env.RESEND_API_KEY);
+  return Boolean(process.env.RESEND_API_KEY_BEAUTY_IS?.trim());
 }
 
 interface VerifyEmailParams {
@@ -49,7 +49,7 @@ interface VerifyEmailParams {
 // at a monitored inbox. Domain-level auth (SPF/DKIM/DMARC) is DNS-side ,
 // see the audit report for the records.
 export async function sendVerifyEmail(params: VerifyEmailParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   try {
     const { error } = await sendEmail(buildVerifyEmail(params));
@@ -94,7 +94,7 @@ export function buildVerifyEmail(params: VerifyEmailParams) {
   const expiryLine = `This link will expire in ${hours} hours. If you did not create this account, you can safely ignore this email.`;
   const spamLine = `Tip: if our emails are not in your inbox, please check your spam or junk folder and mark us as safe so your discount code arrives correctly.`;
   const reminderClosing = isReminder
-    ? `This is the last automatic reminder we will send. You can also request a new link at any time by logging in at windsorbeauty.co.uk/account.`
+    ? `This is the last automatic reminder we will send. You can also request a new link at any time by logging in at windsorbeauty.is/account.`
     : '';
 
 

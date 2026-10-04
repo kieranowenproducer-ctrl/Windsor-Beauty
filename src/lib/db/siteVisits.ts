@@ -62,7 +62,7 @@ export interface VisitSourceInput {
   ownHosts?: string[];
 }
 
-const OWN_HOSTS = ['windsorbeauty.co.uk', 'www.windsorbeauty.co.uk', 'localhost'];
+const OWN_HOSTS = ['windsorbeauty.co.uk', 'www.windsorbeauty.co.uk', 'windsorbeauty.is', 'www.windsorbeauty.is', 'localhost'];
 
 function hostOf(url: string | null | undefined): string | null {
   if (!url) return null;

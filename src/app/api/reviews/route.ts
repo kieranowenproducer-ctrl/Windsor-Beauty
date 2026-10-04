@@ -90,7 +90,7 @@ export async function POST(request: Request) {
         });
         if (!sent) {
           await logAutomationFailure('review_email', 'Review approval notification failed to send', {
-            detail: `review #${created.id} - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend`,
+            detail: `review #${created.id} - check RESEND_API_KEY_BEAUTY_IS and windsorbeauty.is domain verification in Resend`,
           });
         }
       } catch (err) {

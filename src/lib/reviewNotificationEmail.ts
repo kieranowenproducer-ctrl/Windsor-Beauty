@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
 
@@ -5,10 +6,10 @@ import { sendEmail } from '@/lib/email/send';
 // the same pair the new-order notification uses, for the same reason: internal mail is
 // never opened by the people whose engagement builds the customer-facing address's
 // reputation. Decided in the 31 July 2026 deliverability audit.
-const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
-const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
+const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
+const TO_ADDRESS = 'sales@windsorbeauty.is';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+const SITE_URL = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
 
 export interface ReviewNotificationParams {
   reviewId: number;
@@ -138,7 +139,7 @@ export function buildReviewNotificationEmail(params: ReviewNotificationParams): 
 }
 
 export async function sendReviewNotificationEmail(params: ReviewNotificationParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   const { subject, text, html } = buildReviewNotificationEmail(params);
 

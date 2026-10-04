@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const key = await getOrCreateAffiliateRequestKey(customer.id);
     const requestUrl = new URL(request.url);
     const localPreview = process.env.NODE_ENV !== 'production' && ['localhost', '127.0.0.1'].includes(requestUrl.hostname);
-    return NextResponse.json({ link: `${localPreview ? requestUrl.origin : 'https://www.windsorbeauty.co.uk'}/raf-invite/${key}` }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ link: `${localPreview ? requestUrl.origin : 'https://www.windsorbeauty.is'}/raf-invite/${key}` }, { headers: { 'Cache-Control': 'no-store' } });
   } catch {
     return NextResponse.json({ error: 'Your request page is not available yet.' }, { status: 404 });
   }

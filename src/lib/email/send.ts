@@ -11,9 +11,8 @@ import type { EmailFilingHints } from './fileUnderCustomer';
  * `npm run check:email-archive` fails the build if any file other than this one
  * calls Resend's send directly, so a new email cannot quietly skip the copy.
  *
- * The API key is a parameter because paypalInstructionsEmail.ts sends from a
- * separately verified domain on RESEND_API_KEY_PAYPAL. Passing the wrong key
- * there would stop that email dead.
+ * Beauty .is mail always uses RESEND_API_KEY_BEAUTY_IS. Existing legacy settings
+ * are retained privately for the old deployment rollback, never as a fallback.
  */
 export interface SendEmailPayload {
   from: string;
@@ -31,7 +30,7 @@ export interface SendEmailPayload {
 }
 
 export interface SendEmailOptions {
-  /** Defaults to RESEND_API_KEY. Pass RESEND_API_KEY_PAYPAL for that sender. */
+  /** Optional assertion of the dedicated RESEND_API_KEY_BEAUTY_IS. Legacy keys are never used. */
   apiKey?: string;
   /**
    * Post to Kieran and the team rather than to a customer: a stock alert, a sentinel report, a
@@ -64,8 +63,11 @@ export async function sendEmail(
   payload: SendEmailPayload,
   options: SendEmailOptions = {},
 ): Promise<SendEmailResult> {
-  const apiKey = options.apiKey ?? process.env.RESEND_API_KEY;
-  if (!apiKey) return { ok: false, id: null, error: 'No Resend API key configured.' };
+  const apiKey = process.env.RESEND_API_KEY_BEAUTY_IS?.trim();
+  if (!apiKey) return { ok: false, id: null, error: 'Beauty .is sending key is not configured.' };
+  if (options.apiKey && options.apiKey !== apiKey) {
+    return { ok: false, id: null, error: 'This send must use the dedicated Beauty .is key.' };
+  }
 
   /* The plain-text half goes out exactly as the caller wrote it. Nothing is appended. */
   const text = payload.text;

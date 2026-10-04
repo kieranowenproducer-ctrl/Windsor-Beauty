@@ -20,7 +20,7 @@ export interface BulkUnsubscribe {
   oneClick: boolean;
 }
 
-const MAILTO = 'mailto:sales@windsorbeauty.co.uk?subject=Unsubscribe';
+const MAILTO = 'mailto:sales@windsorbeauty.is?subject=Unsubscribe';
 
 /**
  * Build the unsubscribe route for one recipient.
@@ -39,14 +39,14 @@ export async function bulkUnsubscribeFor(email: string): Promise<BulkUnsubscribe
       oneClick: false,
     };
   }
-  const oneClickUrl = `https://www.windsorbeauty.co.uk/api/marketing/unsubscribe?token=${encodeURIComponent(token)}`;
+  const oneClickUrl = `https://www.windsorbeauty.is/api/marketing/unsubscribe?token=${encodeURIComponent(token)}`;
   return {
     headers: {
       // The URL first: Gmail POSTs to the first https entry it finds.
       'List-Unsubscribe': `<${oneClickUrl}>, <${MAILTO}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     },
-    url: `https://www.windsorbeauty.co.uk/unsubscribe?token=${encodeURIComponent(token)}`,
+    url: `https://www.windsorbeauty.is/unsubscribe?token=${encodeURIComponent(token)}`,
     oneClick: true,
   };
 }

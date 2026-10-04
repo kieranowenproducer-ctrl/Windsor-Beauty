@@ -208,7 +208,7 @@ function OrderStatusContent() {
           View All Orders
         </Link>
         <a
-          href="mailto:sales@windsorbeauty.co.uk"
+          href="mailto:sales@windsorbeauty.is"
           className="border border-stone-200 text-stone-500 text-[10px] tracking-[0.22em] uppercase text-center px-6 py-3 hover:border-gold-300 hover:text-gold-800 transition-colors"
         >
           Contact Support

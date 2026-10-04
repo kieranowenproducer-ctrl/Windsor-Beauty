@@ -3,7 +3,7 @@ import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
 
 // Sends a customer their bank payment link again (task d0d5effb).
 //
@@ -25,7 +25,7 @@ export interface PaymentLinkEmailParams {
 }
 
 export async function sendPaymentLinkEmail(params: PaymentLinkEmailParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   try {
     const { id, error } = await sendEmail(buildPaymentLinkEmail(params), {

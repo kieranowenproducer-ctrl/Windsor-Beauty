@@ -6,11 +6,11 @@ import { isSimpleAcknowledgement, visibleInboundEmailText } from '../src/lib/ema
 const previous = process.env.ENQUIRY_REPLY_ARCHIVE_TO;
 
 delete process.env.ENQUIRY_REPLY_ARCHIVE_TO;
-assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'info@windsorbeauty.co.uk');
-assert.equal(getEnquiryReplyArchiveAddress('INFO@WINDSORBEAUTY.CO.UK'), null);
+assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'info@windsorbeauty.is');
+assert.equal(getEnquiryReplyArchiveAddress('INFO@WINDSORBEAUTY.IS'), null);
 
 process.env.ENQUIRY_REPLY_ARCHIVE_TO = ' archive@windsorbeauty.co.uk ';
-assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'archive@windsorbeauty.co.uk');
+assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), 'archive@windsorbeauty.is');
 
 process.env.ENQUIRY_REPLY_ARCHIVE_TO = 'off';
 assert.equal(getEnquiryReplyArchiveAddress('yvonne@example.com'), null);

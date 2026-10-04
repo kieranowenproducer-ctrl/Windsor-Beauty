@@ -1,0 +1,63 @@
+// Synthetic builders only. No database, customer data or provider call.
+import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
+delete process.env.NEXT_PUBLIC_SITE_URL;
+delete process.env.SUPPORT_REPLY_TO;
+delete process.env.PAYPAL_REPLY_TO;
+process.env.RESEND_API_KEY = 'synthetic-legacy-main-key';
+process.env.RESEND_API_KEY_BEAUTY_IS = 'synthetic-approved-beauty-is-key';
+process.env.RESEND_API_KEY_PAYPAL = 'synthetic-legacy-paypal-key';
+process.env.PAYPAL_RECEIVING_EMAIL = 'sales@windsorbeauty.is';
+delete process.env.PAYPAL_ME_URL;
+const captured = [];
+globalThis.__beautyIsTestCapture = (payload, options) => { captured.push({ payload, options }); return { id: 'synthetic-provider-id', error: null }; };
+registerHooks({ resolve(specifier, context, nextResolve) {
+  const resolved = nextResolve(specifier, context);
+  if (resolved.url.endsWith('/src/lib/email/send.ts')) return { url: 'data:text/javascript,export const sendEmail = globalThis.__beautyIsTestCapture;', shortCircuit: true };
+  return resolved;
+} });
+globalThis.fetch = async () => { throw new Error('Network is forbidden in this test'); };
+const { SITE_URL } = await import('../src/app/robots.ts');
+const { SUPPORT_REPLY_TO } = await import('../src/lib/email/supportAddress.ts');
+const { DEFAULT_CONTACT_CONTENT } = await import('../src/lib/contactContent.ts');
+const { DEFAULT_FOOTER_CONTENT } = await import('../src/lib/footerContent.ts');
+const { ADMIN_SENDERS } = await import('../src/lib/email/adminSenders.ts');
+const { isOurOwnAddress } = await import('../src/lib/email/fileUnderCustomer.ts');
+const { EMAIL_PREVIEW_TYPES, buildEmailPreview } = await import('../src/lib/email/previews.ts');
+assert.equal(SITE_URL, 'https://www.windsorbeauty.is');
+process.env.NEXT_PUBLIC_SITE_URL = 'https://www.windsorbeauty.co.uk';
+const configuredRobots = await import('../src/app/robots.ts?configured-old-host');
+assert.equal(configuredRobots.SITE_URL, 'https://www.windsorbeauty.is', 'A stale owned-domain setting cannot restore the old host');
+const configuredShared = await import('../src/lib/email/shared.ts?configured-old-host');
+assert.match(configuredShared.emailFooterHtml(), /Windsor Beauty, windsorbeauty\.is/);
+assert.match(configuredShared.EMAIL_ICON_BASE, /^https:\/\/www\.windsorbeauty\.is\//);
+delete process.env.NEXT_PUBLIC_SITE_URL;
+assert.equal(SUPPORT_REPLY_TO, 'info@windsorbeauty.is');
+for (const row of DEFAULT_CONTACT_CONTENT.emails) assert.match(row.email, /@windsorbeauty\.is$/);
+for (const row of DEFAULT_FOOTER_CONTENT.emails) assert.match(row.address, /@windsorbeauty\.is$/);
+for (const sender of Object.values(ADMIN_SENDERS)) { assert.match(sender.address, /@windsorbeauty\.is$/); assert.match(sender.replyTo, /@windsorbeauty\.is$/); }
+assert.equal(isOurOwnAddress('info@windsorbeauty.is'), true);
+assert.equal(isOurOwnAddress('sales@windsorbeauty.co.uk'), true);
+assert.equal(isOurOwnAddress('sales@windsorglow.is'), false);
+for (const type of EMAIL_PREVIEW_TYPES) {
+  const email = buildEmailPreview(type);
+  assert.doesNotMatch(email.subject + email.text + email.html, /windsorbeauty\.co\.uk/i, `${type}: future customer template uses .is`);
+  assert.match(email.html, /windsorbeauty\.is/);
+  assert.doesNotMatch(email.subject + email.text + email.html, /[\u00c2\u00c3]|\u00e2\u20ac|\ufffd/, `${type}: rendered text must retain UTF-8 characters`);
+}
+const paypal = await import('../src/lib/paypalInstructionsEmail.ts');
+const url = new URL(paypal.buildPaypalLink('SYNTHETIC-WB', 2));
+assert.equal(url.searchParams.get('business'), 'sales@windsorbeauty.is');
+assert.equal(url.searchParams.get('return'), null);
+assert.equal(await paypal.sendPaypalInstructionsEmail({ to: 'customer@example.invalid', customerName: 'Zoë Café', orderNumber: 'SYNTHETIC-WB', items: [], subtotal: 2, total: 2, shipping: 0 }), true);
+assert.equal(captured.length, 1);
+assert.equal(captured[0].payload.from, 'Windsor Beauty <sales@windsorbeauty.is>');
+assert.equal(captured[0].payload.replyTo, 'sales@windsorbeauty.is');
+assert.equal(captured[0].options.apiKey, 'synthetic-approved-beauty-is-key');
+assert.doesNotMatch(captured[0].payload.text + captured[0].payload.html, /windsorbeauty\.co\.uk/i, 'Dormant PayPal template contacts also use .is');
+assert.match(captured[0].payload.text, /Zo\u00eb/, 'Accented customer names survive plain email rendering');
+assert.match(captured[0].payload.html, /Zo\u00eb/, 'Accented customer names survive HTML email rendering');
+assert.match(captured[0].payload.text, /send \u00a32\.00 GBP/, 'Plain PayPal amount retains a real pound sign');
+assert.match(captured[0].payload.text, /Total due: \u00a32\.00/, 'Plain PayPal total retains a real pound sign');
+assert.doesNotMatch(captured[0].payload.text + captured[0].payload.html, /[\u00c2\u00c3]|\u00e2\u20ac|\ufffd/, 'Dormant PayPal output must retain UTF-8 characters');
+console.log(`${EMAIL_PREVIEW_TYPES.length} .is templates, public contact/canonical defaults, dual-domain filing and approved .is PayPal sender/reply and dedicated Beauty .is key selection passed. No email sent.`);

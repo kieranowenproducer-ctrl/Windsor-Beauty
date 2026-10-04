@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { NextResponse } from 'next/server';
 import { findOrderByNumber, isDbConfigured } from '@/lib/db';
 import { sendPaymentResumeEmail } from '@/lib/paymentResumeEmail';
@@ -14,7 +15,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
   if (!order.payment_access_token) return NextResponse.json({ error: 'This older order has no secure recovery link. Check the payment account before contacting the customer.' }, { status: 409 });
   if (order.reservation_expires_at && new Date(order.reservation_expires_at).getTime() <= Date.now()) return NextResponse.json({ error: 'This reservation has expired.' }, { status: 409 });
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+  const siteUrl = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
   const resumeUrl = `${siteUrl}/resume-payment/${order.payment_access_token}`;
   if (order.payment_method === 'paypal') return NextResponse.json({ error: 'PayPal is paid on the website. No payment link email is sent.' }, { status: 409 });
   const sent = await sendPaymentResumeEmail({ to: order.email, customerName: order.customer_name, orderNumber: order.order_number, total: Number(order.total), resumeUrl });

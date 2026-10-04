@@ -13,10 +13,10 @@ export function getReplyCaptureAddress(): string | null {
   return value ? value : null;
 }
 
-// A WG order reference in a subject or body, e.g. "WB-GCZBKK" or
+// A WB order reference in a subject or body, e.g. "WB-GCZBKK" or
 // "WB-4293UR-85A64" — context for whoever reads the stored reply.
 export function findOrderRef(text: string): string | null {
-  const match = text.match(/\bWG-[A-Z0-9]{4,}(?:-[A-Z0-9]+)*\b/i);
+  const match = text.match(/\bWB-[A-Z0-9]{4,}(?:-[A-Z0-9]+)*\b/i);
   return match ? match[0].toUpperCase() : null;
 }
 

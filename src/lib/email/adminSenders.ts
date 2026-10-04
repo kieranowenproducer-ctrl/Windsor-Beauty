@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 // Which Windsor Beauty address a one-to-one message from the dashboard goes out from.
 //
 // Task bc9b6309: Kieran wanted to click a customer's email address anywhere in the dashboard,
@@ -18,7 +19,7 @@ export const DEFAULT_ADMIN_SENDER: AdminSenderKey = 'sales';
 
 export interface AdminSender {
   key: AdminSenderKey;
-  /** Full value for Resend's `from` field, e.g. "Windsor Beauty <sales@windsorbeauty.co.uk>". */
+  /** Full value for Resend's `from` field, e.g. "Windsor Beauty <sales@windsorbeauty.is>". */
   from: string;
   /** Bare address, so the dashboard can show exactly what the customer will see. */
   address: string;
@@ -33,10 +34,10 @@ export interface AdminSender {
 // Env overrides exist so a display name or an address can be corrected in hosting without a
 // deploy, which is how MARKETING_FROM_ADDRESS already works. Each option gets its own variable:
 // sharing one would mean changing the sales address silently moved the no-reply address too.
-const SALES_FROM = process.env.ADMIN_SALES_FROM_ADDRESS || 'Windsor Beauty <sales@windsorbeauty.co.uk>';
-const INFO_FROM = process.env.ADMIN_INFO_FROM_ADDRESS || 'Windsor Beauty <info@windsorbeauty.co.uk>';
-const SUPPORT_FROM = process.env.ADMIN_SUPPORT_FROM_ADDRESS || 'Windsor Beauty <Beautiful@windsorbeauty.co.uk>';
-const NO_REPLY_FROM = process.env.ADMIN_NOREPLY_FROM_ADDRESS || 'Windsor Beauty <no-reply@windsorbeauty.co.uk>';
+const SALES_FROM = beautyOperationalAddress(process.env.ADMIN_SALES_FROM_ADDRESS) || 'Windsor Beauty <sales@windsorbeauty.is>';
+const INFO_FROM = beautyOperationalAddress(process.env.ADMIN_INFO_FROM_ADDRESS) || 'Windsor Beauty <info@windsorbeauty.is>';
+const SUPPORT_FROM = beautyOperationalAddress(process.env.ADMIN_SUPPORT_FROM_ADDRESS) || 'Windsor Beauty <Beautiful@windsorbeauty.is>';
+const NO_REPLY_FROM = beautyOperationalAddress(process.env.ADMIN_NOREPLY_FROM_ADDRESS) || 'Windsor Beauty <no-reply@windsorbeauty.is>';
 
 /** Pulls the bare address out of a "Display Name <address>" string. */
 function bareAddress(from: string): string {

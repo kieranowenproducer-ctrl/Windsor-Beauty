@@ -3,12 +3,12 @@ import { sendEmail } from '@/lib/email/send';
 import { SUPPORT_REPLY_TO } from '@/lib/email/supportAddress';
 import { buildGlowCardEmailVisual } from '@/lib/orderConfirmationEmail';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
 
 export async function sendGlowCardMilestoneEmail(params: {
   to: string; customerName: string; milestone: 5 | 10 | 15; amount: number;
 }) {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
   const next = params.milestone === 5 ? 'Keep collecting towards £20 off at 10 points.'
     : params.milestone === 10 ? 'Keep collecting towards £30 off at 15 points.'
       : 'Claim this £30 reward to start a fresh Beauty Card at zero.';
@@ -23,10 +23,10 @@ export async function sendGlowCardMilestoneEmail(params: {
       <p style="margin:0 0 18px;font-size:13px;color:#57534e;line-height:1.6">Congratulations ${escapeHtml(params.customerName.split(' ')[0])}, you reached ${params.milestone} points on your Beauty Card.</p>
       <div style="margin:0 0 18px">${buildGlowCardEmailVisual(params.milestone)}</div>
       <p style="margin:0 0 18px;font-size:13px;color:#57534e;line-height:1.6">${next}</p>
-      <p style="margin:0"><a href="https://www.windsorbeauty.co.uk/account/glow-card" style="display:inline-block;background:#A9695D;color:#fff;padding:12px 18px;text-decoration:none;font-size:12px">View your Beauty Card</a></p>
+      <p style="margin:0"><a href="https://www.windsorbeauty.is/account/glow-card" style="display:inline-block;background:#A9695D;color:#fff;padding:12px 18px;text-decoration:none;font-size:12px">View your Beauty Card</a></p>
     </td></tr>`,
   });
-  const text = `Congratulations ${params.customerName.split(' ')[0]}, you reached ${params.milestone} Beauty Points. Your £${params.amount} reward is ready and includes half-price standard UK delivery. ${next}\n\nView your Beauty Card: https://www.windsorbeauty.co.uk/account/glow-card`;
+  const text = `Congratulations ${params.customerName.split(' ')[0]}, you reached ${params.milestone} Beauty Points. Your £${params.amount} reward is ready and includes half-price standard UK delivery. ${next}\n\nView your Beauty Card: https://www.windsorbeauty.is/account/glow-card`;
   const { error } = await sendEmail({ from: FROM_ADDRESS, replyTo: SUPPORT_REPLY_TO, to: params.to, subject, text, html });
   return !error;
 }

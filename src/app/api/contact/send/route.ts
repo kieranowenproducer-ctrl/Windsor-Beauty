@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { buildEnquiryAcknowledgementEmail } from '@/lib/enquiryEmails';
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email/send';
@@ -8,8 +9,8 @@ import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { emailGreeting, emailGreetingName } from '@/lib/email/greeting';
 import { enquiryAlertRecipients } from '@/lib/email/enquiryAlerts';
 
-const FROM_ADDRESS = 'Windsor Beauty Website <enquiries@windsorbeauty.co.uk>';
-const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
+const FROM_ADDRESS = 'Windsor Beauty Website <enquiries@windsorbeauty.is>';
+const TO_ADDRESS = 'info@windsorbeauty.is';
 
 const SUBJECT_LABELS: Record<string, string> = {
   general: 'General Enquiry',
@@ -30,7 +31,7 @@ function formatDate(value: string) {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.RESEND_API_KEY) {
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) {
     return NextResponse.json(
       { status: 'error', message: 'The contact form is temporarily unavailable. Please email us directly instead.' },
       { status: 503 }
@@ -86,7 +87,7 @@ export async function POST(request: Request) {
   if (orderNumber && ORDER_PATTERN.test(orderNumber) && isDbConfigured()) {
     const order = await findOrderByNumber(orderNumber).catch(() => null);
     if (order) {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+      const siteUrl = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
       orderSummary = {
         orderNumber:  order.order_number,
         customerName: order.customer_name,

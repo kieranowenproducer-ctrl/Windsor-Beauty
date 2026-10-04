@@ -1,4 +1,5 @@
-const DEFAULT_ARCHIVE_ADDRESS = 'info@windsorbeauty.co.uk';
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
+const DEFAULT_ARCHIVE_ADDRESS = 'info@windsorbeauty.is';
 
 /**
  * Where the hidden copy of an outgoing email goes (task b8fc05c1).
@@ -24,7 +25,7 @@ export function getArchiveAddress(
   recipient?: string | string[] | null,
   override?: string,
 ): string | null {
-  const configured = (override ?? process.env.EMAIL_ARCHIVE_TO)?.trim();
+  const configured = beautyOperationalAddress(override ?? process.env.EMAIL_ARCHIVE_TO)?.trim();
   if (configured?.toLowerCase() === 'off') return null;
 
   const archiveAddress = configured || DEFAULT_ARCHIVE_ADDRESS;
@@ -34,7 +35,7 @@ export function getArchiveAddress(
   const only = Array.isArray(recipient)
     ? (recipient.length === 1 ? recipient[0] : null)
     : recipient;
-  if (only?.trim().toLowerCase() === archiveAddress.toLowerCase()) return null;
+  if (beautyOperationalAddress(only ?? undefined)?.trim().toLowerCase() === archiveAddress.toLowerCase()) return null;
 
   return archiveAddress;
 }
@@ -47,7 +48,7 @@ export function withArchiveBcc(
 ): string[] | undefined {
   const archive = getArchiveAddress(recipient, override);
   const current = existingBcc == null ? [] : (Array.isArray(existingBcc) ? existingBcc : [existingBcc]);
-  const merged = [...current];
+  const merged = current.map(address => beautyOperationalAddress(address));
   if (archive && !merged.some(a => a.trim().toLowerCase() === archive.toLowerCase())) {
     merged.push(archive);
   }

@@ -1,14 +1,16 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import type { OrderItemRecord } from '@/lib/db';
 import { sendEmail } from '@/lib/email/send';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
-import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { emailGreeting } from './email/greeting';
 
 // Sent to customers who chose PayPal at checkout
 // (see src/app/api/payment/paypal/instructions/route.ts). It can use its own
-// Resend key (RESEND_API_KEY_PAYPAL), so do not change the sending address
-// without confirming that key is authorised for it.
-const FROM_ADDRESS = 'Windsor Beauty <sales@windsorbeauty.co.uk>';
+// dedicated Beauty .is sending key. Legacy PayPal credentials remain only
+// for the old deployment rollback and are never used by this release.
+const FROM_ADDRESS = 'Windsor Beauty <sales@windsorbeauty.is>';
+// Keep PayPal replies on the approved sales inbox, separate from general enquiries.
+const PAYPAL_REPLY_TO = beautyOperationalAddress(process.env.PAYPAL_REPLY_TO) || 'sales@windsorbeauty.is';
 
 export interface PaypalInstructionsParams {
   to: string;
@@ -41,7 +43,7 @@ export function buildPaypalLink(orderNumber: string, total: number): string {
     return `${meUrl}/${total.toFixed(2)}GBP`;
   }
 
-  const email = process.env.PAYPAL_RECEIVING_EMAIL;
+  const email = beautyOperationalAddress(process.env.PAYPAL_RECEIVING_EMAIL);
   if (email) {
     const params = new URLSearchParams({
       cmd:           '_xclick',
@@ -57,14 +59,14 @@ export function buildPaypalLink(orderNumber: string, total: number): string {
   return '';
 }
 
-// Uses its own API key when one is set, and the main key otherwise.
-const RESEND_API_KEY = process.env.RESEND_API_KEY_PAYPAL || process.env.RESEND_API_KEY;
+// Requires the dedicated Beauty .is sending key; legacy keys are never a fallback.
+const RESEND_API_KEY = process.env.RESEND_API_KEY_BEAUTY_IS?.trim();
 
 export async function sendPaypalInstructionsEmail(params: PaypalInstructionsParams): Promise<boolean> {
   if (!RESEND_API_KEY) return false;
 
   const paypalLink = buildPaypalLink(params.orderNumber, params.total);
-  const paypalEmail = process.env.PAYPAL_RECEIVING_EMAIL ?? 'sales@windsorbeauty.co.uk';
+  const paypalEmail = beautyOperationalAddress(process.env.PAYPAL_RECEIVING_EMAIL) ?? 'sales@windsorbeauty.is';
 
   const itemRows = params.items.map(i => `
     <tr>
@@ -216,7 +218,7 @@ export async function sendPaypalInstructionsEmail(params: PaypalInstructionsPara
 
             <p style="margin:0 0 32px;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions, just reply to this email, or contact
-              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.co.uk</a>
+              <a href="mailto:sales@windsorbeauty.is" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.is</a>
               and include your order reference <strong style="color:#78716c">${escapeHtml(params.orderNumber)}</strong>.
             </p>
           </td>
@@ -235,7 +237,7 @@ export async function sendPaypalInstructionsEmail(params: PaypalInstructionsPara
       // Replies reach a person. A customer answering an order or payment email was
       // writing into a void, and a From address that refuses replies is a pattern spam
       // filters associate with phishing (invoice junk-folder diagnosis, 31 July 2026).
-      replyTo: SUPPORT_REPLY_TO,
+      replyTo: PAYPAL_REPLY_TO,
       to: params.to,
       subject: `Complete your Windsor Beauty payment for order ${params.orderNumber}`,
       text:
@@ -248,7 +250,7 @@ export async function sendPaypalInstructionsEmail(params: PaypalInstructionsPara
         `Items:\n` +
         params.items.map(i => `  ${i.name}${i.variant ? ` (${i.variant})` : ''} x${i.quantity}`).join('\n') +
         `\n\nYour order will be confirmed once payment is received.\n\n` +
-        `Any questions, just reply to this email, or contact sales@windsorbeauty.co.uk and include your order reference ${params.orderNumber}.`,
+        `Any questions, just reply to this email, or contact sales@windsorbeauty.is and include your order reference ${params.orderNumber}.`,
       html,
     }, {
       apiKey: RESEND_API_KEY,

@@ -3,18 +3,11 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { registerHooks } from 'node:module';
-import pg from 'pg';
 
-const env = Object.fromEntries(readFileSync(new URL('../.env.local', import.meta.url), 'utf8')
-  .split(/\r?\n/).filter(line => /^[A-Z_]+=/.test(line)).map(line => {
-    const index = line.indexOf('=');
-    return [line.slice(0, index), line.slice(index + 1).replace(/^['"]|['"]$/g, '')];
-  }));
-const connectionString = env.DATABASE_URL;
-const address = new URL(connectionString);
-assert.ok(['localhost', '127.0.0.1'].includes(address.hostname) && address.port === '5434'
-  && address.pathname === '/windsor_beauty', 'This test only uses the Windsor Beauty local database on port 5434.');
-const client = new pg.Client({ connectionString });
+if (!process.argv[2]) throw new Error('Pass an isolated PGlite module path. No network database is permitted.');
+const { PGlite } = await import((await import('node:url')).pathToFileURL(process.argv[2]).href);
+const isolated = new PGlite();
+const client = { connect: async()=>{}, query:(text,params)=>isolated.query(text,params), end:()=>isolated.close() };
 const sent = [];
 let stockChecks = 0;
 let heartbeats = 0;
@@ -72,7 +65,7 @@ try {
   const reminder = await import('../src/app/api/admin/orders/[orderNumber]/resend-payment/route.ts');
   const manual = await import('../src/app/api/admin/orders/[orderNumber]/resend-payment-link/route.ts');
   const cron = await import('../src/app/api/cron/unpaid-orders/route.ts');
-  const post = body => new Request('https://www.windsorbeauty.co.uk/api/payment/paypal/instructions', {
+  const post = body => new Request('https://www.windsorbeauty.is/api/payment/paypal/instructions', {
     method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
   });
   const params = orderNumber => ({ params: Promise.resolve({ orderNumber }) });
@@ -110,7 +103,7 @@ try {
   assert.equal((await db.findOrderByNumber('WB-TEST-PAYPAL')).payment_reminder_sent_at, null);
   assert.deepEqual(await db.claimDuePaymentReminders(), [], 'A reminder cannot be claimed twice.');
   await db.releasePaymentReminderClaim('WB-TEST-BANK');
-  const cronRequest = () => new Request('https://www.windsorbeauty.co.uk/api/cron/unpaid-orders', { headers: { authorization: 'Bearer test-only-cron' } });
+  const cronRequest = () => new Request('https://www.windsorbeauty.is/api/cron/unpaid-orders', { headers: { authorization: 'Bearer test-only-cron' } });
   const cronResult = await cron.GET(cronRequest());
   assert.equal(cronResult.status, 200);
   assert.equal((await cronResult.json()).reminderSentCount, 1);

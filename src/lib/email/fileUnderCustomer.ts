@@ -65,7 +65,7 @@ export function primaryRecipient(to: string | string[]): string | null {
  * most of it; this catches the rest, like the contact form's copy to ourselves.
  */
 export function isOurOwnAddress(address: string): boolean {
-  return /@windsorbeauty\.co\.uk$/i.test(address);
+  return /@windsorbeauty\.(?:co\.uk|is)$/i.test(address);
 }
 
 /**

@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { buildOrderConfirmationEmail } from '../orderConfirmationEmail';
 import { buildShippingConfirmationEmail } from '../shippingEmail';
 import { buildInvoiceEmail } from '../invoiceEmail';
@@ -18,7 +19,7 @@ export type EmailPreviewType = typeof EMAIL_PREVIEW_TYPES[number];
 export function buildEmailPreview(type: EmailPreviewType): { subject: string; text: string; html: string } {
   const to = 'sample@example.invalid';
   const base = { to, customerName: 'Sample Customer', orderNumber: 'WB-SAMPLE' };
-  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+  const site = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
   const order = { ...base, items: [{ name: 'Sample Serum', variant: '30ml', quantity: 2, price: 30, slug: 'sample-serum' }], subtotal: 60, shippingLabel: 'Sample delivery', shippingCost: 10, total: 70, shippingAddress: 'Sample Customer\nExample address\nSample town' };
   switch (type) {
     case 'paid': return buildOrderConfirmationEmail(order);

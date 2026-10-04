@@ -83,7 +83,7 @@ export async function createAffiliateInvitation(
 export function affiliateInvitationLink(request: Request, token: string): string {
   const requestUrl = new URL(request.url);
   const local = process.env.NODE_ENV !== 'production' && ['localhost', '127.0.0.1'].includes(requestUrl.hostname);
-  const link = new URL('/account/register', local ? requestUrl.origin : 'https://www.windsorbeauty.co.uk');
+  const link = new URL('/account/register', local ? requestUrl.origin : 'https://www.windsorbeauty.is');
   link.searchParams.set('affiliateInvite', token);
   return link.toString();
 }

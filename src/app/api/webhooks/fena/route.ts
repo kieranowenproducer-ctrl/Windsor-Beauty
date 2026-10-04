@@ -287,7 +287,7 @@ ${existingNotes}` : notice.note)
     if (!underpaymentAdminSent) {
       await logAutomationFailure('admin_email', 'Admin sales@ notification email failed to send (underpayment alert)', {
         orderNumber: order.order_number,
-        detail: 'sendAdminOrderNotificationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+        detail: 'sendAdminOrderNotificationEmail returned false - check RESEND_API_KEY_BEAUTY_IS and windsorbeauty.is domain verification in Resend',
       });
     }
     return new NextResponse('OK', { status: 200 });
@@ -358,7 +358,7 @@ ${existingNotes}` : notice.note)
     if (!confirmationSent) {
       await logAutomationFailure('customer_email', 'Order confirmation email failed to send', {
         orderNumber: order.order_number,
-        detail: 'sendOrderConfirmationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+        detail: 'sendOrderConfirmationEmail returned false - check RESEND_API_KEY_BEAUTY_IS and windsorbeauty.is domain verification in Resend',
       });
     }
   }
@@ -411,7 +411,7 @@ ${existingNotes}` : notice.note)
   if (!adminNotifSent) {
     await logAutomationFailure('admin_email', 'Admin sales@ notification email failed to send', {
       orderNumber: order.order_number,
-      detail: 'sendAdminOrderNotificationEmail returned false - check RESEND_API_KEY and windsorbeauty.co.uk domain verification in Resend',
+      detail: 'sendAdminOrderNotificationEmail returned false - check RESEND_API_KEY_BEAUTY_IS and windsorbeauty.is domain verification in Resend',
     });
   }
 

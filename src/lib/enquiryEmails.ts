@@ -24,7 +24,7 @@ ${message}
 
 ` +
           `Windsor Beauty
-windsorbeauty.co.uk`,
+windsorbeauty.is`,
 html: emailDocument({
           title: 'We have received your enquiry',
           headerLabel: 'Enquiry Received',
@@ -47,7 +47,7 @@ export function buildEnquiryReplyEmail(params: { subject: string; standardText: 
  const { subject, standardText, originalMessage, addAutomaticGreeting, automaticGreeting, message, quotedHtml } = params;
  return { subject,
 text: `${standardText}\n\n` +
-          `Windsor Beauty\nwindsorbeauty.co.uk\n\n` +
+          `Windsor Beauty\nwindsorbeauty.is\n\n` +
           `--- Your original message ---\n${originalMessage}\n`,
 html: emailDocument({
         title: subject,

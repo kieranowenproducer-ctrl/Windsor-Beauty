@@ -5,7 +5,7 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 import { displayOrderItems } from '@/lib/orderTrialDisplay';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
 
 export interface OrderConfirmationParams {
   to: string;
@@ -95,7 +95,7 @@ export function buildGlowCardEmailVisual(pointsValue: number): string {
   const status = remaining === 0
     ? `All 5 stamps are filled. Your £${stage.amount} reward is ready.`
     : `${remaining} more point${remaining === 1 ? '' : 's'} until £${stage.amount} off and half-price standard UK delivery.`;
-  const watermarkUrl = 'https://www.windsorbeauty.co.uk/images/windsor-beauty-mark.png';
+  const watermarkUrl = 'https://www.windsorbeauty.is/images/windsor-beauty-mark.png';
   const stamps = Array.from({ length: 5 }, (_, index) => {
     const filled = index < stage.filled;
     return `<td width="20%" align="center" style="padding:0 3px">
@@ -246,7 +246,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions, just reply to this email, or contact
-              <a href="mailto:sales@windsorbeauty.co.uk" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.co.uk</a>
+              <a href="mailto:sales@windsorbeauty.is" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.is</a>
               and include your order reference <strong style="color:#78716c">${escapeHtml(params.orderNumber)}</strong>.
             </p>
           </td>
@@ -268,13 +268,13 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
     (glowCard ? `Beauty Card\n${glowCard.headline}. ${glowCard.explanation}\n${glowCard.progress}\n\n` : '') +
     `Delivery to: ${params.shippingAddress}\n\n` +
     `We will send you a tracking number once your order has been dispatched.\n\n` +
-    `Any questions, just reply to this email, or contact sales@windsorbeauty.co.uk and include your order reference ${params.orderNumber}.`;
+    `Any questions, just reply to this email, or contact sales@windsorbeauty.is and include your order reference ${params.orderNumber}.`;
 
   return { subject, text, html };
 }
 
 export async function sendOrderConfirmationEmail(params: OrderConfirmationParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   const { subject, text, html } = buildOrderConfirmationEmail(params);
 

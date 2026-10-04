@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { NextResponse } from 'next/server';
 import { findInvoiceById, isDbConfigured, setInvoiceFenaPaymentUrl } from '@/lib/db';
 import { convertInvoiceToOrder } from '@/lib/invoiceFulfillment';
@@ -70,7 +71,7 @@ export async function POST(_request: Request, props: { params: Promise<{ id: str
       await setInvoiceFenaPaymentUrl(invoice.id, fenaPaymentUrl).catch(() => {});
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+    const siteUrl = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
     emailSent = await sendInvoiceEmail({
       to: invoice.email,
       customerName: invoice.customer_name,

@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import tailwindConfig from '../../../tailwind.config.js';
 
 // Use the same Blush and Plum colours as the shop.
@@ -18,7 +19,14 @@ export const EMAIL_COLORS = {
   rose: palette.gold[400],
 } as const;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+const SITE_URL = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
+function brandDomain(): string {
+  try {
+    const host = new URL(SITE_URL).hostname.replace(/^www\./, '');
+    if (host === 'windsorbeauty.is') return host;
+  } catch { /* A local preview still uses the public brand name. */ }
+  return 'windsorbeauty.is';
+}
 export const EMAIL_ICON_BASE = `${SITE_URL}/images/email`;
 // Approved Windsor Beauty logo, resized for email.
 export const EMAIL_LOGO_URL = `${EMAIL_ICON_BASE}/email-logo-20261001.png`;
@@ -83,7 +91,7 @@ export function emailFooterHtml(
   return `<tr>
   <td bgcolor="${EMAIL_COLORS.pageBg}" style="background:${EMAIL_COLORS.pageBg};padding:20px 40px;text-align:center;border-top:1px solid ${EMAIL_COLORS.border}">
     ${senderNotice ? `<p style="margin:0 0 8px;font-size:12px;line-height:1.6;color:${EMAIL_COLORS.muted}">${escapeHtml(senderNotice)}</p>` : ''}
-    <p style="margin:0 0 4px;font-size:12px;color:${EMAIL_COLORS.muted}">${brandLine || 'Windsor Beauty, windsorbeauty.co.uk'}</p>
+    <p style="margin:0 0 4px;font-size:12px;color:${EMAIL_COLORS.muted}">${brandLine || `Windsor Beauty, ${brandDomain()}`}</p>
     ${footerText && footerText.trim() ? `<p style="margin:0;font-size:12px;color:${EMAIL_COLORS.muted}">${escapeHtml(footerText)}</p>` : ''}
   </td>
 </tr>`;

@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { NextResponse } from 'next/server';
 import {
   claimDuePaymentReminders,
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
     const reminders = await claimDuePaymentReminders();
     let reminderSentCount = 0;
     let reminderFailedCount = 0;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+    const siteUrl = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
     for (const order of reminders) {
       const resumeUrl = `${siteUrl}/resume-payment/${order.payment_access_token}`;
       if (order.payment_method === 'paypal') continue;

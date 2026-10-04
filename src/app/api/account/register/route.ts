@@ -346,7 +346,7 @@ export async function POST(request: Request) {
       subject: email,
       detail: err,
       alertAdmin: true,
-      whatToDo: 'Try creating an account yourself at windsorbeauty.co.uk/account/register. If it fails, sign-ups are down for everyone.',
+      whatToDo: 'Try creating an account yourself at windsorbeauty.is/account/register. If it fails, sign-ups are down for everyone.',
     });
     return NextResponse.json({ error: 'Something went wrong while creating your account. Please try again shortly.' }, { status: 500 });
   }

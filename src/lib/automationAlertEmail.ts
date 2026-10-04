@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
 
@@ -6,10 +7,10 @@ import { sendEmail } from '@/lib/email/send';
 // (31 July 2026 deliverability audit). sales@ is the inbox the team already
 // watches for "something needs you", so an alert lands where the others do
 // instead of creating a second place to check.
-const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
-const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
+const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
+const TO_ADDRESS = 'sales@windsorbeauty.is';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+const SITE_URL = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
 
 // Plain-English titles. The category slug is a database value; nobody reading
 // this on a phone at the weekend should have to decode it.
@@ -86,7 +87,7 @@ export function buildAutomationAlertEmail(params: AutomationAlertParams): { subj
 }
 
 export async function sendAutomationAlertEmail(params: AutomationAlertParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   const { subject, text, html } = buildAutomationAlertEmail(params);
 

@@ -5,7 +5,7 @@ import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in passwordResetEmail , same verified
 // windsorbeauty.co.uk sending domain, distinct display name for account mail.
-const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.is>';
 
 interface MembershipWelcomeEmailParams {
   to: string;
@@ -19,7 +19,7 @@ interface MembershipWelcomeEmailParams {
 // /api/account/verify-email) , the code is never shown on-screen or sent
 // any other way, so this is the customer's only way to receive it.
 export async function sendMembershipWelcomeEmail(params: MembershipWelcomeEmailParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   try {
     const { error } = await sendEmail(buildMembershipWelcomeEmail(params));

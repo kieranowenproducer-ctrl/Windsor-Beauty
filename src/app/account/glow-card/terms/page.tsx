@@ -5,7 +5,7 @@ import { resolveCustomerFromRequest } from '@/lib/auth';
 import { glowCardDemoDesign } from '@/lib/glowCardDemo';
 
 export default async function DemoGlowCardTerms() {
-  const request = new Request('https://www.windsorbeauty.co.uk/account/glow-card/terms', { headers: await headers() });
+  const request = new Request('https://www.windsorbeauty.is/account/glow-card/terms', { headers: await headers() });
   const customer = await resolveCustomerFromRequest(request);
   if (!customer || !glowCardDemoDesign(customer.email)) notFound();
   return <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">

@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     if (!isReservedTestAddress(email)) {
       try {
         const alert = await sendEmail({
-          from: 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>',
+          from: 'Windsor Beauty Ops <alerts@windsorbeauty.is>',
           to: enquiryAlertRecipients(),
           subject: `${priority === 'urgent' ? 'Urgent: ' : ''}New customer case in Website Enquiries`,
           text: `A customer case has been added to Website Enquiries.\n\nCase #${enquiry.id}\n` +

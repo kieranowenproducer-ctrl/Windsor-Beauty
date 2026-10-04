@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { findOrderByNumber, updateOrderFenaPaymentId, type OrderRow } from '@/lib/db';
 import type { Product } from '@/data/products';
 import { getProductsBySlug } from './shipping';
@@ -77,7 +78,7 @@ export function buildFenaPayload(order: OrderRow, siteUrl: string, productsBySlu
 export async function createFenaPaymentLink(orderNumber: string): Promise<CreateFenaPaymentLinkResult> {
   const integrationId = process.env.FENA_API_KEY;
   const secretKey      = process.env.FENA_API_SECRET;
-  const siteUrl         = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+  const siteUrl         = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
 
   if (!integrationId || !secretKey) {
     // Name the exact missing var(s) so the admin sees "Missing FENA_API_KEY in

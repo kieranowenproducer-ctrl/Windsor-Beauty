@@ -107,7 +107,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
 
   if (!customerSent && !adminSent) {
     return NextResponse.json({
-      error: 'Both emails failed to send. Check RESEND_API_KEY is set in Vercel and that windsorbeauty.co.uk is a verified sending domain in Resend.',
+      error: 'Both emails failed to send. check RESEND_API_KEY_BEAUTY_IS is set in Vercel and that windsorbeauty.is is a verified sending domain in Resend.',
     }, { status: 500 });
   }
 

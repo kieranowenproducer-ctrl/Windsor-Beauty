@@ -148,7 +148,7 @@ function LaunchCountdown() {
       {/* Launch announcement */}
       <div className="max-w-md mx-auto mb-8">
         <p className="text-sm text-stone-500 leading-relaxed mb-4">
-          We are proud to open <span className="font-semibold text-stone-700">windsorbeauty.co.uk</span>.
+          We are proud to open <span className="font-semibold text-stone-700">windsorbeauty.is</span>.
         </p>
         <p className="text-sm text-stone-500 leading-relaxed mb-5">
           Thank you to everyone who signed up early. We look forward to welcoming you.
@@ -411,7 +411,7 @@ export default function ComingSoonPage() {
               <p className="text-[11px] text-stone-500 leading-relaxed border-t border-gold-100 pt-4">
                 You must verify your email before you can continue. Nothing in your inbox after a
                 few minutes? Check spam first, then email{' '}
-                <a href="mailto:sales@windsorbeauty.co.uk" className="text-gold-700 underline">sales@windsorbeauty.co.uk</a>{' '}
+                <a href="mailto:sales@windsorbeauty.is" className="text-gold-700 underline">sales@windsorbeauty.is</a>{' '}
                 and we will help.
               </p>
             </>

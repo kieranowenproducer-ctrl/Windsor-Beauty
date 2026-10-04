@@ -49,7 +49,7 @@ const args = process.argv.slice(2);
 const LIVE = args.includes('--live');
 const SERVED = LIVE || args.includes('--served');
 const baseArg = args.find((a) => a.startsWith('--base='));
-const BASE = (baseArg ? baseArg.slice('--base='.length) : LIVE ? 'https://www.windsorbeauty.co.uk' : 'http://localhost:3000')
+const BASE = (baseArg ? baseArg.slice('--base='.length) : LIVE ? SITE_URL : 'http://localhost:3000')
   .replace(/\/$/, '');
 
 /* The title and description every shop page wrongly wore. Read from the layout rather than

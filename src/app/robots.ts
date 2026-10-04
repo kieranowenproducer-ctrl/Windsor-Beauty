@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import type { MetadataRoute } from 'next';
 
 /**
@@ -23,7 +24,7 @@ import type { MetadataRoute } from 'next';
  * gate. Nothing there needed changing, which was worth checking before assuming.
  */
 
-export const SITE_URL = 'https://www.windsorbeauty.co.uk';
+export const SITE_URL = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
 
 /**
  * What a crawler is asked to stay out of, and why each one is here.

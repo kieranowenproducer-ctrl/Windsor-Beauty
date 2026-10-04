@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 // Single source of truth for WHICH address a marketing email goes out from
 // (task 286b1863). Every dashboard-initiated marketing send — the Email
 // Marketing campaign composer, the Announcement Emails manager, and the
@@ -19,8 +20,8 @@ export type MarketingSenderKey = 'no-reply' | 'brand';
 
 export const DEFAULT_MARKETING_SENDER: MarketingSenderKey = 'no-reply';
 
-const NO_REPLY_FROM = process.env.MARKETING_NOREPLY_FROM_ADDRESS || 'Windsor Beauty <no-reply@windsorbeauty.co.uk>';
-const BRAND_FROM = process.env.MARKETING_FROM_ADDRESS || 'Windsor Beauty <Beautiful@windsorbeauty.co.uk>';
+const NO_REPLY_FROM = beautyOperationalAddress(process.env.MARKETING_NOREPLY_FROM_ADDRESS) || 'Windsor Beauty <no-reply@windsorbeauty.is>';
+const BRAND_FROM = beautyOperationalAddress(process.env.MARKETING_FROM_ADDRESS) || 'Windsor Beauty <Beautiful@windsorbeauty.is>';
 
 // Pulls the bare address out of a "Display Name <address>" string so the UI and
 // the Reply-To header can use it on its own.
@@ -31,7 +32,7 @@ function bareAddress(from: string): string {
 
 export interface MarketingSender {
   key: MarketingSenderKey;
-  /** Full value for Resend's `from` field, e.g. "Windsor Beauty <no-reply@windsorbeauty.co.uk>". */
+  /** Full value for Resend's `from` field, e.g. "Windsor Beauty <no-reply@windsorbeauty.is>". */
   from: string;
   /** Bare address, for showing the admin exactly what a recipient will see. */
   address: string;
@@ -61,7 +62,7 @@ export const MARKETING_SENDERS: Record<MarketingSenderKey, MarketingSender> = {
     replyTo: bareAddress(NO_REPLY_FROM),
     label: 'No-reply address',
     hint: 'Recommended for marketing. Replies do not reach the support inbox, and the email tells the reader not to reply.',
-    notice: 'This message was sent from an address that is not monitored, so please do not reply to it. To get in touch, visit windsorbeauty.co.uk/contact.',
+    notice: 'This message was sent from an address that is not monitored, so please do not reply to it. To get in touch, visit windsorbeauty.is/contact.',
   },
   brand: {
     key: 'brand',

@@ -18,9 +18,9 @@ export const DEFAULT_LEAFLET_FIELDS: LeafletFields = {
   subheading: 'Premium skincare for every day',
   cta: 'Scan to visit the Windsor Beauty website',
   qrLabel: 'Scan me',
-  footer: 'windsorbeauty.co.uk',
+  footer: 'windsorbeauty.is',
   discountText: '',
-  website: 'windsorbeauty.co.uk',
+  website: 'windsorbeauty.is',
   showLocationName: false,
 };
 

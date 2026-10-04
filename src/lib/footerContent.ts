@@ -29,9 +29,9 @@ export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   description:
     'Premium skincare from Windsor Beauty, part of the C&S Holdings Group. Serums, moisturisers, cleansers and SPF for a simple daily routine.',
   emails: [
-    { address: 'info@windsorbeauty.co.uk', label: 'general enquiries' },
-    { address: 'sales@windsorbeauty.co.uk', label: 'sales & orders' },
-    { address: 'beautiful@windsorbeauty.co.uk', label: 'customer support' },
+    { address: 'info@windsorbeauty.is', label: 'general enquiries' },
+    { address: 'sales@windsorbeauty.is', label: 'sales & orders' },
+    { address: 'beautiful@windsorbeauty.is', label: 'customer support' },
   ],
   navLinks: [
     { label: 'Shop', href: '/shop' },

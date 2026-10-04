@@ -39,7 +39,7 @@ export async function POST(_request: Request, props: { params: Promise<{ orderNu
   }).catch(() => false);
 
   if (!sent) {
-    return NextResponse.json({ error: 'Email could not be sent - check RESEND_API_KEY.' }, { status: 500 });
+    return NextResponse.json({ error: 'Email could not be sent - check RESEND_API_KEY_BEAUTY_IS.' }, { status: 500 });
   }
 
   await markShippingEmailSent(order.order_number).catch(() => {});

@@ -29,6 +29,8 @@ test('the referring site is read when there is no tag', () => {
 });
 
 test('moving around our own site is internal, not a new arrival', () => {
+  assert.equal(visitSourceFrom({ referrer: 'https://www.windsorbeauty.is/shop', userAgent: SAFARI }).source, 'internal');
+  assert.equal(visitSourceFrom({ referrer: 'https://windsorbeauty.is/', userAgent: SAFARI }).source, 'internal');
   assert.equal(visitSourceFrom({ referrer: 'https://www.windsorbeauty.co.uk/shop', userAgent: SAFARI }).source, 'internal');
   assert.equal(visitSourceFrom({ referrer: 'http://localhost:3000/', userAgent: SAFARI }).source, 'internal');
 });

@@ -513,7 +513,7 @@ export default function AdminEnquiriesPage() {
           <p className="text-sm text-stone-500 mb-6">
             Contact form messages appear here. Add emails received in sales
             or info below until automatic mailbox capture is connected. Replying here sends from
-            info@windsorbeauty.co.uk. Check the sales and info mailboxes for customer replies.
+            info@windsorbeauty.is. Check the sales and info mailboxes for customer replies.
           </p>
 
           <section className="mb-6 border border-stone-200 bg-white p-4">
@@ -852,7 +852,7 @@ export default function AdminEnquiriesPage() {
                              className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                            />
                           <p className="text-[10px] text-stone-500 mt-1.5 mb-3">
-                             Goes to {enquiry.email} from info@windsorbeauty.co.uk. Their original message is quoted underneath so it makes sense on its own.
+                             Goes to {enquiry.email} from info@windsorbeauty.is. Their original message is quoted underneath so it makes sense on its own.
                            </p>
                            {draftFormats[enquiry.id] === 'order' && draft.trim() ? (
                              <div className="mb-4">

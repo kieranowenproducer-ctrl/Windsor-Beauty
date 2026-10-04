@@ -5,10 +5,10 @@ import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in shippingEmail , same verified
 // windsorbeauty.co.uk sending domain, distinct display name for account mail.
-const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.co.uk>';
+const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.is>';
 
 export function isPasswordResetEmailConfigured() {
-  return Boolean(process.env.RESEND_API_KEY);
+  return Boolean(process.env.RESEND_API_KEY_BEAUTY_IS?.trim());
 }
 
 interface PasswordResetEmailParams {
@@ -21,7 +21,7 @@ interface PasswordResetEmailParams {
 // true on success , the caller should still respond with a generic message
 // either way, so failures here must never reveal whether the account exists.
 export async function sendPasswordResetEmail(params: PasswordResetEmailParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   try {
     const { error } = await sendEmail(buildPasswordResetEmail(params));

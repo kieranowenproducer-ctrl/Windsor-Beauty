@@ -175,7 +175,7 @@ export async function GET(_request: Request, props: { params: Promise<{ orderNum
   ${order.admin_notes ? `<div style="margin-top:16px;padding:10px;background:#fffbe6;border:1px solid #e8d44d;border-radius:4px;font-size:11px;color:#555"><strong>Admin notes:</strong><br>${escapeHtml(order.admin_notes).replace(/\n/g, '<br>')}</div>` : ''}
 
   <div class="footer">
-    <p>Windsor Beauty, windsorbeauty.co.uk, orders@windsorbeauty.co.uk</p>
+    <p>Windsor Beauty, windsorbeauty.is, orders@windsorbeauty.is</p>
   </div>
 
   <div class="no-print" style="text-align:center;margin-top:24px">

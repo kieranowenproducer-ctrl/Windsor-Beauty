@@ -1,3 +1,4 @@
+import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { bulkUnsubscribeFor, textFromHtml } from './email/bulkHeaders';
 import { EMAIL_ICON_BASE, emailDocument, escapeHtml } from '@/lib/email/shared';
 import { resolveMarketingSender, type MarketingSenderKey } from '@/lib/email/marketingSender';
@@ -7,8 +8,8 @@ import { sendEmail } from '@/lib/email/send';
 // announcement sent to people who opted in on the pre-launch coming-soon
 // page, so it follows the marketing sender rather than the transactional one:
 // chosen per send in the dashboard, no-reply by default (task 286b1863).
-const RESEND_API_KEY = process.env.RESEND_API_KEY_MARKETING || process.env.RESEND_API_KEY;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.windsorbeauty.co.uk';
+const RESEND_API_KEY = process.env.RESEND_API_KEY_BEAUTY_IS?.trim();
+const SITE_URL = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
 const ICON_BASE = EMAIL_ICON_BASE;
 
 export const LAUNCH_EMAIL_SUBJECT = 'Windsor Beauty is now live';

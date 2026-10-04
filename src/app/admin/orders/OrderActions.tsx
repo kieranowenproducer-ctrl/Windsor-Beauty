@@ -211,7 +211,7 @@ export default function OrderActions({
                     }`}>
                       {markPaidResult.emailSent
                         ? `Order confirmed - confirmation email sent to ${selectedOrder.email}.`
-                        : 'Order marked as paid, but the confirmation email failed to send. Check RESEND_API_KEY.'}
+                        : 'Order marked as paid, but the confirmation email failed to send. check RESEND_API_KEY_BEAUTY_IS.'}
                     </div>
                   )}
 
@@ -580,7 +580,7 @@ export default function OrderActions({
                       </button>
                       {resendEmailResult?.orderNumber === selectedOrder.orderNumber && (
                         <p className={`text-[9px] mt-1 text-center ${resendEmailResult.ok ? 'text-green-600' : 'text-red-500'}`}>
-                          {resendEmailResult.ok ? 'Email resent successfully.' : 'Failed to send - check RESEND_API_KEY.'}
+                          {resendEmailResult.ok ? 'Email resent successfully.' : 'Failed to send - check RESEND_API_KEY_BEAUTY_IS.'}
                         </p>
                       )}
                     </div>

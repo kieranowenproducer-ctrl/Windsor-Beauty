@@ -14,7 +14,7 @@ import { emailGreeting } from './email/greeting';
 // See lib/email/marketingSender.ts and lib/email/bulkHeaders.ts for the bulk path, which is
 // deliberately kept separate.
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const RESEND_API_KEY = process.env.RESEND_API_KEY_BEAUTY_IS?.trim();
 
 /** Longest message worth accepting. Well past anything anyone types, short of an accident. */
 export const MAX_MESSAGE_LENGTH = 8000;
@@ -84,7 +84,7 @@ export function renderCustomerMessageHtml(params: {
 /** The same message as plain text, for clients that will not render HTML. */
 function messagePlainText(params: { subject: string; message: string; customerName?: string | null }): string {
   const greeting = params.customerName?.trim() ? `${emailGreeting(params.customerName)}\n\n` : '';
-  return `${params.subject}\n\n${greeting}${params.message.replace(/\r\n/g, '\n').trim()}\n\nWindsor Beauty\nwindsorbeauty.co.uk`;
+  return `${params.subject}\n\n${greeting}${params.message.replace(/\r\n/g, '\n').trim()}\n\nWindsor Beauty\nwindsorbeauty.is`;
 }
 
 export interface SendCustomerMessageResult {

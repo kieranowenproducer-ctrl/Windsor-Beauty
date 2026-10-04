@@ -11,8 +11,8 @@ import { displayOrderItems } from '@/lib/orderTrialDisplay';
 // address's reputation, and if the team ever files one of these in junk it teaches the
 // provider something about the address customers depend on. Decided in the 31 July 2026
 // deliverability audit.
-const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.co.uk>';
-const TO_ADDRESS = 'sales@windsorbeauty.co.uk';
+const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
+const TO_ADDRESS = 'sales@windsorbeauty.is';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   fena: 'Pay by Bank (Fena)',
@@ -269,7 +269,7 @@ export function buildAdminOrderNotificationEmail(params: AdminOrderNotificationP
 }
 
 export async function sendAdminOrderNotificationEmail(params: AdminOrderNotificationParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) return false;
 
   const { subject, text, html } = buildAdminOrderNotificationEmail(params);
 

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "backup": "node scripts/backup-database.mjs",
-    "check": "npm run check:shipping && npm run check:system-health && npm run check:data-integrity && npm run check:order-counting && npm run check:contrast && npm run check:account-link && npm run check:invoice-number-fields && npm run check:invoice-addresses && npm run check:seo && npm run test:site-visits && npm run test:tracking-reliability && npm run test:enquiry-auto-draft && npm run test:enquiry-reply-recording && npm run test:trial-rm-ref && npm run test:trial-anonymity && npm run test:trial-text-guard && npm run test:discount-refusal-reporting && npm run test:dashboard-message-thread && npm run test:admin-search && npm run test:code-checks-at-order",
+    "check": "npm run check:shipping && npm run check:system-health && npm run check:data-integrity && npm run check:order-counting && npm run check:contrast && npm run check:account-link && npm run check:invoice-number-fields && npm run check:invoice-addresses && npm run check:seo && npm run test:site-visits && npm run test:tracking-reliability && npm run test:enquiry-auto-draft && npm run test:enquiry-reply-recording && npm run test:trial-rm-ref && npm run test:trial-anonymity && npm run test:trial-text-guard && npm run test:discount-refusal-reporting && npm run test:dashboard-message-thread && npm run test:admin-search && npm run test:code-checks-at-order && npm run test:is-migration",
     "check:invoice-number-fields": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/check-invoice-number-fields.mjs",
     "check:invoice-addresses": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/check-invoice-addresses.mjs",
     "check:seo": "node --import ./scripts/alias-loader.mjs scripts/check-seo.mjs",
@@ -66,7 +66,8 @@
     "test:admin-search": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-admin-search.mjs",
     "check:search": "node scripts/check-admin-search-ui.mjs",
     "test:member-savings": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings --test scripts/test-member-savings.mjs",
-    "db:local": "node scripts/local-db.mjs"
+    "db:local": "node scripts/local-db.mjs",
+    "test:is-migration": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-is-migration.mjs && node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-operational-addresses.mjs && node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-sending-key.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
