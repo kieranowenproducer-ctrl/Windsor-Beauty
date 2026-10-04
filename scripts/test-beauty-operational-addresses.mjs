@@ -45,7 +45,12 @@ assert.match(queries.at(-1).values[2], /windsorbeauty\.is/);
 assert.doesNotMatch(queries.at(-1).values[2], /windsorbeauty\.co\.uk/);
 
 // Every old-domain source occurrence must have a narrow compatibility purpose.
-const retained = new Set(['src/lib/operationalAddress.ts', 'src/lib/db/siteVisits.ts', 'src/app/api/webhooks/resend-inbound/route.ts', 'src/app/api/webhooks/resend-outbound/route.ts','src/lib/email/threadReferences.ts']);
+const retained = new Set(['src/lib/operationalAddress.ts', 'src/lib/db/siteVisits.ts', 'src/app/api/webhooks/resend-inbound/route.ts', 'src/app/api/webhooks/resend-outbound/route.ts','src/lib/email/threadReferences.ts', 'src/lib/qrOperationalDomain.ts']);
+// QR compatibility converts only leading owned addresses; current defaults stay .is.
+const qrCompatibility = readFileSync('src/lib/qrOperationalDomain.ts', 'utf8');
+assert.match(qrCompatibility, /const OLD_ORIGIN = new RegExp/);
+assert.match(qrCompatibility, /const BARE_WEBSITE = new RegExp/);
+assert.doesNotMatch(qrCompatibility, /fetch\(|sendEmail|deliverVerificationEmail/);
 // Historical provider delivery events may name an old Beauty sender. This
 // compatibility check must never become a new sending/template default.
 const outboundCompatibility = readFileSync('src/app/api/webhooks/resend-outbound/route.ts','utf8').split('\n').filter(line=>line.includes('windsorbeauty.co.uk'));

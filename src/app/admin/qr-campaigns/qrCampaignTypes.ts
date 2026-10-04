@@ -1,6 +1,8 @@
 // Moved out of page.tsx unchanged: the campaign types, the destination presets,
 // the campaign-type list and the small URL/date helpers. Only `export` was added.
 
+import { currentQrOrigin } from '@/lib/qrOperationalDomain';
+
 export type CampaignStatus = 'active' | 'paused' | 'archived';
 export type Tab = 'overview' | 'campaigns';
 export type DetailTab = 'overview' | 'people' | 'print';
@@ -115,7 +117,7 @@ export const EMPTY_FORM = {
 
 export function getTrackingUrl(slug: string): string {
   if (typeof window === 'undefined') return `/r/${slug}`;
-  return `${window.location.origin}/r/${slug}`;
+  return `${currentQrOrigin(window.location.origin)}/r/${slug}`;
 }
 
 export function formatDate(value: string) {

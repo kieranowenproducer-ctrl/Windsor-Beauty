@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { currentLeafletWebsite } from '@/lib/qrOperationalDomain';
 
 export interface LeafletFields {
   headline: string;
@@ -50,7 +51,11 @@ function loadFields(id: number, discountCode: string | null): LeafletFields {
   if (typeof window === 'undefined') return { ...DEFAULT_LEAFLET_FIELDS };
   try {
     const stored = localStorage.getItem(STORAGE_KEY(id));
-    if (stored) return { ...DEFAULT_LEAFLET_FIELDS, ...JSON.parse(stored) };
+    if (stored) {
+      const fields = { ...DEFAULT_LEAFLET_FIELDS, ...JSON.parse(stored) };
+      if (typeof fields.website === 'string') fields.website = currentLeafletWebsite(fields.website);
+      return fields;
+    }
   } catch { /* ignore */ }
   return {
     ...DEFAULT_LEAFLET_FIELDS,
