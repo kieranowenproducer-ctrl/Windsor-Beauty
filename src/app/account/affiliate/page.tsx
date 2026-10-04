@@ -24,7 +24,7 @@ const CARD = 'border border-gold-100 bg-white';
 const EYEBROW = 'text-[9px] tracking-[0.38em] uppercase text-gold-700';
 const TILE_LABEL = 'text-[9px] tracking-[0.18em] uppercase text-stone-500';
 
-export function AffiliateDashboard({ forcePreview = false }: { forcePreview?: boolean }) {
+function AffiliateDashboard({ forcePreview = false }: { forcePreview?: boolean }) {
   const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState('');
   const [amount, setAmount] = useState('');

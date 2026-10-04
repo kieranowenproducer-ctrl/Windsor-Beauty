@@ -116,7 +116,7 @@ const previewOverview: Overview = {
   referrals: [{ id: 1, affiliate_customer_id: 83, status: 'active', first_name: 'Alex', last_name: 'Morgan', email: 'alex@example.com', code: 'RAF5-A12B3C4D', code_active: true, expires_at: '2027-03-22T12:00:00.000Z', order_count: 3, earned_pence: 823, created_at: '2026-09-18T12:00:00.000Z' }],
 };
 
-export function AdminAffiliates({ forcePreview = false }: { forcePreview?: boolean }) {
+function AdminAffiliates({ forcePreview = false }: { forcePreview?: boolean }) {
   const [data, setData] = useState<Overview | null>(forcePreview ? previewOverview : null);
   const [message, setMessage] = useState('');
   const [duration, setDuration] = useState('183');
