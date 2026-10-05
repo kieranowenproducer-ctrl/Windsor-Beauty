@@ -49,7 +49,9 @@ export async function POST(request: Request) {
   if(from && !from.endsWith('@windsorbeauty.is')&&!from.endsWith('@windsorbeauty.co.uk'))return NextResponse.json({ignored:true,reason:'other_business'});
   const signedTo=Array.isArray(event.data.to)&&event.data.to.length===1&&typeof event.data.to[0]==='string'?bareEmail(event.data.to[0]):null;
   const configuredArchive=getEnquiryReplyArchiveAddress();
-  const isArchive=signedTo!==null&&(/^(?:info|sales|accounts|orders|beautiful)@windsorbeauty\.(?:is|co\.uk)$/.test(signedTo)||(configuredArchive!==null&&signedTo===bareEmail(configuredArchive)));
+  const recognised=(address:string)=>/^(?:info|sales|accounts|orders|beautiful)@windsorbeauty\.(?:is|co\.uk)$/.test(address)||(configuredArchive!==null&&address===bareEmail(configuredArchive));
+  if(signedTo===null&&(from==='alerts@windsorbeauty.is'||(Array.isArray(event.data.to)&&event.data.to.some(value=>typeof value==='string'&&recognised(bareEmail(value))))))return NextResponse.json({error:'Beauty staff recipient envelope is ambiguous.'},{status:503});
+  const isArchive=signedTo!==null&&recognised(signedTo);
   // Legacy signed archive events cannot substitute for customer delivery.
   if(isArchive&&!verified.dedicated)return NextResponse.json({error:'Dedicated archive ownership proof is required.'},{status:503});
   if(verified.dedicated){
