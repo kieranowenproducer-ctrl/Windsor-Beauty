@@ -10,7 +10,7 @@ function load(file,modules,env={},fetch){const result={exports:{}};const compile
 const key=Buffer.from('synthetic-outbound-signature-only');const secret=`whsec_${key.toString('base64')}`;
 const legacy='whsec_'+Buffer.from('synthetic-legacy').toString('base64');
 const provider='00000000-0000-4000-8000-000000000001';
-function harness(env={},fetch){const calls={metadata:[],delivery:0,invitation:0,reads:0,producerChecks:0};
+function harness(env={},fetch,source=null){const calls={metadata:[],delivery:0,invitation:0,reads:0,producerChecks:0};
   const mockedFetch=async(...args)=>{calls.reads++;if(!fetch)throw Error('Unexpected API read');return fetch(...args);};
   const operational=load('src/lib/operationalAddress.ts',{},env);
   const alerts=load('src/lib/email/enquiryAlerts.ts',{'@/lib/operationalAddress':operational},env);
@@ -20,10 +20,36 @@ function harness(env={},fetch){const calls={metadata:[],delivery:0,invitation:0,
   const native=load('src/lib/email/beautyNativeContactAlerts.ts',{'./beautySentMetadata':metadata,'./threadReferences':{normaliseMessageId},'./enquiryAlerts':alerts},env,mockedFetch);
   const route=load('src/app/api/webhooks/resend-outbound/route.ts',{'next/server':{NextResponse:{json:(body,opts={})=>new Response(JSON.stringify(body),{status:opts.status||200})}},'@/lib/replyCapture':capture,
     '@/lib/db/customerEmails':{updateCustomerEmailDelivery:async()=>{calls.delivery++;return true;}},'@/lib/affiliates':{markInvitationEmailFailedByProvider:async()=>{calls.invitation++;}},
-    '@/lib/db/beautyEmailThreads':{recordVerifiedBeautySmtpMetadata:async input=>{calls.metadata.push(input);},beautySentSource:async()=>null,beautyHasEnquiryReplyProducer:async()=>{calls.producerChecks++;return false;}},'@/lib/email/beautyNativeContactAlerts':native,'@/lib/email/enquiryReplyDelivery':delivery,'@/lib/email/beautySentMetadata':metadata,'@/lib/email/threadReferences':{normaliseMessageId}},
+    '@/lib/db/beautyEmailThreads':{recordVerifiedBeautySmtpMetadata:async input=>{calls.metadata.push(input);},beautySentSource:async()=>source,beautyHasEnquiryReplyProducer:async()=>{calls.producerChecks++;return false;}},'@/lib/email/beautyNativeContactAlerts':native,'@/lib/email/enquiryReplyDelivery':delivery,'@/lib/email/beautySentMetadata':metadata,'@/lib/email/threadReferences':{normaliseMessageId}},
     {RESEND_OUTBOUND_WEBHOOK_SECRET_BEAUTY_IS:secret,RESEND_OUTBOUND_WEBHOOK_SECRET:legacy,...env});return {calls,route};}
 const event=(data={})=>({type:'email.sent',data:{email_id:provider,from:'Info <info@windsorbeauty.is>',to:['member@example.invalid'],reply_to:['info@windsorbeauty.is'],message_id:'<exact@smtp.invalid>',...data}});
 function request(value,secretKey=key,invalid=false){const body=JSON.stringify(value),id='synthetic',timestamp=String(Math.floor(Date.now()/1000));const sig=crypto.createHmac('sha256',secretKey).update(`${id}.${timestamp}.${body}`).digest('base64');return new Request('https://www.windsorbeauty.is/api/webhooks/resend-outbound',{method:'POST',body,headers:{'svix-id':id,'svix-timestamp':timestamp,'svix-signature':invalid?'v1,invalid':`v1,${sig}`}});}
+
+test('authenticated ordinary primary reply accepts null, omitted or empty BCC without inventing an archive copy',async()=>{
+  for(const bcc of [null,undefined,[]])for(const type of ['email.sent','email.delivered']){
+    const payload={id:provider,from:'Info <info@windsorbeauty.is>',to:['member@example.invalid'],reply_to:['info@windsorbeauty.is'],message_id:'<exact@smtp.invalid>',cc:null,bcc};
+    const h=harness({BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED:'true',RESEND_INBOUND_API_KEY_BEAUTY_IS:'synthetic-full'},async()=>Response.json(payload));
+    const value=event({message_id:undefined,reply_to:undefined});value.type=type;
+    const result=await h.route.POST(request(value));assert.equal(result.status,200);assert.equal((await result.json()).ignoredArchiveCopy,undefined);assert.equal(h.calls.reads,1);assert.equal(h.calls.metadata.length,1);assert.equal(h.calls.metadata[0].replyTo,'info@windsorbeauty.is');assert.equal(h.calls.delivery,1);
+  }
+});
+
+test('ordinary reply GET still refuses malformed, duplicate or invalid BCC and conflicting envelope identities',async()=>{
+  const base={id:provider,from:'Info <info@windsorbeauty.is>',to:['member@example.invalid'],reply_to:['info@windsorbeauty.is'],message_id:'<exact@smtp.invalid>',bcc:null};
+  for(const change of [{bcc:''},{bcc:{}},{bcc:1},{bcc:[null]},{bcc:['invalid']},{bcc:['info@windsorbeauty.is','info@windsorbeauty.is']},{id:'00000000-0000-4000-8000-000000000099'},{from:'info@windsorglow.is'},{to:['foreign@example.invalid']},{reply_to:['info@windsorglow.is']},{reply_to:[]},{reply_to:null}]){
+    const h=harness({BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED:'true',RESEND_INBOUND_API_KEY_BEAUTY_IS:'synthetic-full'},async()=>Response.json({...base,...change}));
+    const result=await h.route.POST(request(event({message_id:undefined,reply_to:undefined})));assert.equal(result.status,503);assert.equal(h.calls.metadata.length+h.calls.delivery+h.calls.invitation,0);
+  }
+});
+
+test('null BCC cannot prove archive ownership; real authenticated configured BCC remains inert',async()=>{
+  const source={from:'info@windsorbeauty.is',customer:'member@example.invalid'};
+  for(const [bcc,expected] of [[null,503],[[],503],[['info@windsorbeauty.is'],200]]){
+    const payload={id:provider,from:'Info <info@windsorbeauty.is>',to:['member@example.invalid'],reply_to:['info@windsorbeauty.is'],message_id:'<exact@smtp.invalid>',bcc};
+    const h=harness({BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED:'true',RESEND_INBOUND_API_KEY_BEAUTY_IS:'synthetic-full',ENQUIRY_REPLY_ARCHIVE_TO:'info@windsorbeauty.is'},async()=>Response.json(payload),source);
+    const result=await h.route.POST(request(event({to:['info@windsorbeauty.is']})));assert.equal(result.status,expected);assert.equal(h.calls.delivery+h.calls.invitation,0);if(expected===200)assert.equal((await result.json()).ignoredArchiveCopy,true);else assert.equal(h.calls.metadata.length,0);
+  }
+});
 test('dedicated signed Beauty metadata records exact provider and SMTP IDs, legacy cannot claim ownership',async()=>{
   const h=harness();assert.equal((await h.route.POST(request(event()))).status,200);assert.equal(h.calls.metadata[0].providerId,provider);assert.equal(h.calls.metadata[0].messageId,'<exact@smtp.invalid>');
   const old=harness();assert.equal((await old.route.POST(request(event(),Buffer.from('synthetic-legacy')))).status,200);assert.equal(old.calls.metadata.length,0);assert.equal(old.calls.delivery,1);

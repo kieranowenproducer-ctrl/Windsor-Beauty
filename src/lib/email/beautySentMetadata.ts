@@ -23,7 +23,7 @@ export function parseBeautySentEnvelope(input:unknown,providerId:string):{messag
   const replies=value.reply_to===undefined?[]:value.reply_to;
   if(!Array.isArray(replies)||replies.length>1||replies.some((reply:unknown)=>typeof reply!=='string'||!/^\S+@[^\s@]+\.[^\s@]+$/.test(bareEmail(reply))))throw new Error('Ambiguous Beauty Reply-To metadata.');
   const replyTo=replies.length?bareEmail(replies[0]):null;
-  const values=value.bcc===undefined?[]:value.bcc;
+  const values=value.bcc===undefined||value.bcc===null?[]:value.bcc;
   if(!Array.isArray(values)||values.some((address:unknown)=>typeof address!=='string'||!/^\S+@[^\s@]+\.[^\s@]+$/.test(bareEmail(address))))throw new Error('Invalid Beauty BCC metadata.');
   const bcc=values.map((address:string)=>bareEmail(address));
   if(new Set(bcc).size!==bcc.length)throw new Error('Ambiguous Beauty BCC metadata.');
