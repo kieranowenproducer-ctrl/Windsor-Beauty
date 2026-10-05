@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { verifyWebhookSignature } from '@/lib/replyCapture';
 import { updateCustomerEmailDelivery } from '@/lib/db/customerEmails';
 import { markInvitationEmailFailedByProvider } from '@/lib/affiliates';
-import { beautySentSource, recordVerifiedBeautySmtpMetadata } from '@/lib/db/beautyEmailThreads';
+import { beautySentSource, beautyHasEnquiryReplyProducer, recordVerifiedBeautySmtpMetadata } from '@/lib/db/beautyEmailThreads';
+import { isBeautyNativeContactAlertCandidate, verifyBeautyNativeContactAlert } from '@/lib/email/beautyNativeContactAlerts';
 import { getEnquiryReplyArchiveAddress } from '@/lib/email/enquiryReplyDelivery';
 import { bareEmail, retrieveBeautySentEnvelope, retrieveBeautySentMetadata } from '@/lib/email/beautySentMetadata';
 import { normaliseMessageId } from '@/lib/email/threadReferences';
@@ -47,6 +48,14 @@ export async function POST(request: Request) {
   }
   const from=typeof event.data.from==='string'?bareEmail(event.data.from):'';
   if(from && !from.endsWith('@windsorbeauty.is')&&!from.endsWith('@windsorbeauty.co.uk'))return NextResponse.json({ignored:true,reason:'other_business'});
+  const nativeData = event.data as unknown as Record<string, unknown>;
+  if (isBeautyNativeContactAlertCandidate(nativeData)) {
+    if (!verified.dedicated) return NextResponse.json({error:'Dedicated native contact ownership proof is required.'},{status:503});
+    try {
+      if (await beautyHasEnquiryReplyProducer(event.data.email_id) || !await verifyBeautyNativeContactAlert(nativeData)) throw new Error('Native contact ownership is not proved.');
+      return NextResponse.json({ok:true,ignoredNativeContactAlert:true});
+    } catch { return NextResponse.json({error:'Exact Beauty native contact metadata needs reconciliation.'},{status:503}); }
+  }
   const signedTo=Array.isArray(event.data.to)&&event.data.to.length===1&&typeof event.data.to[0]==='string'?bareEmail(event.data.to[0]):null;
   const configuredArchive=getEnquiryReplyArchiveAddress();
   const recognised=(address:string)=>/^(?:info|sales|accounts|orders|beautiful)@windsorbeauty\.(?:is|co\.uk)$/.test(address)||(configuredArchive!==null&&address===bareEmail(configuredArchive));

@@ -25,6 +25,12 @@ export async function beautySentSource(providerId: string): Promise<{from: strin
   return PUBLIC.has(from) ? {from, customer: rows[0].email.trim().toLowerCase()} : null;
 }
 
+/** A native notification must never bypass an existing enquiry reply producer. */
+export async function beautyHasEnquiryReplyProducer(providerId: string): Promise<boolean> {
+  const rows = await requireDb()`SELECT EXISTS (SELECT 1 FROM enquiry_replies WHERE provider_message_id=${providerId}) AS present`;
+  return rows[0]?.present !== false;
+}
+
 /** Caller supplies only signed or authenticated provider metadata. Immutable on retry. */
 export async function recordVerifiedBeautySmtpMetadata(input: { providerId: string; messageId: unknown; from: string; customerTo: string; replyTo: string }): Promise<void> {
   const smtp = normaliseMessageId(input.messageId);
