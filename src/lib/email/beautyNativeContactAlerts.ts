@@ -27,7 +27,8 @@ export function isBeautyNativeNotificationCandidate(data: Record<string, unknown
   const staff = new Set(enquiryAlertRecipients());
   if (typeof data.subject === 'string' && (data.subject.startsWith(PREFIX) || opsSubject(data.subject))) return true;
   if (!Array.isArray(data.to) || data.to.length !== 1 || typeof data.to[0] !== 'string' || !EMAIL.test(bareEmail(data.to[0]))) return true;
-  return staff.has(bareEmail(data.to[0])) || ['info', 'sales', 'accounts', 'orders', 'beautiful'].some(local => bareEmail(data.to[0] as string) === `${local}@windsorbeauty.is`);
+  const address=bareEmail(data.to[0]);
+  return staff.has(address) || ['info', 'sales', 'accounts', 'orders', 'beautiful'].some(local => address === `${local}@windsorbeauty.is`);
 }
 function opsSubject(value:unknown):'incoming'|'manual'|null {
   if(typeof value!=='string'||/[\r\n]/.test(value))return null;
