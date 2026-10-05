@@ -1,7 +1,7 @@
 import { normaliseMessageId } from './threadReferences';
 export function bareEmail(value: string): string { return (value.match(/<([^>]+)>/)?.[1] || value).trim().toLowerCase(); }
 /** Read only with an explicitly approved full receiving credential, never the send-only key. */
-export async function retrieveBeautySentMetadata(providerId:string):Promise<{messageId:string;from:string;customerTo:string;replyTo:string}|null>{
+export async function retrieveBeautySentMetadata(providerId:string):Promise<{messageId:string;from:string;customerTo:string;replyTo:string;bcc:string[]}|null>{
   if(process.env.BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED!=='true')return null;
   const key=process.env.RESEND_INBOUND_API_KEY_BEAUTY_IS?.trim();
   if(!key)return null;
@@ -14,5 +14,9 @@ export async function retrieveBeautySentMetadata(providerId:string):Promise<{mes
   // Missing webhook/API fields cannot prove the absence of an SMTP header.
   if(!Array.isArray(value.reply_to)||value.reply_to.length!==1||typeof value.reply_to[0]!=='string')throw new Error('Missing or ambiguous Beauty Reply-To metadata.');
   const replyTo=bareEmail(value.reply_to[0]);
-  return {messageId,from,customerTo:bareEmail(value.to[0]),replyTo};
+  const values=value.bcc===undefined?[]:value.bcc;
+  if(!Array.isArray(values)||values.some((address:unknown)=>typeof address!=='string'||!/^\S+@[^\s@]+\.[^\s@]+$/.test(bareEmail(address))))throw new Error('Invalid Beauty BCC metadata.');
+  const bcc=values.map((address:string)=>bareEmail(address));
+  if(new Set(bcc).size!==bcc.length)throw new Error('Ambiguous Beauty BCC metadata.');
+  return {messageId,from,customerTo:bareEmail(value.to[0]),replyTo,bcc};
 }

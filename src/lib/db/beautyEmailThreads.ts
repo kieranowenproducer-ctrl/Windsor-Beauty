@@ -17,10 +17,20 @@ async function ensure(): Promise<void> {
   ready = true;
 }
 
+/** The exact producer join proves the primary customer's identity. */
+export async function beautySentSource(providerId: string): Promise<{from: string; customer: string} | null> {
+  const rows = await requireDb()`SELECT r.from_address,e.email FROM enquiry_replies r JOIN enquiries e ON e.id=r.enquiry_id WHERE r.provider_message_id=${providerId} AND r.direction='out'`;
+  if (rows.length !== 1) return null;
+  const from = (rows[0].from_address.match(/<([^>]+)>/)?.[1] ?? rows[0].from_address).trim().toLowerCase();
+  return PUBLIC.has(from) ? {from, customer: rows[0].email.trim().toLowerCase()} : null;
+}
+
 /** Caller supplies only signed or authenticated provider metadata. Immutable on retry. */
 export async function recordVerifiedBeautySmtpMetadata(input: { providerId: string; messageId: unknown; from: string; customerTo: string; replyTo: string }): Promise<void> {
   const smtp = normaliseMessageId(input.messageId);
   if (!UUID.test(input.providerId) || !smtp || !PUBLIC.has(input.from) || !REPLY_MAILBOXES.has(input.replyTo) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.customerTo)) throw new Error('Invalid Beauty provider thread metadata.');
+  const source = await beautySentSource(input.providerId);
+  if (source && (source.from !== input.from || source.customer !== input.customerTo)) throw new Error('Beauty outgoing source ownership mismatch.');
   await ensure();
   const rows = await requireDb()`INSERT INTO beauty_enquiry_smtp_metadata (provider_id,smtp_message_id,from_address,customer_address,public_mailbox)
     VALUES (${input.providerId},${smtp},${input.from},${input.customerTo},${input.replyTo})

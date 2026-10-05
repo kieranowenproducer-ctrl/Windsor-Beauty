@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { verifyWebhookSignature } from '@/lib/replyCapture';
 import { updateCustomerEmailDelivery } from '@/lib/db/customerEmails';
 import { markInvitationEmailFailedByProvider } from '@/lib/affiliates';
-import { recordVerifiedBeautySmtpMetadata } from '@/lib/db/beautyEmailThreads';
+import { beautySentSource, recordVerifiedBeautySmtpMetadata } from '@/lib/db/beautyEmailThreads';
+import { getEnquiryReplyArchiveAddress } from '@/lib/email/enquiryReplyDelivery';
 import { bareEmail, retrieveBeautySentMetadata } from '@/lib/email/beautySentMetadata';
 import { normaliseMessageId } from '@/lib/email/threadReferences';
 import type { ParsedResendOutboundWebhook } from '@/lib/email/resendMetadataContract';
@@ -46,8 +47,24 @@ export async function POST(request: Request) {
   }
   const from=typeof event.data.from==='string'?bareEmail(event.data.from):'';
   if(from && !from.endsWith('@windsorbeauty.is')&&!from.endsWith('@windsorbeauty.co.uk'))return NextResponse.json({ignored:true,reason:'other_business'});
+  const signedTo=Array.isArray(event.data.to)&&event.data.to.length===1&&typeof event.data.to[0]==='string'?bareEmail(event.data.to[0]):null;
+  const configuredArchive=getEnquiryReplyArchiveAddress();
+  const isArchive=signedTo!==null&&(/^(?:info|sales|accounts|orders|beautiful)@windsorbeauty\.(?:is|co\.uk)$/.test(signedTo)||(configuredArchive!==null&&signedTo===bareEmail(configuredArchive)));
+  // Legacy signed archive events cannot substitute for customer delivery.
+  if(isArchive&&!verified.dedicated)return NextResponse.json({error:'Dedicated archive ownership proof is required.'},{status:503});
   if(verified.dedicated){
     if(!from.endsWith('@windsorbeauty.is'))return NextResponse.json({error:'Beauty .is sender metadata missing.'},{status:503});
+    if(isArchive)try{
+      const source=await beautySentSource(event.data.email_id);
+      const fetched=await retrieveBeautySentMetadata(event.data.email_id);
+      const archive=source?getEnquiryReplyArchiveAddress(source.customer):null;
+      if(!source||!fetched||!archive||bareEmail(archive)!==signedTo||!fetched.bcc.includes(signedTo!)||fetched.customerTo!==source.customer||fetched.from!==source.from||
+        (event.data.message_id!==undefined&&normaliseMessageId(event.data.message_id)!==normaliseMessageId(fetched.messageId))||
+        (event.data.from!==undefined&&(typeof event.data.from!=='string'||bareEmail(event.data.from)!==fetched.from))||
+        (event.data.reply_to!==undefined&&(!Array.isArray(event.data.reply_to)||event.data.reply_to.length!==1||typeof event.data.reply_to[0]!=='string'||bareEmail(event.data.reply_to[0])!==fetched.replyTo)))throw new Error('Beauty archive ownership is not proved.');
+      await recordVerifiedBeautySmtpMetadata({providerId:event.data.email_id,...fetched});
+      return NextResponse.json({ok:true,ignoredArchiveCopy:true});
+    }catch{return NextResponse.json({error:'Exact Beauty archive metadata needs reconciliation.'},{status:503});}
     if(['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`))try{
       if(event.data.reply_to && event.data.reply_to.length>1)throw new Error('Ambiguous Beauty Reply-To.');
       const to=event.data.to;
