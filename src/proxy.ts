@@ -10,7 +10,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isHoldingScreenOn, holdingResponse, previewAccessCode, PREVIEW_COOKIE } from '@/lib/holdingScreen';
-import { storefrontHostDecision } from '@/lib/storefrontHostPolicy';
+import { storefrontHostDecision, storefrontRequestHostname } from '@/lib/storefrontHostPolicy';
 
 const ADMIN_COOKIE = 'wb_admin_session';
 const CUSTOMER_COOKIE = 'wb_customer_session';
@@ -70,7 +70,7 @@ function withUiHint(request: NextRequest, response: NextResponse): NextResponse 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const storefront = storefrontHostDecision({
-    brand: 'beauty', hostname: request.nextUrl.hostname, pathname, method: request.method,
+    brand: 'beauty', hostname: storefrontRequestHostname(request.headers.get('host'), request.nextUrl.hostname), pathname, method: request.method,
     mode: process.env.WINDSOR_STOREFRONT_MODE,
     compatibilityHosts: process.env.WINDSOR_COMPATIBILITY_HOSTS,
   });

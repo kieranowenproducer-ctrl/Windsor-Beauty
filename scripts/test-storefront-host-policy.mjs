@@ -21,11 +21,12 @@ class NextResponse extends Response {
   static redirect(url) { return new NextResponse(null, { status: 307, headers: { location: String(url) } }); }
   static json(body, options = {}) { return new NextResponse(JSON.stringify(body), options); }
 }
-const policy = load(readFileSync(new URL('../src/lib/storefrontHostPolicy.ts', import.meta.url), 'utf8'), {}, {}).storefrontHostDecision;
+const policyExports = load(readFileSync(new URL('../src/lib/storefrontHostPolicy.ts', import.meta.url), 'utf8'), {}, {});
+const policy = policyExports.storefrontHostDecision;
 function proxy(mode, original = false) {
   const env = { NODE_ENV: 'production', ADMIN_SESSION_TOKEN: 'synthetic-admin', PREVIEW_ACCESS_CODE: 'synthetic-preview', MAINTENANCE_MODE: 'on', WINDSOR_STOREFRONT_MODE: mode };
   const source = original ? execFileSync('git', ['show', `${baseline}:src/proxy.ts`], { cwd, encoding: 'utf8' }) : readFileSync(new URL('../src/proxy.ts', import.meta.url), 'utf8');
-  const dependencies = { 'next/server': { NextResponse }, '@/lib/storefrontHostPolicy': { storefrontHostDecision: policy } };
+  const dependencies = { 'next/server': { NextResponse }, '@/lib/storefrontHostPolicy': policyExports };
   if (brand === 'glow') {
     dependencies['@/lib/launchWindow'] = load(readFileSync(new URL('../src/lib/launchWindow.ts', import.meta.url), 'utf8'), {}, env);
     dependencies['@/lib/isDomainHolding'] = load(readFileSync(new URL('../src/lib/isDomainHolding.ts', import.meta.url), 'utf8'), {}, env);
@@ -35,7 +36,7 @@ function proxy(mode, original = false) {
 function request(host, path, method = 'GET', kind = 'guest', forgedHost) {
   const url = new URL(`https://${host}${path}`); url.clone = () => new URL(url);
   const cookies = new Map(kind === 'staff' ? [[brand === 'glow' ? 'wg_admin_session' : 'wb_admin_session', 'synthetic-admin']] : kind === 'preview' ? [['wb_preview_access', 'synthetic-preview']] : []);
-  return { url: String(url), nextUrl: url, method, headers: new Headers({ host: forgedHost || host, 'x-forwarded-host': forgedHost || host }), cookies: { get: name => cookies.has(name) ? { value: cookies.get(name) } : undefined } };
+  return { url: String(url), nextUrl: url, method, headers: new Headers({ host, 'x-forwarded-host': forgedHost || host }), cookies: { get: name => cookies.has(name) ? { value: cookies.get(name) } : undefined } };
 }
 const canonical = `www.windsor${brand}.is`, old = `www.windsor${brand}.co.uk`;
 // Regression: actual complete old and new proxies behave equally with the gate absent/legacy.
@@ -72,4 +73,20 @@ for (const compatibilityHosts of ['', 'https://registered.example.invalid', '*.e
 equal(policy({ brand, hostname: 'registered.example.invalid', pathname: '/api/webhooks/fena', method: 'POST', mode: 'public', compatibilityHosts: 'registered.example.invalid' }), 'compatibility');
 equal(policy({ brand, hostname: 'registered.example.invalid', pathname: '/shop', method: 'GET', mode: 'public', compatibilityHosts: 'registered.example.invalid' }), 'retired');
 equal(policy({ brand, hostname: 'registered.example.invalid', pathname: '/pay/fixture', method: 'GET', mode: 'public', compatibilityHosts: 'registered.example.invalid' }), 'retired');
+// Actual proxy fixtures reproduce Next's internal localhost URL with the real HTTP Host.
+for (const host of [canonical, canonical.toUpperCase(), canonical + ':443']) {
+  const r = request('localhost:3271', '/shop'); r.headers.set('host', host);
+  equal(proxy('public')(r).headers.get('x-middleware-next'), '1');
+}
+for (const host of [old, 'unknown.invalid', canonical + '.evil.invalid', canonical + ':0', canonical + ':65536', canonical + ':abc', canonical + ':', canonical + ',evil.invalid', canonical + ':443:80', 'user@' + canonical, canonical + '/', canonical + '.']) {
+  const r = request(canonical, '/shop'); r.headers.set('host', host); r.headers.set('x-forwarded-host', canonical);
+  equal(proxy('public')(r).status, 410);
+}
+const absent = request(canonical, '/shop'); absent.headers.delete('host');
+equal(proxy('public')(absent).headers.get('x-middleware-next'), '1');
+const oldWins = request(canonical, '/shop'); oldWins.headers.set('host', old);
+equal(proxy('public')(oldWins).status, 410);
+for (const raw of ['', ' ' + canonical, canonical + ' ', canonical + '\n', canonical + '?x', canonical + '#x', canonical + ':01']) equal(policyExports.storefrontRequestHostname(raw, canonical), null);
+equal(policyExports.storefrontRequestHostname(null, canonical), canonical);
+equal(policyExports.storefrontRequestHostname(canonical + ':443', 'localhost'), canonical);
 console.log(JSON.stringify({ passed: true, brand, checks, actualProxyAndLegacyDifferential: true, noNetwork: true, noBuild: true }));

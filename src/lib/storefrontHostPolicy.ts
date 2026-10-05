@@ -44,12 +44,25 @@ function issuedRoute(path: string, method: string, brand: Brand): boolean {
       || ['/videos/joining-through-raf.mp4', '/videos/joining-through-raf-poster.jpg'].includes(path)));
 }
 
+// Host is supplied by the HTTP server. Forwarded-host headers are never trusted here.
+// Missing Host alone permits the URL fallback; malformed Host must fail closed.
+export function storefrontRequestHostname(host: string | null, urlHostname: string): string | null {
+  const raw = host === null ? urlHostname : host;
+  const match = /^([a-z0-9.-]+)(?::([1-9][0-9]{0,4}))?$/i.exec(raw);
+  if (!match || (host === null && match[2]) || (match[2] && Number(match[2]) > 65535)) return null;
+  const name = match[1].toLowerCase();
+  if (name.length > 253 || name.split('.').some(label => label.length > 63
+    || !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(label))) return null;
+  return name;
+}
+
 export function storefrontHostDecision(input: {
-  brand: Brand; hostname: string; pathname: string; method: string;
+  brand: Brand; hostname: string | null; pathname: string; method: string;
   mode?: string; compatibilityHosts?: string;
 }): StorefrontDecision {
   const mode = input.mode?.trim().toLowerCase();
   if (!mode || mode === 'legacy') return 'legacy';
+  if (input.hostname === null) return 'retired';
   const host = input.hostname.toLowerCase();
   const canonical = [`windsor${input.brand}.is`, `www.windsor${input.brand}.is`].includes(host);
   const owned = canonical || ['com', 'co.uk'].some(suffix =>
