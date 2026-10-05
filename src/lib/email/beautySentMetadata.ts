@@ -8,6 +8,12 @@ export async function retrieveBeautySentEnvelope(providerId:string):Promise<{mes
   const response=await fetch(`https://api.resend.com/emails/${encodeURIComponent(providerId)}`,{headers:{Authorization:`Bearer ${key}`},cache:'no-store',signal:AbortSignal.timeout(10000)});
   if(!response.ok)throw new Error('Beauty SMTP metadata is not available yet.');
   const value=await response.json();
+  return parseBeautySentEnvelope(value,providerId);
+}
+/** Reuse one authenticated GET without weakening the single-primary envelope contract. */
+export function parseBeautySentEnvelope(input:unknown,providerId:string):{messageId:string;from:string;customerTo:string;replyTo:string|null;bcc:string[]}{
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Incomplete Beauty SMTP metadata.');
+  const value=input as Record<string,unknown>;
   const messageId=normaliseMessageId(value.message_id);
   if(value.id!==providerId || !messageId || typeof value.from!=='string' || !Array.isArray(value.to) || value.to.length!==1 || typeof value.to[0]!=='string')throw new Error('Incomplete Beauty SMTP metadata.');
   const from=bareEmail(value.from);

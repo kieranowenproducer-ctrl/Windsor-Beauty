@@ -3,7 +3,7 @@ import { verifyWebhookSignature } from '@/lib/replyCapture';
 import { updateCustomerEmailDelivery } from '@/lib/db/customerEmails';
 import { markInvitationEmailFailedByProvider } from '@/lib/affiliates';
 import { beautySentSource, beautyHasEnquiryReplyProducer, recordVerifiedBeautySmtpMetadata } from '@/lib/db/beautyEmailThreads';
-import { isBeautyNativeContactAlertCandidate, verifyBeautyNativeContactAlert } from '@/lib/email/beautyNativeContactAlerts';
+import { isBeautyNativeNotificationCandidate, retrieveBeautyNativeNotification } from '@/lib/email/beautyNativeContactAlerts';
 import { getEnquiryReplyArchiveAddress } from '@/lib/email/enquiryReplyDelivery';
 import { bareEmail, retrieveBeautySentEnvelope, retrieveBeautySentMetadata } from '@/lib/email/beautySentMetadata';
 import { normaliseMessageId } from '@/lib/email/threadReferences';
@@ -49,11 +49,17 @@ export async function POST(request: Request) {
   const from=typeof event.data.from==='string'?bareEmail(event.data.from):'';
   if(from && !from.endsWith('@windsorbeauty.is')&&!from.endsWith('@windsorbeauty.co.uk'))return NextResponse.json({ignored:true,reason:'other_business'});
   const nativeData = event.data as unknown as Record<string, unknown>;
-  if (isBeautyNativeContactAlertCandidate(nativeData)) {
+  let nativeOpsEnvelope:Awaited<ReturnType<typeof retrieveBeautySentEnvelope>>=null;
+  if (isBeautyNativeNotificationCandidate(nativeData)) {
     if (!verified.dedicated) return NextResponse.json({error:'Dedicated native contact ownership proof is required.'},{status:503});
     try {
-      if (await beautyHasEnquiryReplyProducer(event.data.email_id) || !await verifyBeautyNativeContactAlert(nativeData)) throw new Error('Native contact ownership is not proved.');
-      return NextResponse.json({ok:true,ignoredNativeContactAlert:true});
+      const notification=await retrieveBeautyNativeNotification(nativeData);
+      if(!notification)throw new Error('Native notification ownership is not proved.');
+      if(notification.kind==='existing')nativeOpsEnvelope=notification.envelope;
+      else {
+        if(await beautyHasEnquiryReplyProducer(event.data.email_id))throw new Error('Native notification collides with an enquiry reply.');
+        return NextResponse.json(notification.kind==='contact'?{ok:true,ignoredNativeContactAlert:true}:{ok:true,ignoredNativeOpsAlert:true});
+      }
     } catch { return NextResponse.json({error:'Exact Beauty native contact metadata needs reconciliation.'},{status:503}); }
   }
   const signedTo=Array.isArray(event.data.to)&&event.data.to.length===1&&typeof event.data.to[0]==='string'?bareEmail(event.data.to[0]):null;
@@ -67,7 +73,7 @@ export async function POST(request: Request) {
     if(!from.endsWith('@windsorbeauty.is'))return NextResponse.json({error:'Beauty .is sender metadata missing.'},{status:503});
     if(isArchive)try{
       const source=await beautySentSource(event.data.email_id);
-      const fetched=await retrieveBeautySentEnvelope(event.data.email_id);
+      const fetched=nativeOpsEnvelope??await retrieveBeautySentEnvelope(event.data.email_id);
       const archive=source?getEnquiryReplyArchiveAddress(source.customer):null;
       const isPublicSender=['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`);
       const isOps=from==='alerts@windsorbeauty.is'&&!source;
