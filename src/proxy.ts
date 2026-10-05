@@ -10,6 +10,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isHoldingScreenOn, holdingResponse, previewAccessCode, PREVIEW_COOKIE } from '@/lib/holdingScreen';
+import { storefrontHostDecision } from '@/lib/storefrontHostPolicy';
 
 const ADMIN_COOKIE = 'wb_admin_session';
 const CUSTOMER_COOKIE = 'wb_customer_session';
@@ -68,6 +69,20 @@ function withUiHint(request: NextRequest, response: NextResponse): NextResponse 
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const storefront = storefrontHostDecision({
+    brand: 'beauty', hostname: request.nextUrl.hostname, pathname, method: request.method,
+    mode: process.env.WINDSOR_STOREFRONT_MODE,
+    compatibilityHosts: process.env.WINDSOR_COMPATIBILITY_HOSTS,
+  });
+  // Host retirement wins over every staff/preview shortcut and never redirects.
+  if (storefront === 'retired' || storefront === 'closed') {
+    return new NextResponse(storefront === 'retired'
+      ? 'This storefront is no longer available at this address.'
+      : 'This shop is temporarily unavailable.', {
+      status: storefront === 'retired' ? 410 : 503,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store, must-revalidate', 'X-Robots-Tag': 'noindex, nofollow' },
+    });
+  }
 
   /* Who is allowed into /admin is decided by the gate further down and by
      nothing else. The static-file shortcut below used to run first for every
@@ -96,7 +111,7 @@ export function proxy(request: NextRequest) {
      has typed the access code on the holding screen. They see the real shop. Everyone else, on every page and every /api address, gets the
      holding screen. Pictures and fonts are let through so the admin sign-in page
      can draw itself; they reveal nothing about the shop. See lib/holdingScreen. */
-  if (isHoldingScreenOn() && !isAdminPath) {
+  if (storefront === 'legacy' && isHoldingScreenOn() && !isAdminPath) {
     const adminToken = process.env.ADMIN_SESSION_TOKEN;
     const isStaff = Boolean(adminToken && request.cookies.get(ADMIN_COOKIE)?.value === adminToken);
     // The access code typed into the box on the holding screen arrives as ?access=.
