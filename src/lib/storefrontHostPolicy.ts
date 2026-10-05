@@ -21,10 +21,14 @@ const GLOW_CRONS = new Set([
 ]);
 const within = (path: string, prefix: string) => path === prefix || path.startsWith(`${prefix}/`);
 
-function machineRoute(path: string, method: string, brand: Brand): boolean {
-  if (WEBHOOKS.has(path)) return ['GET', 'HEAD', 'POST'].includes(method);
+function cronRoute(path: string, method: string, brand: Brand): boolean {
   return ['GET', 'HEAD'].includes(method)
     && (COMMON_CRONS.has(path) || (brand === 'glow' && GLOW_CRONS.has(path)));
+}
+
+function machineRoute(path: string, method: string, brand: Brand): boolean {
+  if (WEBHOOKS.has(path)) return ['GET', 'HEAD', 'POST'].includes(method);
+  return cronRoute(path, method, brand);
 }
 
 function issuedRoute(path: string, method: string, brand: Brand): boolean {
@@ -56,9 +60,22 @@ export function storefrontRequestHostname(host: string | null, urlHostname: stri
   return name;
 }
 
+// Platform-owned system values only; never derive this identity from request headers.
+// https://vercel.com/docs/environment-variables/system-environment-variables
+export function storefrontPlatformCronHostname(brand: Brand, platform: {
+  vercel?: string; environment?: string; projectId?: string; url?: string;
+}): string | null {
+  const project = brand === 'glow' ? 'prj_UDl8CFovgFkPtYza3m780MxwvRYT' : 'prj_8Y7SQRUuOqQ8uAb71sCo0R8d4fBu';
+  if (platform.vercel !== '1' || platform.environment !== 'production'
+    || platform.projectId !== project || !platform.url) return null;
+  const hostname = storefrontRequestHostname(platform.url, '');
+  return hostname && /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.vercel\.app$/.test(hostname)
+    && !platform.url.includes(':') ? hostname : null;
+}
+
 export function storefrontHostDecision(input: {
   brand: Brand; hostname: string | null; pathname: string; method: string;
-  mode?: string; compatibilityHosts?: string;
+  mode?: string; compatibilityHosts?: string; platformCronHostname?: string | null;
 }): StorefrontDecision {
   const mode = input.mode?.trim().toLowerCase();
   if (!mode || mode === 'legacy') return 'legacy';
@@ -72,6 +89,11 @@ export function storefrontHostDecision(input: {
   if (within(path, '/admin') || within(path, '/api/admin')) return 'compatibility';
   if (['GET', 'HEAD'].includes(method) && (within(path, '/_next') || within(path, '/images')
     || within(path, '/fonts') || path === '/favicon.ico')) return 'compatibility';
+  // Only this deployment's system identity admits generated-host scheduled jobs.
+  // Stale generated cron hosts cannot reuse a static compatibility registration.
+  if (host.endsWith('.vercel.app') && cronRoute(path, method, input.brand)) {
+    return host === input.platformCronHostname ? 'compatibility' : 'retired';
+  }
   // Unknown/noncanonical hosts never become a second public shop.
   const registered = (input.compatibilityHosts || '').split(',').map(value => value.trim().toLowerCase())
     .filter(value => /^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(value) && value.includes('.'))

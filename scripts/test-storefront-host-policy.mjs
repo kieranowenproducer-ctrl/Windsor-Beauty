@@ -23,8 +23,8 @@ class NextResponse extends Response {
 }
 const policyExports = load(readFileSync(new URL('../src/lib/storefrontHostPolicy.ts', import.meta.url), 'utf8'), {}, {});
 const policy = policyExports.storefrontHostDecision;
-function proxy(mode, original = false) {
-  const env = { NODE_ENV: 'production', ADMIN_SESSION_TOKEN: 'synthetic-admin', PREVIEW_ACCESS_CODE: 'synthetic-preview', MAINTENANCE_MODE: 'on', WINDSOR_STOREFRONT_MODE: mode };
+function proxy(mode, original = false, platform = {}) {
+  const env = { NODE_ENV: 'production', ADMIN_SESSION_TOKEN: 'synthetic-admin', PREVIEW_ACCESS_CODE: 'synthetic-preview', MAINTENANCE_MODE: 'on', WINDSOR_STOREFRONT_MODE: mode, ...platform };
   const source = original ? execFileSync('git', ['show', `${baseline}:src/proxy.ts`], { cwd, encoding: 'utf8' }) : readFileSync(new URL('../src/proxy.ts', import.meta.url), 'utf8');
   const dependencies = { 'next/server': { NextResponse }, '@/lib/storefrontHostPolicy': policyExports };
   if (brand === 'glow') {
@@ -89,4 +89,22 @@ equal(proxy('public')(oldWins).status, 410);
 for (const raw of ['', ' ' + canonical, canonical + ' ', canonical + '\n', canonical + '?x', canonical + '#x', canonical + ':01']) equal(policyExports.storefrontRequestHostname(raw, canonical), null);
 equal(policyExports.storefrontRequestHostname(null, canonical), canonical);
 equal(policyExports.storefrontRequestHostname(canonical + ':443', 'localhost'), canonical);
+const projectId = brand === 'glow' ? 'prj_UDl8CFovgFkPtYza3m780MxwvRYT' : 'prj_8Y7SQRUuOqQ8uAb71sCo0R8d4fBu';
+const deploymentHost = 'synthetic-' + brand + '-current.vercel.app';
+const platform = { VERCEL: '1', VERCEL_ENV: 'production', VERCEL_PROJECT_ID: projectId, VERCEL_URL: deploymentHost };
+const cronPaths = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8')).crons.map(row => row.path);
+for (const mode of ['public', 'closed']) {
+  const actual = proxy(mode, false, platform);
+  for (const path of cronPaths) for (const method of ['GET', 'HEAD']) {
+    equal(actual(request(deploymentHost, path, method)).headers.get('x-middleware-next'), '1');
+    equal(actual(request('stale.vercel.app', path, method)).status, 410);
+    equal(actual(request(deploymentHost, path, 'POST')).status, 410);
+  }
+  for (const path of ['/shop', '/account/login', '/pay/fixture', '/api/webhooks/fena', '/api/cron/not-configured', cronPaths[0] + '/extra']) equal(actual(request(deploymentHost, path)).status, 410);
+  for (const bad of [{}, { ...platform, VERCEL: '0' }, { ...platform, VERCEL_ENV: 'preview' }, { ...platform, VERCEL_ENV: undefined }, { ...platform, VERCEL_PROJECT_ID: 'wrong-project' }, { ...platform, VERCEL_URL: 'https://' + deploymentHost }, { ...platform, VERCEL_URL: deploymentHost + ':443' }, { ...platform, VERCEL_URL: deploymentHost + '.evil' }, { ...platform, VERCEL_URL: deploymentHost + ',stale.vercel.app' }]) equal(proxy(mode, false, bad)(request(deploymentHost, cronPaths[0])).status, 410);
+  const spoof = request('stale.vercel.app', cronPaths[0]); spoof.headers.set('x-forwarded-host', deploymentHost); spoof.headers.set('x-vercel-deployment-url', deploymentHost);
+  equal(actual(spoof).status, 410);
+  equal(policy({ brand, hostname: 'stale.vercel.app', pathname: cronPaths[0], method: 'GET', mode, compatibilityHosts: 'stale.vercel.app', platformCronHostname: deploymentHost }), 'retired');
+}
+equal(policyExports.storefrontPlatformCronHostname(brand, { vercel: '1', environment: 'production', projectId, url: deploymentHost }), deploymentHost);
 console.log(JSON.stringify({ passed: true, brand, checks, actualProxyAndLegacyDifferential: true, noNetwork: true, noBuild: true }));

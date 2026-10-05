@@ -10,7 +10,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isHoldingScreenOn, holdingResponse, previewAccessCode, PREVIEW_COOKIE } from '@/lib/holdingScreen';
-import { storefrontHostDecision, storefrontRequestHostname } from '@/lib/storefrontHostPolicy';
+import { storefrontHostDecision, storefrontRequestHostname, storefrontPlatformCronHostname } from '@/lib/storefrontHostPolicy';
 
 const ADMIN_COOKIE = 'wb_admin_session';
 const CUSTOMER_COOKIE = 'wb_customer_session';
@@ -73,6 +73,10 @@ export function proxy(request: NextRequest) {
     brand: 'beauty', hostname: storefrontRequestHostname(request.headers.get('host'), request.nextUrl.hostname), pathname, method: request.method,
     mode: process.env.WINDSOR_STOREFRONT_MODE,
     compatibilityHosts: process.env.WINDSOR_COMPATIBILITY_HOSTS,
+    platformCronHostname: storefrontPlatformCronHostname('beauty', {
+      vercel: process.env.VERCEL, environment: process.env.VERCEL_ENV,
+      projectId: process.env.VERCEL_PROJECT_ID, url: process.env.VERCEL_URL,
+    }),
   });
   // Host retirement wins over every staff/preview shortcut and never redirects.
   if (storefront === 'retired' || storefront === 'closed') {
