@@ -6,14 +6,21 @@ import vm from 'node:vm';
 import ts from 'typescript';
 import * as capture from '../src/lib/replyCapture.ts';
 import {normaliseMessageId} from '../src/lib/email/threadReferences.ts';
-function load(file,modules,env={},fetch){const result={exports:{}};const compiled=ts.transpileModule(readFileSync(new URL('../'+file,import.meta.url),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;vm.runInNewContext(compiled,{exports:result.exports,module:result,require:name=>{if(!(name in modules))throw Error(`Unexpected ${name}`);return modules[name];},process:{env},console,AbortSignal,fetch});return result.exports;}
+function load(file,modules,env={},fetch){const result={exports:{}};const compiled=ts.transpileModule(readFileSync(new URL('../'+file,import.meta.url),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;vm.runInNewContext(compiled,{exports:result.exports,module:result,require:name=>{if(!(name in modules))throw Error(`Unexpected ${name}`);return modules[name];},process:{env},console,AbortSignal,URL,fetch});return result.exports;}
 const key=Buffer.from('synthetic-outbound-signature-only');const secret=`whsec_${key.toString('base64')}`;
 const legacy='whsec_'+Buffer.from('synthetic-legacy').toString('base64');
 const provider='00000000-0000-4000-8000-000000000001';
-function harness(env={},fetch){const calls={metadata:[],delivery:0,invitation:0,reads:0};const metadata=load('src/lib/email/beautySentMetadata.ts',{'./threadReferences':{normaliseMessageId}},env,async(...args)=>{calls.reads++;if(!fetch)throw Error('Unexpected API read');return fetch(...args);});
+function harness(env={},fetch){const calls={metadata:[],delivery:0,invitation:0,reads:0,producerChecks:0};
+  const mockedFetch=async(...args)=>{calls.reads++;if(!fetch)throw Error('Unexpected API read');return fetch(...args);};
+  const operational=load('src/lib/operationalAddress.ts',{},env);
+  const alerts=load('src/lib/email/enquiryAlerts.ts',{'@/lib/operationalAddress':operational},env);
+  const archive=load('src/lib/email/archive.ts',{'@/lib/operationalAddress':operational},env);
+  const delivery=load('src/lib/email/enquiryReplyDelivery.ts',{'@/lib/operationalAddress':operational,'./archive':archive},env);
+  const metadata=load('src/lib/email/beautySentMetadata.ts',{'./threadReferences':{normaliseMessageId}},env,mockedFetch);
+  const native=load('src/lib/email/beautyNativeContactAlerts.ts',{'./beautySentMetadata':metadata,'./threadReferences':{normaliseMessageId},'./enquiryAlerts':alerts},env,mockedFetch);
   const route=load('src/app/api/webhooks/resend-outbound/route.ts',{'next/server':{NextResponse:{json:(body,opts={})=>new Response(JSON.stringify(body),{status:opts.status||200})}},'@/lib/replyCapture':capture,
     '@/lib/db/customerEmails':{updateCustomerEmailDelivery:async()=>{calls.delivery++;return true;}},'@/lib/affiliates':{markInvitationEmailFailedByProvider:async()=>{calls.invitation++;}},
-    '@/lib/db/beautyEmailThreads':{recordVerifiedBeautySmtpMetadata:async input=>{calls.metadata.push(input);}},'@/lib/email/beautySentMetadata':metadata,'@/lib/email/threadReferences':{normaliseMessageId}},
+    '@/lib/db/beautyEmailThreads':{recordVerifiedBeautySmtpMetadata:async input=>{calls.metadata.push(input);},beautySentSource:async()=>null,beautyHasEnquiryReplyProducer:async()=>{calls.producerChecks++;return false;}},'@/lib/email/beautyNativeContactAlerts':native,'@/lib/email/enquiryReplyDelivery':delivery,'@/lib/email/beautySentMetadata':metadata,'@/lib/email/threadReferences':{normaliseMessageId}},
     {RESEND_OUTBOUND_WEBHOOK_SECRET_BEAUTY_IS:secret,RESEND_OUTBOUND_WEBHOOK_SECRET:legacy,...env});return {calls,route};}
 const event=(data={})=>({type:'email.sent',data:{email_id:provider,from:'Info <info@windsorbeauty.is>',to:['member@example.invalid'],reply_to:['info@windsorbeauty.is'],message_id:'<exact@smtp.invalid>',...data}});
 function request(value,secretKey=key,invalid=false){const body=JSON.stringify(value),id='synthetic',timestamp=String(Math.floor(Date.now()/1000));const sig=crypto.createHmac('sha256',secretKey).update(`${id}.${timestamp}.${body}`).digest('base64');return new Request('https://www.windsorbeauty.is/api/webhooks/resend-outbound',{method:'POST',body,headers:{'svix-id':id,'svix-timestamp':timestamp,'svix-signature':invalid?'v1,invalid':`v1,${sig}`}});}
@@ -57,4 +64,15 @@ test('missing signed Reply-To never guesses From; authenticated capture override
 
 test('authenticated GET cannot override a conflicting signed SMTP identity',async()=>{
  const h=harness({BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED:'true',RESEND_INBOUND_API_KEY_BEAUTY_IS:'synthetic-receiving'},async()=>({ok:true,json:async()=>({id:provider,message_id:'<different@smtp.invalid>',from:'info@windsorbeauty.is',to:['member@example.invalid'],reply_to:['info@windsorbeauty.is']})}));assert.equal((await h.route.POST(request(event({reply_to:undefined})))).status,503);assert.equal(h.calls.reads,1);assert.equal(h.calls.metadata.length+h.calls.delivery,0);
+});
+
+test('new native module is actually evaluated: exact internal contact is inert, conflicting subject holds',async()=>{
+ const nativeEvent=event({from:'enquiries@windsorbeauty.is',to:['sales@windsorbeauty.is','info@windsorbeauty.is'],reply_to:['owner@example.invalid'],subject:'Website enquiry: General Enquiry, Offline Owner'});
+ const env={BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED:'true',RESEND_INBOUND_API_KEY_BEAUTY_IS:'synthetic-receiving'};
+ for(const conflict of [false,true]){
+  const h=harness(env,async()=>({ok:true,json:async()=>({...nativeEvent.data,id:provider,subject:conflict?'Website enquiry: Other, Changed Owner':nativeEvent.data.subject})}));
+  const result=await h.route.POST(request(nativeEvent));assert.equal(result.status,conflict?503:200);
+  if(!conflict)assert.equal((await result.json()).ignoredNativeContactAlert,true);
+  assert.equal(h.calls.reads,1);assert.equal(h.calls.metadata.length+h.calls.delivery+h.calls.invitation,0);assert.equal(h.calls.producerChecks,conflict?0:1);
+ }
 });
