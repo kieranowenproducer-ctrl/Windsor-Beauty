@@ -69,8 +69,8 @@ export async function retrieveBeautyNativeNotification(data: Record<string, unkn
   if (JSON.stringify([...actual].sort()) !== JSON.stringify([...expected].sort())) throw new Error('Native contact configuration changed.');
   if (!(signed.length === 1 && actual.includes(signed[0])) && JSON.stringify([...signed].sort()) !== JSON.stringify([...actual].sort())) throw new Error('Native contact primary recipients disagree.');
   for (const kind of ['cc', 'bcc']) {
-    if (value[kind] !== undefined && (!Array.isArray(value[kind]) || value[kind].length !== 0)) throw new Error('Native contact has an unowned copy.');
-    if (data[kind] !== undefined && (!Array.isArray(data[kind]) || data[kind].length !== 0)) throw new Error('Signed native contact copy disagrees.');
+    if (value[kind] !== undefined && value[kind] !== null && (!Array.isArray(value[kind]) || value[kind].length !== 0)) throw new Error('Native contact has an unowned copy.');
+    if (data[kind] !== undefined && data[kind] !== null && (!Array.isArray(data[kind]) || data[kind].length !== 0)) throw new Error('Signed native contact copy disagrees.');
   }
   const replyTo = replyAddress(value.reply_to);
   if((from===FROM||ops==='incoming')&&!replyTo)throw new Error('Native contact or incoming Reply-To missing.');
