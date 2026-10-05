@@ -4,7 +4,7 @@ import { updateCustomerEmailDelivery } from '@/lib/db/customerEmails';
 import { markInvitationEmailFailedByProvider } from '@/lib/affiliates';
 import { beautySentSource, recordVerifiedBeautySmtpMetadata } from '@/lib/db/beautyEmailThreads';
 import { getEnquiryReplyArchiveAddress } from '@/lib/email/enquiryReplyDelivery';
-import { bareEmail, retrieveBeautySentMetadata } from '@/lib/email/beautySentMetadata';
+import { bareEmail, retrieveBeautySentEnvelope, retrieveBeautySentMetadata } from '@/lib/email/beautySentMetadata';
 import { normaliseMessageId } from '@/lib/email/threadReferences';
 import type { ParsedResendOutboundWebhook } from '@/lib/email/resendMetadataContract';
 
@@ -56,14 +56,26 @@ export async function POST(request: Request) {
     if(!from.endsWith('@windsorbeauty.is'))return NextResponse.json({error:'Beauty .is sender metadata missing.'},{status:503});
     if(isArchive)try{
       const source=await beautySentSource(event.data.email_id);
-      const fetched=await retrieveBeautySentMetadata(event.data.email_id);
+      const fetched=await retrieveBeautySentEnvelope(event.data.email_id);
       const archive=source?getEnquiryReplyArchiveAddress(source.customer):null;
-      if(!source||!fetched||!archive||bareEmail(archive)!==signedTo||!fetched.bcc.includes(signedTo!)||fetched.customerTo!==source.customer||fetched.from!==source.from||
+      const isPublicSender=['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`);
+      const isOps=from==='alerts@windsorbeauty.is'&&!source;
+      if(!fetched||(!isPublicSender&&!isOps)||(source&&(fetched.customerTo!==source.customer||fetched.from!==source.from))||
         (event.data.message_id!==undefined&&normaliseMessageId(event.data.message_id)!==normaliseMessageId(fetched.messageId))||
         (event.data.from!==undefined&&(typeof event.data.from!=='string'||bareEmail(event.data.from)!==fetched.from))||
-        (event.data.reply_to!==undefined&&(!Array.isArray(event.data.reply_to)||event.data.reply_to.length!==1||typeof event.data.reply_to[0]!=='string'||bareEmail(event.data.reply_to[0])!==fetched.replyTo)))throw new Error('Beauty archive ownership is not proved.');
-      await recordVerifiedBeautySmtpMetadata({providerId:event.data.email_id,...fetched});
-      return NextResponse.json({ok:true,ignoredArchiveCopy:true});
+        (event.data.reply_to!==undefined&&(!Array.isArray(event.data.reply_to)||event.data.reply_to.length>1||(event.data.reply_to.length===0?fetched.replyTo!==null:typeof event.data.reply_to[0]!=='string'||bareEmail(event.data.reply_to[0])!==fetched.replyTo))))throw new Error('Beauty archive ownership is not proved.');
+      if(fetched.customerTo!==signedTo){
+        const actualArchive=isOps?getEnquiryReplyArchiveAddress(fetched.customerTo):archive;
+        if((isPublicSender&&!source)||!actualArchive||bareEmail(actualArchive)!==signedTo||!fetched.bcc.includes(signedTo!))throw new Error('Beauty BCC ownership is not proved.');
+        if(isPublicSender){if(!fetched.replyTo)throw new Error('Missing enquiry Reply-To.');await recordVerifiedBeautySmtpMetadata({providerId:event.data.email_id,...fetched,replyTo:fetched.replyTo});}
+        return NextResponse.json({ok:true,ignoredArchiveCopy:true});
+      }
+      // Authenticated staff primary delivery remains ordinary delivery even with archiving off.
+      if(isPublicSender){if(!fetched.replyTo)throw new Error('Missing enquiry Reply-To.');await recordVerifiedBeautySmtpMetadata({providerId:event.data.email_id,...fetched,replyTo:fetched.replyTo});}
+      const status=event.type.replace('email.','');
+      const matched=await updateCustomerEmailDelivery(event.data.email_id,status,event.created_at??null).catch(()=>false);
+      if(['bounced','failed','complained','suppressed'].includes(status))await markInvitationEmailFailedByProvider(event.data.email_id).catch(()=>false);
+      return NextResponse.json({ok:true,matched});
     }catch{return NextResponse.json({error:'Exact Beauty archive metadata needs reconciliation.'},{status:503});}
     if(['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`))try{
       if(event.data.reply_to && event.data.reply_to.length>1)throw new Error('Ambiguous Beauty Reply-To.');
