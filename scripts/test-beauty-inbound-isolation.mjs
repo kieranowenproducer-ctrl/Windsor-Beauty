@@ -7,6 +7,7 @@ import ts from 'typescript';
 import * as capture from '../src/lib/replyCapture.ts';
 import * as routing from '../src/lib/email/inboundRouting.ts';
 import * as threads from '../src/lib/email/threadReferences.ts';
+import * as envelope from '../src/lib/email/beautyInboundEnvelope.ts';
 
 // Real route, signature and routing helpers; only provider/DB/sending are
 // intercepted. Synthetic fixtures cannot contact a customer or live service.
@@ -14,18 +15,19 @@ const secret = 'whsec_' + Buffer.from('synthetic-only-webhook-secret').toString(
 const source = readFileSync(new URL('../src/app/api/webhooks/resend-inbound/route.ts', import.meta.url), 'utf8');
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
 function harness(content, env = {}, threadRows=[]) {
-  const calls = { fetched: 0, history: 0, cases: 0, alerts: 0, originalMailboxes: [], replyCases:[] };
+  const calls = { fetched: 0, history: 0, cases: 0, alerts: 0, originalMailboxes: [], replyCases:[], claims:0, lookups:0, captures:[] };
   const seen = new Set();
   let pinned=null;
   const modules = {
     'next/server': { NextResponse: { json: (body, opts = {}) => new Response(JSON.stringify(body), { status: opts.status || 200 }) } },
-    '@/lib/db': { isDbConfigured: () => true, findCustomerByEmail: async () => null, logAutomationFailure: async () => {} },
+    '@/lib/db': { isDbConfigured: () => true, findCustomerByEmail: async () => {calls.lookups++;return null;}, logAutomationFailure: async () => {} },
     '@/lib/db/customerEmails': { recordCustomerEmail: async ({ ourAddress }) => { calls.history++; calls.originalMailboxes.push(ourAddress); } },
     '@/lib/db/enquiries': { findEnquiryById:async id=>({id,email:content.from}),
       recordInboundEnquiryReply: async ({enquiryId}) => {calls.replyCases.push(enquiryId);return {created:true};},
       createInboundEmailEnquiry: async ({ emailId,email }) => { const created = !seen.has(emailId); seen.add(emailId); if (created) calls.cases++; return { created, enquiry: { id: 1,email } }; } },
     '@/lib/db/beautyEmailThreads':{findExactBeautyEmailThread:async(sender,mailbox,refs,parents)=>threads.exactBeautyThread(sender,mailbox,refs,threadRows,parents),
-      claimBeautyInboundRoute:async()=>pinned,completeBeautyInboundRoute:async(_id,caseId)=>{pinned=caseId;},inboundRouteHash:input=>JSON.stringify(input)},
+      claimBeautyInboundRoute:async input=>{calls.claims++;calls.captures.push(input.capture);return pinned;},completeBeautyInboundRoute:async(_id,caseId)=>{pinned=caseId;},inboundRouteHash:input=>JSON.stringify(input)},
+    '@/lib/email/beautyInboundEnvelope':envelope,
     '@/lib/email/threadReferences':threads,
     '@/lib/replyCapture': capture,
     '@/lib/email/send': { sendEmail: async () => { calls.alerts++; return { ok: true }; } },
@@ -37,8 +39,8 @@ function harness(content, env = {}, threadRows=[]) {
     require(name) { if (!(name in modules)) throw Error(`Unexpected module ${name}`); return modules[name]; },
     fetch: async (url, opts) => { assert.equal(url, 'https://api.resend.com/emails/receiving/synthetic-id'); assert.equal(opts.headers.Authorization, 'Bearer synthetic-receiving'); calls.fetched++; return { ok: true, json: async () => content }; },
   });
-  const request = ({ invalid = false, stale = false } = {}) => {
-    const payload = JSON.stringify({ type: 'email.received', data: { email_id: 'synthetic-id', message_id:content.message_id, received_for:content.received_for, from: content.from, to: content.to } });
+  const request = ({ invalid = false, stale = false, signedOverrides = {} } = {}) => {
+    const payload = JSON.stringify({ type: 'email.received', data: { email_id: 'synthetic-id', message_id:content.message_id, received_for:content.received_for, from: content.from, to: content.to, ...signedOverrides } });
     const id = 'synthetic-event'; const timestamp = String(Math.floor(Date.now() / 1000) - (stale ? 1000 : 0));
     const signature = createHmac('sha256', Buffer.from(secret.slice(6), 'base64')).update(`${id}.${timestamp}.${payload}`).digest('base64');
     return new Request('https://www.windsorbeauty.is/api/webhooks/resend-inbound', { method: 'POST', body: payload, headers: { 'svix-id': id, 'svix-timestamp': timestamp, 'svix-signature': invalid ? 'v1,invalid' : `v1,${signature}` } });
@@ -151,3 +153,50 @@ test('signed capture plus authenticated envelope accepts original public top-lev
 test('signed actual SMTP disagreement or missing signed envelope holds before customer writes',async()=>{
  const content=fixture();const h=harness(content);for(const data of [{email_id:'synthetic-id',from:content.from,to:content.to,received_for:content.received_for,message_id:'foreign@smtp.invalid'},{email_id:'synthetic-id',from:content.from,to:content.to,message_id:content.message_id}]){const payload=JSON.stringify({type:'email.received',data}),id='synthetic-event',timestamp=String(Math.floor(Date.now()/1000));const signature=createHmac('sha256',Buffer.from(secret.slice(6),'base64')).update(id+'.'+timestamp+'.'+payload).digest('base64');const request=new Request('https://www.windsorbeauty.is/api/webhooks/resend-inbound',{method:'POST',body:payload,headers:{'svix-id':id,'svix-timestamp':timestamp,'svix-signature':'v1,'+signature}});assert.equal((await h.route(request)).status,503);assert.equal(h.calls.cases+h.calls.history,0);}
 });
+
+// Only received_for below mirrors the observed signed B shape. Full GET content
+// remains a synthetic supported-contract fixture, not actual provider proof.
+const nativeFixture = () => ({...fixture(), received_for:['windsor-beauty@ilkaik.resend.app','info@windsorbeauty.is']});
+const effects = h => h.calls.claims+h.calls.lookups+h.calls.history+h.calls.cases+h.calls.alerts+h.calls.replyCases.length;
+
+test('native signed one capture plus original Beauty mailbox records separate transport and public mailbox', async()=>{
+  for(const reverse of [false,true]) {
+    const c=nativeFixture();if(reverse)c.received_for.reverse();
+    const h=harness(c),res=await h.route(h.request());assert.equal(res.status,200);
+    assert.equal(h.calls.fetched,1);assert.equal(h.calls.cases,1);assert.deepEqual(h.calls.originalMailboxes,['info@windsorbeauty.is']);assert.deepEqual(h.calls.captures,['windsor-beauty@ilkaik.resend.app']);
+  }
+});
+test('foreign Glow capture plus original Beauty mailbox is authenticated but inert before Full GET or DB',async()=>{
+  for(const received_for of [['windsor-glow@ilkaik.resend.app','info@windsorbeauty.is'],['info@windsorbeauty.is','windsor-glow@ilkaik.resend.app'],['windsor-glow@ilkaik.resend.app']]){
+    const h=harness({...fixture(),received_for}),res=await h.route(h.request());assert.equal(res.status,200);assert.deepEqual(await res.json(),{ignored:true,reason:'other_business_transport'});assert.equal(h.calls.fetched,0);assert.equal(effects(h),0);
+  }
+  const h=harness({...fixture(),received_for:['windsor-glow@ilkaik.resend.app','info@windsorbeauty.is']});assert.equal((await h.route(h.request({invalid:true}))).status,401);assert.equal(h.calls.fetched+effects(h),0);
+});
+test('ambiguous malformed unknown duplicate dual-capture and cross-brand original envelopes hold before provider or DB',async()=>{
+  const cases=[['windsor-beauty@ilkaik.resend.app',''],['windsor-beauty@ilkaik.resend.app','info@windsorbeauty.is\r\n'],undefined,null,'windsor-beauty@ilkaik.resend.app',[],[null],[''],['windsor-beauty@ilkaik.resend.app','windsor-beauty@ilkaik.resend.app'],['windsor-beauty@ilkaik.resend.app','windsor-glow@ilkaik.resend.app'],['windsor-beauty@ilkaik.resend.app','info@windsorglow.is'],['windsor-beauty@ilkaik.resend.app','unknown@windsorbeauty.is'],['windsor-glow@ilkaik.resend.app','unknown@example.invalid'],['windsor-glow@ilkaik.resend.app','info@windsorbeauty.is','info@windsorglow.is'],['Capture <windsor-beauty@ilkaik.resend.app>','info@windsorbeauty.is'],['windsor-beauty@ilkaik.resend.app','info@windsorbeauty.is\r\nBcc: outsider@example.invalid']];
+  for(const received_for of cases){const h=harness({...fixture(),received_for}),res=await h.route(h.request());assert.equal(res.status,503);assert.equal(h.calls.fetched+effects(h),0);}
+});
+test('native Full GET must agree with signed envelope original mailbox and capture, unsupported shapes hold',async()=>{
+  for(const received_for of [undefined,null,[],['windsor-beauty@ilkaik.resend.app'],['windsor-beauty@ilkaik.resend.app','sales@windsorbeauty.is'],['windsor-glow@ilkaik.resend.app','info@windsorbeauty.is'],['windsor-beauty@ilkaik.resend.app','info@windsorbeauty.is','unknown@example.invalid']]){
+    const h=harness({...nativeFixture(),received_for}),res=await h.route(h.request({signedOverrides:{received_for:['windsor-beauty@ilkaik.resend.app','info@windsorbeauty.is']}}));assert.equal(res.status,503);assert.equal(h.calls.fetched,1);assert.equal(effects(h),0);
+  }
+});
+test('native original public header is required and must not contradict signed or fetched known mailbox',async()=>{
+  for(const headers of [undefined,{}, {to:'windsor-beauty@ilkaik.resend.app'}, {to:'sales@windsorbeauty.is'}, {to:'info@windsorbeauty.is','x-zohomail-delivered-to':'info@windsorglow.is'}, {to:'outsider@example.invalid'}, {to:'info@windsorbeauty.is',To:'info@windsorbeauty.is'}, {to:42}, {to:'info@windsorbeauty.is','x-zohomail-delivered-to':'unknown@windsorbeauty.is'}]){
+    const h=harness({...nativeFixture(),headers}),res=await h.route(h.request());assert.equal(res.status,503);assert.equal(effects(h),0);
+  }
+});
+test('native provider ID sender SMTP and top-level recipient contradictions hold before DB',async()=>{
+  for(const change of [{id:'different-id'},{message_id:undefined},{message_id:'invalid'}, {headers:{to:'info@windsorbeauty.is','message-id':'conflict@smtp.invalid'}}, {to:[]}, {to:[42]}, {to:['windsor-beauty@ilkaik.resend.app','windsor-beauty@ilkaik.resend.app']}, {to:['outsider@example.invalid']}]){
+    const h=harness({...nativeFixture(),...change}),res=await h.route(h.request({signedOverrides:{message_id:'incoming@smtp.invalid',to:['windsor-beauty@ilkaik.resend.app']}}));assert.equal(res.status,503);assert.equal(effects(h),0);
+  }
+  for(const signedOverrides of [{from:'another@example.invalid'},{message_id:'different@smtp.invalid'},{to:undefined},{to:'windsor-beauty@ilkaik.resend.app'}]){const h=harness(nativeFixture());assert.equal((await h.route(h.request({signedOverrides}))).status,503);assert.equal(effects(h),0);}
+});
+test('closed established native aliases preserve original mailbox, unknown legacy aliases stay held',async()=>{
+  for(const mailbox of ['sales@windsorbeauty.is','accounts@windsorbeauty.co.uk','orders@windsorbeauty.is','beautiful@windsorbeauty.is']){const h=harness({...fixture('customer@example.invalid',{to:mailbox,'x-zohomail-delivered-to':mailbox}),received_for:['windsor-beauty@ilkaik.resend.app',mailbox]});assert.equal((await h.route(h.request())).status,200);assert.deepEqual(h.calls.originalMailboxes,[mailbox]);}
+  const h=harness({...nativeFixture(),received_for:['windsor-beauty@ilkaik.resend.app','orders@windsorbeauty.co.uk']});assert.equal((await h.route(h.request())).status,503);assert.equal(h.calls.fetched+effects(h),0);
+});
+
+ test('proved current Glow aliases remain foreign transport only, no guessed legacy extra aliases',async()=>{
+ for(const local of ['beautiful','enquiries','social','wholesale','windsorglow.wholesalewholesale']){for(const domain of ['windsorglow.is','windsorglow.com','windsorglow.co.uk']){const h=harness({...fixture(),received_for:['windsor-glow@ilkaik.resend.app',local+'@'+domain]}),res=await h.route(h.request());assert.equal(res.status,domain==='windsorglow.is'?200:503);assert.equal(h.calls.fetched+effects(h),0);if(domain==='windsorglow.is')assert.equal((await res.json()).reason,'other_business_transport');}}
+ });

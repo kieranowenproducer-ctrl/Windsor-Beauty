@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { BEAUTY_CAPTURE, BEAUTY_INBOUND_MAILBOXES, beautyInboundEnvelope } from '@/lib/email/beautyInboundEnvelope';
 import { findCustomerByEmail, isDbConfigured, logAutomationFailure } from '@/lib/db';
 import { recordCustomerEmail } from '@/lib/db/customerEmails';
 import { createInboundEmailEnquiry, findEnquiryById, recordInboundEnquiryReply, type InboundAttachment } from '@/lib/db/enquiries';
@@ -101,13 +102,28 @@ export async function POST(request: Request) {
   }
   // Account-level callbacks can include the existing Glow capture. A known
   // foreign envelope is acknowledged without reading or ingesting its mail.
-  if(Array.isArray(meta.received_for) && meta.received_for.length===1 && bareAddress(meta.received_for[0])==='windsor-glow@ilkaik.resend.app')return NextResponse.json({ignored:true,reason:'other_business_transport'});
+  const signedEnvelope = beautyInboundEnvelope(meta.received_for);
+  if (!signedEnvelope) return NextResponse.json({error:'Provider capture routing is unknown or ambiguous.'},{status:503});
+  if (signedEnvelope.capture !== BEAUTY_CAPTURE) return NextResponse.json({ignored:true,reason:'other_business_transport'});
   const content = await fetchReceivedEmail(emailId);
   if (!content) return NextResponse.json({ error: 'Received email could not be read yet.' }, { status: 503 });
-  if(content.id!==emailId || !meta.from || !content.from || bareAddress(meta.from)!==bareAddress(content.from))return NextResponse.json({error:'Provider message identity does not agree.'},{status:503});
-  const exactCapture = (values: unknown) => Array.isArray(values) && values.length === 1 && typeof values[0] === 'string' && bareAddress(values[0]) === approvedCapture;
-  if (!exactCapture(meta.received_for) || !exactCapture(content.received_for)) {
-    return NextResponse.json({ error: 'Provider capture routing is unknown or ambiguous.' }, { status: 503 });
+  if(content.id!==emailId || typeof meta.from!=='string' || typeof content.from!=='string' || !meta.from || !content.from || bareAddress(meta.from)!==bareAddress(content.from))return NextResponse.json({error:'Provider message identity does not agree.'},{status:503});
+  const fetchedEnvelope = beautyInboundEnvelope(content.received_for);
+  if (!fetchedEnvelope || fetchedEnvelope.capture !== BEAUTY_CAPTURE ||
+      signedEnvelope.originalMailbox !== fetchedEnvelope.originalMailbox) {
+    return NextResponse.json({error:'Provider capture routing is unknown or ambiguous.'},{status:503});
+  }
+  const typedTo = (values: unknown) => Array.isArray(values) && values.length > 0 &&
+    values.every(value => typeof value === 'string' && value.trim() && !/[\r\n,;]/.test(value)) &&
+    new Set(values.map(value => bareAddress(value))).size === values.length;
+  if (!typedTo(meta.to) || !typedTo(Array.isArray(content.to) ? content.to : [content.to])) {
+    return NextResponse.json({error:'Authenticated recipient identity is incomplete.'},{status:503});
+  }
+  const fetchedSmtp = normaliseMessageId(content.message_id);
+  const incomingHeaderSmtp = Object.entries(content.headers ?? {}).filter(([name]) => name.toLowerCase() === 'message-id');
+  if (!fetchedSmtp || normaliseMessageId(meta.message_id) !== fetchedSmtp || incomingHeaderSmtp.length > 1 ||
+      (incomingHeaderSmtp.length === 1 && normaliseMessageId(incomingHeaderSmtp[0][1]) !== fetchedSmtp)) {
+    return NextResponse.json({error:'Incoming SMTP identity is missing or conflicting.'},{status:503});
   }
   const fromAddress = bareAddress(content.from || meta.from || '');
   if (!fromAddress) return NextResponse.json({ ignored: true });
@@ -123,12 +139,21 @@ export async function POST(request: Request) {
   if (!isDbConfigured()) return NextResponse.json({ error: 'Email queue is not configured.' }, { status: 503 });
   // Verified provider content preserves Zoho's original public To in headers;
   // the top-level To is the forwarding capture address, not the public mailbox.
-  const recipientHeaders = Object.entries(content.headers ?? {}).filter(([name]) =>
-    ['to','x-zohomail-delivered-to'].includes(name.toLowerCase())).map(([,value]) => value);
+  const recipientHeaderRows = Object.entries(content.headers ?? {}).filter(([name]) =>
+    ['to','x-zohomail-delivered-to'].includes(name.toLowerCase()));
+  if (!recipientHeaderRows.length || recipientHeaderRows.some(([,value]) => typeof value !== 'string') ||
+      new Set(recipientHeaderRows.map(([name]) => name.toLowerCase())).size !== recipientHeaderRows.length) {
+    return NextResponse.json({error:'Original mailbox routing is unknown or ambiguous.'},{status:503});
+  }
+  const recipientHeaders = recipientHeaderRows.map(([,value]) => value);
+  if (!recipientHeaders.flatMap(value => value.split(',')).map(bareAddress).some(value => value && value !== approvedCapture)) {
+    return NextResponse.json({error:'Original mailbox routing is unknown or ambiguous.'},{status:503});
+  }
   const providerPublicTo = [...(Array.isArray(meta.to)?meta.to:[]),...(Array.isArray(content.to)?content.to:[content.to])].filter(value=>typeof value==='string'&&bareAddress(value)!==approvedCapture);
-  const recipientValues = [...recipientHeaders,...providerPublicTo];
+  const recipientValues = [...recipientHeaders,...providerPublicTo,
+    ...[signedEnvelope.originalMailbox, fetchedEnvelope.originalMailbox].filter((value): value is string => value !== null)];
   const originalTo = Array.from(new Set(recipientValues.filter((value): value is string => typeof value === 'string')
-    .flatMap(value => value.split(',')).map(bareAddress).filter(Boolean)));
+    .flatMap(value => value.split(',')).map(bareAddress).filter(value => value && value !== approvedCapture)));
   const ownDomains = ['@windsorbeauty.co.uk', '@windsorbeauty.is'];
   const foreignDomains = ['@windsorglow.com', '@windsorglow.co.uk', '@windsorglow.is'];
   const ownRecipients = originalTo.filter(address => address === 'windsor-beauty@ilkaik.resend.app' || ownDomains.some(domain => address.endsWith(domain)));
@@ -142,12 +167,7 @@ export async function POST(request: Request) {
   }
   // Different public aliases need an explicit reviewed mapping. Never silently
   // replace the original mailbox with the capture address or another alias.
-  const approvedPublicMailboxes = new Set(['info', 'sales', 'accounts'].flatMap(local =>
-    [`${local}@windsorbeauty.is`, `${local}@windsorbeauty.co.uk`]));
-  // Established .is receiving aliases on Info; no guessed historical aliases.
-  approvedPublicMailboxes.add('orders@windsorbeauty.is');
-  approvedPublicMailboxes.add('beautiful@windsorbeauty.is');
-  if (ownRecipients.length !== 1 || !approvedPublicMailboxes.has(ownRecipients[0])) {
+  if (ownRecipients.length !== 1 || !BEAUTY_INBOUND_MAILBOXES.has(ownRecipients[0])) {
     return NextResponse.json({ error: 'Original public mailbox is unknown or ambiguous.' }, { status: 503 });
   }
   // Royal Mail sends receipts, label confirmations and Click & Drop notices to
@@ -171,7 +191,7 @@ export async function POST(request: Request) {
     ?? (content.html ? content.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '')
     ?? '';
   const bodyText = visibleInboundEmailText(rawBodyText);
-  const receivedCaptureAddress = bareAddress(content.received_for![0]);
+  const receivedCaptureAddress = approvedCapture;
   // Customer history records the verified original public mailbox. The
   // provider envelope remains a separate transport value for reply detection.
   const ourAddress = ownRecipients[0];

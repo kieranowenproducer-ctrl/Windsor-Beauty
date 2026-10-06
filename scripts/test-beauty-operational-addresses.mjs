@@ -45,7 +45,7 @@ assert.match(queries.at(-1).values[2], /windsorbeauty\.is/);
 assert.doesNotMatch(queries.at(-1).values[2], /windsorbeauty\.co\.uk/);
 
 // Every old-domain source occurrence must have a narrow compatibility purpose.
-const retained = new Set(['src/lib/operationalAddress.ts', 'src/lib/db/siteVisits.ts', 'src/app/api/webhooks/resend-inbound/route.ts', 'src/app/api/webhooks/resend-outbound/route.ts','src/lib/email/threadReferences.ts', 'src/lib/qrOperationalDomain.ts']);
+const retained = new Set(['src/lib/operationalAddress.ts', 'src/lib/db/siteVisits.ts', 'src/app/api/webhooks/resend-inbound/route.ts', 'src/app/api/webhooks/resend-outbound/route.ts','src/lib/email/threadReferences.ts', 'src/lib/qrOperationalDomain.ts', 'src/lib/email/beautyInboundEnvelope.ts']);
 // QR compatibility converts only leading owned addresses; current defaults stay .is.
 const qrCompatibility = readFileSync('src/lib/qrOperationalDomain.ts', 'utf8');
 assert.match(qrCompatibility, /const OLD_ORIGIN = new RegExp/);
@@ -56,6 +56,11 @@ assert.doesNotMatch(qrCompatibility, /fetch\(|sendEmail|deliverVerificationEmail
 const outboundCompatibility = readFileSync('src/app/api/webhooks/resend-outbound/route.ts','utf8').split('\n').filter(line=>line.includes('windsorbeauty.co.uk'));
 assert.equal(outboundCompatibility.length,1);
 assert.match(outboundCompatibility[0], /if\(from && .*from\.endsWith\('@windsorbeauty\.co\.uk'\)/);
+// Closed inbound compatibility retains proven old original mailboxes, never sending defaults.
+const inboundCompatibility = readFileSync('src/lib/email/beautyInboundEnvelope.ts', 'utf8');
+assert.match(inboundCompatibility, /BEAUTY_INBOUND_MAILBOXES = new Set/);
+assert.match(inboundCompatibility, /capture !== GLOW_CAPTURE/);
+assert.doesNotMatch(inboundCompatibility, /fetch\(|sendEmail|deliverVerificationEmail/);
 function audit(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = `${dir}/${entry.name}`;
