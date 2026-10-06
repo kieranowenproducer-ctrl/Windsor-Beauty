@@ -52,13 +52,8 @@ export function noticeRequestOrigin(requestUrl: string, host: string | null): st
   } catch { return null; }
 }
 
-export function noticeLaunchPermits(requestUrl: string, mode: string | undefined, hosts: string | undefined, host: string | null = null): boolean {
-  const allowed = (hosts ?? '').split(',').map(host => host.trim().toLowerCase());
-  try {
-    return mode === 'public' && noticeRequestOrigin(requestUrl, host) !== null &&
-      allowed.length === 2 && new Set(allowed).size === 2 &&
-      allowed.includes('windsorbeauty.is') && allowed.includes('www.windsorbeauty.is');
-  } catch { return false; }
+export function noticeLaunchPermits(requestUrl: string, mode: string | undefined, host: string | null = null): boolean {
+  return mode === 'public' && noticeRequestOrigin(requestUrl, host) !== null;
 }
 
 export interface NoticeSuppressionSnapshot {

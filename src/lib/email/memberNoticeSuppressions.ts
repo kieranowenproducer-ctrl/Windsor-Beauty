@@ -22,7 +22,7 @@ export function validSuppressionCreatedAt(value: unknown): value is string {
 // Official GET /suppressions, not a campaign/audience opt-in list. No writes or redirects.
 // All pages are required. A scoped key without permission, partial data or exhausted bounds fails closed.
 export async function readMemberNoticeSuppressions(
-  key: string | undefined = process.env.RESEND_API_KEY_BEAUTY_IS,
+  key: string | undefined = process.env.RESEND_INBOUND_API_KEY_BEAUTY_IS?.trim(),
   request: typeof fetch = fetch,
   now: () => number = Date.now,
 ): Promise<NoticeSuppressionSnapshot> {

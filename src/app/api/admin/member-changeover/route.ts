@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     return answer({ campaignKey: MEMBER_CHANGEOVER_CAMPAIGN, contentHash: MEMBER_CHANGEOVER_CONTENT_HASH,
       draftText: MEMBER_CHANGEOVER_TEXT, counts: { currentMembersReviewed: ids.size, eligible: eligibleCustomerIds.length,
         excludedOrReserved: ids.size - eligibleCustomerIds.length }, eligibleCustomerIds,
-      sendGateOpen: noticeLaunchPermits(request.url, process.env.WINDSOR_STOREFRONT_MODE, process.env.VISITOR_TRACKING_ALLOWED_HOSTS, request.headers.get('host')),
+      sendGateOpen: noticeLaunchPermits(request.url, process.env.WINDSOR_STOREFRONT_MODE, request.headers.get('host')),
       audienceRule: 'Verified, active members who opted in; unsubscribed, locally suppressed or unverified members excluded. A complete fresh provider-suppression GET is also required before each send.',
       noAutomaticCampaignOrRetry: true });
   } catch { return answer({ error: 'Member notice review is unavailable. Installer and permissions require review.' }, 503); }
@@ -44,10 +44,10 @@ export async function POST(request: Request) {
   if (!secret) return answer({ error: 'Administrator sign-in required.' }, 401);
   const origin = noticeRequestOrigin(request.url, request.headers.get('host'));
   if (!origin || request.headers.get('origin') !== origin) return answer({ error: 'Same-site Administrator request required.' }, 403);
-  if (!noticeLaunchPermits(request.url, process.env.WINDSOR_STOREFRONT_MODE, process.env.VISITOR_TRACKING_ALLOWED_HOSTS, request.headers.get('host'))) {
-    return answer({ error: 'The public .is launch and visitor cutover must be complete first.' }, 503);
+  if (!noticeLaunchPermits(request.url, process.env.WINDSOR_STOREFRONT_MODE, request.headers.get('host'))) {
+    return answer({ error: 'The public .is launch must be complete first.' }, 503);
   }
-  if (!isDbConfigured() || !process.env.RESEND_API_KEY_BEAUTY_IS) return answer({ error: 'Notice dependencies unavailable.' }, 503);
+  if (!isDbConfigured() || !process.env.RESEND_API_KEY_BEAUTY_IS || !process.env.RESEND_INBOUND_API_KEY_BEAUTY_IS) return answer({ error: 'Notice dependencies unavailable.' }, 503);
   const body = await request.json().catch(() => null);
   if (body?.action !== 'send-one' || body?.approvedContentHash !== MEMBER_CHANGEOVER_CONTENT_HASH ||
       body?.campaignKey !== MEMBER_CHANGEOVER_CAMPAIGN || body?.retirementAndMemberSmokeApproved !== true ||

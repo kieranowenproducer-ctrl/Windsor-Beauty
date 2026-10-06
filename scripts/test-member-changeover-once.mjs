@@ -54,17 +54,17 @@ for (const change of [{ membership_status: 'guest' }, { marketing_consent: false
   { email_verified: false }, { account_status: 'banned' }, { banned_at: '2026-10-01' }, { contact_consent: false },
   { unsubscribed_at: '2026-10-01' }, { contact_matches: 0 }, { contact_matches: 2 }, { locally_suppressed: true },
   { unsubscribe_token: '' }, { email: 'bad' }, { id: -1 }]) check(core.eligibleNoticeMember({ ...baseMember, ...change }), false);
-for (const [url, mode, hosts, allowed] of [
-  ['https://windsorbeauty.is/x','public','windsorbeauty.is,www.windsorbeauty.is',true],
-  ['https://www.windsorbeauty.is/x','public','windsorbeauty.is,www.windsorbeauty.is',true],
-  ['https://windsorbeauty.com/x','public','windsorbeauty.is,www.windsorbeauty.is',false],
-  ['http://windsorbeauty.is/x','public','windsorbeauty.is,www.windsorbeauty.is',false],
-  ['https://windsorbeauty.is/x','legacy','windsorbeauty.is,www.windsorbeauty.is',false],
-  ['https://windsorbeauty.is/x','public','',false],
-  ['https://windsorbeauty.is/x','public','windsorbeauty.is,www.windsorbeauty.is,windsorbeauty.com',false],
-  ['https://windsorbeauty.is/x','public','windsorbeauty.is,windsorbeauty.is',false],
-  ['https://windsorbeauty.is:444/x','public','windsorbeauty.is,www.windsorbeauty.is',false],
-]) check(core.noticeLaunchPermits(url, mode, hosts), allowed);
+for (const [url, mode, host, allowed] of [
+  ['https://windsorbeauty.is/x','public',null,true],
+  ['https://www.windsorbeauty.is/x','public','www.windsorbeauty.is',true],
+  ['https://windsorbeauty.com/x','public',null,false],
+  ['http://windsorbeauty.is/x','public',null,false],
+  ['https://windsorbeauty.is/x','legacy',null,false],
+  ['https://windsorbeauty.is/x','public','windsorbeauty.com',false],
+  ['https://internal.invalid/x','public','windsorbeauty.is',true],
+  ['https://windsorbeauty.is/x','public','unknown.invalid',false],
+  ['https://windsorbeauty.is:444/x','public',null,false],
+]) check(core.noticeLaunchPermits(url, mode, host), allowed);
 check(core.snapshotAllowsMember(snapshot(),baseMember,now),true);
 for(const change of [{complete:false},{evidenceSha256:''},{checkedAt:now-300001},{checkedAt:now+1},{emails:new Set([baseMember.email])}]) {
   check(core.snapshotAllowsMember(snapshot(change),baseMember,now),false);
@@ -104,7 +104,8 @@ const routeState = { sends: 0, reservations: new Set() };
 const db = { findMemberChangeoverRecipient: async () => baseMember, memberChangeoverReviewRows: async () => [{...baseMember,already_reserved:false}],
   reserveMemberChangeover: async member => { if(routeState.reservations.has(member.id))return false;routeState.reservations.add(member.id);return true; },
   claimMemberChangeover: async () => true, finishMemberChangeover: async () => {} };
-const routeEnv = { ADMIN_SESSION_TOKEN: secret, RESEND_API_KEY_BEAUTY_IS: 'offline-never-used', WINDSOR_STOREFRONT_MODE:'public', VISITOR_TRACKING_ALLOWED_HOSTS:'windsorbeauty.is,www.windsorbeauty.is' };
+// Beauty public-mode acceptance does not depend on Glow's visitor setting. Both existing keys are distinct fixtures.
+const routeEnv = { ADMIN_SESSION_TOKEN: secret, RESEND_API_KEY_BEAUTY_IS: 'offline-send-never-used', RESEND_INBOUND_API_KEY_BEAUTY_IS: 'offline-read-never-used', WINDSOR_STOREFRONT_MODE:'public' };
 const modules = { '@/lib/auth': { getSessionTokenFromRequest: request => request.headers.get('cookie')?.split('wb_admin_session=')[1] ?? null },
   '@/lib/db/client': { isDbConfigured: () => true }, '@/lib/db/memberChangeoverNotice': db,
   '@/lib/email/send': { sendEmail: async () => { routeState.sends++;return {ok:true,id:'11111111-1111-4111-8111-111111111111'}; } },
@@ -128,10 +129,19 @@ check((await route.POST(request({retirementAndMemberSmokeApproved:false}))).stat
 check((await route.POST(request())).status,200); check(routeState.sends,1);
 check((await route.POST(request())).status,409); check(routeState.sends,1);
 const preview=await route.GET(new Request('https://windsorbeauty.is/api/admin/member-changeover',{headers:{cookie:`wb_admin_session=${secret}`}}));
-check(preview.status,200);check((await preview.json()).counts.eligible,1);
+check(preview.status,200);const previewBody=await preview.json();check(previewBody.counts.eligible,1);check(previewBody.sendGateOpen,true);
+const oldPreviewRequest=new Request('https://windsorbeauty.is/api/admin/member-changeover',{headers:{cookie:`wb_admin_session=${secret}`,host:'windsorbeauty.co.uk'}});
+check((await (await route.GET(oldPreviewRequest)).json()).sendGateOpen,false);
+const missingReadKey=loader(modules,{...routeEnv,RESEND_INBOUND_API_KEY_BEAUTY_IS:''})('src/app/api/admin/member-changeover/route.ts');
+check((await missingReadKey.POST(request())).status,503);check(routeState.sends,1);
 const closed = loader(modules,{...routeEnv,WINDSOR_STOREFRONT_MODE:'legacy'})('src/app/api/admin/member-changeover/route.ts');
 check((await closed.POST(request())).status,503); check(routeState.sends,1);
 const adapter=loader()('src/lib/email/memberNoticeSuppressions.ts').readMemberNoticeSuppressions;
+// The existing dedicated inbound/full-read key owns GET, while the domain-scoped send key remains transport-only.
+const configuredReader=loader({}, {RESEND_INBOUND_API_KEY_BEAUTY_IS:'offline-full-read',RESEND_API_KEY_BEAUTY_IS:'offline-domain-send'})('src/lib/email/memberNoticeSuppressions.ts').readMemberNoticeSuppressions;
+let readAuthorization;
+await configuredReader(undefined,async(_url,options)=>{readAuthorization=options.headers.Authorization;return Response.json({object:'list',has_more:false,data:[]});},()=>now);
+check(readAuthorization,'Bearer offline-full-read');
 const timestamp=loader()('src/lib/email/memberNoticeSuppressions.ts').validSuppressionCreatedAt;
 for(const value of ['2026-10-06 23:47:56.678+00','2026-10-06T23:47:56.678Z','2026-10-06T23:47:56.678+01:00','2024-02-29 12:00:00.123456+00']) check(timestamp(value),true);
 for(const value of ['2026-02-29 12:00:00+00','2026-10-06 24:00:00+00','2026-10-06 12:60:00+00','2026-10-06 12:00:60+00',
