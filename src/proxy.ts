@@ -81,7 +81,7 @@ export function proxy(request: NextRequest) {
   // Host retirement wins over every staff/preview shortcut and never redirects.
   if (storefront === 'retired' || storefront === 'closed') {
     return new NextResponse(storefront === 'retired'
-      ? 'This storefront is no longer available at this address.'
+      ? ''
       : 'This shop is temporarily unavailable.', {
       status: storefront === 'retired' ? 410 : 503,
       headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store, must-revalidate', 'X-Robots-Tag': 'noindex, nofollow' },
