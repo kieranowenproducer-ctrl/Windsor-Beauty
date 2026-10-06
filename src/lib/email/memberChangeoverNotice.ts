@@ -10,7 +10,7 @@ export const MEMBER_CHANGEOVER_TEXT = `Hi,
 
 Windsor Beauty has now completed its move to windsorbeauty.is.
 
-The old .com and .co.uk storefront pages have been retired. Please use our new address from now on:
+Our old .co.uk storefront pages have been retired. Please use our new address from now on:
 https://www.windsorbeauty.is/
 
 Your member account has not changed. Sign in with the same email address and password you already use.
