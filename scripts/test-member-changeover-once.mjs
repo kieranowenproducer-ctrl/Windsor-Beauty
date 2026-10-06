@@ -50,7 +50,7 @@ function deps(changes = {}) {
 }
 
 check(core.eligibleNoticeMember(baseMember), true);
-for (const change of [{ membership_status: 'guest' }, { marketing_consent: false }, 
+for (const change of [{ membership_status: 'guest' }, { marketing_consent: false },
   { email_verified: false }, { account_status: 'banned' }, { banned_at: '2026-10-01' }, { contact_consent: false },
   { unsubscribed_at: '2026-10-01' }, { contact_matches: 0 }, { contact_matches: 2 }, { locally_suppressed: true },
   { unsubscribe_token: '' }, { email: 'bad' }, { id: -1 }]) check(core.eligibleNoticeMember({ ...baseMember, ...change }), false);
