@@ -35,6 +35,8 @@ const CUSTOMER_EMAILS = [
   'app/api/admin/customer-emails/[id]/forward/route.ts',
   'lib/affiliateEmail.ts',
   'lib/glowCardMilestoneEmail.ts',
+  'app/api/admin/member-changeover/route.ts',
+  'lib/email/memberChangeoverNotice.ts',
 ];
 
 /** Internal post. Listed so nobody has to wonder whether these were forgotten. */
