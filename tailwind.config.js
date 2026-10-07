@@ -14,47 +14,42 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // WINDSOR BEAUTY'S PALETTE: "Blush and Plum" (chosen by Kieran, 1 October 2026).
-        // Deep cream pages, blush bands, plum buttons and bars, rose details. No white.
-        //
-        // The page layout came from the sister shop, where every screen is written against
-        // a "gold" scale, a "stone" scale and "white". Those three are redefined here, so
-        // the whole site changes colour without renaming thousands of classes. Read them as:
-        //   gold-700  the main brand colour (plum): buttons, headings, strong accents
-        //   gold-400  the detail colour (rose)
-        //   gold-50 / gold-100  blush bands and tints
-        //   stone-50  the page cream;  white  the card cream;  stone-900  plum-black text and bars
+        // Pale blue and brushed pewter, approved by Kieran on 7 October 2026.
+        // Keep the legacy scale names used throughout the shop and admin:
+        // gold-700 is graphite, stone-50/white are pale blue, stone-900 is dark text.
         gold: {
-          50:  '#F6E4DC',
-          100: '#EBD0C7',
-          200: '#E2C3B8',
-          300: '#CFA194',
-          400: '#B98478',
-          500: '#A9695D',
-          600: '#95574C',
-          // 650: small accent text that still passes WCAG AA on the card cream (5.5:1).
-          // scripts/check-admin-contrast.mjs measures it.
-          650: '#8A4F45',
-          700: '#4B2A3A',
-          800: '#63394D',
-          900: '#2E1823',
+          50:  '#F3F7FA',
+          100: '#F3F7FA',
+          200: '#9AAEBF',
+          300: '#9AAEBF',
+          400: '#9AAEBF',
+          500: '#415564',
+          600: '#415564',
+          650: '#415564',
+          700: '#3D4B59',
+          800: '#273644',
+          900: '#1C2B38',
         },
         stone: {
-          50:  '#F3E8D8',
-          100: '#EDE0CD',
-          200: '#E2D0BF',
-          300: '#D2BDAA',
-          400: '#9A858B',
-          500: '#705860',
-          600: '#634A52',
-          700: '#523A44',
-          800: '#472F3B',
-          900: '#412636',
-          950: '#2A1A22',
+          50:  '#F3F7FA',
+          100: '#F4F7FA',
+          200: '#F4F7FA',
+          300: '#9AAEBF',
+          400: '#9AAEBF',
+          500: '#415564',
+          600: '#415564',
+          700: '#415564',
+          800: '#273644',
+          900: '#273644',
+          950: '#18242E',
         },
-        white: '#F9F1E4',
-        black: '#3A2130',
+        white: '#F3F7FA',
+        black: '#273644',
       },
+      backgroundImage: {
+        'beauty-silver': 'linear-gradient(120deg, #566570 0%, #7E8B96 47%, #64727D 100%)',
+      },
+      textColor: { white: '#F4F7FA' },
       fontFamily: {
         sans: ['Outfit', 'system-ui', 'sans-serif'],
         serif: ['Cormorant Garamond', 'Georgia', 'serif'],

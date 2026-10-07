@@ -12,9 +12,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Read [README.md](README.md) first. The short version:
 
-- **The shop is closed on purpose.** The holding screen (`src/lib/holdingScreen.ts`, top of
-  `src/proxy.ts`) stays on until Kieran says launch. Never set `MAINTENANCE_MODE=off`, never weaken
-  the gate, and never publish this branch, without his clear word.
+- **Keep current storefront access unchanged.** Kieran confirmed this on 7 October 2026 after
+  checking the already public shop. Preserve the holding-screen mechanism (`src/lib/holdingScreen.ts`,
+  top of `src/proxy.ts`) and live environment settings. Publishing still requires his explicit approval.
 - **Shared with Windsor Glow on Kieran's word (1 Oct 2026):** admin sign-in, Royal Mail, PayPal and
   Fena, using its own new Beauty key. **Never shared:** the database, image store, sessions or data. Never
   point this project at Windsor Glow's database. See README, "What Windsor Beauty shares".
@@ -29,9 +29,10 @@ Read [README.md](README.md) first. The short version:
 - A database address on `localhost` uses the stand-in in `src/lib/db/localClient.ts`; a hosted one uses Neon's driver.
 - Never run `next build` while `next dev` is running in this folder.
 - Plain English in everything a person reads, including emails and admin labels. No em dashes.
-- **Colours are "Blush and Plum"** (Kieran's choice): deep cream pages, blush bands, plum buttons, no white. They are set
-  once in `tailwind.config.js` by redefining the `gold`, `stone` and `white` scales. `gold-700` is plum, `white` is cream.
-  Never hard-code a colour; never bring back Windsor Glow's gold on white.
+- **Colours are pale blue and brushed pewter** (Kieran's approved S3 lighter preview, 7 October 2026):
+  page background `#F3F7FA`, graphite buttons and a smooth pewter logo. The legacy `gold`, `stone`
+  and `white` scales and the silver gradient are defined in `tailwind.config.js`. Use `BeautyLogo`
+  for the original artwork with the approved silver finish. Keep brand colours in the shared palette.
 - What is left to do is listed in `../CODEX-HANDOVER-2026-10-01/00-START-HERE.md`.
 
 ## Current follow-up, 1 October 2026

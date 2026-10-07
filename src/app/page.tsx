@@ -2,7 +2,7 @@ import { loadShopServerData } from '@/lib/shopServerData';
 import { loadProductAccess, filterProductReviews } from '@/lib/productAccess';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
+import BeautyLogo from '@/components/BeautyLogo';
 import NewInCarousel from '@/components/NewInCarousel';
 import ProductCarousel from '@/components/ProductCarousel';
 import HomeReviewsCarousel from '@/components/HomeReviewsCarousel';
@@ -166,7 +166,7 @@ export default async function HomePage() {
           users down to the carousel without forcing it into the initial viewport.
           ROLLBACK: change `md:min-h-[78vh]` back to `md:min-h-[52vh]`. */}
       <section className="relative flex min-h-[92svh] md:min-h-[78vh] flex-col items-center justify-center px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-gold-50/40 via-white to-white pointer-events-none" />
+        <div className="absolute inset-0 bg-white pointer-events-none" />
 
         <div className="relative z-10 w-full">
           <div className="max-w-xl mx-auto">
@@ -183,14 +183,7 @@ export default async function HomePage() {
             </p>
 
             <div className="flex justify-center mb-6 sm:mb-8">
-              <Image
-                src="/images/logo-transparent.png"
-                alt="Windsor Beauty"
-                width={320}
-                height={200}
-                className="w-64 sm:w-80 h-auto object-contain"
-                priority
-              />
+              <BeautyLogo className="w-64 sm:w-80 h-auto" />
             </div>
 
             {/* The social accounts, centred directly under the logo.

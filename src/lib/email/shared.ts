@@ -1,7 +1,7 @@
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import tailwindConfig from '../../../tailwind.config.js';
 
-// Use the same Blush and Plum colours as the shop.
+// Use the same shared brand palette as the shop.
 const palette = tailwindConfig.theme!.extend!.colors as { white: string; gold: Record<number, string>; stone: Record<number, string> };
 
 export const EMAIL_COLORS = {

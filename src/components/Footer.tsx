@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import BeautyLogo from '@/components/BeautyLogo';
 import { getSiteContent, isDbConfigured } from '@/lib/db';
 import { parseFooterContent } from '@/lib/footerContent';
 import { categoryUrl } from '@/lib/categoryUrls';
@@ -27,13 +27,7 @@ export default async function Footer() {
           {/* Brand column with real logo */}
           <div className="sm:col-span-2">
             <div className="mb-4">
-              <Image
-                src="/images/logo-transparent.png"
-                alt="Windsor Beauty"
-                width={144}
-                height={90}
-                className="w-36 h-auto object-contain"
-              />
+              <BeautyLogo className="w-36 h-auto" />
             </div>
             {/* whitespace-pre-line keeps the line breaks typed into the description (Samuel's layout, 7 Oct 2026). */}
             <p className="text-xs text-stone-500 leading-relaxed max-w-xs mb-5 whitespace-pre-line">

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { isStaffView } from '@/lib/staffView';
 import Link from 'next/link';
-import Image from 'next/image';
+import BeautyLogo from '@/components/BeautyLogo';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 
@@ -100,15 +100,7 @@ export default function Header() {
 
         {/* Header logo — horizontal version */}
         <Link href="/" className="flex items-center select-none shrink-0 relative z-10">
-          <Image
-            src="/images/windsor-beauty-logo-transparent.png"
-            alt="Windsor Beauty"
-            width={2694}
-            height={648}
-            className="w-auto object-contain"
-            style={{ height: '40px' }}
-            priority
-          />
+          <BeautyLogo horizontal className="h-10 w-auto" />
         </Link>
 
         {/* Desktop navigation — absolutely centered on the full header width.

@@ -4,9 +4,16 @@ Windsor Beauty's online shop and the admin panel that runs it. It was built from
 shop in October 2026, so it works the same way, with Windsor Beauty's own brand, products, database
 and settings.
 
-**The shop is not open.** The live address shows a "We are making a few improvements" screen to
-everybody except signed-in admin staff. See "The holding screen" below before changing anything
-about how the site is published.
+**Current access:** On 7 October 2026, Kieran confirmed that the public storefront should stay
+accessible as it is. Keep the current live access settings unchanged. The holding-screen
+mechanism below remains available; this colour release does not change it.
+
+**Approved colours, 7 October 2026:** pale blue `#F3F7FA`, graphite buttons `#3D4B59`, and
+option 3 brushed pewter logos (`#566570`, `#7E8B96`, `#64727D`). The reusable `BeautyLogo`
+component colours the original logo silhouettes. Shared colour tokens are in `tailwind.config.js`.
+Kieran approved publishing this design. Product data and photographs are unchanged.
+Validation: standard checks, TypeScript, targeted lint, email palette and retired-feature
+checks, production build, and desktop and phone visual checks. No payment was submitted.
 
 ## What is in it
 
