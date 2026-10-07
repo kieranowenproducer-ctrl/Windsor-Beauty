@@ -27,7 +27,7 @@ export interface FooterContent {
 
 export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   description:
-    'Premium skincare from Windsor Beauty, part of the C&S Holdings Group. Serums, moisturisers, cleansers and SPF for a simple daily routine.',
+    'Premium skincare from Windsor Beauty -\nPart of the C&S Holdings Group.\n\nSerums, moisturisers, cleansers and SPF\nfor a simple daily routine.',
   emails: [
     { address: 'info@windsorbeauty.is', label: 'general enquiries' },
     { address: 'sales@windsorbeauty.is', label: 'sales & orders' },

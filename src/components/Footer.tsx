@@ -35,7 +35,8 @@ export default async function Footer() {
                 className="w-36 h-auto object-contain"
               />
             </div>
-            <p className="text-xs text-stone-500 leading-relaxed max-w-xs mb-5">
+            {/* whitespace-pre-line keeps the line breaks typed into the description (Samuel's layout, 7 Oct 2026). */}
+            <p className="text-xs text-stone-500 leading-relaxed max-w-xs mb-5 whitespace-pre-line">
               {footer.description}
             </p>
             <ul className="space-y-1.5">
