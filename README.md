@@ -15,6 +15,13 @@ Kieran approved publishing this design. Product data and photographs are unchang
 Validation: standard checks, TypeScript, targeted lint, email palette and retired-feature
 checks, production build, and desktop and phone visual checks. No payment was submitted.
 
+**Form refinement, 8 October 2026:** Kieran approved publishing the reviewed white form
+panels and fields. Shared form tokens in `tailwind.config.js` keep field borders distinct
+from the pale blue page background. `beauty-form-panel` styles contact and account panels;
+shared CSS covers neutral text fields, dropdowns and textareas, with a dark focus outline.
+Border contrast is 3.43:1 on white and 3.18:1 on pale blue. Production build, targeted lint,
+palette contrast, desktop and mobile checks passed. No form submission behaviour changed.
+
 ## What is in it
 
 **The shop:** catalogue, categories, product pages with sizes, stock, basket, checkout, customer

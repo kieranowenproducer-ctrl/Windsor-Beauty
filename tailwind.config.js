@@ -14,6 +14,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        form: {
+          surface: '#FFFFFF',
+          border: '#7B8D9B',
+          panel: '#CBD5DF',
+          disabled: '#E8EEF2',
+        },
         // Pale blue and brushed pewter, approved by Kieran on 7 October 2026.
         // Keep the legacy scale names used throughout the shop and admin:
         // gold-700 is graphite, stone-50/white are pale blue, stone-900 is dark text.

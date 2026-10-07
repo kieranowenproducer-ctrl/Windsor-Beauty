@@ -82,7 +82,7 @@ export default function AccountLoginPage() {
           </p>
         </div>
 
-        <div className="bg-white border border-gold-100 p-8">
+        <div className="beauty-form-panel p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="login-email" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">

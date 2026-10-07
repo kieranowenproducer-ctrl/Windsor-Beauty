@@ -71,7 +71,7 @@ export default async function ContactPage() {
         </div>
 
         {/* Form */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 beauty-form-panel self-start p-6 sm:p-8">
           <ContactForm subjects={content.subjects} />
         </div>
       </div>

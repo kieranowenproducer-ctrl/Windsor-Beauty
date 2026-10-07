@@ -64,6 +64,35 @@ input, textarea, select {
   transition: border-color 0.15s ease;
 }
 
+/* Form surfaces stay true white independently of the pale blue page palette.
+   Only neutral bordered fields are rethemed; validation colours and non-text
+   controls keep their own styles. Equal utility specificity lets these shared
+   defaults repair existing forms without changing any submission behaviour. */
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea, select):is(.bg-white, .bg-transparent) {
+  background-color: theme('colors.form.surface');
+}
+
+:where(input, textarea, select):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200):where(:not([aria-invalid="true"]):not([class*="border-red-"]):not([type="checkbox"]):not([type="radio"])) {
+  border-color: theme('colors.form.border');
+}
+
+:where(input, textarea, select):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200):enabled:focus:where(:not([aria-invalid="true"]):not([class*="border-red-"])) {
+  border-color: theme('colors.stone.800');
+  outline: 2px solid theme('colors.stone.800');
+  outline-offset: 2px;
+}
+
+:where(input, textarea, select):is(.bg-white, .bg-transparent):disabled {
+  background-color: theme('colors.form.disabled');
+  cursor: not-allowed;
+}
+
+.beauty-form-panel {
+  background-color: theme('colors.form.surface');
+  border: 1px solid theme('colors.form.panel');
+  box-shadow: 0 6px 24px rgb(39 54 68 / 4%);
+}
+
 /* iOS Safari auto-zooms the whole page on focus when a form field's
    font-size is under 16px — most inputs/selects/textareas across the site
    use Tailwind's text-sm (14px), which triggers it on checkout, login, the

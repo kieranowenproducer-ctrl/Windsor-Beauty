@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        <div className="bg-white border border-stone-200 p-8">
+        <div className="beauty-form-panel p-6 sm:p-8">
           <h1 className="text-xs tracking-[0.2em] uppercase text-stone-600 font-semibold mb-6">
             Admin Login
           </h1>

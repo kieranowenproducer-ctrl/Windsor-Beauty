@@ -62,7 +62,7 @@ export default function AccountRegisterPage() {
           <h1 className="font-serif text-3xl text-stone-800 tracking-wide">{createdEmailVerified ? 'Your Account Is Ready' : 'Check Your Email'}</h1>
         </div>
 
-        <div className="bg-white border border-gold-100 p-8 text-center">
+        <div className="beauty-form-panel p-6 sm:p-8 text-center">
           {referralWarning && <p role="alert" className="text-sm text-amber-900 bg-amber-50 border border-amber-300 p-3 mb-5">
             Your account was created, but the referral was not recorded. Please contact Windsor Beauty before ordering so our team can check it.
           </p>}
@@ -97,7 +97,7 @@ export default function AccountRegisterPage() {
         </p>
       </div>
 
-      <div className="bg-white border border-gold-100 p-8">
+      <div className="beauty-form-panel p-6 sm:p-8">
         <MemberRegistrationForm
           onSubmit={handleSubmit}
           submitLabel="Become a Member"

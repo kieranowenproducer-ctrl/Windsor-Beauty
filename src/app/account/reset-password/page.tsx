@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        <div className="bg-white border border-gold-100 p-8">
+        <div className="beauty-form-panel p-6 sm:p-8">
           {token === null ? (
             <p className="text-xs text-stone-500 text-center">Checking your link…</p>
           ) : token === '' ? (

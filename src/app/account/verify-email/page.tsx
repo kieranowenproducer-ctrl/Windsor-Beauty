@@ -55,7 +55,7 @@ export default function VerifyEmailPage() {
           <h1 className="font-serif text-3xl text-stone-800 tracking-wide">Verify Your Email</h1>
         </div>
 
-        <div className="bg-white border border-gold-100 p-8 text-center">
+        <div className="beauty-form-panel p-6 sm:p-8 text-center">
           {(stage === 'checking' || stage === 'verifying') && (
             <p className="text-sm text-stone-500 leading-relaxed">Verifying your email&hellip;</p>
           )}
