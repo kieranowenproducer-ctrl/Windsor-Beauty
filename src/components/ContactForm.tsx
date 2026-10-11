@@ -103,6 +103,8 @@ export default function ContactForm({ subjects }: { subjects: ContactSubject[] }
           </label>
           <input
             id="contact-name"
+            name="contactName"
+            autoComplete="name"
             type="text"
             value={form.name}
             onChange={update('name')}
@@ -116,6 +118,8 @@ export default function ContactForm({ subjects }: { subjects: ContactSubject[] }
           </label>
           <input
             id="contact-email"
+            name="contactEmail"
+            autoComplete="email"
             type="email"
             value={form.email}
             onChange={update('email')}
@@ -131,6 +135,7 @@ export default function ContactForm({ subjects }: { subjects: ContactSubject[] }
         </label>
         <select
           id="contact-subject"
+          name="contactSubject"
           value={form.subject}
           onChange={update('subject')}
           required
@@ -152,6 +157,7 @@ export default function ContactForm({ subjects }: { subjects: ContactSubject[] }
           </label>
           <input
             id="contact-orderNumber"
+            name="orderNumber"
             type="text"
             value={form.orderNumber}
             onChange={update('orderNumber')}
@@ -171,16 +177,17 @@ export default function ContactForm({ subjects }: { subjects: ContactSubject[] }
         </label>
         <textarea
           id="contact-message"
+          name="contactMessage"
           value={form.message}
           onChange={update('message')}
           required
           rows={6}
-          className={inputClass + ' resize-none'}
+          className={inputClass + ' resize-y'}
         />
       </div>
 
       {error && (
-        <p className="text-xs text-red-500 leading-relaxed">{error}</p>
+        <p role="alert" className="text-xs text-red-500 leading-relaxed">{error}</p>
       )}
 
       <button

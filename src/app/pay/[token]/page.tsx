@@ -213,7 +213,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
             ) : (
               <div className="px-6 sm:px-8 py-6">
                 {/* Terms & Conditions acknowledgement — gates the buttons */}
-                <div className="border border-gold-200 bg-gold-50/50 px-4 py-4 mb-5">
+                <div className="beauty-form-panel px-4 py-4 mb-5">
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input
                       type="checkbox"

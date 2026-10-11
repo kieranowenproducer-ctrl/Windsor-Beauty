@@ -135,8 +135,10 @@ export default function CartPage() {
                     {/* Qty */}
                     <div className="flex items-center border border-stone-200">
                       <button
+                        type="button"
+                        aria-label={`Decrease quantity of ${item.name}`}
                         onClick={() => updateQty(item.productId, item.variant, item.quantity - 1)}
-                        className="w-8 h-8 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center"
+                        className="w-11 h-11 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center"
                       >
                         &minus;
                       </button>
@@ -144,8 +146,10 @@ export default function CartPage() {
                         {item.quantity}
                       </span>
                       <button
+                        type="button"
+                        aria-label={`Increase quantity of ${item.name}`}
                         onClick={() => updateQty(item.productId, item.variant, item.quantity + 1)}
-                        className="w-8 h-8 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center"
+                        className="w-11 h-11 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center"
                       >
                         +
                       </button>

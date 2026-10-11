@@ -176,8 +176,10 @@ export default function CartDrawer() {
                     <div className="flex items-center gap-2">
                       <div className="flex items-center border border-stone-200">
                         <button
+                          type="button"
+                          aria-label={`Decrease quantity of ${item.name}`}
                           onClick={() => updateQty(item.productId, item.variant, item.quantity - 1)}
-                          className="w-6 h-6 text-stone-500 hover:text-gold-800 transition-colors text-xs flex items-center justify-center"
+                          className="w-11 h-11 text-stone-500 hover:text-gold-800 transition-colors text-xs flex items-center justify-center"
                         >
                           &minus;
                         </button>
@@ -185,8 +187,10 @@ export default function CartDrawer() {
                           {item.quantity}
                         </span>
                         <button
+                          type="button"
+                          aria-label={`Increase quantity of ${item.name}`}
                           onClick={() => updateQty(item.productId, item.variant, item.quantity + 1)}
-                          className="w-6 h-6 text-stone-500 hover:text-gold-800 transition-colors text-xs flex items-center justify-center"
+                          className="w-11 h-11 text-stone-500 hover:text-gold-800 transition-colors text-xs flex items-center justify-center"
                         >
                           +
                         </button>

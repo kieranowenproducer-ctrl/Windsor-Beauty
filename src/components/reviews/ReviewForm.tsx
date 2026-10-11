@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import Link from 'next/link';
 import { useIsLoggedIn } from '@/hooks/useIsLoggedIn';
 
@@ -16,6 +16,7 @@ export default function ReviewForm({
   onSubmitted?: () => void;
 }) {
   const isLoggedIn = useIsLoggedIn();
+  const formId = useId();
 
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState('');
@@ -116,16 +117,19 @@ export default function ReviewForm({
               type="button"
               onClick={() => setRating(value)}
               aria-label={`${value} star${value === 1 ? '' : 's'}`}
-              className={`text-2xl leading-none transition-colors ${value <= rating ? 'text-gold-700' : 'text-stone-200 hover:text-gold-200'}`}
+              aria-pressed={value === rating}
+              className="min-h-11 min-w-11 border border-form-border bg-form-surface text-gold-700 text-2xl leading-none transition-colors hover:border-stone-800"
             >
-              ★
+              {value <= rating ? '★' : '☆'}
             </button>
           ))}
         </div>
       </div>
       <div>
-        <label className="block text-[9px] tracking-[0.22em] uppercase text-stone-500 mb-2">Title (optional)</label>
+        <label htmlFor={`${formId}-title`} className="block text-[9px] tracking-[0.22em] uppercase text-stone-500 mb-2">Title (optional)</label>
         <input
+          id={`${formId}-title`}
+          name="reviewTitle"
           type="text"
           value={title}
           onChange={e => setTitle(e.target.value)}
@@ -134,8 +138,10 @@ export default function ReviewForm({
         />
       </div>
       <div>
-        <label className="block text-[9px] tracking-[0.22em] uppercase text-stone-500 mb-2">Your Review</label>
+        <label htmlFor={`${formId}-body`} className="block text-[9px] tracking-[0.22em] uppercase text-stone-500 mb-2">Your Review</label>
         <textarea
+          id={`${formId}-body`}
+          name="reviewBody"
           value={body}
           onChange={e => setBody(e.target.value)}
           placeholder="Tell us what you thought"

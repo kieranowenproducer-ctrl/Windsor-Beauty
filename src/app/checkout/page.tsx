@@ -535,7 +535,7 @@ export default function CheckoutPage() {
 
           {/* Step 1: Customer Details */}
           {step === 'details' && (
-            <div className="border border-gold-100 p-7">
+            <div className="beauty-form-panel p-5 sm:p-7">
               <h2 className="text-[10px] tracking-[0.22em] uppercase text-stone-500 font-semibold mb-6">
                 Customer Details
               </h2>
@@ -553,20 +553,20 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="checkout-firstName" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">First Name</label>
-                    <input id="checkout-firstName" type="text" value={details.firstName} onChange={updateDetails('firstName')} readOnly={savedProfileLocked && Boolean(savedCustomer?.firstName)} required className={inputClass} />
+                    <input id="checkout-firstName" name="firstName" autoComplete="given-name" type="text" value={details.firstName} onChange={updateDetails('firstName')} readOnly={savedProfileLocked && Boolean(savedCustomer?.firstName)} required className={inputClass} />
                   </div>
                   <div>
                     <label htmlFor="checkout-lastName" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Last Name</label>
-                    <input id="checkout-lastName" type="text" value={details.lastName} onChange={updateDetails('lastName')} readOnly={savedProfileLocked && Boolean(savedCustomer?.lastName)} required className={inputClass} />
+                    <input id="checkout-lastName" name="lastName" autoComplete="family-name" type="text" value={details.lastName} onChange={updateDetails('lastName')} readOnly={savedProfileLocked && Boolean(savedCustomer?.lastName)} required className={inputClass} />
                   </div>
                 </div>
                 <div>
                   <label htmlFor="checkout-email" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Email Address</label>
-                  <input id="checkout-email" type="email" value={details.email} onChange={updateDetails('email')} readOnly={savedProfileLocked} required className={inputClass} />
+                  <input id="checkout-email" name="email" autoComplete="email" type="email" value={details.email} onChange={updateDetails('email')} readOnly={savedProfileLocked} required className={inputClass} />
                 </div>
                 <div>
                   <label htmlFor="checkout-phone" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Phone Number</label>
-                  <input id="checkout-phone" type="tel" value={details.phone} onChange={updateDetails('phone')} required className={inputClass} />
+                  <input id="checkout-phone" name="phone" autoComplete="tel" type="tel" value={details.phone} onChange={updateDetails('phone')} required className={inputClass} />
                 </div>
 
                 <div className="border-t border-gold-100 pt-4">
@@ -580,25 +580,25 @@ export default function CheckoutPage() {
                     {differentAddress && savedProfileLocked && (
                       <div>
                         <label htmlFor="checkout-recipient" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Recipient name (if different)</label>
-                        <input id="checkout-recipient" type="text" value={shippingRecipient} onChange={e => setShippingRecipient(e.target.value)} className={inputClass} />
+                        <input id="checkout-recipient" name="shippingRecipient" autoComplete="shipping name" type="text" value={shippingRecipient} onChange={e => setShippingRecipient(e.target.value)} className={inputClass} />
                       </div>
                     )}
                     <div>
                       <label htmlFor="checkout-line1" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Address Line 1</label>
-                      <input id="checkout-line1" type="text" value={details.line1} onChange={updateDetails('line1')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressLine1)} required className={inputClass} />
+                      <input id="checkout-line1" name="addressLine1" autoComplete="shipping address-line1" type="text" value={details.line1} onChange={updateDetails('line1')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressLine1)} required className={inputClass} />
                     </div>
                     <div>
                       <label htmlFor="checkout-line2" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Address Line 2 (optional)</label>
-                      <input id="checkout-line2" type="text" value={details.line2} onChange={updateDetails('line2')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressLine1)} className={inputClass} />
+                      <input id="checkout-line2" name="addressLine2" autoComplete="shipping address-line2" type="text" value={details.line2} onChange={updateDetails('line2')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressLine1)} className={inputClass} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="checkout-city" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">City</label>
-                        <input id="checkout-city" type="text" value={details.city} onChange={updateDetails('city')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressCity)} required className={inputClass} />
+                        <input id="checkout-city" name="addressCity" autoComplete="shipping address-level2" type="text" value={details.city} onChange={updateDetails('city')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressCity)} required className={inputClass} />
                       </div>
                       <div>
                         <label htmlFor="checkout-postcode" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Postcode</label>
-                        <input id="checkout-postcode" type="text" value={details.postcode} onChange={updateDetails('postcode')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressPostcode)} required className={inputClass} />
+                        <input id="checkout-postcode" name="addressPostcode" autoComplete="shipping postal-code" type="text" value={details.postcode} onChange={updateDetails('postcode')} readOnly={savedAddressLocked && Boolean(savedCustomer?.addressPostcode)} required className={inputClass} />
                       </div>
                     </div>
                     <div>
@@ -635,7 +635,7 @@ export default function CheckoutPage() {
 
           {/* Step 2: Shipping */}
           {step === 'shipping' && (
-            <div className="border border-gold-100 p-7">
+            <div className="beauty-form-panel p-5 sm:p-7">
               <h2 className="text-[10px] tracking-[0.22em] uppercase text-stone-500 font-semibold mb-1.5">
                 Shipping Method
               </h2>
@@ -650,30 +650,31 @@ export default function CheckoutPage() {
                 {SHIPPING_OPTIONS.map(opt => (
                   <label
                     key={opt.id}
-                    className={`flex items-center justify-between p-4 border cursor-pointer transition-colors ${
+                    className={`beauty-choice flex items-center justify-between gap-3 p-4 cursor-pointer transition-colors ${
                       shipping === opt.id
-                        ? 'border-gold-400 bg-gold-50/50'
-                        : 'border-stone-200 hover:border-gold-200'
+                        ? 'beauty-choice-selected'
+                        : ''
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${shipping === opt.id ? 'border-gold-500' : 'border-stone-300'}`}>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div aria-hidden="true" className={`w-4 h-4 shrink-0 rounded-full border-2 flex items-center justify-center transition-colors ${shipping === opt.id ? 'border-gold-500' : 'border-form-border'}`}>
                         {shipping === opt.id && <div className="w-2 h-2 rounded-full bg-gold-700" />}
                       </div>
                       <div>
                         <input type="radio" name="shipping" value={opt.id} checked={shipping === opt.id} onChange={() => setShipping(opt.id)} className="sr-only" />
                         <p className="text-xs font-semibold text-stone-700">{opt.label}</p>
                         <p className="text-[9px] text-stone-500">{opt.sub}</p>
+                        {shipping === opt.id && <p className="mt-1 text-[10px] font-semibold text-stone-800">Selected</p>}
                       </div>
                     </div>
-                    <span className="text-sm font-semibold text-stone-700">
+                    <span className="text-sm font-semibold text-stone-700 shrink-0">
                       £{opt.price.toFixed(2)}
                     </span>
                   </label>
                 ))}
               </div>
 
-              <div className="border border-gold-100 bg-gold-50/30 p-4 mb-6 text-xs text-stone-500 leading-relaxed">
+              <div className="beauty-form-panel p-4 mb-6 text-xs text-stone-500 leading-relaxed">
                 {selectedShipping.id === 'hand'
                   ? 'We will hand deliver your order. There is no delivery charge.'
                   : 'Royal Mail orders include tracking. You will receive a tracking number by email once your order has been dispatched.'}
@@ -698,7 +699,7 @@ export default function CheckoutPage() {
 
           {/* Step 3: Payment */}
           {step === 'payment' && (
-            <div className="border border-gold-100 p-7">
+            <div className="beauty-form-panel p-5 sm:p-7">
               <h2 className="text-[10px] tracking-[0.22em] uppercase text-stone-500 font-semibold mb-6">
                 Payment
               </h2>
@@ -706,11 +707,12 @@ export default function CheckoutPage() {
               {/* Payment method selector */}
               <div className="mb-6">
                 <p className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold mb-3">Payment Method</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     type="button"
                     onClick={() => setPaymentOption('fena')}
-                    className={`relative p-4 border text-left transition-colors ${paymentOption === 'fena' ? 'border-gold-400 bg-gold-50/50' : 'border-stone-200 hover:border-gold-200'}`}
+                    aria-pressed={paymentOption === 'fena'}
+                    className={`beauty-choice relative p-4 text-left transition-colors ${paymentOption === 'fena' ? 'beauty-choice-selected' : ''}`}
                   >
                     <span className="absolute -top-2.5 right-3 bg-gold-700 text-white text-[8px] font-semibold tracking-[0.18em] uppercase px-2 py-1">
                       Recommended
@@ -719,29 +721,32 @@ export default function CheckoutPage() {
                       <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentOption === 'fena' ? 'border-gold-500' : 'border-stone-300'}`}>
                         {paymentOption === 'fena' && <div className="w-1.5 h-1.5 rounded-full bg-gold-700" />}
                       </div>
-                      <span className="text-xs font-semibold text-stone-800">Pay by Bank</span>
+                      <span className="text-sm font-semibold text-stone-800">Pay by Bank (Fena)</span>
                     </div>
                     <p className="text-[10px] text-stone-500 leading-relaxed pl-5">Instant transfer, no card needed</p>
+                    {paymentOption === 'fena' && <p className="mt-2 pl-5 text-[11px] font-semibold text-stone-800">Selected</p>}
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentOption('paypal')}
-                    className={`p-4 border text-left transition-colors ${paymentOption === 'paypal' ? 'border-[#0070ba]/40 bg-blue-50/30' : 'border-stone-200 hover:border-[#0070ba]/30'}`}
+                    aria-pressed={paymentOption === 'paypal'}
+                    className="beauty-choice beauty-paypal-choice p-4 text-left transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-1.5">
-                      <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentOption === 'paypal' ? 'border-[#0070ba]' : 'border-stone-300'}`}>
-                        {paymentOption === 'paypal' && <div className="w-1.5 h-1.5 rounded-full bg-[#0070ba]" />}
+                      <div aria-hidden="true" className="beauty-choice-indicator w-3.5 h-3.5 rounded-full border-2 border-[#0070ba] flex items-center justify-center flex-shrink-0">
+                        {paymentOption === 'paypal' && <div className="beauty-choice-dot w-1.5 h-1.5 rounded-full bg-[#0070ba]" />}
                       </div>
-                      <span className="text-xs font-semibold text-stone-800">Pay with PayPal</span>
+                      <span className="text-sm font-semibold text-stone-800">Pay with PayPal</span>
                     </div>
                     <p className="text-[10px] text-stone-500 leading-relaxed pl-5">Via PayPal &middot; 3.5% processing fee applies</p>
+                    {paymentOption === 'paypal' && <p className="mt-2 pl-5 text-[11px] font-semibold">Selected</p>}
                   </button>
                 </div>
               </div>
 
               {/* Payment method info panel */}
               {paymentOption === 'fena' ? (
-                <div className="border border-stone-200 p-5 mb-6">
+                <div className="beauty-form-panel p-5 mb-6">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-8 h-8 bg-stone-900 rounded flex items-center justify-center shrink-0 mt-0.5">
                       <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth="2">
@@ -759,7 +764,7 @@ export default function CheckoutPage() {
                   </p>
                 </div>
               ) : (
-                <div className="border border-[#0070ba]/30 bg-blue-50/20 p-5 mb-6">
+                <div className="border border-[#0070ba] bg-form-surface p-5 mb-6">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-8 h-8 bg-[#0070ba] rounded flex items-center justify-center shrink-0 mt-0.5">
                       <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4">
@@ -781,7 +786,7 @@ export default function CheckoutPage() {
               )}
 
               {/* Discount code — only available to logged-in account holders */}
-              <div className="border border-gold-100 p-4 mb-6">
+              <div className="beauty-form-panel p-4 mb-6">
                 <p className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold mb-3">Discount Code</p>
 
                 {isLoggedIn === null && (
@@ -828,6 +833,8 @@ export default function CheckoutPage() {
                         )}
                       <div className="flex flex-col sm:flex-row gap-2.5">
                         <input
+                          aria-label="Discount code"
+                          name="discountCode"
                           type="text"
                           value={discountInput}
                           onChange={e => { setDiscountInput(e.target.value); setDiscountStatus('idle'); setDiscountMessage(''); }}
@@ -883,7 +890,7 @@ export default function CheckoutPage() {
 
               {!rafCodeApplied && <PromotionsAppliedBlock preview={promoPreview} />}
 
-              <div className="bg-stone-50 border border-stone-100 p-4 mb-6 space-y-1">
+              <div className="beauty-form-panel p-4 mb-6 space-y-1">
                 <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 font-semibold mb-2">Order Summary</p>
                 <div className="flex justify-between text-xs">
                   <span className="text-stone-500">Subtotal</span>
@@ -925,7 +932,7 @@ export default function CheckoutPage() {
 
               {/* The one thing somebody ticks before they pay. The wording lives in
                   src/lib/complianceConfirmations.ts so the server stores exactly what was shown. */}
-              <div className="border border-gold-200 bg-gold-50/40 px-4 py-4 mb-4 space-y-2">
+              <div className="beauty-form-panel px-4 py-4 mb-4 space-y-2">
                 <p className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold">
                   Before you pay
                 </p>
@@ -1010,7 +1017,7 @@ export default function CheckoutPage() {
 
         {/* Sidebar summary */}
         <div>
-          <div className="border border-gold-100 p-5 lg:sticky lg:top-24">
+          <div className="beauty-form-panel p-5 lg:sticky lg:top-24">
             <h3 className="text-[9px] tracking-[0.2em] uppercase text-stone-500 font-semibold mb-4">
               Your Order
             </h3>
@@ -1047,7 +1054,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-xs">
                 {/* Was "TBC" on the first step, straight after a basket that had just said
                     £10. The price follows the delivery country, so it is known from the start. */}
-                <span className="text-stone-500">{selectedShipping.id === 'uk' ? 'UK delivery' : 'International delivery'}</span>
+                <span className="text-stone-500">{selectedShipping.id === 'hand' ? 'Hand delivered' : selectedShipping.id === 'uk' ? 'UK delivery' : 'International delivery'}</span>
                 <span className="text-stone-800 font-semibold">
                   {baseShippingCost === 0 ? 'Free' : `£${baseShippingCost.toFixed(2)}`}
                 </span>

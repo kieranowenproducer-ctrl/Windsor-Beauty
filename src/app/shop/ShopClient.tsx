@@ -261,7 +261,9 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
               type="text"
               value={searchQuery}
               onChange={e => updateSearch(e.target.value)}
-              placeholder="Search products..."
+              aria-label="Search products"
+              name="productSearch"
+              placeholder="Search products"
               className="w-full border border-stone-300 bg-white shadow-sm text-[11px] tracking-[0.05em] text-stone-600 placeholder:text-stone-500 pl-3.5 pr-9 py-2.5 outline-none hover:border-gold-400 focus:border-gold-500 transition-colors"
             />
             <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

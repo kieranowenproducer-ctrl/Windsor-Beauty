@@ -93,6 +93,69 @@ input, textarea, select {
   box-shadow: 0 6px 24px rgb(39 54 68 / 4%);
 }
 
+/* Customer surfaces use true white. Legacy `white`/stone-200 aliases are
+   pale blue, so the old cards disappeared against the page. Scope the repair
+   to SiteChrome's public wrapper; private admin routes keep their own theme. */
+.beauty-storefront :where(.bg-white) {
+  background-color: theme('colors.form.surface');
+}
+
+/* Neutral cards without a surface, plus legacy white cards. Deliberately
+   leave coloured notices, selected choices and image gradients alone. */
+.beauty-storefront :where(div, section, aside, article, form).border:is(.border-stone-100, .border-stone-200, .border-gold-100, .border-gold-200):where(.bg-white, [class*="bg-gold-50"], :not([class*="bg-"])) {
+  background-color: theme('colors.form.surface');
+  border-color: theme('colors.form.panel');
+}
+
+/* Outlined actions and quantity controls must remain visible inside white
+   cards too. Their border has >3:1 contrast on both white and pale blue. */
+.beauty-storefront :where(button, a, label).border:is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200, .border-gold-300):where(:not([aria-pressed="true"]):not([class*="bg-gold-"]):not([class*="bg-stone-"]):not([class*="bg-[#"]):not([class*="bg-blue-"])) {
+  background-color: theme('colors.form.surface');
+  border-color: theme('colors.form.border');
+}
+
+.beauty-storefront :where(div).border.border-stone-200:has(> button) {
+  background-color: theme('colors.form.surface');
+  border-color: theme('colors.form.border');
+}
+
+.beauty-storefront :where(button, a).border:enabled:hover {
+  border-color: theme('colors.stone.800');
+}
+
+.beauty-storefront :where(button)[class*="disabled:bg-stone-"]:disabled {
+  background-color: theme('colors.form.disabled');
+  color: theme('colors.stone.600');
+  cursor: not-allowed;
+}
+
+.beauty-choice {
+  background-color: theme('colors.form.surface');
+  border: 1px solid theme('colors.form.border');
+  min-height: 72px;
+}
+
+.beauty-choice:hover { border-color: theme('colors.stone.800'); }
+.beauty-choice-selected {
+  border-color: theme('colors.stone.800');
+  box-shadow: inset 0 0 0 1px theme('colors.stone.800');
+}
+.beauty-choice:focus-within {
+  outline: 2px solid theme('colors.stone.800');
+  outline-offset: 3px;
+}
+.beauty-paypal-choice { border-color: #0070ba; }
+.beauty-paypal-choice:hover { border-color: #005ea6; }
+.beauty-paypal-choice[aria-pressed="true"] {
+  background-color: #005ea6;
+  border-color: #005ea6;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px #005ea6;
+}
+.beauty-paypal-choice[aria-pressed="true"] :where(span, p) { color: #fff; }
+.beauty-paypal-choice[aria-pressed="true"] .beauty-choice-indicator { border-color: #fff; }
+.beauty-paypal-choice[aria-pressed="true"] .beauty-choice-dot { background-color: #fff; }
+
 /* iOS Safari auto-zooms the whole page on focus when a form field's
    font-size is under 16px — most inputs/selects/textareas across the site
    use Tailwind's text-sm (14px), which triggers it on checkout, login, the

@@ -560,8 +560,10 @@ export default function ProductPage({ params, initial }: {
                 return (
                   <button
                     key={v.dosage}
+                    type="button"
+                    aria-pressed={variant.dosage === v.dosage}
                     onClick={() => { setSelectedVariant(v); setQty(1); }}
-                    className={`px-4 py-2 border text-xs tracking-wide transition-colors ${
+                    className={`min-h-11 px-4 py-2 border text-xs tracking-wide transition-colors ${
                       variant.dosage === v.dosage
                         ? 'bg-gold-700 text-white border-gold-500'
                         : vOutOfStock

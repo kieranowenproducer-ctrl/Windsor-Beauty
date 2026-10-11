@@ -87,8 +87,10 @@ export default function ResetPasswordPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className={labelClass}>New Password</label>
+                <label htmlFor="reset-password" className={labelClass}>New Password</label>
                 <input
+                  id="reset-password"
+                  name="password"
                   type="password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -99,8 +101,10 @@ export default function ResetPasswordPage() {
                 <p className="text-[9px] text-stone-500 mt-1">At least 8 characters.</p>
               </div>
               <div>
-                <label className={labelClass}>Confirm New Password</label>
+                <label htmlFor="reset-confirm-password" className={labelClass}>Confirm New Password</label>
                 <input
+                  id="reset-confirm-password"
+                  name="confirmPassword"
                   type="password"
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}

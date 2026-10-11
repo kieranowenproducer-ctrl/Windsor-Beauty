@@ -94,7 +94,7 @@ export default function SiteChrome({
 
   if (popupExempt) {
     return (
-      <>
+      <div className="beauty-storefront contents">
         <CampaignPoster />
         <SkipLink />
         {headerStack}
@@ -110,12 +110,12 @@ export default function SiteChrome({
           className="flex-1 focus:outline-none"
         >{pageChildren}</main>
         {footer}
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="beauty-storefront contents">
       <CampaignPoster />
       <SkipLink />
       {headerStack}
@@ -132,6 +132,6 @@ export default function SiteChrome({
         className="flex-1 focus:outline-none"
       >{pageChildren}</main>
       {footer}
-    </>
+    </div>
   );
 }

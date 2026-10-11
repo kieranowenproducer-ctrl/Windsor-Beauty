@@ -25,17 +25,21 @@ export default function AddToCartControls({
           <div className="flex items-center gap-3 mb-4">
             <div className="flex items-center border border-stone-200">
               <button
+                type="button"
+                aria-label="Decrease quantity"
                 onClick={() => setQty(q => Math.max(1, q - 1))}
                 disabled={unavailable}
-                className="w-10 h-11 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center disabled:opacity-40 disabled:hover:text-stone-500"
+                className="w-11 h-11 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center disabled:opacity-40 disabled:hover:text-stone-500"
               >
                 &minus;
               </button>
               <span className="w-10 text-center text-sm text-stone-700 font-medium">{qty}</span>
               <button
+                type="button"
+                aria-label="Increase quantity"
                 onClick={() => setQty(q => (typeof stock === 'number' ? Math.min(stock, q + 1) : q + 1))}
                 disabled={unavailable}
-                className="w-10 h-11 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center disabled:opacity-40 disabled:hover:text-stone-500"
+                className="w-11 h-11 text-stone-500 hover:text-gold-800 transition-colors flex items-center justify-center disabled:opacity-40 disabled:hover:text-stone-500"
               >
                 +
               </button>

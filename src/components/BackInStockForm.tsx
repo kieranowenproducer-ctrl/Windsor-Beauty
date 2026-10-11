@@ -47,12 +47,15 @@ export default function BackInStockForm({ slug }: { slug: string }) {
       </p>
       <div className="flex flex-col sm:flex-row gap-2">
         <input
+          aria-label="Email for a back-in-stock alert"
+          name="stockAlertEmail"
+          autoComplete="email"
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="flex-1 border border-stone-200 px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors"
+          className="flex-1 min-w-0 border border-stone-200 bg-form-surface px-3 py-2.5 text-xs focus:outline-none focus:border-gold-400 transition-colors"
         />
         <button
           type="submit"

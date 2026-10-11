@@ -11,11 +11,11 @@ export default function FAQAccordion({ items }: { items: FAQItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="border-t border-gold-100">
+    <div className="space-y-3">
       {items.map((item, i) => {
         const isOpen = openIndex === i;
         return (
-          <div key={item.question} className="border-b border-gold-100">
+          <div key={item.question} className="beauty-form-panel px-5">
             <button
               type="button"
               onClick={() => setOpenIndex(isOpen ? null : i)}

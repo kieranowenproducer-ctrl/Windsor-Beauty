@@ -8,7 +8,7 @@ export default function PromotionsAppliedBlock({ preview }: { preview: Promotion
   }
 
   return (
-    <div className="bg-gold-50/60 border border-gold-100 p-4 mb-4 space-y-1.5">
+    <div className="beauty-form-panel p-4 mb-4 space-y-1.5">
       <p className="text-[9px] tracking-[0.18em] uppercase text-gold-700 font-semibold mb-1">
         Promotions Applied
       </p>
