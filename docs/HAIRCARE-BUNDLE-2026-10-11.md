@@ -1,7 +1,7 @@
 # Shampoo, conditioner and bundle release
 
 > **Purpose:** Record the approved haircare prices and how bundle stock works.
-> **Status:** BUILT; live publication evidence is in the workspace batch-06 production record.
+> **Status:** LIVE; live publication evidence is in the workspace batch-06 production record.
 > **Related projects:** Windsor Beauty.
 > **Dependencies:** Two live database products and the active automatic bundle price rule.
 > **Key decisions:** Shampoo and conditioner cost £18.99 for guests and members. One of each costs £34.99, saving £2.99. Bundle inventory uses the component bottles.
@@ -11,6 +11,8 @@
 Kieran approved both individual photos and the wider-spaced two-bottle photo, authorised live publication and confirmed five bottles of each. Product data and photos are published through the normal Beauty admin APIs to its own database and Blob store. The bundle is a separate storefront listing and page, with one button adding one shampoo and one conditioner. It is not a separate stocked database product.
 
 The existing automatic promotion rule provides the bundle discount in both the basket preview and server checkout. Adding both products separately also qualifies. Repeated pairs each save £2.99; unmatched bottles retain their £18.99 price. Removing a bottle removes its pair's saving. Orders, invoices, payment totals and dispatch continue to contain the physical bottle lines. Stock checks and reservations use those lines. An unavailable component disables the bundle; a hidden or inaccessible component removes the offer entirely. No untracked stock is treated as unlimited for this bundle.
+
+The live browser check caught the quick basket drawer omitting automatic promotions. It now uses the same preview as the full basket and checkout. Preview responses are tied to the current basket and cancelled after quantity changes, so an earlier response cannot overwrite a newer basket's saving. Guests with no member saving can proceed directly from either basket view.
 
 Only these two slugs are exempt from the existing non-member markup. Their prices are re-derived from the catalogue on the server. Guest member-saving pop-ups are suppressed for a basket with no member saving; mixed baskets retain the existing savings for other products.
 

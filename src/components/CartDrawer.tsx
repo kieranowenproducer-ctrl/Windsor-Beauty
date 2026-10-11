@@ -11,6 +11,8 @@ import UpsellCarousel from './UpsellCarousel';
 import MemberPriceOfferModal from './MemberPriceOfferModal';
 import MemberSavingsNote from './MemberSavingsNote';
 import { useIsLoggedIn } from '@/hooks/useIsLoggedIn';
+import { usePromotionPreview } from '@/hooks/usePromotionPreview';
+import PromotionsAppliedBlock from './PromotionsAppliedBlock';
 
 // Mirrors ProductCard's image loading: same /images/products/{slug}.jpg path
 // and the same WG placeholder fallback, just scaled down for the basket row.
@@ -57,6 +59,8 @@ export default function CartDrawer() {
   const [ukDeliveryRate, setUkDeliveryRate] = useState<number | null>(null);
   const [memberOfferOpen, setMemberOfferOpen] = useState(false);
   const isLoggedIn = useIsLoggedIn();
+  const promoPreview = usePromotionPreview(items, drawerOpen);
+  const displayTotal = promoPreview ? promoPreview.subtotalAfterRules : totalPrice;
 
   useEffect(() => {
     fetch('/api/shipping-rates')
@@ -234,10 +238,11 @@ export default function CartDrawer() {
             )}
             <AccountIncentiveBanner subtotal={totalPrice} saving={memberSaving} className="mb-1" />
             <MemberSavingsNote compact className="mb-1" />
+            <PromotionsAppliedBlock preview={promoPreview} />
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs tracking-[0.15em] uppercase text-stone-500">Subtotal</span>
               <span className="text-base font-semibold text-gold-700">
-                &pound;{totalPrice.toFixed(2)}
+                &pound;{displayTotal.toFixed(2)}
               </span>
             </div>
             {/* The delivery charge was a 9px grey line under the subtotal, easy to miss

@@ -231,7 +231,7 @@ export default function CartPage() {
 
             <Link
               href="/checkout"
-              onClick={(event) => { if (isLoggedIn === false) { event.preventDefault(); setMemberOfferOpen(true); } }}
+              onClick={(event) => { if (isLoggedIn === false && memberSaving > 0) { event.preventDefault(); setMemberOfferOpen(true); } }}
               className="block w-full bg-gold-700 text-white text-[10px] tracking-[0.22em] uppercase text-center py-3.5 hover:bg-gold-800 transition-colors mb-3"
             >
               Proceed to Checkout
