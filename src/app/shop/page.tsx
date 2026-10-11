@@ -5,6 +5,7 @@ import { categoryFromSlug, categorySlug, categoryUrl } from '@/lib/categoryUrls'
 import { shopUrl } from '@/lib/slugAliases';
 import { SITE_URL } from '../robots';
 import ShopClient from './ShopClient';
+import { bundleAsProduct } from '@/lib/hairCareBundle';
 
 /**
  * The shop index, as a search engine sees it.
@@ -70,7 +71,7 @@ interface ShopPageProps {
 export default async function ShopPage(props: ShopPageProps) {
   const searchParams = await props.searchParams;
   const data = await loadShopServerData();
-  const products = visibleProducts(data);
+  const products = [...visibleProducts(data), ...(data.hairBundle ? [bundleAsProduct(data.hairBundle)] : [])].sort((a, b) => a.name.localeCompare(b.name));
 
   /**
    * ?category= KEEPS WORKING, AND LANDS ON THE CATEGORY'S OWN PAGE.
@@ -106,6 +107,7 @@ export default async function ShopPage(props: ShopPageProps) {
       />
       <ShopClient
         initial={{
+          hairBundle: data.hairBundle,
           overrides: data.overrides,
           hidden: data.hidden,
           stock: data.stock,

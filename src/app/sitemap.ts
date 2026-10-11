@@ -4,6 +4,8 @@ import { categoryUrl } from '@/lib/categoryUrls';
 import { liveCategories, searchableProducts } from '@/lib/shopServerData';
 import { shopUrl } from '@/lib/slugAliases';
 import { SITE_URL } from './robots';
+import { getProductVariantStockMap, listActivePromotionRules } from '@/lib/db';
+import { makeHairCareBundle, bundleAsProduct } from '@/lib/hairCareBundle';
 
 /**
  * /sitemap.xml
@@ -52,7 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    * included, and the 31 hidden ones left out. See searchableProducts() for why this now asks the
    * database rather than trusting the static file, and for what it does when the answer does not
    * come back. */
-  const products = await searchableProducts();
+  const products = [...await searchableProducts()];
+  // The bundle uses its components' public visibility and stock, never a
+  // separate database product that could be bought without its bottles.
+  const [bundleStock, bundleRules] = await Promise.all([getProductVariantStockMap().catch(() => ({})), listActivePromotionRules().catch(() => [])]);
+  const bundle = makeHairCareBundle(products, [], bundleStock, bundleRules);
+  if (bundle) products.push(bundleAsProduct(bundle));
 
   /* The category pages, added 11 August 2026. Only categories with at least one live product in
    * them, and read from the same liveCategories() the footer links from, so a sitemap that

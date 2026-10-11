@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       return {
         name: product?.name ?? item.slug ?? 'Item',
         variant: item.variant ?? '',
-        price: priceForCustomer(memberPrice, Boolean(customer)),
+        price: priceForCustomer(memberPrice, Boolean(customer), item.slug),
         quantity: item.quantity,
         slug: item.slug,
       };

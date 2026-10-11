@@ -87,6 +87,7 @@ export default async function CategoryPage(props: CategoryPageProps) {
     <ShopClient
       lockedCategory={name}
       initial={{
+        hairBundle: data.hairBundle,
         overrides: data.overrides,
         hidden: data.hidden,
         stock: data.stock,

@@ -7,10 +7,11 @@ import {
 import { DEFAULT_SITE_SALE, siteSaleConfigFromPromotion, type SiteSaleConfig } from '@/lib/siteSale';
 import { categorySlug } from '@/lib/categoryUrls';
 import { PRETTY_SLUG, shopUrl } from '@/lib/slugAliases';
+import { makeHairCareBundle, type HairCareBundle } from '@/lib/hairCareBundle';
 import {
   getActivePercentagePromotion, getHiddenProductSlugs, getProductSoldCounts, getProductStockMap,
   getProductVariantStockMap, getReviewStatsForProducts, getSiteContent, isDbConfigured,
-  listCategories, listCustomProducts,
+  listCategories, listCustomProducts, listActivePromotionRules,
 } from '@/lib/db';
 
 /**
@@ -39,6 +40,7 @@ import {
  * before any of this existed. Nothing here can make the shop fail to render.
  */
 export interface ShopServerData {
+  hairBundle?: HairCareBundle | null;
   /** Only accessible restricted products, for noindex metadata. */
   membersOnly?: string[];
   /**
@@ -132,7 +134,7 @@ export const loadShopServerData = cache(async (): Promise<ShopServerData> => {
   const access = await loadProductAccess().catch(() => null);
   if (!access) return { ...FALLBACK, catalogue: [], overrides: {}, ...viewer };
 
-  const [overrides, hidden, stock, variantStock, promo, storage, soldCounts, reviewStats, categoryRows] =
+  const [overrides, hidden, stock, variantStock, promo, storage, soldCounts, reviewStats, categoryRows, bundleRules] =
     await Promise.all([
       safely(listCustomProducts, {} as Record<string, Product>),
       safely(getHiddenProductSlugs, [] as string[]),
@@ -143,11 +145,13 @@ export const loadShopServerData = cache(async (): Promise<ShopServerData> => {
       safely(getProductSoldCounts, {} as Record<string, number>),
       safely(getReviewStatsForProducts, {} as Record<string, { average: number; count: number }>),
       safely(listCategories, [] as Awaited<ReturnType<typeof listCategories>>),
+      safely(listActivePromotionRules, [] as Awaited<ReturnType<typeof listActivePromotionRules>>),
     ]);
 
   const enabled = categoryRows.filter((row) => row.enabled).map((row) => row.category);
 
   return {
+    hairBundle: makeHairCareBundle(mergeProducts(PRODUCTS, overrides).filter(p => mayAccessProduct(p.slug, access)), hidden, variantStock, bundleRules),
     membersOnly: Array.from(access.rules).filter(([slug, rule]) => rule.membersOnly && mayAccessProduct(slug, access)).map(([slug]) => slug),
     overrides: filterProductRecords(overrides, access),
     catalogue: mergeProducts(PRODUCTS, overrides).filter(p => mayAccessProduct(p.slug, access)),

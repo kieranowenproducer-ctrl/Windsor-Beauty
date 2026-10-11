@@ -20,7 +20,7 @@ interface AccountIncentiveBannerProps {
 export default function AccountIncentiveBanner({ subtotal, variant = 'incentive', saving, className = '' }: AccountIncentiveBannerProps) {
   const isLoggedIn = useIsLoggedIn();
 
-  if (isLoggedIn !== false || subtotal <= 0) return null;
+  if (isLoggedIn !== false || subtotal <= 0 || saving === 0) return null;
 
   const savings = percentOf(subtotal, 20);
 

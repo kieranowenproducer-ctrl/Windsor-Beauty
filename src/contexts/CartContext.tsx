@@ -180,7 +180,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [owner, state.items]);
 
   const totalItems = state.items.reduce((sum, i) => sum + i.quantity, 0);
-  const priceForItem = (item: CartItem) => priceForCustomer(item.price, isLoggedIn === true);
+  const priceForItem = (item: CartItem) => priceForCustomer(item.price, isLoggedIn === true, item.slug);
   // Cart items retain the catalogue's member price. The visible and submitted
   // total changes only when the verified account state does, so a guest can
   // never keep a member price merely because it was placed in local storage.

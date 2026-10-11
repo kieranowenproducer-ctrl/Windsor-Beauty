@@ -39,11 +39,11 @@ export function resolveServerItemPrice(item: IncomingItem, productsBySlug: Map<s
   const product = productsBySlug.get(item.slug);
   if (!product) throw new Error('A basket item is no longer available.');
   const variant = product.variants.find((v) => v.dosage === item.variant);
-  if (variant) return priceForCustomer(variant.price, isMember);
+  if (variant) return priceForCustomer(variant.price, isMember, product.slug);
   const active = product.variants.filter((v) => v.enabled !== false);
   const candidates = active.length ? active : product.variants;
   if (!candidates.length) throw new Error('A basket item is no longer available.');
-  return priceForCustomer(candidates.reduce((min, v) => (v.price < min.price ? v : min)).price, isMember);
+  return priceForCustomer(candidates.reduce((min, v) => (v.price < min.price ? v : min)).price, isMember, product.slug);
 }
 
 // Re-exported for backwards compatibility: see src/lib/money.ts for the

@@ -5,6 +5,8 @@ import { isStaffView } from '@/lib/staffView';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { categoryUrl } from '@/lib/categoryUrls';
 import ProductCard from '@/components/ProductCard';
+import HairCareBundleCard from '@/components/HairCareBundleCard';
+import { bundleAsProduct, HAIR_BUNDLE_SLUG, type HairCareBundle } from '@/lib/hairCareBundle';
 import BackToHome from '@/components/BackToHome';
 import { PRODUCTS, Product, ALL_CATEGORIES, Category, mergeProducts, searchableText } from '@/data/products';
 import { DEFAULT_SITE_SALE, type SiteSaleConfig } from '@/lib/siteSale';
@@ -50,6 +52,7 @@ function sortProducts(products: Product[], sort: SortOption, soldCounts: Record<
  * the value this file used before the server supplied anything.
  */
 export interface ShopInitialData {
+  hairBundle?: HairCareBundle | null;
   overrides?: Record<string, Product>;
   hidden?: string[];
   stock?: Record<string, number>;
@@ -115,6 +118,11 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
   const [enabledCategories, setEnabledCategories] = useState<string[]>(
     initial?.categories ?? [...ALL_CATEGORIES]);
   const [saleConfig, setSaleConfig] = useState<SiteSaleConfig>(initial?.saleConfig ?? DEFAULT_SITE_SALE);
+  const [hairBundle, setHairBundle] = useState<HairCareBundle | null>(initial?.hairBundle ?? null);
+
+  useEffect(() => {
+    fetch('/api/products/hair-bundle', { cache: 'no-store' }).then(r => r.ok ? r.json() : Promise.reject()).then(data => setHairBundle(data.bundle ?? null)).catch(() => setHairBundle(null));
+  }, []);
 
   useEffect(() => {
     setIsStaff(isStaffView());
@@ -173,7 +181,7 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
       .catch(() => {});
   }, []);
 
-  const catalogue = useMemo(() => mergeProducts(PRODUCTS, overrides), [overrides]);
+  const catalogue = useMemo(() => [...mergeProducts(PRODUCTS, overrides), ...(hairBundle ? [bundleAsProduct(hairBundle)] : [])], [overrides, hairBundle]);
 
   const visibleProducts = useMemo(
     () => catalogue.filter(p => !hiddenSlugs.has(p.slug)),
@@ -312,6 +320,7 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filtered.map(product => (
+            product.slug === HAIR_BUNDLE_SLUG && hairBundle ? <HairCareBundleCard key={product.slug} bundle={hairBundle} /> :
             <ProductCard key={product.id} product={product} stock={stockMap[product.slug]} reviewStats={reviewStats[product.slug]} saleConfig={saleConfig} isStaff={isStaff} variantStock={variantStockMap[product.slug]} />
           ))}
         </div>

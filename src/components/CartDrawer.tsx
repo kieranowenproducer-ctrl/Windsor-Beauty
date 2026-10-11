@@ -261,7 +261,7 @@ export default function CartDrawer() {
             )}
             <Link
               href="/checkout"
-              onClick={(event) => { if (isLoggedIn === false) { event.preventDefault(); setMemberOfferOpen(true); } else closeDrawer(); }}
+              onClick={(event) => { if (isLoggedIn === false && memberSaving > 0) { event.preventDefault(); setMemberOfferOpen(true); } else closeDrawer(); }}
               className="block w-full bg-gold-700 text-white text-[10px] tracking-[0.22em] uppercase text-center py-3.5 hover:bg-gold-800 transition-colors"
             >
               Proceed to Checkout

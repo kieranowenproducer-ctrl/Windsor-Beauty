@@ -15,26 +15,29 @@ import { sumMoney } from './money';
 // lands on a multiple of 5, more otherwise).
 export const NON_MEMBER_MARKUP = 1.25; // members save at least 20% off the non-member price
 
-export function memberPricingEnabled(_slug: string): boolean {
-  return true; // all products (was a single-slug trial)
+const FIXED_PRICE_PRODUCTS = new Set(['ghk-cu-copper-peptide-shampoo', 'ghk-cu-copper-peptide-conditioner']);
+
+export function memberPricingEnabled(slug: string): boolean {
+  return !FIXED_PRICE_PRODUCTS.has(slug);
 }
 
 // Non-member price from a member (current) price: +25%, then rounded UP to
 // the nearest five pounds so shelf prices read clean (e.g. 85 -> 106.25 -> 110),
 // which also guarantees members save at least 20% off the shown non-member price.
-export function nonMemberPrice(memberPrice: number): number {
+export function nonMemberPrice(memberPrice: number, slug?: string): number {
+  if (slug && !memberPricingEnabled(slug)) return memberPrice;
   return Math.ceil((memberPrice * NON_MEMBER_MARKUP) / 5) * 5;
 }
 
 /** The catalogue stores the member price. This is the one calculation shared
  * by the customer interface and the server-side order check. */
-export function priceForCustomer(memberPrice: number, isMember: boolean): number {
-  return isMember ? memberPrice : nonMemberPrice(memberPrice);
+export function priceForCustomer(memberPrice: number, isMember: boolean, slug?: string): number {
+  return isMember ? memberPrice : nonMemberPrice(memberPrice, slug);
 }
 
 /** How much less a member pays for these basket lines than a non-member:
  * the member price difference only, before promotions, codes or delivery.
  * The same difference appears in the member offer pop-up. */
-export function memberSavingFor(items: ReadonlyArray<{ price: number; quantity: number }>): number {
-  return sumMoney(items.map(item => (nonMemberPrice(item.price) - item.price) * item.quantity));
+export function memberSavingFor(items: ReadonlyArray<{ price: number; quantity: number; slug?: string }>): number {
+  return sumMoney(items.map(item => (nonMemberPrice(item.price, item.slug) - item.price) * item.quantity));
 }
