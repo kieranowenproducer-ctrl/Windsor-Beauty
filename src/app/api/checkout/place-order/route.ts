@@ -1,6 +1,7 @@
 import { filterPromotionRulesForProducts } from '@/lib/productVisibility';
 import { loadProductAccess, filterProductRecords, mayAccessProduct, productJson } from '@/lib/productAccess';
 import { normalisePhoneNumber, PHONE_ERROR } from '@/lib/phoneNumber';
+import { hasHandDelivery, HAND_DELIVERY_LABEL } from '@/lib/handDelivery';
 import { after, NextResponse } from 'next/server';
 import { canSpendWelcomeCode } from '@/lib/welcomeDiscount';
 import { reportRefusedDiscount } from '@/lib/discountRefusalAlert';
@@ -194,6 +195,11 @@ export async function POST(request: Request) {
     if (customer.first_name && customer.last_name) customerName = `${customer.first_name} ${customer.last_name}`;
   }
 
+  const handDelivered = shippingLabel === HAND_DELIVERY_LABEL;
+  if (handDelivered && (!hasHandDelivery(customer) || shippingCountry?.toUpperCase() !== 'GB')) {
+    return NextResponse.json({ error: 'Free hand delivery is not available for this account or address. Please choose a delivery option again.' }, { status: 403 });
+  }
+
   // Re-derive item prices, subtotal and shipping cost from the live catalogue
   // and shipping settings. Never fall back to browser-submitted prices: that
   // could let a guest bypass the non-member price while a database call fails.
@@ -216,7 +222,7 @@ export async function POST(request: Request) {
     const freeThreshold = shippingSettings.free_shipping_threshold_pence > 0
       ? shippingSettings.free_shipping_threshold_pence / 100
       : null;
-    shippingCost = (!isIntl && freeThreshold !== null && subtotal >= freeThreshold) ? 0 : baseShippingCost;
+    shippingCost = handDelivered || (!isIntl && freeThreshold !== null && subtotal >= freeThreshold) ? 0 : baseShippingCost;
   } catch {
     return NextResponse.json({
       error: 'We cannot confirm the latest prices right now. Please try again in a moment.',
@@ -384,7 +390,7 @@ export async function POST(request: Request) {
       error: `Beauty Card rewards can be used when your products total £${REFERRAL_MIN_FIRST_ORDER} or more before delivery. Your reward code has not been used.`,
     }, { status: 400 });
   }
-  const isStandardUkDelivery = resolveServiceFromLabel(shippingLabel) === 'uk-standard';
+  const isStandardUkDelivery = !handDelivered && resolveServiceFromLabel(shippingLabel) === 'uk-standard';
   if (isGlowReward) {
     shippingCost = applyReferralDeliveryDiscount(shippingCost, isStandardUkDelivery, glowDeliveryDiscountPercent);
   }
@@ -564,6 +570,10 @@ export async function POST(request: Request) {
       discountAmount,
       shippingLabel,
       shippingCost,
+      ...(handDelivered ? {
+        fulfilmentType: 'hand_delivered' as const,
+        automationFlags: { sendPaymentLink: true, sendConfirmation: true, triggerRoyalMail: false, sendDispatchEmail: false },
+      } : {}),
       total,
       shippingAddress,
       shippingLine1,

@@ -34,6 +34,7 @@ interface AppliedDiscount extends DiscountCodeInfo {
 }
 
 interface CheckoutCustomer {
+  handDeliveryEligible?: boolean;
   firstName: string | null;
   lastName: string | null;
   email: string;
@@ -143,19 +144,22 @@ export default function CheckoutPage() {
   const [enterManually, setEnterManually] = useState(false);
   const [differentAddress, setDifferentAddress] = useState(false);
   const [shippingRecipient, setShippingRecipient] = useState('');
+  const isLoggedIn = useIsLoggedIn();
+  const handDeliveryAvailable = isLoggedIn === true && savedCustomer?.handDeliveryEligible === true && details.country === 'GB';
 
-  // Shipping method is determined by delivery country, not a free choice,
-  // so the shippingLabel sent to the server always matches the recipient's
-  // country (avoids Royal Mail rejecting/misrouting a UK-labelled parcel
-  // addressed abroad).
+  // Postal choices follow the delivery country. The approved account also
+  // gets a free hand-delivery choice for a UK address.
   const SHIPPING_OPTIONS = useMemo(
-    () => SHIPPING_OPTION_META
+    () => [
+      ...(handDeliveryAvailable ? [{ id: 'hand', label: 'Hand delivered', sub: 'Free hand delivery arranged by Windsor Beauty', price: 0 }] : []),
+      ...SHIPPING_OPTION_META
       .filter(opt => (details.country === 'GB' ? opt.id === 'uk' : opt.id === 'international'))
       .map(opt => ({
         ...opt,
         price: opt.id === 'international' ? shippingRates.international : shippingRates.uk,
       })),
-    [shippingRates, details.country]
+    ],
+    [shippingRates, details.country, handDeliveryAvailable]
   );
 
   useEffect(() => {
@@ -173,8 +177,6 @@ export default function CheckoutPage() {
   // The member's own unused welcome code, so the basket can offer it instead of waiting to be asked.
   const [memberWelcomeCode, setMemberWelcomeCode] = useState<string | null>(null);
 
-  const isLoggedIn = useIsLoggedIn();
-
   useEffect(() => {
     if (isLoggedIn !== true) return;
     let cancelled = false;
@@ -188,6 +190,7 @@ export default function CheckoutPage() {
       .then(customer => {
         if (cancelled) return;
         setSavedCustomer(customer);
+        if (customer.handDeliveryEligible && (customer.addressCountry ?? 'GB') === 'GB') setShipping('hand');
         setDetails({
           firstName: customer.firstName ?? '', lastName: customer.lastName ?? '',
           email: customer.email, phone: customer.phone ?? '',
@@ -637,7 +640,9 @@ export default function CheckoutPage() {
                 Shipping Method
               </h2>
               <p className="text-[10px] text-stone-500 mb-6">
-                {details.country === 'GB'
+                {handDeliveryAvailable
+                  ? 'Choose free hand delivery or Royal Mail delivery to your UK address.'
+                  : details.country === 'GB'
                   ? 'Based on your delivery address (United Kingdom). Shipping to Europe or internationally? Go back to step 1 and update your country to see international rates.'
                   : 'Based on your delivery address (International). Estimated 7-14 working days via Royal Mail International Tracked.'}
               </p>
@@ -669,7 +674,9 @@ export default function CheckoutPage() {
               </div>
 
               <div className="border border-gold-100 bg-gold-50/30 p-4 mb-6 text-xs text-stone-500 leading-relaxed">
-                All orders are dispatched via Royal Mail with tracking. You will receive a tracking number by email once your order has been dispatched.
+                {selectedShipping.id === 'hand'
+                  ? 'We will hand deliver your order. There is no delivery charge.'
+                  : 'Royal Mail orders include tracking. You will receive a tracking number by email once your order has been dispatched.'}
               </div>
 
               <div className="flex gap-3">

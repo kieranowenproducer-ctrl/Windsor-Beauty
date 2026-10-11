@@ -39,6 +39,7 @@ async function openCheckout(account) {
     ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ customer: account }) })
     : route.fulfill({ status: 401, contentType: 'application/json', body: '{}' }));
   await context.route('**/api/account/welcome-code', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }));
+  await context.route('**/api/cart/validate', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{"allowedSlugs":["5-amino-1mq-100mg"]}' }));
   await context.route('**/api/products/catalogue', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }));
   await context.route('**/api/products/visibility', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{"hidden":[]}' }));
   await context.route('**/api/products/stock', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{"stock":{}}' }));

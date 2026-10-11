@@ -24,6 +24,9 @@ palette contrast, desktop and mobile checks passed. No form submission behaviour
 
 ## What is in it
 
+**Hand delivery, 11 October 2026:** Angela's approved account gets a £0 hand-delivery choice
+at checkout, with paid postal delivery still available. See [the exception and checks](docs/HAND-DELIVERY-2026-10-11.md).
+
 **The shop:** catalogue, categories, product pages with sizes, stock, basket, checkout, customer
 accounts, orders, promotions, discount codes, upsells and reviews.
 

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { findDiscountSignupByEmail, listOrdersByCustomerId } from '@/lib/db';
 import { resolveCustomerFromRequest } from '@/lib/auth';
+import { hasHandDelivery } from '@/lib/handDelivery';
 import { glowCardDemoDesign } from '@/lib/glowCardDemo';
 import { affiliatesEnabled, getAffiliateCustomerCode, isAffiliateCustomer } from '@/lib/affiliates';
 
@@ -40,6 +41,7 @@ export async function GET(request: Request) {
     customer: {
       id: customer.id,
       email: customer.email,
+      handDeliveryEligible: hasHandDelivery(customer),
       firstName: customer.first_name,
       lastName: customer.last_name,
       phone: customer.phone,
@@ -78,5 +80,5 @@ export async function GET(request: Request) {
       createdAt: o.created_at,
       paymentConfirmedAt: o.payment_confirmed_at,
     })),
-  });
+  }, { headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie' } });
 }

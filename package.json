@@ -25,6 +25,7 @@
     "test:enquiry-auto-draft": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-enquiry-auto-draft.mjs",
     "test:email-greeting": "node --experimental-strip-types --no-warnings scripts/test-email-greeting.mjs",
     "test:checkout-profile": "node scripts/test-checkout-profile.mjs",
+    "test:hand-delivery": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-beauty-hand-delivery.mjs",
     "check:email-disclaimer": "node scripts/check-email-disclaimer.mjs",
     "test:enquiry-reply-recording": "node --import ./scripts/alias-loader.mjs --experimental-strip-types --no-warnings scripts/test-enquiry-reply-recording.mjs",
     "test:inbound-enquiry-replies": "node scripts/test-inbound-enquiry-replies.mjs",
