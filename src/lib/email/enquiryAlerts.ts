@@ -1,14 +1,7 @@
-import { beautyOperationalAddress } from '@/lib/operationalAddress';
-const SALES_INBOX = 'sales@windsorbeauty.is';
-const INFO_INBOX = 'info@windsorbeauty.is';
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-/** One email submission alerts both team inboxes and any named colleagues. */
-export function enquiryAlertRecipients(extra = beautyOperationalAddress(process.env.ENQUIRY_ALERT_TO)): string[] {
-  const addresses = [SALES_INBOX, INFO_INBOX, ...(extra ?? '').split(/[;,]/)]
-    .map(item => item.trim().toLowerCase())
-    .filter(item => EMAIL.test(item));
-  return Array.from(new Set(addresses));
+/** Kieran chose one staff alert to info, alongside the dashboard pop-up.
+ * Legacy ENQUIRY_ALERT_TO lists must not add sales or other inbox copies. */
+export function enquiryAlertRecipients(): string[] {
+  return ['info@windsorbeauty.is'];
 }
 
 /** A packing or money problem needs prompt human attention, not an automatic answer. */

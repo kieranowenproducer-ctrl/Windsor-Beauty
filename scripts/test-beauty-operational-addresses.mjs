@@ -21,7 +21,7 @@ const archive = await import('../src/lib/email/archive.ts');
 assert.equal(archive.getArchiveAddress('customer@example.invalid'), 'info@windsorbeauty.is');
 assert.equal(archive.getArchiveAddress('info@windsorbeauty.is'), null);
 assert.equal(archive.getArchiveAddress('customer@example.invalid', 'off'), null);
-assert.deepEqual((await import('../src/lib/email/enquiryAlerts.ts')).enquiryAlertRecipients(), ['sales@windsorbeauty.is', 'info@windsorbeauty.is', 'team@other.co.uk']);
+assert.deepEqual((await import('../src/lib/email/enquiryAlerts.ts')).enquiryAlertRecipients(), ['info@windsorbeauty.is']);
 const paypal = await import('../src/lib/paypalInstructionsEmail.ts');
 assert.equal(new URL(paypal.buildPaypalLink('WB-SYNTHETIC', 2)).searchParams.get('business'), 'sales@windsorbeauty.is');
 

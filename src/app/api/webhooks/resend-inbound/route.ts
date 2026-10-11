@@ -8,7 +8,7 @@ import { emailThreadReferences, emailDirectParents, normaliseMessageId } from '@
 import { findOrderRef, verifyWebhookSignature } from '@/lib/replyCapture';
 import { sendEmail } from '@/lib/email/send';
 import { enquiryAlertRecipients, isUrgentCustomerEmail } from '@/lib/email/enquiryAlerts';
-import { isIgnoredInboundSender, isSimpleAcknowledgement, visibleInboundEmailText } from '@/lib/email/inboundRouting';
+import { isIgnoredInboundSender, isSimpleAcknowledgement, visibleInboundEmailText, nonEnquiryEmailReason } from '@/lib/email/inboundRouting';
 
 export const dynamic = 'force-dynamic';
 
@@ -191,6 +191,11 @@ export async function POST(request: Request) {
     ?? (content.html ? content.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '')
     ?? '';
   const bodyText = visibleInboundEmailText(rawBodyText);
+  const nonEnquiryReason = nonEnquiryEmailReason(fromAddress, content.headers);
+  if (nonEnquiryReason) {
+    // Acknowledge capture without creating a case, pop-up or duplicate receipt alert.
+    return NextResponse.json({ ignored: true, reason: nonEnquiryReason });
+  }
   const receivedCaptureAddress = approvedCapture;
   // Customer history records the verified original public mailbox. The
   // provider envelope remains a separate transport value for reply detection.

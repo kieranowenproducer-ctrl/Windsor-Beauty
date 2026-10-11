@@ -93,7 +93,7 @@ test('authenticated GET cannot override a conflicting signed SMTP identity',asyn
 });
 
 test('new native module is actually evaluated: exact internal contact is inert, conflicting subject holds',async()=>{
- const nativeEvent=event({from:'enquiries@windsorbeauty.is',to:['sales@windsorbeauty.is','info@windsorbeauty.is'],reply_to:['owner@example.invalid'],subject:'Website enquiry: General Enquiry, Offline Owner'});
+ const nativeEvent=event({from:'enquiries@windsorbeauty.is',to:['info@windsorbeauty.is'],reply_to:['owner@example.invalid'],subject:'Website enquiry: General Enquiry, Offline Owner'});
  const env={BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED:'true',RESEND_INBOUND_API_KEY_BEAUTY_IS:'synthetic-receiving'};
  for(const conflict of [false,true]){
   const h=harness(env,async()=>({ok:true,json:async()=>({...nativeEvent.data,id:provider,subject:conflict?'Website enquiry: Other, Changed Owner':nativeEvent.data.subject})}));

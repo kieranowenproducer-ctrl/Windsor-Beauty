@@ -8,6 +8,7 @@ import * as capture from '../src/lib/replyCapture.ts';
 import * as routing from '../src/lib/email/inboundRouting.ts';
 import * as threads from '../src/lib/email/threadReferences.ts';
 import * as envelope from '../src/lib/email/beautyInboundEnvelope.ts';
+import * as alerts from '../src/lib/email/enquiryAlerts.ts';
 
 // Real route, signature and routing helpers; only provider/DB/sending are
 // intercepted. Synthetic fixtures cannot contact a customer or live service.
@@ -30,8 +31,8 @@ function harness(content, env = {}, threadRows=[]) {
     '@/lib/email/beautyInboundEnvelope':envelope,
     '@/lib/email/threadReferences':threads,
     '@/lib/replyCapture': capture,
-    '@/lib/email/send': { sendEmail: async () => { calls.alerts++; return { ok: true }; } },
-    '@/lib/email/enquiryAlerts': { enquiryAlertRecipients: () => ['synthetic-staff@example.invalid'], isUrgentCustomerEmail: () => false },
+    '@/lib/email/send': { sendEmail: async (payload) => { assert.deepEqual(payload.to, ['info@windsorbeauty.is']); calls.alerts++; return { ok: true }; } },
+    '@/lib/email/enquiryAlerts': alerts,
     '@/lib/email/inboundRouting': routing,
   };
   const result = { exports: {} };
@@ -48,6 +49,61 @@ function harness(content, env = {}, threadRows=[]) {
   return { route: result.exports.POST, calls, request };
 }
 const fixture = (from = 'customer@example.invalid', headers = { to: 'Info <info@windsorbeauty.is>', 'x-zohomail-delivered-to': 'info@windsorbeauty.is' }) => ({ id:'synthetic-id',message_id:'incoming@smtp.invalid',from, to: ['windsor-beauty@ilkaik.resend.app'], received_for: ['windsor-beauty@ilkaik.resend.app'], subject: 'Synthetic enquiry', text: 'Synthetic question', headers });
+test('automated receipts, service notices and mailing lists create no enquiry or staff email', async () => {
+  const samples = [
+    ['service@paypal.co.uk', 'Notification of payment received', {}],
+    ['service@paypal.com', 'Withdrawal of funds', {}],
+    ['noreply@news.paypal.com', 'Your latest offer', {}],
+    ['noreply@zoho.eu', 'Sign-in alert', {}],
+    ['noreply@zohoaccounts.eu', 'Confirm your email forwarding', {}],
+    ['noreply@digital.ee.co.uk', 'Your top-up receipt', {}],
+    ['notification@facebookmail.com', 'Your invoice', {}],
+    ['newsletter@example.invalid', 'Special offers', { 'List-Id': '<offers.example.invalid>' }],
+    ['updates@example.invalid', 'Monthly news', { 'List-Unsubscribe': '<https://example.invalid/remove>', Precedence: 'bulk' }],
+  ];
+  for (const [sender, subject, headers] of samples) {
+    const content = fixture(sender);
+    content.subject = subject;
+    content.headers = { ...content.headers, ...headers, 'Auto-Submitted': 'auto-forwarded' };
+    content.text = 'Receipt for payment, order WB-SYNTHETIC.';
+    content.attachments = [{ id: 'synthetic-file', filename: 'receipt.pdf' }];
+    const h = harness(content);
+    for (let retry = 0; retry < 2; retry++) {
+      const res = await h.route(h.request());
+      assert.equal(res.status, 200, sender);
+      const result = await res.json();
+      assert.equal(result.ignored, true, sender);
+      assert.ok(['automated_sender', 'provider_notification', 'mailing_list'].includes(result.reason), sender);
+    }
+    assert.equal(h.calls.history + h.calls.cases + h.calls.alerts + h.calls.claims, 0, sender);
+  }
+});
+test('customer payment problems and quoted receipts remain enquiries with one alert on retry', async () => {
+  for (const [subject, text] of [
+    ['Payment received twice', 'I paid twice with PayPal. Please help me get a refund.'],
+    ['Invoice question', 'Can you correct the address on my invoice?'],
+    ['Notification of payment received', 'Can you check my order? Forwarded: service@paypal.co.uk, payment received.'],
+    ['New account', 'Hello, can you help me sign up?'],
+    ['(no subject)', 'Hello'],
+  ]) {
+    const content = fixture('customer@example.invalid');
+    content.subject = subject; content.text = text;
+    content.headers['Auto-Submitted'] = 'auto-forwarded';
+    content.headers['List-Unsubscribe'] = '<https://example.invalid/preferences>';
+    const h = harness(content);
+    for (let retry = 0; retry < 2; retry++) assert.equal((await h.route(h.request())).status, 200);
+    assert.equal(h.calls.cases, 1); assert.ok(h.calls.history > 0);
+    assert.equal(h.calls.alerts, 1, subject);
+  }
+});
+test('lookalike domains and human provider staff are not automatically excluded', async () => {
+  for (const sender of ['service@paypal.co.uk.attacker.invalid', 'person@paypal.co.uk', 'support@zoho.eu', 'reply@example.invalid']) {
+    const h = harness(fixture(sender));
+    assert.equal((await h.route(h.request())).status, 200);
+    assert.equal(h.calls.alerts, 1, sender);
+  }
+});
+
 test('foreign internal staff senders cannot become Beauty customer records', async () => {
   for (const sender of ['Info <info@windsorglow.is>', 'staff@windsorglow.com', 'staff@windsorglow.co.uk', 'info@windsorbeauty.is', 'info@windsorbeauty.co.uk', 'windsor-glow@ilkaik.resend.app', 'windsor-beauty@ilkaik.resend.app']) {
     const h = harness(fixture(sender)); const res = await h.route(h.request());

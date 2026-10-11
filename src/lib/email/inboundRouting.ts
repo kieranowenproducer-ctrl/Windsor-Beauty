@@ -1,4 +1,29 @@
 /**
+ * Only confidently automated mail is excluded. Customer payment questions and
+ * forwarded receipts keep their normal path: body/subject keywords alone never
+ * decide whether a customer needs help. The original message stays in Zoho.
+ */
+export function nonEnquiryEmailReason(address: string, headers: Record<string, string> = {}): string | null {
+  const email = address.trim().toLowerCase();
+  const local = email.split('@')[0];
+  if (/^(?:no[._-]?reply|do[._-]?not[._-]?reply|donotreply|mailer-daemon)$/.test(local)) {
+    return 'automated_sender';
+  }
+  // Observed service notifications, not a blanket block on these providers.
+  if (['service@paypal.co.uk', 'service@paypal.com', 'notification@facebookmail.com'].includes(email)) {
+    return 'provider_notification';
+  }
+  const header = (name: string) => Object.entries(headers)
+    .find(([key]) => key.toLowerCase() === name)?.[1]?.trim() ?? '';
+  if (header('list-id') || (
+    header('list-unsubscribe') && /^(?:bulk|list)(?:\s|$)/i.test(header('precedence'))
+  )) {
+    return 'mailing_list';
+  }
+  return null;
+}
+
+/**
  * Automated supplier mail belongs in the mailbox, not the customer enquiry queue.
  * Keep this check on the sender domain so every Royal Mail address is covered,
  * including future subdomains and addresses we have not seen before.
