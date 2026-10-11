@@ -183,7 +183,7 @@ export default async function HomePage() {
             </p>
 
             <div className="flex justify-center mb-6 sm:mb-8">
-              <BeautyLogo className="w-64 sm:w-80 h-auto" />
+              <BeautyLogo finish="brushed" className="w-64 sm:w-80 h-auto" />
             </div>
 
             {/* The social accounts, centred directly under the logo.

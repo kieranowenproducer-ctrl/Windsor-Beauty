@@ -37,6 +37,8 @@ Read [README.md](README.md) first. The short version:
 
 ## Current follow-up, 1 October 2026
 
+**Logo selection, 11 October:** Header and central homepage use the exact owner-selected brushed-silver A sheet through `BeautyLogo finish="brushed"`. The footer keeps the original pewter mask. Preserve the unchanged page palette and dimensions. Read `docs/LOGO-SILVER-A-2026-10-11.md`; do not substitute the darker rejected transparent generations.
+
 - Customer PayPal payment-link emails are forbidden, including automatic reminders. Keep the direct payment page, on-screen resume link and staff notice.
 - Retired affiliate, referral, loyalty and old launch routes are blocked in `src/proxy.ts`. Their shared data code is retained. Do not re-enable them.
 - Email colours and the holding screen read the shared Tailwind palette. Print documents and QR backgrounds use true white deliberately.

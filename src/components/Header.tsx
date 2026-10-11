@@ -100,7 +100,7 @@ export default function Header() {
 
         {/* Header logo — horizontal version */}
         <Link href="/" className="flex items-center select-none shrink-0 relative z-10">
-          <BeautyLogo horizontal className="h-10 w-auto" />
+          <BeautyLogo horizontal finish="brushed" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop navigation — absolutely centered on the full header width.

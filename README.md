@@ -22,6 +22,11 @@ shared CSS covers neutral text fields, dropdowns and textareas, with a dark focu
 Border contrast is 3.43:1 on white and 3.18:1 on pale blue. Production build, targeted lint,
 palette contrast, desktop and mobile checks passed. No form submission behaviour changed.
 
+**Selected logo finish, 11 October 2026:** Kieran chose the slightly darker brushed-silver A
+preview for the header and central homepage logo. These use the exact selected image, with its
+light preview background made transparent in `BeautyLogo`. The footer keeps its earlier pewter
+finish. Page colours and logo box sizes are unchanged. See [the release record](docs/LOGO-SILVER-A-2026-10-11.md).
+
 ## What is in it
 
 **Hand delivery, 11 October 2026:** Angela's approved account gets a £0 hand-delivery choice
