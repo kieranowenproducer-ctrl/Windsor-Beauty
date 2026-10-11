@@ -37,5 +37,18 @@ The prior local icon edits were safely stashed before fast-forwarding to the cur
 reapplying them produced a clean tree because the same artwork is already in GitHub. The safety
 stash was retained. No earlier work was discarded.
 
-Release evidence will be added after publication. Real payment settlement and physical delivery
-are outside these checks.
+Published source `b1503e034067548a5aefa46620b1b1dafec998ac`, deployment
+`dpl_J1LMSF1kaRdjieR3eQpfYPhN3SCu`, is READY in production with both `.is` and `.co.uk`
+domains attached. The concurrent account-panel release was retained and the combined production
+build passed before pushing.
+
+Live verification at `https://www.windsorbeauty.is`: the actual signed-in account API returned
+Angela's correct account with `handDeliveryEligible: true` and `Cache-Control: private, no-store`;
+the guest account request returned 401. The test used a temporary five-minute session, deleted
+in a finally block and confirmed absent. No existing customer session or account field changed.
+Desktop and phone browser checks also passed against the deployed checkout assets using isolated
+account/catalogue responses. No live order, payment, email or parcel was created.
+
+Real payment settlement and physical delivery are outside these checks. All lasting changes and
+this check record are saved to Beauty's GitHub repository. Temporary browser captures are disposable;
+this task adds no private configuration or required drive-only files.
