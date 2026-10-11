@@ -267,15 +267,15 @@ export default function AccountDashboardPage() {
       )}
       {data.rafDiscount && <RafMemberCodes raf={data.rafDiscount} />}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-12">
-        <div className="border border-gold-100 p-5">
+        <div className="beauty-form-panel p-5">
           <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">Paid Orders</div>
-          <div className="text-2xl font-semibold text-stone-800">{stats.orderCount}</div>
+          <div className="text-2xl font-semibold tabular-nums text-stone-800">{stats.orderCount}</div>
         </div>
-        <div className="border border-gold-100 p-5">
+        <div className="beauty-form-panel p-5">
           <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">Total Spent</div>
-          <div className="text-2xl font-semibold text-gold-700">&pound;{stats.totalSpent.toFixed(2)}</div>
+          <div className="text-2xl font-semibold tabular-nums text-gold-700">&pound;{stats.totalSpent.toFixed(2)}</div>
         </div>
-        <div className="border border-gold-100 p-5 col-span-2 sm:col-span-1">
+        <div className="beauty-form-panel p-5 col-span-2 sm:col-span-1">
           <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">Member Since</div>
           <div className="text-2xl font-semibold text-stone-800">{formatDate(customer.createdAt)}</div>
         </div>
@@ -283,14 +283,14 @@ export default function AccountDashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Order history */}
-        <div className="lg:col-span-2">
+        <div className="beauty-form-panel p-5 sm:p-6 lg:col-span-2 min-w-0">
           <h2 className="text-[10px] tracking-[0.22em] uppercase text-stone-500 font-semibold mb-5">
             Orders and Payment Attempts
           </h2>
           {data.exampleOrderHistory && <p className="border border-gold-200 bg-gold-50 px-4 py-3 text-xs text-stone-700 mb-4">Example order shown for this design demo. It is not a real purchase, payment or delivery. The account totals above count real paid orders only.</p>}
 
           {orders.length === 0 ? (
-            <div className="border border-gold-100 p-8 text-center">
+            <div className="border border-form-panel p-6 text-center">
               <p className="text-sm text-stone-500 mb-1">You haven&apos;t placed any orders yet.</p>
               <p className="text-xs text-stone-500">Your orders will appear here once you make a purchase.</p>
             </div>
@@ -299,10 +299,11 @@ export default function AccountDashboardPage() {
               {orders.map(order => {
                 const isOpen = expanded === order.orderNumber;
                 return (
-                  <div key={order.orderNumber} className="border border-gold-100">
+                  <div key={order.orderNumber} className="border border-form-panel">
                     <button
                       onClick={() => setExpanded(isOpen ? null : order.orderNumber)}
-                      className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-gold-50/30 transition-colors"
+                      aria-expanded={isOpen}
+                      className="w-full flex flex-wrap items-center justify-between gap-4 px-5 py-4 text-left hover:bg-gold-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700"
                     >
                       <div>
                         <p className="text-xs font-mono font-semibold text-stone-700">{order.orderNumber}</p>
@@ -320,7 +321,7 @@ export default function AccountDashboardPage() {
                     </button>
 
                     {isOpen && (
-                      <div className="border-t border-gold-100 px-5 py-4 space-y-4">
+                      <div className="border-t border-form-panel px-5 py-4 space-y-4">
                         <div>
                           <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">Items</p>
                           <div className="space-y-1.5">
@@ -391,11 +392,11 @@ export default function AccountDashboardPage() {
         </div>
 
         {/* Profile */}
-        <div>
+        <div className="beauty-form-panel self-start p-5 sm:p-6 min-w-0">
           <h2 className="text-[10px] tracking-[0.22em] uppercase text-stone-500 font-semibold mb-5">
             Your Details
           </h2>
-          <div className="border border-gold-100 p-6">
+          <div>
             <div className="space-y-3 mb-5 text-xs">
               <div>
                 <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Name</p>
@@ -403,7 +404,7 @@ export default function AccountDashboardPage() {
               </div>
               <div>
                 <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Email</p>
-                <p className="text-stone-700">{customer.email}</p>
+                <p className="text-stone-700 break-words">{customer.email}</p>
               </div>
               {customer.referredBy && (
                 <div>
@@ -413,13 +414,13 @@ export default function AccountDashboardPage() {
               )}
             </div>
 
-            <form onSubmit={saveProfile} className="space-y-4 border-t border-gold-100 pt-4">
+            <form onSubmit={saveProfile} className="space-y-4 border-t border-form-panel pt-4">
               <div>
-                <label className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Phone</label>
-                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} placeholder="Add a phone number" />
+                <label htmlFor="account-phone" className="block text-[9px] tracking-[0.2em] uppercase text-stone-500 mb-1.5">Phone</label>
+                <input id="account-phone" name="phone" autoComplete="tel" type="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} placeholder="Add a phone number" />
               </div>
 
-              <div className="space-y-3 border-t border-gold-100 pt-4">
+              <div className="space-y-3 border-t border-form-panel pt-4">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-[9px] tracking-[0.2em] uppercase text-stone-500">Marketing choices</h3>
                   <button type="button" onClick={() => setEditingMarketing(value => !value)}
@@ -457,12 +458,12 @@ export default function AccountDashboardPage() {
                 )}
               </div>
 
-              {profileMessage && <p className="text-[10px] text-gold-700">{profileMessage}</p>}
+              {profileMessage && <p role="status" className="text-[10px] text-gold-700">{profileMessage}</p>}
 
               <button
                 type="submit"
                 disabled={savingProfile}
-                className="w-full border border-gold-300 text-gold-700 text-[10px] tracking-[0.2em] uppercase py-3 hover:border-gold-500 hover:bg-gold-50 transition-colors disabled:opacity-40"
+                className="w-full border border-gold-700 text-gold-700 text-[10px] tracking-[0.2em] uppercase py-3 hover:bg-gold-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700 disabled:opacity-40"
               >
                 {savingProfile ? 'Saving…' : 'Save Changes'}
               </button>

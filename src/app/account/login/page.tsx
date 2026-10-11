@@ -130,12 +130,12 @@ export default function AccountLoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-stone-500 mt-6">
-          New to Windsor Beauty?{' '}
-          <Link href="/account/register" className="text-gold-700 hover:text-gold-800 font-medium">
+        <div className="mt-6 text-center">
+          <p className="mb-3 text-xs text-stone-500">New to Windsor Beauty?</p>
+          <Link href="/account/register" className="flex min-h-12 w-full items-center justify-center border border-gold-700 bg-form-surface px-4 py-3 text-sm font-semibold text-gold-700 underline underline-offset-4 transition-colors hover:bg-gold-50 hover:text-gold-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700">
             Create an account
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );
