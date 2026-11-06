@@ -532,7 +532,7 @@ export default function ProductPage({ params, initial }: {
             >
               <Stars rating={reviewSummary.average} size={15} />
               <span className="text-xs text-stone-600 font-medium underline decoration-stone-300 underline-offset-2 group-hover:text-gold-800 group-hover:decoration-gold-400 transition-colors">
-                {reviewSummary.count} review{reviewSummary.count === 1 ? '' : 's'}
+                ({reviewSummary.count})
               </span>
             </button>
           )}

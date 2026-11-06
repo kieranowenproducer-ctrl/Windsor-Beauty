@@ -322,7 +322,7 @@ function ShopPageContent({ initial, lockedCategory }: ShopClientProps) {
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filtered.map(product => (
-            product.slug === HAIR_BUNDLE_SLUG && hairBundle ? <HairCareBundleCard key={product.slug} bundle={hairBundle} /> :
+            product.slug === HAIR_BUNDLE_SLUG && hairBundle ? <HairCareBundleCard key={product.slug} bundle={hairBundle} reviewStats={reviewStats[product.slug]} /> :
             <ProductCard key={product.id} product={product} stock={stockMap[product.slug]} reviewStats={reviewStats[product.slug]} saleConfig={saleConfig} isStaff={isStaff} variantStock={variantStockMap[product.slug]} />
           ))}
         </div>

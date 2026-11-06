@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Stars from './Stars';
 import AdminReviewControls from './AdminReviewControls';
 import { truncateDisplayName } from '@/lib/displayName';
@@ -20,8 +21,10 @@ export default function ReviewCard({
   review,
   highlighted = false,
   onChanged,
+  productNames = {},
 }: {
   review: ReviewCardData;
+  productNames?: Record<string, string>;
   /**
    * True when the customer arrived here by tapping this review in the homepage
    * carousel. Marks it for a few seconds so it is obvious which of a long list
@@ -57,10 +60,15 @@ export default function ReviewCard({
       )}
       <p className="text-sm text-stone-500 leading-relaxed mb-3 whitespace-pre-wrap">{review.body}</p>
 
-      {/* No review photo and no gold product label, by Samuel's call on
-          27 Sep 2026. Both are still stored against the review (image_url,
-          product_slugs), so the product filter on /reviews keeps working and
-          either can be shown again without losing anything. */}
+      {(review.product_slugs ?? []).length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-x-4 gap-y-2" aria-label="Reviewed products">
+          {review.product_slugs!.map(slug => (
+            <Link key={slug} href={`/shop/${encodeURIComponent(slug)}`} className="text-xs font-medium text-gold-700 underline underline-offset-4 hover:text-gold-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700">
+              {productNames[slug] ?? slug.replace(/-/g, ' ')}
+            </Link>
+          ))}
+        </div>
+      )}
       <p className="text-[10px] tracking-[0.15em] uppercase text-stone-600 font-medium">
         {truncateDisplayName(review.customer_name)}
       </p>

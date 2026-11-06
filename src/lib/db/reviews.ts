@@ -1,3 +1,4 @@
+import { getExternalRatingTotals } from './external-ratings';
 ﻿import { requireDb } from './client';
 // Extracted verbatim from db.ts on 2026-07-05 (see db/client.ts).
 
@@ -254,9 +255,15 @@ export async function getReviewStatsForProducts(): Promise<Record<string, { aver
     WHERE r.status = 'approved'
     GROUP BY l.product_slug
   `;
+  const external = await getExternalRatingTotals();
   const map: Record<string, { average: number; count: number }> = {};
   for (const row of rows as { product_slug: string; avg_rating: string; review_count: number }[]) {
     map[row.product_slug] = { average: Number(row.avg_rating), count: row.review_count };
+  }
+  for (const [slug, rating] of Object.entries(external)) {
+    const existing = map[slug] ?? { average: 0, count: 0 };
+    const count = existing.count + rating.count;
+    map[slug] = { count, average: count ? (existing.average * existing.count + rating.points) / count : 0 };
   }
   return map;
 }

@@ -5,6 +5,16 @@ import type { requireDb } from '../client';
 // Moved out of schema.ts unchanged, in the order it already ran. Pure DDL:
 // CREATE TABLE IF NOT EXISTS and idempotent ALTERs, safe to run again.
 export async function ensureReviews(db: ReturnType<typeof requireDb>) {
+  await db`
+    CREATE TABLE IF NOT EXISTS external_product_ratings (
+      product_slug TEXT NOT NULL,
+      source TEXT NOT NULL CHECK (source IN ('Telegram','Instagram','Facebook','WhatsApp','Other')),
+      rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+      rating_count INTEGER NOT NULL CHECK (rating_count BETWEEN 0 AND 1000000),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (product_slug, source, rating)
+    )
+  `;
   // Customer-submitted product/site reviews, moderated from /admin/reviews
   // before appearing on the public /reviews page. `product_slug` is stored
   // for future per-product display but is not surfaced anywhere yet.

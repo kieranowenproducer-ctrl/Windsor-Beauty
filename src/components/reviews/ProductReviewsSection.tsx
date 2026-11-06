@@ -27,11 +27,12 @@ export default function ProductReviewsSection({
 }) {
   const [reviews, setReviews] = useState<ReviewCardData[] | null>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [summary, setSummary] = useState<{ count: number; average: number } | null>(null);
 
   function load() {
     fetch(`/api/reviews/product/${productSlug}`)
       .then(res => res.json())
-      .then(data => setReviews(data.reviews ?? []))
+      .then(data => { setReviews(data.reviews ?? []); setSummary(data.summary ?? null); })
       .catch(() => setReviews([]));
   }
 
@@ -41,8 +42,8 @@ export default function ProductReviewsSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- refetch when the product changes. load is redefined on every render, so listing it would refetch the reviews continuously.
   }, [productSlug]);
 
-  const count = reviews?.length ?? 0;
-  const average = count > 0 ? reviews!.reduce((sum, r) => sum + r.rating, 0) / count : 0;
+  const count = summary?.count ?? reviews?.length ?? 0;
+  const average = summary?.average ?? (reviews?.length ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0);
 
   useEffect(() => {
     if (reviews === null) return;
@@ -101,7 +102,7 @@ export default function ProductReviewsSection({
           <p className="text-sm text-stone-500 leading-relaxed mb-8">
             {count} customer{count === 1 ? ' has' : 's have'} reviewed{' '}
             <span className="text-stone-700 font-medium">{productName ?? 'this product'}</span>.
-            See what they say about it before you buy.
+            Written comments are shown below when provided.
           </p>
         </>
       )}
@@ -112,7 +113,7 @@ export default function ProductReviewsSection({
         </p>
       )}
 
-      {reviews !== null && count > 0 && (
+      {reviews !== null && reviews.length > 0 && (
         <div className="space-y-6 mb-8">
           {reviews.slice(0, visibleCount).map(review => (
             <ReviewCard key={review.id} review={review} onChanged={load} />

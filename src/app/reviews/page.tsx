@@ -8,6 +8,7 @@ import ReviewForm from '@/components/reviews/ReviewForm';
 import Stars from '@/components/reviews/Stars';
 import ReviewsDisclaimer from '@/components/reviews/ReviewsDisclaimer';
 import ProductReviewFilter from '@/components/reviews/ProductReviewFilter';
+import { HAIR_BUNDLE_NAME, HAIR_BUNDLE_SLUG } from '@/lib/hairCareBundle';
 import VideoTestimonials from '@/components/VideoTestimonials';
 import { PRODUCTS, mergeProducts } from '@/data/products';
 
@@ -28,7 +29,7 @@ export default function ReviewsPage() {
 
   const products = useMemo(() => mergeProducts(PRODUCTS, overrides), [overrides]);
   const productNames = useMemo(() => {
-    const map: Record<string, string> = {};
+    const map: Record<string, string> = { [HAIR_BUNDLE_SLUG]: HAIR_BUNDLE_NAME };
     for (const p of products) map[p.slug] = p.name;
     return map;
   }, [products]);
@@ -159,7 +160,7 @@ export default function ReviewsPage() {
                 Excellent
               </p>
               <p className="text-[11px] tracking-[0.2em] uppercase text-stone-500">
-                Based on <strong className="font-bold text-stone-700">{approvedCount}</strong> verified customer {approvedCount === 1 ? 'review' : 'reviews'}
+                Based on <strong className="font-bold text-stone-700">{approvedCount}</strong> customer {approvedCount === 1 ? 'review' : 'reviews'}
               </p>
             </div>
 
@@ -282,6 +283,7 @@ export default function ReviewsPage() {
                 <ReviewCard
                   key={review.id}
                   review={review}
+                  productNames={productNames}
                   highlighted={review.id === highlightId}
                   onChanged={load}
                 />

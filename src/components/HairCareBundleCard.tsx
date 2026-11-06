@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Stars from '@/components/reviews/Stars';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import { HAIR_BUNDLE_NAME, HAIR_BUNDLE_SLUG, bundleCartItems, bundlesAvailableForCart, type HairCareBundle } from '@/lib/hairCareBundle';
 
-export default function HairCareBundleCard({ bundle, detail = false }: { bundle: HairCareBundle; detail?: boolean }) {
+export default function HairCareBundleCard({ bundle, detail = false, reviewStats }: { bundle: HairCareBundle; detail?: boolean; reviewStats?: { average: number; count: number } }) {
   const { items, addItem, openDrawer } = useCart();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -32,6 +33,12 @@ export default function HairCareBundleCard({ bundle, detail = false }: { bundle:
       </Link>
       <div className={`flex flex-1 flex-col ${detail ? 'justify-center p-6 sm:p-10' : 'p-5'}`}>
         {detail ? <h1 className="mb-3 font-serif text-3xl text-stone-800">{HAIR_BUNDLE_NAME}</h1> : <h2 className="mb-2 font-serif text-lg text-stone-800"><Link href={`/shop/${HAIR_BUNDLE_SLUG}`}>{HAIR_BUNDLE_NAME}</Link></h2>}
+        {reviewStats && reviewStats.count > 0 && (
+          <Link href={`/shop/${HAIR_BUNDLE_SLUG}#reviews`} className="mb-4 flex items-center gap-2 text-xs text-stone-600" aria-label={`Read ${reviewStats.count} reviews of ${HAIR_BUNDLE_NAME}`}>
+            <Stars rating={reviewStats.average} size={detail ? 15 : 13} />
+            <span>({reviewStats.count})</span>
+          </Link>
+        )}
         <p className="mb-4 text-sm leading-relaxed text-stone-600">One 350ml shampoo and one 350ml conditioner.</p>
         <div className="mt-auto">
           <p className="mb-2 flex flex-wrap items-baseline gap-3"><span className="text-xl font-semibold text-gold-700">£{bundle.price.toFixed(2)}</span><span className="text-sm text-stone-500 line-through">£{bundle.separatePrice.toFixed(2)}</span></p>
