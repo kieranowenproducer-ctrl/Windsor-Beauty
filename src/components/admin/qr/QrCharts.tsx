@@ -130,7 +130,7 @@ export default function QrCharts({ campaigns, stats, scansTimeSeries, ordersTime
     <div>
       <ChartLabel>{label}</ChartLabel>
       <div className="h-40 flex items-center justify-center border border-stone-100 bg-stone-50">
-        <p className="text-[10px] text-stone-300">No data yet - scans will appear here after campaigns go live</p>
+        <p className="text-[10px] text-stone-500">No data yet - scans will appear here after campaigns go live</p>
       </div>
     </div>
   );

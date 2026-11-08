@@ -13,6 +13,8 @@
 // already sitting in Click & Drop (created but no tracking number yet) is
 // always safe — it will never create a second Royal Mail order, it just
 // checks whether a tracking number now exists.
+import { claimRoyalMailDispatch, releaseRoyalMailDispatch, renewRoyalMailDispatch } from '@/lib/db/royalMailLease';
+import { randomUUID } from 'crypto';
 import {
   findOrderByNumber,
   getShippingSettings,
@@ -49,7 +51,7 @@ export interface RoyalMailDispatchResult {
 // preferring the structured fields captured at checkout, and falling back
 // to splitting the older flattened `shipping_address` string for orders
 // placed before this integration existed.
-function recipientFromOrder(order: OrderRow) {
+export function recipientFromOrder(order: OrderRow) {
   // The parcel goes to whoever the order says it goes to. That is usually the person who paid,
   // but an order can be sent to somebody else — a gift, or ordering for a friend — and then
   // shipping_recipient is their name (task 77b818aa). Before this field existed the only way to
@@ -94,7 +96,19 @@ function recipientFromOrder(order: OrderRow) {
 // stores the result. Never throws — every failure mode is captured and
 // recorded against the order so the dispatch admin page always shows the
 // real reason, regardless of which trigger called this.
-export async function dispatchOrderToRoyalMail(orderNumber: string): Promise<RoyalMailDispatchResult> {
+export async function dispatchOrderToRoyalMail(orderNumber: string, options: { sendTrackingEmail?: boolean } = {}): Promise<RoyalMailDispatchResult> {
+  if (!isRoyalMailConfigured()) return { ok: false, skipped: true, status: 503, error: 'Royal Mail is not connected yet.' };
+  const token = randomUUID(); let claimed = false;
+  try {
+    claimed = await claimRoyalMailDispatch(orderNumber, token);
+    if (!claimed) return { ok: false, skipped: true, status: 409, error: 'This order is being updated or dispatched. Please refresh shortly.' };
+    return await dispatchOrderWithLease(orderNumber, token, options);
+  } catch {
+    return { ok: false, status: 503, error: 'Royal Mail dispatch is temporarily unavailable. Check the order before retrying.' };
+  } finally { if (claimed) await releaseRoyalMailDispatch(orderNumber, token).catch(() => {}); }
+}
+
+async function dispatchOrderWithLease(orderNumber: string, token: string, options: { sendTrackingEmail?: boolean }): Promise<RoyalMailDispatchResult> {
   if (!isRoyalMailConfigured()) {
     return { ok: false, skipped: true, status: 503, error: 'Royal Mail is not connected yet.' };
   }
@@ -133,7 +147,7 @@ export async function dispatchOrderToRoyalMail(orderNumber: string): Promise<Roy
   const recipient = recipientFromOrder(order);
   if (!recipient) {
     const message = 'Could not read a valid postal address from this order. Check the delivery address before generating a label.';
-    await recordRoyalMailLabelError(order.order_number, message);
+    await recordRoyalMailLabelError(order.order_number, message, { leaseToken: token });
     return { ok: false, status: 422, error: message };
   }
 
@@ -148,7 +162,7 @@ export async function dispatchOrderToRoyalMail(orderNumber: string): Promise<Roy
     const message = `Cannot create a Royal Mail label for this international order. ${reason} Use the manual CSV / fallback dispatch system for this order instead.`;
     // Recorded as an error (not just returned) so the background sync stops
     // re-attempting this order every cycle once it knows why it can't proceed.
-    await recordRoyalMailLabelError(order.order_number, message);
+    await recordRoyalMailLabelError(order.order_number, message, { leaseToken: token });
     return { ok: false, status: 422, error: message };
   }
 
@@ -159,6 +173,7 @@ export async function dispatchOrderToRoyalMail(orderNumber: string): Promise<Roy
 
   let shipment;
   try {
+    await renewRoyalMailDispatch(orderNumber, token);
     shipment = await createShipmentOrder({
       orderReference: order.order_number,
       orderDate: new Date(order.created_at).toISOString(),
@@ -173,7 +188,7 @@ export async function dispatchOrderToRoyalMail(orderNumber: string): Promise<Roy
       // written to our internal audit log (src/lib/genericNames.ts).
       items: buildShipmentContents(order.items, productsBySlug, settings, order.order_number),
       international: isInternational,
-    });
+    }, () => renewRoyalMailDispatch(orderNumber, token));
   } catch (err) {
     const message = err instanceof RoyalMailApiError || err instanceof Error
       ? err.message
@@ -187,15 +202,16 @@ export async function dispatchOrderToRoyalMail(orderNumber: string): Promise<Roy
       // 'error' (which would also wrongly surface in the sitewide
       // "Last API Error" panel — recordRoyalMailPendingPostage deliberately
       // never touches royal_mail_label_error_at).
-      await recordRoyalMailPendingPostage(order.order_number, message, { royalMailOrderId: err.orderIdentifier, rawResponse });
+      await recordRoyalMailPendingPostage(order.order_number, message, { royalMailOrderId: err.orderIdentifier, rawResponse, leaseToken: token });
       return { ok: false, pending: true, status: 202, error: message, royalMailOrderId: err.orderIdentifier };
     }
 
-    await recordRoyalMailLabelError(order.order_number, message, { rawResponse });
+    await recordRoyalMailLabelError(order.order_number, message, { rawResponse, leaseToken: token });
     return { ok: false, status: 502, error: message };
   }
 
   await recordRoyalMailLabel(order.order_number, {
+    leaseToken: token,
     royalMailOrderId: shipment.orderIdentifier,
     trackingNumber: shipment.trackingNumber,
     trackingUrl: shipment.trackingUrl,
@@ -203,7 +219,7 @@ export async function dispatchOrderToRoyalMail(orderNumber: string): Promise<Roy
     parcelPackageFormat: packageFormat,
   });
 
-  if (shipment.trackingNumber && !order.shipping_email_sent_at && order.automation_flags?.sendDispatchEmail !== false) {
+  if (options.sendTrackingEmail !== false && shipment.trackingNumber && !order.shipping_email_sent_at && order.automation_flags?.sendDispatchEmail !== false) {
     try {
       const carrierName = order.shipping_label.includes('International')
         ? 'Royal Mail International'

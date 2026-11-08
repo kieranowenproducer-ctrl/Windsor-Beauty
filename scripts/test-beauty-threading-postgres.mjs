@@ -9,6 +9,7 @@ import * as crypto from 'node:crypto';
 import vm from 'node:vm';
 import ts from 'typescript';
 import * as references from '../src/lib/email/threadReferences.ts';
+import * as contactAddress from '../src/lib/email/contactAddress.ts';
 if(!process.argv[2])throw Error('Pass isolated PGlite path. No live DB supported.');
 const {PGlite}=await import(pathToFileURL(process.argv[2]).href);
 const db=new PGlite();after(()=>db.close());
@@ -20,7 +21,7 @@ function load(file,modules){const result={exports:{}};const source=readFileSync(
   vm.runInNewContext(compiled,{module:result,exports:result.exports,require:name=>{if(!(name in modules))throw Error(`Unexpected module ${name}`);return modules[name];},console,Date,Buffer});return result.exports;}
 const client={requireDb:()=>sql};
 const enquiries=load('src/lib/db/enquiries.ts',{'crypto':crypto,'./client':client});
-const threads=load('src/lib/db/beautyEmailThreads.ts',{'crypto':crypto,'./client':client,'./enquiries':enquiries,'@/lib/email/threadReferences':references});
+const threads=load('src/lib/db/beautyEmailThreads.ts',{'crypto':crypto,'./client':client,'./enquiries':enquiries,'@/lib/email/threadReferences':references,'@/lib/email/contactAddress':contactAddress});
 test('runtime refuses absent thread schema without installing tables',async()=>{
   await assert.rejects(()=>threads.findExactBeautyEmailThread('member@example.invalid','info@windsorbeauty.is',['unknown@smtp.invalid']));
   assert.equal((await db.query("SELECT to_regclass('beauty_enquiry_smtp_metadata') AS relation")).rows[0].relation,null);
@@ -69,4 +70,17 @@ test('actual incoming reply SQL records once, does not reopen on duplicate or cr
   assert.equal(await enquiries.recordInboundEnquiryReply({...input,fromAddress:'other@example.invalid'}),null);
   assert.equal((await db.query('SELECT status FROM enquiries WHERE id=1')).rows[0].status,'closed');
   assert.equal((await db.query('SELECT count(*)::int AS n FROM enquiry_replies WHERE provider_message_id=$1',[input.providerMessageId])).rows[0].n,1);
+});
+
+test('Suite metadata and inbound routing retain exact owner, mailbox and immutable provider identity',async()=>{
+ const providerId='00000000-0000-4000-8000-000000000004';
+ await db.query('INSERT INTO enquiry_replies(enquiry_id,provider_message_id,from_address) VALUES($1,$2,$3)',[1,providerId,'Windsor Beauty <suite@windsorbeauty.is>']);
+ const record={providerId,messageId:'suite-parent@smtp.invalid',from:'suite@windsorbeauty.is',customerTo:'member@example.invalid',replyTo:'suite@windsorbeauty.is'};
+ await threads.recordVerifiedBeautySmtpMetadata(record);await threads.recordVerifiedBeautySmtpMetadata(record);
+ assert.equal((await threads.findExactBeautyEmailThread('member@example.invalid','suite@windsorbeauty.is',['suite-parent@smtp.invalid'])).id,1);
+ for(const [email,mailbox]of [['other@example.invalid','suite@windsorbeauty.is'],['member@example.invalid','info@windsorbeauty.is'],['member@example.invalid','suite@windsorglow.is']])assert.equal(await threads.findExactBeautyEmailThread(email,mailbox,['suite-parent@smtp.invalid']),null);
+ await assert.rejects(()=>threads.recordVerifiedBeautySmtpMetadata({...record,replyTo:'info@windsorbeauty.is'}));
+ const incoming={providerId:'suite-incoming',smtpId:'suite-customer@smtp.invalid',hash:'same-suite-content',sender:'member@example.invalid',mailbox:'suite@windsorbeauty.is',capture:'windsor-beauty@ilkaik.resend.app',target:1};
+ assert.equal(await threads.claimBeautyInboundRoute(incoming),null);await threads.completeBeautyInboundRoute(incoming.providerId,1);assert.equal(await threads.claimBeautyInboundRoute(incoming),1);
+ await assert.rejects(()=>threads.claimBeautyInboundRoute({...incoming,mailbox:'suite@windsorglow.is'}));
 });

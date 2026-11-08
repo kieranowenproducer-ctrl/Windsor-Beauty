@@ -87,7 +87,7 @@ export default function SiteChrome({
             document scrolled past underneath. Measured on a preview: with `hidden` the bar sat at
             -2628px after a 3000px scroll; with `clip`, at 0px. `clip` creates no scroll box, so
             sticky passes through to the document. Nothing about the clipping changes. */}
-        <div className="flex-1 min-h-0 overflow-clip">{pageChildren}</div>
+        <div className="beauty-admin flex-1 min-h-0 overflow-clip">{pageChildren}</div>
       </>
     );
   }

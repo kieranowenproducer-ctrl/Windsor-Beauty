@@ -103,7 +103,7 @@ export default function CustomersTable({
                           const from = cameFrom(customer);
                           return (
                             <div title={from.detail ? `${from.main} (${from.detail})` : from.main}>
-                              <div className={`text-[9px] font-medium max-w-[130px] ${from.known ? 'text-gold-700' : 'text-stone-300'}`}>
+                              <div className={`text-[9px] font-medium max-w-[130px] ${from.known ? 'text-gold-700' : 'text-stone-500'}`}>
                                 {from.main}
                               </div>
                               {from.detail && (
@@ -128,7 +128,7 @@ export default function CustomersTable({
                             </span>
                           </div>
                         ) : (
-                          <span className="text-[9px] text-stone-300">-</span>
+                          <span className="text-[9px] text-stone-500">-</span>
                         )}
                       </td>
                       <td className="px-2.5 py-2.5">

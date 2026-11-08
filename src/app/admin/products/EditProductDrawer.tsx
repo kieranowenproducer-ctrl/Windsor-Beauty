@@ -141,6 +141,9 @@ interface Props {
   uploadingCount: number;
   savingEdit: boolean;
   saveEdit: () => void;
+  draftNotice: string;
+  draftStorageFailed: boolean;
+  reloadSavedProduct: () => void;
   editError: string;
   setEditError: (value: string) => void;
 }
@@ -157,7 +160,7 @@ export default function EditProductDrawer({
   updateEditInfoRow, addEditInfoRow, removeEditInfoRow,
   editStorageInstructions, setEditStorageInstructions, toggleHiddenSpec,
   allCategories, handleUploadingChange, uploadingCount,
-  savingEdit, saveEdit, editError, setEditError,
+  savingEdit, saveEdit, editError, setEditError, draftNotice, draftStorageFailed, reloadSavedProduct,
 }: Props) {
   return (
     <>
@@ -198,6 +201,12 @@ export default function EditProductDrawer({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
+                </div>
+                <div className="px-6 py-3 border-b border-stone-200 text-xs text-stone-600">
+                  <p>Changes are kept in this browser when storage is available. Save Changes publishes them to the shop.</p>
+                  {draftNotice && <p role="status" className="mt-2">{draftNotice}</p>}
+                  {draftStorageFailed && <p role="alert" className="mt-2 text-red-700">This browser could not keep your draft. Keep this window open and save or copy your changes.</p>}
+                  <button type="button" disabled={savingEdit} onClick={reloadSavedProduct} className="min-h-11 underline text-stone-700 disabled:opacity-50">Reload saved version</button>
                 </div>
                 <div className="flex items-center gap-3 overflow-x-auto px-6 py-2 border-b border-stone-100 shrink-0 bg-stone-50">
                   {[
@@ -695,7 +704,7 @@ export default function EditProductDrawer({
                     <button
                       type="button"
                       onClick={() => removeEditCertificateRow(index)}
-                      className="justify-self-start sm:justify-self-auto p-2 -m-2 sm:p-1 sm:m-0 text-[9px] tracking-wider uppercase text-stone-300 hover:text-red-400 transition-colors"
+                      className="justify-self-start sm:justify-self-auto p-2 -m-2 sm:p-1 sm:m-0 text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-700 transition-colors"
                     >
                       Remove
                     </button>
@@ -747,7 +756,7 @@ export default function EditProductDrawer({
                         <button
                           type="button"
                           onClick={() => removeEditInfoRow(section, index)}
-                          className="justify-self-start sm:justify-self-auto p-2 -m-2 sm:p-1 sm:m-0 text-[9px] tracking-wider uppercase text-stone-300 hover:text-red-400 transition-colors"
+                          className="justify-self-start sm:justify-self-auto p-2 -m-2 sm:p-1 sm:m-0 text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-700 transition-colors"
                         >
                           Remove
                         </button>
@@ -861,7 +870,7 @@ export default function EditProductDrawer({
                     onClick={() => { setEditingId(null); setEditError(''); }}
                     className="border border-stone-200 text-stone-500 text-[9px] tracking-[0.15em] uppercase px-5 py-2.5 hover:border-gold-300 transition-colors"
                   >
-                    Cancel
+                    Close
                   </button>
                   {uploadingCount > 0 && (
                     <p className="text-[10px] text-gold-700">Waiting for {uploadingCount > 1 ? 'photos' : 'a photo'} to finish uploading…</p>

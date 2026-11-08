@@ -2,6 +2,11 @@ import { bareEmail, parseBeautySentEnvelope } from './beautySentMetadata';
 import { normaliseMessageId } from './threadReferences';
 import { enquiryAlertRecipients } from './enquiryAlerts';
 
+// New notices go to Suite. Exact old Info-only provider events may still arrive
+// during changeover; verify their original envelope without rewriting history.
+const nativeRecipientSets = () => [enquiryAlertRecipients(), ['info@windsorbeauty.is']];
+const sameRecipients = (left: string[], right: string[]) => JSON.stringify([...left].sort()) === JSON.stringify([...right].sort());
+
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FROM = 'enquiries@windsorbeauty.is';
 const OPS_FROM = 'alerts@windsorbeauty.is';
@@ -48,8 +53,8 @@ export async function retrieveBeautyNativeNotification(data: Record<string, unkn
   if (process.env.BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED !== 'true') return null;
   const key = process.env.RESEND_INBOUND_API_KEY_BEAUTY_IS?.trim();
   if (!key || typeof data.email_id !== 'string' || !UUID.test(data.email_id)) return null;
-  const signed=addresses(data.to),expected=enquiryAlertRecipients();
-  if(signed.length>1&&signed.some(address=>!expected.includes(address)))throw new Error('Signed native staff recipients are not configured.');
+  const signed=addresses(data.to),expectedSets=nativeRecipientSets();
+  if(signed.length>1&&!expectedSets.some(expected=>sameRecipients(signed,expected)))throw new Error('Signed native staff recipients are not configured.');
   const response = await fetch(`https://api.resend.com/emails/${encodeURIComponent(data.email_id)}`, {headers: {Authorization: `Bearer ${key}`}, cache: 'no-store', signal: AbortSignal.timeout(10000)});
   if (!response.ok) throw new Error('Native contact envelope unavailable.');
   const value = await response.json();
@@ -62,12 +67,12 @@ export async function retrieveBeautyNativeNotification(data: Record<string, unkn
     return {kind:'existing',envelope:parseBeautySentEnvelope(value,data.email_id)};
   }
   if(from===FROM&&!nativeSubject(value.subject))throw new Error('Native contact subject mismatch.');
-  if(signed.some(address=>!expected.includes(address)))throw new Error('Signed native staff recipients are not configured.');
+  if(!expectedSets.some(expected=>sameRecipients(signed,expected)))throw new Error('Signed native staff recipients are not configured.');
   const smtp = normaliseMessageId(value.message_id);
   if (!smtp || (data.message_id !== undefined && normaliseMessageId(data.message_id) !== smtp)) throw new Error('Native contact SMTP mismatch.');
   const actual = addresses(value.to);
-  if (JSON.stringify([...actual].sort()) !== JSON.stringify([...expected].sort())) throw new Error('Native contact configuration changed.');
-  if (!(signed.length === 1 && actual.includes(signed[0])) && JSON.stringify([...signed].sort()) !== JSON.stringify([...actual].sort())) throw new Error('Native contact primary recipients disagree.');
+  if (!expectedSets.some(expected=>sameRecipients(actual,expected))) throw new Error('Native contact configuration changed.');
+  if (!sameRecipients(signed,actual)) throw new Error('Native contact primary recipients disagree.');
   for (const kind of ['cc', 'bcc']) {
     if (value[kind] !== undefined && value[kind] !== null && (!Array.isArray(value[kind]) || value[kind].length !== 0)) throw new Error('Native contact has an unowned copy.');
     if (data[kind] !== undefined && data[kind] !== null && (!Array.isArray(data[kind]) || data[kind].length !== 0)) throw new Error('Signed native contact copy disagrees.');

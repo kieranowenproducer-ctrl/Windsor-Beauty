@@ -7,6 +7,7 @@ import {
   formatDate, type Order,
 } from './orderTypes';
 import CustomerEmailButton from '@/components/admin/CustomerEmailButton';
+import ChangeDeliveryDetails from './ChangeDeliveryDetails';
 
 // Moved out of page.tsx unchanged. Every prop keeps the name it had as a local
 // in the page, so the markup below is the same code that used to live there.
@@ -17,10 +18,11 @@ interface Props {
   orderFailures: { id: number; category: string; message: string; created_at: string }[];
   orderEmails: { id: number; type: string | null; status: string | null; subject: string; sentAt: string; updatedAt: string | null }[];
   orderActions: ReactNode;
+  onOrderChanged: (orderNumber: string, patch: Partial<Order>) => void;
 }
 
 export default function OrderDetailPanel({
-  selectedOrder, setSelectedOrder, orderFailures, orderEmails, orderActions,
+  selectedOrder, setSelectedOrder, orderFailures, orderEmails, orderActions, onOrderChanged,
 }: Props) {
   return (
     <>
@@ -209,6 +211,8 @@ export default function OrderDetailPanel({
                       <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-1">Delivery Address</p>
                       <p className="text-stone-600 leading-relaxed">{selectedOrder.shippingAddress}</p>
                       <p className="text-stone-500 mt-0.5">{selectedOrder.shippingLabel}</p>
+                      {selectedOrder.shippingRecipient && <p className="text-stone-600 mt-1">Addressed to {selectedOrder.shippingRecipient}. {selectedOrder.customerName} placed the order.</p>}
+                      <ChangeDeliveryDetails key={selectedOrder.orderNumber} order={selectedOrder} onChanged={onOrderChanged} />
                     </div>
                     {selectedOrder.appliedRules.length > 0 && (
                       <div>
@@ -254,7 +258,7 @@ export default function OrderDetailPanel({
                               <span className="text-[8px] text-stone-500">{selectedOrder.qrPartnerName}</span>
                             )}
                           </div>
-                          <p className="text-[8px] text-stone-300 font-mono mt-1">/r/{selectedOrder.qrCampaignSlug}</p>
+                          <p className="text-[8px] text-stone-500 font-mono mt-1">/r/{selectedOrder.qrCampaignSlug}</p>
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5">
@@ -279,7 +283,7 @@ export default function OrderDetailPanel({
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-40 text-center">
-                  <p className="text-xs text-stone-300">Select an order to view details</p>
+                  <p className="text-xs text-stone-500">Select an order to view details</p>
                 </div>
               )}
             </div>

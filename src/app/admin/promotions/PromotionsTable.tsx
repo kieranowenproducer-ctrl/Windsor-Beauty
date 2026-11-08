@@ -78,7 +78,7 @@ export default function PromotionsTable({
                             <button
                               onClick={() => toggleActive(row)}
                               className={`text-[10px] tracking-[0.15em] uppercase transition-colors ${
-                                row.active ? 'text-stone-500 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
+                                row.active ? 'text-stone-500 hover:text-red-700' : 'text-gold-700 hover:text-gold-700'
                               }`}
                             >
                               {row.active ? 'Deactivate' : 'Activate'}

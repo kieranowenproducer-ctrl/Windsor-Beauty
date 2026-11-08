@@ -160,7 +160,7 @@ export default function CampaignsTab({
                               {selected.partner_name && (
                                 <p className="text-[9px] text-stone-500 mt-0.5">{selected.partner_name}</p>
                               )}
-                              <p className="text-[9px] text-stone-300 mt-0.5">Created {formatDate(selected.created_at)}</p>
+                              <p className="text-[9px] text-stone-500 mt-0.5">Created {formatDate(selected.created_at)}</p>
                             </div>
                             <div className="flex items-center gap-1.5 shrink-0">
                               <button
@@ -266,7 +266,7 @@ export default function CampaignsTab({
                                 <code className="block text-[9px] text-stone-600 bg-stone-50 border border-stone-100 px-2 py-1.5 font-mono mb-1.5 break-all">
                                   /r/{selected.slug}
                                 </code>
-                                <p className="text-[8px] text-stone-300 mb-2 leading-relaxed">
+                                <p className="text-[8px] text-stone-500 mb-2 leading-relaxed">
                                   Permanent link. Works even if you rename the campaign or change the destination.
                                 </p>
                                 <button
@@ -333,7 +333,7 @@ export default function CampaignsTab({
                                     { label: 'Repeat Rate', value: selectedStats.repeat_purchase_rate > 0 ? `${selectedStats.repeat_purchase_rate.toFixed(1)}%` : '-' },
                                   ].map(({ label, value }) => (
                                     <div key={label} className="bg-gold-50 border border-gold-100 px-2.5 py-2.5 text-center">
-                                      <p className="text-[7px] tracking-[0.2em] uppercase text-gold-400 mb-0.5">{label}</p>
+                                      <p className="text-[7px] tracking-[0.2em] uppercase text-gold-700 mb-0.5">{label}</p>
                                       <p className="text-xs font-semibold text-gold-700">{value}</p>
                                     </div>
                                   ))}
@@ -350,7 +350,7 @@ export default function CampaignsTab({
                                 </p>
                               )}
                               {selectedStats.total_scans === 0 && (
-                                <p className="text-[9px] text-stone-300 text-center pt-1">
+                                <p className="text-[9px] text-stone-500 text-center pt-1">
                                   {(selectedStats.bot_scans ?? 0) > 0
                                     ? 'Nobody has opened this link yet. Share the QR code or tracking link to start recording data.'
                                     : 'No scans yet. Share the QR code or tracking link to start recording data.'}
@@ -359,7 +359,7 @@ export default function CampaignsTab({
                             </div>
                           ) : (
                             <div className="pt-4 border-t border-stone-100">
-                              <p className="text-[9px] text-stone-300 text-center py-4">No performance data yet.</p>
+                              <p className="text-[9px] text-stone-500 text-center py-4">No performance data yet.</p>
                             </div>
                           )}
                         </div>
@@ -379,18 +379,18 @@ export default function CampaignsTab({
                                   <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 font-semibold">
                                     Members ({campaignMembers.length})
                                   </p>
-                                  <p className="text-[9px] text-stone-300 ml-1">- created an account</p>
+                                  <p className="text-[9px] text-stone-500 ml-1">- created an account</p>
                                 </div>
                                 {campaignMembers.length === 0 ? (
-                                  <p className="text-[10px] text-stone-300 ml-4">No account sign-ups from this campaign yet.</p>
+                                  <p className="text-[10px] text-stone-500 ml-4">No account sign-ups from this campaign yet.</p>
                                 ) : (
                                   <table className="w-full">
                                     <thead>
                                       <tr className="border-b border-stone-100">
-                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-300 pb-2">Name</th>
-                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-300 pb-2 hidden sm:table-cell">Joined</th>
-                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 pb-2">Orders</th>
-                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 pb-2">Lifetime</th>
+                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-500 pb-2">Name</th>
+                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-500 pb-2 hidden sm:table-cell">Joined</th>
+                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 pb-2">Orders</th>
+                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 pb-2">Lifetime</th>
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -423,18 +423,18 @@ export default function CampaignsTab({
                                   <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 font-semibold">
                                     Guest Buyers ({campaignGuests.length})
                                   </p>
-                                  <p className="text-[9px] text-stone-300 ml-1">- no account</p>
+                                  <p className="text-[9px] text-stone-500 ml-1">- no account</p>
                                 </div>
                                 {campaignGuests.length === 0 ? (
-                                  <p className="text-[10px] text-stone-300 ml-4">No guest purchases from this campaign yet.</p>
+                                  <p className="text-[10px] text-stone-500 ml-4">No guest purchases from this campaign yet.</p>
                                 ) : (
                                   <table className="w-full">
                                     <thead>
                                       <tr className="border-b border-stone-100">
-                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-300 pb-2">Email</th>
-                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-300 pb-2 hidden sm:table-cell">Last Purchase</th>
-                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 pb-2">Orders</th>
-                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 pb-2">Spent</th>
+                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-500 pb-2">Email</th>
+                                        <th className="text-left text-[8px] tracking-wider uppercase text-stone-500 pb-2 hidden sm:table-cell">Last Purchase</th>
+                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 pb-2">Orders</th>
+                                        <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 pb-2">Spent</th>
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -480,7 +480,7 @@ export default function CampaignsTab({
                   ) : (
                     <div className="bg-white border border-stone-200 flex items-center justify-center h-48 text-center">
                       <div>
-                        <p className="text-xs text-stone-300 mb-2">Select a campaign from the list</p>
+                        <p className="text-xs text-stone-500 mb-2">Select a campaign from the list</p>
                         <p className="text-[9px] text-stone-200">QR code, tracking link, stats and printable materials will appear here</p>
                       </div>
                     </div>

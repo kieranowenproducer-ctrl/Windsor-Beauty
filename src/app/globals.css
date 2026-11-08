@@ -14,6 +14,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* A field without a background utility still needs a visible surface. Keep
+   this in the base layer so explicit validation colours, transparent artwork
+   editors and other intentional utility backgrounds take precedence. */
+@layer base {
+  :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea, select) {
+    background-color: theme('colors.form.surface');
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -68,23 +77,42 @@ input, textarea, select {
    Only neutral bordered fields are rethemed; validation colours and non-text
    controls keep their own styles. Equal utility specificity lets these shared
    defaults repair existing forms without changing any submission behaviour. */
-:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea, select):is(.bg-white, .bg-transparent) {
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea, select).bg-white:where(:not(.bg-green-50):not(.bg-rose-100)) {
   background-color: theme('colors.form.surface');
 }
 
-:where(input, textarea, select):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200):where(:not([aria-invalid="true"]):not([class*="border-red-"]):not([type="checkbox"]):not([type="radio"])) {
+/* Some editable fields explicitly used the pale page colour (not bg-white),
+   including the shared admin search. Keep those writing surfaces white too.
+   Invitation addresses, final-status selects and state-coloured fields are
+   intentionally excluded; this changes no cards, buttons or artwork inputs. */
+:is(.beauty-storefront, .beauty-admin) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea, select):is(.bg-stone-50, .bg-stone-100, .bg-gold-50, .bg-gold-100):where(:enabled:not([readonly]):not([aria-invalid="true"]):not([aria-selected="true"]):not([aria-pressed="true"]):not(.bg-green-50):not(.bg-rose-100):not(.bg-stone-800):not(.bg-stone-900):not(.bg-gold-700):not(.bg-gold-800)) {
+  background-color: theme('colors.form.surface');
+}
+
+/* TrackingStep retains bg-white while adding its success state. Tailwind's
+   alphabetical utility order otherwise makes white win over green. */
+:where(input, textarea, select).bg-white.bg-green-50 {
+  background-color: theme('colors.green.50');
+}
+
+:where(input, textarea, select):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200):where(:not([aria-invalid="true"]):not([class*="border-red-"]):not([class*="border-green-"]):not([type="checkbox"]):not([type="radio"])) {
   border-color: theme('colors.form.border');
 }
 
-:where(input, textarea, select):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200):enabled:focus:where(:not([aria-invalid="true"]):not([class*="border-red-"])) {
+:where(input, textarea, select):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200):enabled:focus:where(:not([aria-invalid="true"]):not([class*="border-red-"]):not([class*="border-green-"])) {
   border-color: theme('colors.stone.800');
   outline: 2px solid theme('colors.stone.800');
   outline-offset: 2px;
 }
 
-:where(input, textarea, select):is(.bg-white, .bg-transparent):disabled {
+:where(input, textarea, select):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200):disabled {
   background-color: theme('colors.form.disabled');
   cursor: not-allowed;
+}
+
+:is(.beauty-storefront, .beauty-admin) :where(input, textarea)::placeholder {
+  color: theme('colors.stone.500');
+  opacity: 1;
 }
 
 .beauty-form-panel {
@@ -93,37 +121,39 @@ input, textarea, select {
   box-shadow: 0 6px 24px rgb(39 54 68 / 4%);
 }
 
-/* Customer surfaces use true white. Legacy `white`/stone-200 aliases are
-   pale blue, so the old cards disappeared against the page. Scope the repair
-   to SiteChrome's public wrapper; private admin routes keep their own theme. */
-.beauty-storefront :where(.bg-white) {
+/* Functional surfaces use true white on the existing pale blue page. Both
+   scopes have the same defaults, without recolouring the global palette or
+   light text on dark buttons. Keep specificity low so hover/selected utilities
+   win. Dispatch fields may carry both legacy white and a validation colour. */
+:is(.beauty-storefront, .beauty-admin) :where(.bg-white:not(.bg-green-50):not(.bg-rose-100)) {
   background-color: theme('colors.form.surface');
 }
 
 /* Neutral cards without a surface, plus legacy white cards. Deliberately
    leave coloured notices, selected choices and image gradients alone. */
-.beauty-storefront :where(div, section, aside, article, form).border:is(.border-stone-100, .border-stone-200, .border-gold-100, .border-gold-200):where(.bg-white, [class*="bg-gold-50"], :not([class*="bg-"])) {
+:is(.beauty-storefront, .beauty-admin) :where(:is(div, section, aside, article, form).border:is(.border-stone-100, .border-stone-200, .border-gold-100, .border-gold-200):is(.bg-white, .bg-gold-50, [class~="bg-gold-50/20"], [class~="bg-gold-50/30"], [class~="bg-gold-50/40"], [class~="bg-gold-50/50"], [class~="bg-gold-50/60"], :not([class^="bg-"]):not([class*=" bg-"]):not([class*="\a bg-"]):not([class*="\9 bg-"]):not([class*="\d bg-"]):not([class*="\c bg-"])):not([aria-pressed="true"]):not([aria-selected="true"])) {
   background-color: theme('colors.form.surface');
   border-color: theme('colors.form.panel');
 }
 
-/* Outlined actions and quantity controls must remain visible inside white
-   cards too. Their border has >3:1 contrast on both white and pale blue. */
-.beauty-storefront :where(button, a, label).border:is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200, .border-gold-300):where(:not([aria-pressed="true"]):not([class*="bg-gold-"]):not([class*="bg-stone-"]):not([class*="bg-[#"]):not([class*="bg-blue-"])) {
+/* Match base background tokens, not hover:bg-* or disabled:bg-* variants.
+   The old substring test excluded ordinary outlined customer buttons merely
+   because they had a hover colour. Explicit coloured selections stay intact. */
+:is(.beauty-storefront, .beauty-admin) :where(:is(button, a, label).border:is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200, .border-gold-300):is(.bg-white, .bg-transparent, .bg-form-surface, :not([class^="bg-"]):not([class*=" bg-"]):not([class*="\a bg-"]):not([class*="\9 bg-"]):not([class*="\d bg-"]):not([class*="\c bg-"])):not([aria-pressed="true"]):not([aria-selected="true"])) {
   background-color: theme('colors.form.surface');
   border-color: theme('colors.form.border');
 }
 
-.beauty-storefront :where(div).border.border-stone-200:has(> button) {
+:is(.beauty-storefront, .beauty-admin) :where(div.border.border-stone-200:has(> button):not([class^="bg-"]):not([class*=" bg-"])) {
   background-color: theme('colors.form.surface');
   border-color: theme('colors.form.border');
 }
 
-.beauty-storefront :where(button, a).border:enabled:hover {
+:is(.beauty-storefront, .beauty-admin) :where(:is(button:enabled, a[href]):not([aria-disabled="true"]):not([aria-pressed="true"]):not([aria-selected="true"]):is(.border-stone-200, .border-stone-300, .border-gold-100, .border-gold-200, .border-gold-300)).border:hover {
   border-color: theme('colors.stone.800');
 }
 
-.beauty-storefront :where(button)[class*="disabled:bg-stone-"]:disabled {
+:is(.beauty-storefront, .beauty-admin) :where(button)[class*="disabled:bg-stone-"]:disabled {
   background-color: theme('colors.form.disabled');
   color: theme('colors.stone.600');
   cursor: not-allowed;

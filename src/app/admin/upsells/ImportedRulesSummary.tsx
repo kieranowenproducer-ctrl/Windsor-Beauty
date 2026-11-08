@@ -88,7 +88,7 @@ export default function ImportedRulesSummary({
                             <button
                               onClick={() => handleDelete(rule.id)}
                               disabled={deletingId === rule.id}
-                              className="text-[9px] tracking-wider text-stone-300 hover:text-red-400 transition-colors uppercase shrink-0 disabled:opacity-50"
+                              className="text-[9px] tracking-wider text-stone-500 hover:text-red-700 transition-colors uppercase shrink-0 disabled:opacity-50"
                             >
                               Delete
                             </button>

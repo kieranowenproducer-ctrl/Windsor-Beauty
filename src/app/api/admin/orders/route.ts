@@ -39,6 +39,7 @@ export async function GET() {
       status: o.status,
       paymentMethod: o.payment_method,
       shippingAddress: o.shipping_address,
+      shippingRecipient: o.shipping_recipient?.trim() || null,
       shippingCountry: o.shipping_country,
       phone: o.phone,
       trackingNumber: o.tracking_number,

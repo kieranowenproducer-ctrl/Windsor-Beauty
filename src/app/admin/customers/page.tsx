@@ -8,6 +8,7 @@ import { referralChannel } from '@/lib/referralSources';
 import ResendVerificationPanel from './ResendVerificationPanel';
 import MembershipSignupStats from './MembershipSignupStats';
 import CustomerFilters from './CustomerFilters';
+import QuickCustomerSearch from './QuickCustomerSearch';
 import CustomersTable from './CustomersTable';
 import CustomerDetailPanel from './CustomerDetailPanel';
 import DuplicateAccountsPanel from './DuplicateAccountsPanel';
@@ -663,6 +664,8 @@ export default function AdminCustomersPage() {
               </button>
             </div>
           </div>
+
+          <div className="mb-4"><QuickCustomerSearch customers={customers} /></div>
 
           <DuplicateAccountsPanel
             checking={duplicateChecking}

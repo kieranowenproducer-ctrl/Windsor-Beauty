@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL } from './contactAddress';
 /** SMTP IDs are opaque and separate from provider API UUIDs. */
 export function normaliseMessageId(value: unknown): string | null {
   if (typeof value !== 'string') return null;
@@ -32,7 +33,7 @@ export function exactBeautyThread<T extends { id: number; email: string; smtp_me
   const rows = matches.filter(row => references.includes(row.smtp_message_id));
   if (references.some(id => !rows.some(row => row.smtp_message_id === id))) return null;
   const owned=new Set(['info','sales','accounts'].flatMap(local=>[`${local}@windsorbeauty.is`,`${local}@windsorbeauty.co.uk`]));
-  owned.add('orders@windsorbeauty.is');owned.add('beautiful@windsorbeauty.is');
+  owned.add('orders@windsorbeauty.is');owned.add('beautiful@windsorbeauty.is');owned.add(BEAUTY_CONTACT_EMAIL);
   if(rows.some(row=>row.email.trim().toLowerCase()!==sender||!owned.has(row.public_mailbox)))return null;
   if(!directParents.length || directParents.some(id=>!references.includes(id) || !rows.some(row=>row.smtp_message_id===id)) || rows.some(row=>directParents.includes(row.smtp_message_id)&&row.public_mailbox!==mailbox))return null;
   return new Set(rows.map(row => row.id)).size === 1 ? rows[0] : null;

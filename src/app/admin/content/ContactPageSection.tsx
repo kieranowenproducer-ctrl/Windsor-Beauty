@@ -93,7 +93,7 @@ export default function ContactPageSection({
                         <button
                           onClick={() => removeEmail(i)}
                           disabled={contact.emails.length <= 1}
-                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2 self-start sm:self-auto"
+                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2 self-start sm:self-auto"
                         >
                           Remove
                         </button>
@@ -125,7 +125,7 @@ export default function ContactPageSection({
                         <button
                           onClick={() => removeSubject(i)}
                           disabled={contact.subjects.length <= 1}
-                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2"
+                          className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-2"
                         >
                           Remove
                         </button>
@@ -153,7 +153,7 @@ export default function ContactPageSection({
                   <button
                     onClick={handleResetContact}
                     disabled={contactSaving}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-700 transition-colors disabled:opacity-50"
                   >
                     Reset to Default
                   </button>

@@ -141,7 +141,7 @@ export default function AboutPageSection({
                   <button
                     onClick={handleResetAbout}
                     disabled={aboutSaving}
-                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
+                    className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-700 transition-colors disabled:opacity-50"
                   >
                     Reset to Default
                   </button>

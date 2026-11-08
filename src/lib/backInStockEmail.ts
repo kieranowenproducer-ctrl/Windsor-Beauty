@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import {
   listPendingStockAlerts,
@@ -9,7 +10,7 @@ import { getProductsBySlug } from '@/lib/shipping';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 
 interface BackInStockEmailParams {
   to: string;

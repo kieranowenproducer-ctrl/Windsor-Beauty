@@ -36,7 +36,7 @@ function cellCls(empty: boolean, required: boolean) {
     'w-full bg-transparent text-stone-700 leading-relaxed rounded-sm px-1.5 py-0.5 -mx-1.5 outline-none border transition-colors',
     required && empty
       ? 'border-amber-300 bg-amber-50/70 placeholder:text-amber-400'
-      : 'border-transparent hover:border-stone-200 focus:bg-white placeholder:text-stone-300',
+      : 'border-transparent hover:border-stone-200 focus:bg-white placeholder:text-stone-500',
     'focus:border-gold-400 focus:ring-1 focus:ring-gold-200',
   ].join(' ');
 }
@@ -135,7 +135,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
         {/* controls */}
         <div className="sticky top-0 bg-white border-b border-gold-100 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 z-10">
           <div className="min-w-0">
-            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-400">Editing certificate</p>
+            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700">Editing certificate</p>
             <p className="text-[11px] text-stone-500 truncate">{meta.product.name}{d.dosage ? ` · ${d.dosage}` : ''}</p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -143,7 +143,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
               {saveState === 'saving' ? <span className="text-stone-500">Saving…</span>
                 : saveState === 'saved' ? <span className="text-green-600">Saved ✓</span>
                 : saveState === 'error' ? <span className="text-red-500">Save failed</span>
-                : <span className="text-stone-300">Auto-saves</span>}
+                : <span className="text-stone-500">Auto-saves</span>}
             </span>
             <button onClick={onClose} aria-label="Close editor" className="text-stone-500 hover:text-stone-700 transition-colors p-1">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -269,7 +269,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                 return (
                   <MarkedRow key={k} issue={issue}>
                     <div className={`flex ${issue ? '' : i % 2 === 1 ? 'bg-gold-50/60' : 'bg-white'} ${i > 0 ? 'border-t border-gold-100' : ''}`}>
-                      <div className={`w-2/5 sm:w-1/3 px-4 py-3 font-medium ${issue ? 'text-red-700' : 'text-stone-500'}`}>{VS_KEYS[k].name}{!required && <span className="text-stone-300"> (optional)</span>}</div>
+                      <div className={`w-2/5 sm:w-1/3 px-4 py-3 font-medium ${issue ? 'text-red-700' : 'text-stone-500'}`}>{VS_KEYS[k].name}{!required && <span className="text-stone-500"> (optional)</span>}</div>
                       <div className="flex-1 px-3 py-2 flex items-center">
                         <input className={cellCls(!v.trim(), required)} value={v} aria-label={VS_KEYS[k].name}
                           placeholder={k === 'batch' ? 'The batch code on the certificate' : k === 'laboratory' ? 'Who issued the certificate' : 'e.g. 15/01/2026'}
@@ -357,7 +357,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
             <div className="mb-2">
               <span className="text-xs font-bold uppercase tracking-wide text-stone-800">Note:</span>
               <textarea
-                className="w-full mt-1 text-xs font-bold uppercase tracking-wide text-stone-800 leading-relaxed bg-transparent border border-transparent hover:border-stone-200 focus:border-gold-400 focus:ring-1 focus:ring-gold-200 focus:bg-white rounded-sm px-1.5 py-1 outline-none h-24 resize-y placeholder:font-normal placeholder:normal-case placeholder:text-stone-300"
+                className="w-full mt-1 text-xs font-bold uppercase tracking-wide text-stone-800 leading-relaxed bg-transparent border border-transparent hover:border-stone-200 focus:border-gold-400 focus:ring-1 focus:ring-gold-200 focus:bg-white rounded-sm px-1.5 py-1 outline-none h-24 resize-y placeholder:font-normal placeholder:normal-case placeholder:text-stone-500"
                 value={d.caution}
                 placeholder={DEFAULT_CERTIFICATE_CAUTION}
                 aria-label="Note text"
@@ -386,7 +386,7 @@ export default function CertificateEditor({ meta, draft: d, saveState, duplicate
                 Mark complete
               </button>
             )}
-            <label className={`flex items-center gap-2 text-[12px] ${canShow || d.enabled ? 'text-stone-700 cursor-pointer' : 'text-stone-300 cursor-not-allowed'}`}
+            <label className={`flex items-center gap-2 text-[12px] ${canShow || d.enabled ? 'text-stone-700 cursor-pointer' : 'text-stone-500 cursor-not-allowed'}`}
               title={canShow ? 'Show this certificate on the live product page' : 'Mark the certificate complete first'}>
               <input type="checkbox" checked={d.enabled} disabled={!canShow && !d.enabled} onChange={(e) => onEdit({ enabled: e.target.checked })} />
               Show on site

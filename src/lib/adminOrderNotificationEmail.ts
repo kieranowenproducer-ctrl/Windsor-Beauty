@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import type { OrderItemRecord } from '@/lib/db';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
@@ -12,7 +13,7 @@ import { displayOrderItems } from '@/lib/orderTrialDisplay';
 // provider something about the address customers depend on. Decided in the 31 July 2026
 // deliverability audit.
 const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
-const TO_ADDRESS = 'sales@windsorbeauty.is';
+const TO_ADDRESS = BEAUTY_CONTACT_EMAIL;
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   fena: 'Pay by Bank (Fena)',

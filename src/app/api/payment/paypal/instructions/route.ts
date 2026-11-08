@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import { NextResponse } from 'next/server';
 import {
   findOrderByNumber,
@@ -99,7 +100,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({
       success: false, orderNumber: order.order_number, resumeUrl,
-      error: 'Your order is reserved, but the PayPal page could not be opened. Please contact sales@windsorbeauty.is.',
+      error: `Your order is reserved, but the PayPal page could not be opened. Please contact ${BEAUTY_CONTACT_EMAIL}.`,
     }, { status: 503 });
   }
 

@@ -63,7 +63,7 @@ export default function ResendVerificationPanel({
                             return (
                               <p className="text-[10px] mt-1">
                                 <span className="text-stone-500">Came from: </span>
-                                <span className={from.known ? 'text-gold-700 font-medium' : 'text-stone-300'}>
+                                <span className={from.known ? 'text-gold-700 font-medium' : 'text-stone-500'}>
                                   {from.main}
                                 </span>
                                 {from.detail && <span className="text-stone-500"> ({from.detail})</span>}

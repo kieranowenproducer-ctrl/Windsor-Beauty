@@ -583,10 +583,10 @@ export default function AdminIpAddressesPage() {
                         <td className="px-4 py-3 text-[10px] text-stone-600">
                           {v.joined
                             ? <span className="text-gold-700">Yes{v.member_names.length ? `: ${v.member_names.slice(0, 3).join(', ')}` : ''}</span>
-                            : <span className="text-stone-300">No</span>}
+                            : <span className="text-stone-500">No</span>}
                         </td>
                         <td className="px-4 py-3 text-[10px] text-stone-600">
-                          {v.ordered ? <span className="text-gold-700">Yes ({v.orders})</span> : <span className="text-stone-300">No</span>}
+                          {v.ordered ? <span className="text-gold-700">Yes ({v.orders})</span> : <span className="text-stone-500">No</span>}
                         </td>
                         <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">{formatDatetime(v.first_seen)}</td>
                         <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">{formatDatetime(v.last_seen)}</td>
@@ -616,9 +616,9 @@ export default function AdminIpAddressesPage() {
                     ) : filteredVisits.map(v => (
                       <tr key={v.id} className="border-b border-stone-50 hover:bg-stone-50/50 transition-colors">
                         <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">{formatDatetime(v.created_at)}</td>
-                        <td className="px-4 py-3 text-[10px] font-mono text-stone-500">{v.ip_address ?? <span className="text-stone-300">Not known</span>}</td>
+                        <td className="px-4 py-3 text-[10px] font-mono text-stone-500">{v.ip_address ?? <span className="text-stone-500">Not known</span>}</td>
                         <td className="px-4 py-3 text-[10px] text-stone-600">
-                          {v.country ? placeOf(v) : <span className="text-stone-300">Not known</span>}
+                          {v.country ? placeOf(v) : <span className="text-stone-500">Not known</span>}
                         </td>
                         <td className="px-4 py-3 text-[10px] text-stone-600">{sourceLabel(v.source, v.source_detail)}</td>
                         <td className="px-4 py-3 text-[10px] font-mono text-stone-600">{v.path}</td>
@@ -653,7 +653,7 @@ export default function AdminIpAddressesPage() {
                       </td>
                       <td className="px-4 py-3 text-[10px] text-stone-600">
                         {row.member_names.length === 0
-                          ? <span className="text-stone-300">Not signed in</span>
+                          ? <span className="text-stone-500">Not signed in</span>
                           : row.member_names.slice(0, 4).join(', ')}
                         {row.member_names.length > 4 && <span className="text-stone-500"> +{row.member_names.length - 4} more</span>}
                       </td>
@@ -864,11 +864,11 @@ export default function AdminIpAddressesPage() {
                       <td className="px-4 py-3 text-[10px] text-stone-500 whitespace-nowrap">{formatDatetime(row.created_at)}</td>
                       <td className="px-4 py-3 text-[10px] text-stone-600">{EVENT_LABELS[row.event] ?? row.event}</td>
                       <td className="px-4 py-3 text-[10px] text-stone-600">
-                        {row.customer_name ?? <span className="text-stone-300">Not signed in</span>}
+                        {row.customer_name ?? <span className="text-stone-500">Not signed in</span>}
                       </td>
                       <td className="px-4 py-3 text-[10px] font-mono text-stone-500">{row.ip_address}</td>
                       <td className="px-4 py-3 text-[10px] text-stone-600">
-                        {row.country ? placeOf({ city: row.city, country_region: null, country: row.country }) : <span className="text-stone-300">Not known</span>}
+                        {row.country ? placeOf({ city: row.city, country_region: null, country: row.country }) : <span className="text-stone-500">Not known</span>}
                       </td>
                     </tr>
                   ))}

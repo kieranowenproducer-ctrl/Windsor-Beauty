@@ -349,7 +349,7 @@ export default function AdminBulkWeightsPage() {
                     className="w-32 border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none disabled:bg-stone-50 disabled:text-stone-500"
                   />
                 </div>
-                <p className="text-[8px] text-stone-300 mt-1">Leave blank or set to 0 to disable free shipping.</p>
+                <p className="text-[8px] text-stone-500 mt-1">Leave blank or set to 0 to disable free shipping.</p>
               </div>
               <button
                 type="button"
@@ -394,7 +394,7 @@ export default function AdminBulkWeightsPage() {
                     Clear
                   </button>
                 )}
-                <span className="text-[9px] text-stone-300 ml-auto whitespace-nowrap pb-2">
+                <span className="text-[9px] text-stone-500 ml-auto whitespace-nowrap pb-2">
                   Showing {filteredRows.length} of {rows?.length ?? 0} variants
                 </span>
               </div>
@@ -672,7 +672,7 @@ export default function AdminBulkWeightsPage() {
             })}
           </div>
 
-          <p className="text-[9px] text-stone-300 mt-4">
+          <p className="text-[9px] text-stone-500 mt-4">
             Blank fields fall back to this product&rsquo;s own shipping defaults (shown as placeholder text), then
             to the global shipping settings on the Dispatch page.
           </p>

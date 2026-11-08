@@ -145,6 +145,7 @@ export function buildTrackingUrl(trackingNumber: string): string {
 async function royalMailFetch(path: string, init: RequestInit = {}) {
   const res = await fetch(`${baseUrl()}${path}`, {
     ...init,
+    signal: init.signal ?? AbortSignal.timeout(30000),
     headers: {
       Authorization: `Bearer ${requireApiKey()}`,
       'Content-Type': 'application/json',
@@ -209,7 +210,7 @@ async function getOrderByReference(orderReference: string): Promise<ExistingOrde
 // yet — the caller MUST still persist that error's `orderIdentifier` against
 // the order, otherwise the next retry has no way to know an order already
 // exists and will create a duplicate.
-export async function createShipmentOrder(params: CreateShipmentParams): Promise<CreatedShipment> {
+export async function createShipmentOrder(params: CreateShipmentParams, beforeMutation: () => Promise<void>): Promise<CreatedShipment> {
   // Check for an existing order under this reference first — see
   // getOrderByReference's comment for why this matters.
   const existing = await getOrderByReference(params.orderReference);
@@ -289,6 +290,7 @@ export async function createShipmentOrder(params: CreateShipmentParams): Promise
     order.label = { includeLabelInResponse: false, includeCN: true };
   }
 
+  await beforeMutation();
   const res = await royalMailFetch('/orders', {
     method: 'POST',
     body: JSON.stringify({ items: [order] }),
@@ -450,4 +452,55 @@ export function describeParcelState(state: Pick<RoyalMailParcelState, 'printedOn
   if (state.shippedOn) return 'Royal Mail has the parcel.';
   if (state.printedOn) return 'Royal Mail has printed the label, but has not taken the parcel yet.';
   return 'Royal Mail has the order, but has not printed a label yet.';
+}
+
+// Exact pre-dispatch replacement, ported from accepted Glow release e7762c9.
+export async function deleteOrdersForReference(orderReference: string, beforeMutation: () => Promise<void>): Promise<{ deleted: string[] }> {
+  if (!/^WB-[A-Z0-9-]+$/.test(orderReference)) throw new RoyalMailApiError('Only an exact Windsor Beauty order reference can be changed.');
+  const lookup = async () => {
+    const res = await royalMailFetch(`/orders/${encodeURIComponent(`"${orderReference}"`)}`, { method: 'GET' });
+    if (res.status === 404) return [];
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      throw new RoyalMailApiError(
+        `Could not check Royal Mail for the old order (${data?.errors?.[0]?.errorMessage || `HTTP ${res.status}`}).`,
+        undefined, undefined, data,
+      );
+    }
+    const orders: Array<Record<string, unknown>> | null = Array.isArray(data) ? data : Array.isArray(data?.orders) ? data.orders : null;
+    if (!orders || orders.length > 20 || orders.some(o => !o || !/^[0-9]+$/.test(String(o.orderIdentifier ?? '')) || o.orderReference !== orderReference)) {
+      throw new RoyalMailApiError('Royal Mail did not return an exact, complete order reference. Nothing was changed.');
+    }
+    return orders;
+  };
+
+  const existing = await lookup();
+  if (existing.length === 0) return { deleted: [] };
+  if (existing.some(o => o.shippedOn || o.manifestedOn)) {
+    throw new RoyalMailApiError('Royal Mail already has this parcel down as posted, so its address can no longer be changed.');
+  }
+
+  const ids = existing.map(o => String(o.orderIdentifier));
+  await beforeMutation();
+  const res = await royalMailFetch(`/orders/${encodeURIComponent(ids.join(';'))}`, { method: 'DELETE' });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const reason = res.status === 403
+      ? 'Royal Mail does not let this account delete orders through the website. Delete the old order in Click & Drop by hand, then try again.'
+      : `Royal Mail would not delete the old order (${data?.errors?.[0]?.message || data?.errors?.[0]?.errorMessage || `HTTP ${res.status}`}).`;
+    throw new RoyalMailApiError(reason, undefined, undefined, data);
+  }
+  const errors: Array<Record<string, any>> = Array.isArray(data?.errors) ? data.errors : [];
+  if (errors.length > 0) {
+    throw new RoyalMailApiError(
+      `Royal Mail would not delete the old order (${errors.map(e => e?.message || e?.errorMessage || e?.code).filter(Boolean).join('; ') || 'no reason given'}).`,
+      undefined, undefined, data,
+    );
+  }
+
+  // Believe Royal Mail's list, not the delete reply.
+  if ((await lookup()).length > 0) {
+    throw new RoyalMailApiError('Royal Mail still shows the old order after deleting it. Check Click & Drop before trying again.');
+  }
+  return { deleted: ids };
 }

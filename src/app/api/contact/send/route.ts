@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { buildEnquiryAcknowledgementEmail } from '@/lib/enquiryEmails';
 import { NextResponse } from 'next/server';
@@ -10,7 +11,7 @@ import { emailGreeting, emailGreetingName } from '@/lib/email/greeting';
 import { enquiryAlertRecipients } from '@/lib/email/enquiryAlerts';
 
 const FROM_ADDRESS = 'Windsor Beauty Website <enquiries@windsorbeauty.is>';
-const TO_ADDRESS = 'info@windsorbeauty.is';
+const TO_ADDRESS = BEAUTY_CONTACT_EMAIL;
 
 const SUBJECT_LABELS: Record<string, string> = {
   general: 'General Enquiry',
@@ -253,7 +254,7 @@ Admin:        ${orderSummary.adminUrl}
     // message failed when it did not would be a worse one.
     try {
       await sendEmail({
-from: FROM_ADDRESS,
+from: BEAUTY_CONTACT_FROM,
 to: email,
 replyTo: TO_ADDRESS,
 ...buildEnquiryAcknowledgementEmail({ name, subjectLabel, orderNumber, message })

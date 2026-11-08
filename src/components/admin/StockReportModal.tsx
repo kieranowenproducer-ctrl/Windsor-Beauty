@@ -68,7 +68,7 @@ function downloadCsv(rows: StockReportRow[], generatedAt: string) {
 
 function StockTable({ rows }: { rows: StockReportRow[] }) {
   if (rows.length === 0) {
-    return <p className="text-xs text-stone-300 py-4">None.</p>;
+    return <p className="text-xs text-stone-500 py-4">None.</p>;
   }
   return (
     <>
@@ -84,7 +84,7 @@ function StockTable({ rows }: { rows: StockReportRow[] }) {
                 <p className="text-xs font-medium text-stone-700">{r.name}</p>
                 <p className="mt-0.5 text-[11px] text-stone-500">
                   {r.dosage}
-                  <span className="text-stone-300"> · </span>
+                  <span className="text-stone-500"> · </span>
                   <span className="text-stone-600 font-medium">{formatPrice(r.price)}</span>
                 </p>
               </div>
@@ -92,7 +92,7 @@ function StockTable({ rows }: { rows: StockReportRow[] }) {
                 <p className={`text-sm font-semibold tabular-nums ${r.stock !== null && r.stock <= 0 ? 'text-red-500' : 'text-stone-700'}`}>
                   {formatStock(r.stock)}
                 </p>
-                <p className="text-[8px] tracking-[0.15em] uppercase text-stone-300">In stock</p>
+                <p className="text-[8px] tracking-[0.15em] uppercase text-stone-500">In stock</p>
               </div>
             </div>
             <p className="mt-1 text-[10px] text-stone-500">
@@ -191,7 +191,7 @@ export default function StockReportModal({ open, onClose }: Props) {
       <div className="relative bg-white w-full max-w-5xl max-h-full flex flex-col overflow-hidden shadow-2xl">
         <div className="shrink-0 bg-white border-b border-gold-100 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 z-10">
           <div>
-            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-400">Windsor Beauty Admin</p>
+            <p className="text-[9px] tracking-[0.3em] uppercase text-gold-700">Windsor Beauty Admin</p>
             <p className="font-serif text-sm sm:text-base text-stone-700">Stock Check Report</p>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -221,7 +221,7 @@ export default function StockReportModal({ open, onClose }: Props) {
 
           {rows && (
             <>
-              <p className="text-[10px] text-stone-300 mb-5">
+              <p className="text-[10px] text-stone-500 mb-5">
                 Generated {new Date(generatedAt).toLocaleString('en-GB')} · {rows.length} product{rows.length === 1 ? '' : 's'} total
               </p>
 

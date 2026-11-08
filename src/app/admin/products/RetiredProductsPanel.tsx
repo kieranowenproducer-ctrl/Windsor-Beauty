@@ -88,7 +88,7 @@ export default function RetiredProductsPanel() {
     <div className="bg-white border border-stone-200 mt-8">
       <div className="px-5 py-4 border-b border-stone-100">
         <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
-          Retired <span className="text-stone-300 ml-1">({items.length})</span>
+          Retired <span className="text-stone-500 ml-1">({items.length})</span>
         </p>
         <p className="text-[10px] text-stone-500 mt-1">
           Products you have stopped stocking. They never appear in the low-stock warning. One with stock left
@@ -99,7 +99,7 @@ export default function RetiredProductsPanel() {
       {error && <p className="text-[10px] text-red-600 px-5 pt-3">{error}</p>}
       {notice && <p className="text-[10px] text-green-700 px-5 pt-3">{notice}</p>}
       {items.length === 0 ? (
-        <p className="text-[10px] text-stone-300 px-5 py-5">Nothing is retired.</p>
+        <p className="text-[10px] text-stone-500 px-5 py-5">Nothing is retired.</p>
       ) : (
         <div className="divide-y divide-stone-50">
           {items.map(item => {

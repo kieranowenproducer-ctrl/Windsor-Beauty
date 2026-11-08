@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import type { InvoiceLineItem } from '@/lib/db';
 import { INVOICE_PAYPAL_FEE_PERCENT } from '@/lib/invoices';
@@ -11,7 +12,7 @@ import { emailGreeting } from './email/greeting';
 // (inline-CSS HTML table layout, same colours, Resend, same from-address).
 // It is its own template rather than a reuse of paypalInstructionsEmail.ts's
 // HTML, because that one has a different single-button layout.
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 
 export interface SendInvoiceEmailParams {
   to: string;
@@ -197,7 +198,7 @@ export function buildInvoiceEmail(params: SendInvoiceEmailParams) {
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions about this invoice, just reply to this email, or contact
-              <a href="mailto:sales@windsorbeauty.is" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.is</a>
+              <a href="mailto:${BEAUTY_CONTACT_EMAIL}" style="color:#A9695D;text-decoration:none">${BEAUTY_CONTACT_EMAIL}</a>
               quoting your invoice reference <strong style="color:#78716c">${escapeHtml(params.invoiceNumber)}</strong>.
             </p>
           </td>
@@ -236,7 +237,7 @@ export function buildInvoiceEmail(params: SendInvoiceEmailParams) {
         `(Bank transfer has no fee; PayPal adds a ${INVOICE_PAYPAL_FEE_PERCENT}% processing fee.)\n\n` +
         `By completing this payment, you confirm that you have read and agree to the Windsor Beauty Terms & Conditions: ${termsUrl}\n` +
         `\nAny questions about this invoice, just reply to this email, or contact ` +
-        `sales@windsorbeauty.is quoting your invoice reference ${params.invoiceNumber}.`,
+        `${BEAUTY_CONTACT_EMAIL} quoting your invoice reference ${params.invoiceNumber}.`,
       html,
     };
 }

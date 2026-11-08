@@ -483,7 +483,7 @@ export default function CheckoutPage() {
         <Link href={paymentRecovery.url} className="inline-block bg-gold-700 text-white text-[10px] tracking-[0.22em] uppercase px-8 py-3.5 hover:bg-gold-800 transition-colors">
           Open secure payment
         </Link>
-        <p className="mt-6 text-xs text-stone-400">Your order will not enter dispatch until payment is confirmed.</p>
+        <p className="mt-6 text-xs text-stone-500">Your order will not enter dispatch until payment is confirmed.</p>
       </div>
     );
   }

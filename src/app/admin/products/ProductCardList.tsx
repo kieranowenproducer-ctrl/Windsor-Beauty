@@ -101,7 +101,7 @@ export default function ProductCardList({
                 </div>
 
                 <div className="mb-3">
-                  <p className="text-[8px] tracking-widest uppercase text-stone-300 mb-1.5">Stock by Size</p>
+                  <p className="text-[8px] tracking-widest uppercase text-stone-500 mb-1.5">Stock by Size</p>
                   {renderStockEditor(product)}
                 </div>
 
@@ -132,7 +132,7 @@ export default function ProductCardList({
                       ? 'Put this product back on the shop.'
                       : 'Take this product off the shop and every customer page. Nothing is deleted.'}
                     className={`p-2 -m-2 text-[9px] tracking-wider uppercase transition-colors disabled:opacity-40 ${
-                      hiddenSlugs.has(product.slug) ? 'text-green-600 hover:text-green-700' : 'text-stone-500 hover:text-red-400'
+                      hiddenSlugs.has(product.slug) ? 'text-green-600 hover:text-green-700' : 'text-stone-500 hover:text-red-700'
                     }`}
                   >
                     {togglingSlug === product.slug ? 'Saving…' : hiddenSlugs.has(product.slug) ? 'Unhide' : 'Hide'}

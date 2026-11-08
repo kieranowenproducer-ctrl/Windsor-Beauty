@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
@@ -8,7 +9,7 @@ import { sendEmail } from '@/lib/email/send';
 // watches for "something needs you", so an alert lands where the others do
 // instead of creating a second place to check.
 const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
-const TO_ADDRESS = 'sales@windsorbeauty.is';
+const TO_ADDRESS = BEAUTY_CONTACT_EMAIL;
 
 const SITE_URL = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
 

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { isDbConfigured, listCustomProducts, upsertCustomProduct, deleteCustomProduct, clearProductVisibility, clearProductStock, clearProductVariantStock } from '@/lib/db';
 import { mergeProducts, parseProductInput, PRODUCTS } from '@/data/products';
+import { updateProductIfUnchanged } from '@/lib/db/productEdit';
+import { hasAdminReadAccess } from '@/lib/adminReadAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +12,7 @@ export const dynamic = 'force-dynamic';
 // are pinned to the original values — renaming either would orphan stock,
 // visibility, cart and order references that are keyed by slug.
 export async function PUT(request: Request, props: { params: Promise<{ slug: string }> }) {
+  if (!hasAdminReadAccess(request)) return NextResponse.json({ error: 'Please sign in as staff.' }, { status: 401 });
   const params = await props.params;
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
@@ -19,6 +22,11 @@ export async function PUT(request: Request, props: { params: Promise<{ slug: str
   const draft = body?.product;
   if (!draft || typeof draft !== 'object') {
     return NextResponse.json({ error: 'Provide { product }.' }, { status: 400 });
+  }
+  const guarded = Object.prototype.hasOwnProperty.call(body, 'expectedProduct');
+  const expected = body.expectedProduct;
+  if (guarded && (!expected || typeof expected !== 'object' || Array.isArray(expected) || expected.slug !== params.slug)) {
+    return NextResponse.json({ error: 'Reload the product before saving.' }, { status: 400 });
   }
 
   let overrides;
@@ -45,7 +53,13 @@ export async function PUT(request: Request, props: { params: Promise<{ slug: str
   }
 
   try {
-    await upsertCustomProduct(product);
+    if (guarded) {
+      if (!await updateProductIfUnchanged(product, expected)) {
+        return NextResponse.json({ error: 'This product changed in another window. Your draft is kept. Reload the saved version before applying your changes.' }, { status: 409 });
+      }
+    } else {
+      await upsertCustomProduct(product);
+    }
     return NextResponse.json({ success: true, product });
   } catch (err) {
     return NextResponse.json(

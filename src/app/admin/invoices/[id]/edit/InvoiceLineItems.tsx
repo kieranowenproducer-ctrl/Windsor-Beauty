@@ -219,7 +219,7 @@ export default function InvoiceLineItems({
                         No trial products yet. Add them on the Trial products page and they will be pickable here.
                       </p>
                     )}
-                    <p className="text-[9px] text-stone-300 mt-1.5 tracking-wide uppercase">
+                    <p className="text-[9px] text-stone-500 mt-1.5 tracking-wide uppercase">
                       {(() => {
                         const picked = trialProducts.find((p) => `trial:${p.id}` === item.slug);
                         return picked

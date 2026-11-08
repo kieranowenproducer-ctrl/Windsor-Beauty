@@ -144,7 +144,7 @@ export default function CustomerDetailPanel({
                           <p className="text-[9px] text-stone-500 ml-4">{selected.qrPartnerName}</p>
                         )}
                         {selected.qrCampaignSlug && (
-                          <p className="text-[8px] text-stone-300 font-mono ml-4">/r/{selected.qrCampaignSlug}</p>
+                          <p className="text-[8px] text-stone-500 font-mono ml-4">/r/{selected.qrCampaignSlug}</p>
                         )}
                       </div>
                     ) : (
@@ -176,7 +176,7 @@ export default function CustomerDetailPanel({
                         <p>{selected.addressCountry}</p>
                       </div>
                     ) : (
-                      <p className="text-[10px] text-stone-300">No address on file.</p>
+                      <p className="text-[10px] text-stone-500">No address on file.</p>
                     )}
                   </div>
 
@@ -292,9 +292,9 @@ export default function CustomerDetailPanel({
                   <div className="border-t border-stone-100 pt-3">
                     <p className="text-[9px] tracking-[0.15em] uppercase text-stone-500 mb-2">Orders and Payment Attempts</p>
                     {loadingOrders ? (
-                      <p className="text-[10px] text-stone-300">Loading…</p>
+                      <p className="text-[10px] text-stone-500">Loading…</p>
                     ) : customerOrders.length === 0 ? (
-                      <p className="text-[10px] text-stone-300">No orders found.</p>
+                      <p className="text-[10px] text-stone-500">No orders found.</p>
                     ) : (
                       <div className="space-y-1.5">
                         {customerOrders.map(o => (
@@ -331,7 +331,7 @@ export default function CustomerDetailPanel({
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-40 text-center">
-                  <p className="text-xs text-stone-300">Select a customer to view details</p>
+                  <p className="text-xs text-stone-500">Select a customer to view details</p>
                 </div>
               )}
             </div>

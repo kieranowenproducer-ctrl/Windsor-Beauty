@@ -1,9 +1,10 @@
+import { BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { emailDocument, escapeHtml } from './email/shared';
 import { sendEmail } from './email/send';
 import { emailGreeting } from './email/greeting';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 
 export async function sendPaymentResumeEmail(params: {
   to: string; customerName: string; orderNumber: string; total: number; resumeUrl: string;

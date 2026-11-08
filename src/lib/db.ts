@@ -1592,6 +1592,7 @@ export async function recordRoyalMailLabel(
     parcelWeightGrams?: number;
     parcelPackageFormat?: string;
     rawResponse?: unknown;
+    leaseToken?: string;
   }
 ): Promise<OrderRow | null> {
   const db = requireDb();
@@ -1608,8 +1609,13 @@ export async function recordRoyalMailLabel(
         parcel_weight_grams = COALESCE(${params.parcelWeightGrams ?? null}, parcel_weight_grams),
         parcel_package_format = COALESCE(${params.parcelPackageFormat ?? null}, parcel_package_format)
     WHERE order_number = ${orderNumber}
+      AND (${params.leaseToken ?? null}::text IS NULL OR
+        (royal_mail_dispatch_lease_token = ${params.leaseToken ?? null}
+         AND royal_mail_dispatch_lease_until > now()
+         AND status = ANY(${PAYMENT_CONFIRMED_STATUSES}::text[])))
     RETURNING *
   `;
+  if (params.leaseToken && rows.length !== 1) throw new Error('Royal Mail dispatch lease no longer owns this result.');
   return (rows[0] as OrderRow) ?? null;
 }
 
@@ -1624,11 +1630,11 @@ export async function recordRoyalMailLabel(
 export async function recordRoyalMailLabelError(
   orderNumber: string,
   errorMessage: string,
-  options?: { royalMailOrderId?: string | null; rawResponse?: unknown }
+  options?: { royalMailOrderId?: string | null; rawResponse?: unknown; leaseToken?: string }
 ): Promise<void> {
   const db = requireDb();
   const rawResponseJson = options?.rawResponse !== undefined ? JSON.stringify(options.rawResponse) : null;
-  await db`
+  const rows = await db`
     UPDATE orders
     SET royal_mail_label_status = 'error',
         royal_mail_label_error = ${errorMessage},
@@ -1636,7 +1642,13 @@ export async function recordRoyalMailLabelError(
         royal_mail_order_id = COALESCE(${options?.royalMailOrderId ?? null}, royal_mail_order_id),
         royal_mail_last_response = COALESCE(${rawResponseJson}, royal_mail_last_response)
     WHERE order_number = ${orderNumber}
+      AND (${options?.leaseToken ?? null}::text IS NULL OR
+        (royal_mail_dispatch_lease_token = ${options?.leaseToken ?? null}
+         AND royal_mail_dispatch_lease_until > now()
+         AND status = ANY(${PAYMENT_CONFIRMED_STATUSES}::text[])))
+    RETURNING order_number
   `;
+  if (options?.leaseToken && rows.length !== 1) throw new Error('Royal Mail dispatch lease no longer owns this result.');
 }
 
 // Records the "Royal Mail accepted/created the order but is withholding the
@@ -1651,18 +1663,24 @@ export async function recordRoyalMailLabelError(
 export async function recordRoyalMailPendingPostage(
   orderNumber: string,
   message: string,
-  options?: { royalMailOrderId?: string | null; rawResponse?: unknown }
+  options?: { royalMailOrderId?: string | null; rawResponse?: unknown; leaseToken?: string }
 ): Promise<void> {
   const db = requireDb();
   const rawResponseJson = options?.rawResponse !== undefined ? JSON.stringify(options.rawResponse) : null;
-  await db`
+  const rows = await db`
     UPDATE orders
     SET royal_mail_label_status = 'pending_postage',
         royal_mail_label_error = ${message},
         royal_mail_order_id = COALESCE(${options?.royalMailOrderId ?? null}, royal_mail_order_id),
         royal_mail_last_response = COALESCE(${rawResponseJson}, royal_mail_last_response)
     WHERE order_number = ${orderNumber}
+      AND (${options?.leaseToken ?? null}::text IS NULL OR
+        (royal_mail_dispatch_lease_token = ${options?.leaseToken ?? null}
+         AND royal_mail_dispatch_lease_until > now()
+         AND status = ANY(${PAYMENT_CONFIRMED_STATUSES}::text[])))
+    RETURNING order_number
   `;
+  if (options?.leaseToken && rows.length !== 1) throw new Error('Royal Mail dispatch lease no longer owns this result.');
 }
 
 // Records a tracking number pasted manually by the admin (e.g. copied from

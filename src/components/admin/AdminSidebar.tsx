@@ -33,6 +33,7 @@ const ADMIN_NAV_GROUPS: NavGroup[] = [
   ]},
   { group: 'Customers', items: [
     { label: 'Customers', href: '/admin/customers' },
+    { label: 'Customer Stats', href: '/admin/customer-stats' },
     { label: 'Security Review', href: '/admin/security-reviews' },
     { label: 'Member Logins', href: '/admin/member-logins' },
     { label: 'Batches', href: '/admin/batches' },

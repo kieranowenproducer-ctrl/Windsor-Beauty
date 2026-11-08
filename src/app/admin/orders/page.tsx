@@ -902,6 +902,10 @@ function AdminOrdersContent() {
             />
 
             <OrderDetailPanel
+              onOrderChanged={(orderNumber, patch) => {
+                setOrders(rows => rows.map(row => row.orderNumber === orderNumber ? { ...row, ...patch } : row));
+                setSelectedOrder(row => row?.orderNumber === orderNumber ? { ...row, ...patch } : row);
+              }}
               selectedOrder={selectedOrder}
               setSelectedOrder={setSelectedOrder}
               orderFailures={orderFailures}

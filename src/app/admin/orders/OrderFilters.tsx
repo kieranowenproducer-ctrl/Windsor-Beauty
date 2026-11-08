@@ -229,7 +229,7 @@ export default function OrderFilters({
                 Showing: This Month
                 <button
                   onClick={() => setPeriodFilter('all')}
-                  className="ml-1 text-gold-400 hover:text-gold-700 transition-colors font-bold leading-none"
+                  className="ml-1 text-gold-700 hover:text-gold-700 transition-colors font-bold leading-none"
                   aria-label="Clear period filter"
                 >
                   ×

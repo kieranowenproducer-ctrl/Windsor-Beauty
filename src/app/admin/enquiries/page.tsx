@@ -1,4 +1,5 @@
 'use client';
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import AdminStickyControls from '@/components/admin/AdminStickyControls';
 
 // Website Enquiries. Every message sent through the contact form, answerable
@@ -513,7 +514,7 @@ export default function AdminEnquiriesPage() {
           <p className="text-sm text-stone-500 mb-6">
             Contact form messages appear here. Add emails received in sales
             or info below until automatic mailbox capture is connected. Replying here sends from
-            info@windsorbeauty.is. Check the sales and info mailboxes for customer replies.
+            {BEAUTY_CONTACT_EMAIL}. Check Suite for customer replies; existing addresses remain active.
           </p>
 
           <section className="mb-6 border border-stone-200 bg-white p-4">
@@ -665,7 +666,7 @@ export default function AdminEnquiriesPage() {
                       </div>
                       <p className="text-xs text-stone-500 truncate">{enquiry.message}</p>
                     </div>
-                    <span className="text-stone-300 text-xs pt-1">{open ? '−' : '+'}</span>
+                    <span className="text-stone-500 text-xs pt-1">{open ? '−' : '+'}</span>
                   </button>
 
                   {open && (
@@ -852,7 +853,7 @@ export default function AdminEnquiriesPage() {
                              className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                            />
                           <p className="text-[10px] text-stone-500 mt-1.5 mb-3">
-                             Goes to {enquiry.email} from info@windsorbeauty.is. Their original message is quoted underneath so it makes sense on its own.
+                             Goes to {enquiry.email} from {BEAUTY_CONTACT_EMAIL}. Their original message is quoted underneath so it makes sense on its own.
                            </p>
                            {draftFormats[enquiry.id] === 'order' && draft.trim() ? (
                              <div className="mb-4">

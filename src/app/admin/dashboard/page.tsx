@@ -964,7 +964,7 @@ export default function AdminDashboard() {
               <Link key={label} href={href} className={`block bg-white border p-5 cursor-pointer hover:border-gold-300 transition-colors ${accent ? 'border-gold-300' : 'border-stone-200'}`}>
                 <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
                 <div className={`text-2xl font-semibold mb-1 ${accent ? 'text-gold-700' : 'text-stone-800'}`}>{loading ? '-' : value}</div>
-                <div className="text-[9px] text-stone-300">{note}</div>
+                <div className="text-[9px] text-stone-500">{note}</div>
               </Link>
             ))}
           </div>
@@ -995,7 +995,7 @@ export default function AdminDashboard() {
               <Link key={label} href={href} className={`block bg-white border p-5 cursor-pointer hover:border-gold-300 transition-colors ${accent ? 'border-gold-300' : 'border-stone-200'}`}>
                 <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
                 <div className="text-2xl font-semibold text-stone-800 mb-1">{loading ? '-' : value}</div>
-                <div className="text-[9px] text-stone-300">{note}</div>
+                <div className="text-[9px] text-stone-500">{note}</div>
               </Link>
             ))}
           </div>
@@ -1112,7 +1112,7 @@ export default function AdminDashboard() {
                         {/* No chevron where a button sits beside it: the buttons need the
                             width more than the arrow does, and the row is still tappable. */}
                         {event.type !== 'issue' && !clearableOrder && (
-                          <span className={`shrink-0 text-stone-300 text-[10px] transition-transform ${open ? 'rotate-90' : ''}`}>›</span>
+                          <span className={`shrink-0 text-stone-500 text-[10px] transition-transform ${open ? 'rotate-90' : ''}`}>›</span>
                         )}
                       </button>
                       {/* A finished order's line, taken off this list (task 535c24f9). The

@@ -235,7 +235,7 @@ export default function AdminNavLinksPage() {
                       <button
                         onClick={() => move(index, -1)}
                         disabled={index === 0 || reordering !== null}
-                        className="text-stone-300 hover:text-gold-700 disabled:opacity-30 disabled:hover:text-stone-300 transition-colors text-xs px-1"
+                        className="text-stone-500 hover:text-gold-700 disabled:opacity-30 disabled:hover:text-stone-500 transition-colors text-xs px-1"
                         title={index === 0 ? 'This one is already at the top.' : 'Move up'}
                         aria-label="Move up"
                       >
@@ -244,7 +244,7 @@ export default function AdminNavLinksPage() {
                       <button
                         onClick={() => move(index, 1)}
                         disabled={index === links.length - 1 || reordering !== null}
-                        className="text-stone-300 hover:text-gold-700 disabled:opacity-30 disabled:hover:text-stone-300 transition-colors text-xs px-1"
+                        className="text-stone-500 hover:text-gold-700 disabled:opacity-30 disabled:hover:text-stone-500 transition-colors text-xs px-1"
                         title={index === links.length - 1 ? 'This one is already at the bottom.' : 'Move down'}
                         aria-label="Move down"
                       >
@@ -312,7 +312,7 @@ export default function AdminNavLinksPage() {
                     <button
                       onClick={() => handleDelete(row)}
                       disabled={deleting === row.id}
-                      className="text-[10px] tracking-[0.15em] uppercase px-4 py-2 border border-stone-200 text-stone-500 hover:border-red-300 hover:text-red-400 transition-colors disabled:opacity-30 shrink-0"
+                      className="text-[10px] tracking-[0.15em] uppercase px-4 py-2 border border-stone-200 text-stone-500 hover:border-red-300 hover:text-red-700 transition-colors disabled:opacity-30 shrink-0"
                     >
                       {deleting === row.id ? 'Deleting…' : 'Delete'}
                     </button>

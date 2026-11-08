@@ -228,7 +228,7 @@ export default function OrderActions({
                         <select disabled className="w-full border border-stone-200 px-2 py-2 text-xs text-stone-500 bg-stone-50">
                           <option>{STATUS_LABELS[selectedOrder.status]}</option>
                         </select>
-                        <p className="text-[9px] text-stone-300 mt-1">This is a final status and cannot be changed further.</p>
+                        <p className="text-[9px] text-stone-500 mt-1">This is a final status and cannot be changed further.</p>
                       </>
                     ) : (
                       <select
@@ -522,7 +522,7 @@ export default function OrderActions({
                         ? <span className="text-stone-500">Saving…</span>
                         : trackingEmailSent === selectedOrder.orderNumber
                           ? <span className="text-green-600">Saved - dispatch email sent to {selectedOrder.email}</span>
-                          : <span className="text-stone-300">Saving the tracking number automatically emails the customer and marks the order as dispatched.</span>}
+                          : <span className="text-stone-500">Saving the tracking number automatically emails the customer and marks the order as dispatched.</span>}
                     </p>
                   </div>
                   )}

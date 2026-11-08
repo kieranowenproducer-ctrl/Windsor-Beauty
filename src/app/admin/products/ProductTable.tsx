@@ -79,7 +79,7 @@ export default function ProductTable({
                         {renderPriceCell(product)}
                       </td>
                       <td className="px-4 py-3 text-xs text-stone-600">
-                        {soldCounts[product.slug] !== undefined ? soldCounts[product.slug].toLocaleString() : <span className="text-stone-300">0</span>}
+                        {soldCounts[product.slug] !== undefined ? soldCounts[product.slug].toLocaleString() : <span className="text-stone-500">0</span>}
                       </td>
                       <td className="px-4 py-3">
                         {/* One row per size — every variant of a product
@@ -147,7 +147,7 @@ export default function ProductTable({
                             className={`p-2 -m-2 text-[9px] tracking-wider uppercase transition-colors disabled:opacity-40 ${
                               hiddenSlugs.has(product.slug)
                                 ? 'text-green-600 hover:text-green-700'
-                                : 'text-stone-500 hover:text-red-400'
+                                : 'text-stone-500 hover:text-red-700'
                             }`}
                           >
                             {togglingSlug === product.slug ? 'Saving…' : hiddenSlugs.has(product.slug) ? 'Unhide' : 'Hide'}

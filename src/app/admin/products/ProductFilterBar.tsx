@@ -89,7 +89,7 @@ export default function ProductFilterBar({
                 {key === 'live' && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />}
                 {key === 'hidden' && <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />}
                 {label}
-                <span className={`text-[8px] ${statusFilter === key ? 'text-white/60' : 'text-stone-300'}`}>
+                <span className={`text-[8px] ${statusFilter === key ? 'text-white/60' : 'text-stone-500'}`}>
                   ({statusCounts[key]})
                 </span>
               </button>
@@ -115,7 +115,7 @@ export default function ProductFilterBar({
               >
                 {key !== 'all' && <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${CERTIFICATE_STATUS_CONFIG[key].dot}`} />}
                 {label}
-                <span className={`text-[8px] ${certFilter === key ? 'text-white/60' : 'text-stone-300'}`}>
+                <span className={`text-[8px] ${certFilter === key ? 'text-white/60' : 'text-stone-500'}`}>
                   ({certCounts[key]})
                 </span>
               </button>

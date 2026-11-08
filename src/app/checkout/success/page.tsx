@@ -1,4 +1,5 @@
 'use client';
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 
 /**
  * /checkout/success
@@ -252,8 +253,8 @@ function SuccessContent() {
 
         <p className="mt-6 text-[9px] text-stone-500">
           Questions?{' '}
-          <a href="mailto:sales@windsorbeauty.is" className="text-gold-700 hover:underline">
-            sales@windsorbeauty.is
+          <a href={`mailto:${BEAUTY_CONTACT_EMAIL}`} className="text-gold-700 hover:underline">
+            {BEAUTY_CONTACT_EMAIL}
           </a>
         </p>
       </div>
@@ -282,8 +283,8 @@ function SuccessContent() {
         </div>
         <p className="mt-8 text-[9px] text-stone-500">
           {orderNumber && `Quote order ${orderNumber} `}
-          <a href="mailto:sales@windsorbeauty.is" className="text-gold-700 hover:underline">
-            sales@windsorbeauty.is
+          <a href={`mailto:${BEAUTY_CONTACT_EMAIL}`} className="text-gold-700 hover:underline">
+            {BEAUTY_CONTACT_EMAIL}
           </a>
         </p>
       </div>
@@ -340,8 +341,8 @@ function SuccessContent() {
         </div>
         <p className="mt-8 text-[9px] text-stone-500">
           Email:{' '}
-          <a href="mailto:sales@windsorbeauty.is" className="text-gold-700 hover:underline">
-            sales@windsorbeauty.is
+          <a href={`mailto:${BEAUTY_CONTACT_EMAIL}`} className="text-gold-700 hover:underline">
+            {BEAUTY_CONTACT_EMAIL}
           </a>
         </p>
       </div>

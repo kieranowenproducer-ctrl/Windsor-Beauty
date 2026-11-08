@@ -4,11 +4,13 @@
 //
 // It takes setOverrides rather than a callback so the save can keep the exact
 // line it always had: a new product is added to the catalogue overrides map.
-import { useState, type Dispatch, type SetStateAction, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction, type FormEvent } from 'react';
 import { roundMoney } from '@/lib/money';
 import type { Product, ProductVariant } from '@/data/products';
 import { EMPTY_VARIANT_DRAFT, type VariantDraft } from '@/components/admin/VariantEditor';
 import { shippingDraftToPayload, type ShippingDraft } from '@/components/admin/ShippingFields';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
+import { readAddProductDraft, writeAddProductDraft, clearAddProductDraft } from './productAddDraft';
 import {
   slugify,
   SESSION_EXPIRED_MESSAGE,
@@ -31,6 +33,38 @@ export function useAddProduct({ products, uploadingCount, setOverrides }: UseAdd
   const [addSlugTouched, setAddSlugTouched] = useState(false);
   const [addSaving, setAddSaving] = useState(false);
   const [addError, setAddError] = useState('');
+  const [addDraftNotice, setAddDraftNotice] = useState('');
+  const [addDraftStorageFailed, setAddDraftStorageFailed] = useState(false);
+  const [draftReady, setDraftReady] = useState(false);
+  const owner = useRef('');
+  const pending = useRef(false);
+  const confirm = useConfirm();
+  const snapshot = { form: addForm, slugTouched: addSlugTouched };
+  const latest = useRef(snapshot); latest.current = snapshot;
+  const dirty = JSON.stringify(snapshot) !== JSON.stringify({ form: EMPTY_ADD_FORM, slugTouched: false });
+
+  useEffect(() => {
+    owner.current = crypto.randomUUID();
+    try {
+      const saved = readAddProductDraft(localStorage, owner.current);
+      if (saved) {
+        setAddForm(saved.form); setAddSlugTouched(saved.slugTouched); setShowAddForm(true);
+        setAddDraftNotice('Your new-product draft was restored from this browser. Nothing is published until you press Create Product.');
+      }
+    } catch { /* Editing is still available when browser storage is blocked. */ }
+    setDraftReady(true);
+  }, []);
+  useEffect(() => {
+    if (!draftReady || !dirty) return;
+    try { setAddDraftStorageFailed(!writeAddProductDraft(localStorage, owner.current, latest.current)); }
+    catch { setAddDraftStorageFailed(true); }
+  }, [draftReady, dirty, addForm, addSlugTouched]);
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [dirty]);
 
   function updateAddName(name: string) {
     setAddForm(prev => ({
@@ -58,15 +92,29 @@ export function useAddProduct({ products, uploadingCount, setOverrides }: UseAdd
     }));
   }
 
-  function resetAddForm() {
+  async function resetAddForm() {
+    if (pending.current) return;
+    if (dirty) {
+      let kept = false;
+      try { kept = writeAddProductDraft(localStorage, owner.current, latest.current); } catch { /* Confirm possible loss. */ }
+      if (!kept && !await confirm({ title: 'Close without keeping this draft?', body: 'Browser storage is unavailable. Keep the form open and copy your changes, or close without keeping them.', confirmLabel: 'Close anyway', cancelLabel: 'Keep editing', tone: 'danger' })) return;
+    }
     setShowAddForm(false);
-    setAddForm(EMPTY_ADD_FORM);
-    setAddSlugTouched(false);
     setAddError('');
+  }
+
+  async function discardAddDraft() {
+    if (pending.current || !await confirm({ title: 'Discard this new-product draft?', body: 'This removes the draft from this window. It does not change any saved product.', confirmLabel: 'Discard draft', cancelLabel: 'Keep draft', tone: 'danger' })) return;
+    try {
+      clearAddProductDraft(localStorage, owner.current, JSON.stringify(latest.current));
+    } catch { /* The unavailable browser copy cannot be changed. */ }
+    setAddForm(EMPTY_ADD_FORM); setAddSlugTouched(false);
+    setAddDraftNotice(''); setAddError(''); setAddDraftStorageFailed(false); setShowAddForm(false);
   }
 
   async function submitAddProduct(e: FormEvent) {
     e.preventDefault();
+    if (pending.current) return;
     setAddError('');
     if (uploadingCount > 0) {
       setAddError('Please wait for the photo upload to finish before saving.');
@@ -122,6 +170,8 @@ export function useAddProduct({ products, uploadingCount, setOverrides }: UseAdd
       availability: addForm.availability === 'available' ? undefined : addForm.availability,
     };
 
+    const submitted = JSON.stringify(latest.current);
+    pending.current = true;
     setAddSaving(true);
     try {
       const res = await fetch('/api/admin/products/catalogue', {
@@ -133,11 +183,19 @@ export function useAddProduct({ products, uploadingCount, setOverrides }: UseAdd
       if (res.status === 401) throw new Error(SESSION_EXPIRED_MESSAGE);
       if (!res.ok) throw new Error(data?.error || 'Could not create product.');
       setOverrides(prev => ({ ...prev, [data.product.slug]: data.product as Product }));
-      resetAddForm();
+      try {
+        clearAddProductDraft(localStorage, owner.current, submitted);
+      } catch { /* A newer copy stays available. */ }
+      if (JSON.stringify(latest.current) === submitted) {
+        setShowAddForm(false); setAddForm(EMPTY_ADD_FORM); setAddSlugTouched(false); setAddDraftNotice(''); setAddDraftStorageFailed(false);
+      } else {
+        setAddDraftNotice('The product was created. Newer typing is kept in this draft; copy it into the saved product editor before creating another product.');
+      }
     } catch (err) {
       setAddError(err instanceof Error ? err.message : 'Could not create product.');
     } finally {
       setAddSaving(false);
+      pending.current = false;
     }
   }
 
@@ -149,6 +207,9 @@ export function useAddProduct({ products, uploadingCount, setOverrides }: UseAdd
     setAddSlugTouched,
     addSaving,
     addError,
+    addDraftNotice,
+    addDraftStorageFailed,
+    discardAddDraft,
     updateAddName,
     updateVariant,
     addVariantRow,

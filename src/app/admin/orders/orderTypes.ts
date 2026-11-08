@@ -6,7 +6,7 @@ import { searchHaystack } from '@/lib/adminSearch';
 
 export type OrderStatus = 'pending' | 'awaiting_payment' | 'paid' | 'awaiting_dispatch' | 'processing' | 'exported' | 'dispatched' | 'delivered' | 'payment_failed' | 'payment_cancelled' | 'refunded' | 'cancelled';
 
-export type RoyalMailLabelStatus = 'none' | 'created' | 'error';
+export type RoyalMailLabelStatus = 'none' | 'created' | 'pending_postage' | 'error';
 
 export type FulfilmentType = 'royal_mail' | 'collection' | 'hand_delivered' | 'no_delivery' | 'other_manual';
 
@@ -86,6 +86,7 @@ export interface Order {
   trackingNumber: string | null;
   trackingUrl: string | null;
   shippingAddress: string;
+  shippingRecipient?: string | null;
   shippingLabel: string;
   shippingCountry: string | null;
   royalMailOrderId: string | null;

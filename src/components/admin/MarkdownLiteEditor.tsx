@@ -148,7 +148,7 @@ export default function MarkdownLiteEditor({ value, onChange, placeholder, heigh
           {value.trim() ? (
             <div className="rich-text-content text-sm text-stone-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: markdownLiteToHtml(value) }} />
           ) : (
-            <p className="text-xs text-stone-300 italic">Nothing to preview yet.</p>
+            <p className="text-xs text-stone-500 italic">Nothing to preview yet.</p>
           )}
         </div>
       )}

@@ -10,6 +10,7 @@ import { ensureOperationsAndLogs } from './schema-parts/operations-and-logs';
 import { ensureReferrals } from './schema-parts/referrals';
 import { ensureGlowCardLoyalty } from './schema-parts/glow-card-loyalty';
 import { ensureAffiliates } from './schema-parts/affiliates';
+import { ensureCustomerMerge } from './schema-parts/customer-merge';
 
 // Schema setup — run once via the admin db-setup route. Pure DDL (CREATE TABLE
 // IF NOT EXISTS + idempotent ALTERs), extracted verbatim from db.ts on 2026-07-05.
@@ -31,4 +32,5 @@ export async function ensureSchema() {
   await ensureReferrals(db);
   await ensureGlowCardLoyalty(db);
   await ensureAffiliates(db);
+  await ensureCustomerMerge(db);
 }

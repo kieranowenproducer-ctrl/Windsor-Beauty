@@ -1,8 +1,20 @@
 # Windsor Beauty: shop and admin panel
 
+> **Purpose:** Describe Beauty's shop, admin boundaries and current release handover.
+> **Status:** LIVE
+> **Related projects:** Windsor Beauty; Glow is a read-only reference for relevant admin tools.
+> **Dependencies:** Beauty-only data and email authority; current project AGENTS.md and the dated handover.
+> **Key decisions:** Preserve current public access, products, prices, payment identities and mailbox history. New local work below is not deployed.
+> **Next steps:** Complete the 8 November local acceptance and mailbox-separation gates before a separately approved website release.
+> **Last updated:** 2026-11-08
+
 Windsor Beauty's online shop and the admin panel that runs it. It was built from the Windsor Glow
 shop in October 2026, so it works the same way, with Windsor Beauty's own brand, products, database
 and settings.
+
+**8 November local checkpoint:** [Current Suite/admin handover](../../../../_Planning-Library/08_technical-architecture/2026-11-08-beauty-suite-admin/README.md) records Suite-aware email source, white input/text contrast, customer search/statistics, invoice history, product draft recovery/stale-save guards, history-only customer merge and pre-dispatch delivery editing. Focused checks and the successor production build passed; served UI review continues. These changes and their additive migrations are not deployed. Do not use the October handover's old holding-screen or mailbox status as current authority.
+
+Suite's default sender and permanent exact recipient route to Beauty are working at Zoho/provider level. Primary sign-in change, Glow alias relocation, disabling old blanket forwards and final brand isolation remain. Wholesale and mailbox history must be retained. Website sender/reply environment changes and live website ingestion are separate release gates. Glow/BRIAN's larger work remains paused.
 
 **Current access:** On 7 October 2026, Kieran confirmed that the public storefront should stay
 accessible as it is. Keep the current live access settings unchanged. The holding-screen
@@ -42,7 +54,7 @@ accounts, orders, promotions, discount codes, upsells and reviews.
 | Operations | Dashboard, Orders, Invoices, Dispatch, Profitability |
 | Catalogue | Products, Trial (Products & Profit), Certificates, Categories |
 | Promotions | Promotions, Discount Codes, Upsell System, QR Campaigns, Reviews |
-| Customers | Customers, Security Review, Member Logins, Batches |
+| Customers | Customers, Customer Stats (local candidate), Security Review, Member Logins, Batches |
 | Settings | Site Content, System Health, Shipping Settings, Nav Links |
 | Pinned | Website Enquiries, Visitor Demand |
 

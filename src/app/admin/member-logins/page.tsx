@@ -202,7 +202,7 @@ export default function AdminMemberLoginsPage() {
                         ) : (
                           <>
                             <div className="text-[10px] text-stone-500">{row.customer_name ?? 'Deleted customer'}</div>
-                            <div className="text-[9px] text-stone-300">{row.customer_email ?? ''}</div>
+                            <div className="text-[9px] text-stone-500">{row.customer_email ?? ''}</div>
                           </>
                         )}
                       </td>
@@ -212,10 +212,10 @@ export default function AdminMemberLoginsPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-[10px] text-stone-500">
-                        {device || <span className="text-stone-300">Not recorded</span>}
+                        {device || <span className="text-stone-500">Not recorded</span>}
                       </td>
                       <td className="px-4 py-3 text-[10px] font-mono text-stone-500">
-                        {row.ip_address ?? <span className="font-sans text-stone-300">Not recorded</span>}
+                        {row.ip_address ?? <span className="font-sans text-stone-500">Not recorded</span>}
                       </td>
                     </tr>
                   );

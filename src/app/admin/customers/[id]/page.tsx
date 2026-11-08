@@ -8,6 +8,7 @@ import SentEmailViewer from '@/components/admin/SentEmailViewer';
 import CustomerEmailComposer from '@/components/admin/CustomerEmailComposer';
 import { DEFAULT_ADMIN_SENDER, type AdminSenderKey } from '@/lib/email/adminSenders';
 import CustomerEditFields from '../CustomerEditFields';
+import MergeAccountCard from '../MergeAccountCard';
 import { emptyDraft, type CustomerDraft } from '../customerTypes';
 import { useConfirm, type ConfirmOptions } from '@/components/admin/ConfirmProvider';
 
@@ -872,7 +873,7 @@ export default function CustomerProfilePage() {
                         >
                           {verifyBusy ? 'Working...' : 'Set back to not confirmed'}
                         </button>
-                        <p className="text-[9px] text-stone-300 mt-2 leading-relaxed">
+                        <p className="text-[9px] text-stone-500 mt-2 leading-relaxed">
                           Only if this was confirmed by mistake. Any code they already have keeps working.
                         </p>
                       </>
@@ -897,7 +898,7 @@ export default function CustomerProfilePage() {
                         >
                           {resending ? 'Sending...' : 'Resend Verification Email'}
                         </button>
-                        <p className="text-[9px] text-stone-300 mt-2 leading-relaxed">
+                        <p className="text-[9px] text-stone-500 mt-2 leading-relaxed">
                           Ask them to check spam and junk. Yahoo and Hotmail filter this kind of email hardest.
                         </p>
                         {/* The answer for the customer whose provider will never deliver the
@@ -911,7 +912,7 @@ export default function CustomerProfilePage() {
                         >
                           {verifyBusy ? 'Working...' : 'Confirm this email by hand'}
                         </button>
-                        <p className="text-[9px] text-stone-300 mt-2 leading-relaxed">
+                        <p className="text-[9px] text-stone-500 mt-2 leading-relaxed">
                           Use this when you know the address is theirs and the email will not get
                           through. It gives them their 10% straight away.
                         </p>
@@ -924,7 +925,7 @@ export default function CustomerProfilePage() {
                     <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-3">Contact</p>
                     <div className="space-y-1.5 text-xs text-stone-600">
                       <p>{c.email}</p>
-                      {c.phone ? <p>{c.phone}</p> : <p className="text-stone-300">No phone on file</p>}
+                      {c.phone ? <p>{c.phone}</p> : <p className="text-stone-500">No phone on file</p>}
                       {c.instagram_profile && <p>Instagram: {c.instagram_profile}</p>}
                       {c.facebook_profile && <p>Facebook: {c.facebook_profile}</p>}
                       <p>Email offers: {c.marketing_consent ? 'On' : 'Off'}</p>
@@ -945,7 +946,7 @@ export default function CustomerProfilePage() {
                         {c.address_country && <p>{c.address_country}</p>}
                       </div>
                     ) : (
-                      <p className="text-[10px] text-stone-300">No address on file</p>
+                      <p className="text-[10px] text-stone-500">No address on file</p>
                     )}
                   </div>
 
@@ -957,7 +958,7 @@ export default function CustomerProfilePage() {
                     {c.referred_by ? (
                       <p className="text-xs text-stone-700">{c.referred_by}</p>
                     ) : (
-                      <p className="text-[10px] text-stone-300">Not provided</p>
+                      <p className="text-[10px] text-stone-500">Not provided</p>
                     )}
                   </div>
 
@@ -1022,7 +1023,7 @@ export default function CustomerProfilePage() {
                         </div>
                         {c.qr_campaign_type && <p className="text-stone-500 uppercase tracking-wider ml-4">{c.qr_campaign_type}</p>}
                         {c.qr_partner_name && <p className="text-stone-500 ml-4">{c.qr_partner_name}</p>}
-                        {c.qr_campaign_slug && <p className="font-mono text-stone-300 ml-4">/r/{c.qr_campaign_slug}</p>}
+                        {c.qr_campaign_slug && <p className="font-mono text-stone-500 ml-4">/r/{c.qr_campaign_slug}</p>}
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
@@ -1060,7 +1061,7 @@ export default function CustomerProfilePage() {
                       </>
                     ) : (
                       <>
-                        <p className="text-[10px] text-stone-300">Not issued</p>
+                        <p className="text-[10px] text-stone-500">Not issued</p>
                         <button
                           type="button"
                           onClick={() => setCodeStatus('issue')}
@@ -1069,7 +1070,7 @@ export default function CustomerProfilePage() {
                         >
                           {codeBusy ? 'Working...' : 'Issue their 10% code'}
                         </button>
-                        <p className="text-[9px] text-stone-300 mt-2 leading-relaxed">
+                        <p className="text-[9px] text-stone-500 mt-2 leading-relaxed">
                           Gives them a code they can spend now. It is not emailed to them, so read
                           it to them or send it yourself.
                         </p>
@@ -1120,6 +1121,8 @@ export default function CustomerProfilePage() {
                 {/* Right column — orders + verification */}
                 <div className="lg:col-span-2 space-y-6">
 
+                  <MergeAccountCard key={c.id} customerId={c.id} />
+
                   {/* Tabs (task ce308493). Kieran: "there must be a tab on the customer profile to
                       show emails sent." The page was one long scroll with the email history buried
                       two thirds of the way down, under the order list, which is no use when
@@ -1155,7 +1158,7 @@ export default function CustomerProfilePage() {
                       <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
                         What They Buy
                         {(profile.productHistory?.length ?? 0) > 0 && (
-                          <span className="text-stone-300 ml-1">({profile.productHistory!.length} product{profile.productHistory!.length === 1 ? '' : 's'})</span>
+                          <span className="text-stone-500 ml-1">({profile.productHistory!.length} product{profile.productHistory!.length === 1 ? '' : 's'})</span>
                         )}
                       </p>
                       <p className="text-[9px] text-stone-500 mt-1">
@@ -1163,7 +1166,7 @@ export default function CustomerProfilePage() {
                       </p>
                     </div>
                     {!profile.productHistory || profile.productHistory.length === 0 ? (
-                      <p className="text-[10px] text-stone-300 px-5 py-6">
+                      <p className="text-[10px] text-stone-500 px-5 py-6">
                         Nothing bought yet. This fills in as soon as an order is paid for.
                       </p>
                     ) : (
@@ -1204,11 +1207,11 @@ export default function CustomerProfilePage() {
                   <div className="bg-white border border-stone-200">
                     <div className="px-5 py-4 border-b border-stone-100">
                       <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
-                        Orders and Payment Attempts <span className="text-stone-300 ml-1">({profile.orderCount} paid)</span>
+                        Orders and Payment Attempts <span className="text-stone-500 ml-1">({profile.orderCount} paid)</span>
                       </p>
                     </div>
                     {profile.orders.length === 0 ? (
-                      <p className="text-[10px] text-stone-300 px-5 py-6">No orders found.</p>
+                      <p className="text-[10px] text-stone-500 px-5 py-6">No orders found.</p>
                     ) : (
                       <div className="divide-y divide-stone-50">
                         {profile.orders.map(order => {
@@ -1269,14 +1272,14 @@ export default function CustomerProfilePage() {
                   <div className="bg-white border border-stone-200">
                     <div className="px-5 py-4 border-b border-stone-100">
                       <p className="text-[9px] tracking-[0.18em] uppercase text-stone-500">
-                        Email History <span className="text-stone-300 ml-1">({emails.length})</span>
+                        Email History <span className="text-stone-500 ml-1">({emails.length})</span>
                       </p>
                     </div>
                     {draftActionError && <p className="text-[10px] text-red-600 px-5 pt-3">{draftActionError}</p>}
                     {emailActionError && <p className="text-[10px] text-red-600 px-5 pt-3">{emailActionError}</p>}
                     {emailActionNote && <p className="text-[10px] text-green-700 px-5 pt-3">{emailActionNote}</p>}
                     {emails.length === 0 ? (
-                      <p className="text-[10px] text-stone-300 px-5 py-6">
+                      <p className="text-[10px] text-stone-500 px-5 py-6">
                         No emails on record. Messages sent from the dashboard are saved here from now on; their replies appear once reply capture is switched on.
                       </p>
                     ) : (

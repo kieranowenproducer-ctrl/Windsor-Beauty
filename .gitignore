@@ -65,3 +65,6 @@ backups/
 /.codex-audit/
 
 /.email-previews/
+
+# Private local acceptance records, fixtures and mailbox evidence
+/.local-evidence/

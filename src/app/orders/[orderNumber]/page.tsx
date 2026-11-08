@@ -1,4 +1,5 @@
 'use client';
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 
 import { Suspense, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -208,7 +209,7 @@ function OrderStatusContent() {
           View All Orders
         </Link>
         <a
-          href="mailto:sales@windsorbeauty.is"
+          href={`mailto:${BEAUTY_CONTACT_EMAIL}`}
           className="border border-stone-200 text-stone-500 text-[10px] tracking-[0.22em] uppercase text-center px-6 py-3 hover:border-gold-300 hover:text-gold-800 transition-colors"
         >
           Contact Support

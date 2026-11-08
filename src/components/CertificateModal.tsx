@@ -60,7 +60,7 @@ function DosagePicker({ review }: { review: CertificateReview }) {
         {options.map((option) => {
           const selected = option.dosage === review.shownDosage;
           const tone = !option.hasCertificate
-            ? 'border-stone-200 bg-[#ffffff] text-stone-400'
+            ? 'border-stone-200 bg-[#ffffff] text-stone-500'
             : option.issueCount > 0
               ? 'border-red-300 bg-red-50 text-red-700'
               : 'border-green-300 bg-green-50 text-green-700';

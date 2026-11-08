@@ -15,6 +15,7 @@ import InvoiceTotals from './InvoiceTotals';
 import FulfilmentAndPayment from './FulfilmentAndPayment';
 import MarkPaidPanel from './MarkPaidPanel';
 import InvoiceActions from './InvoiceActions';
+import InvoiceTrail from './InvoiceTrail';
 import { useConfirm, type ConfirmOptions } from '@/components/admin/ConfirmProvider';
 import {
   STATUS_TONE,
@@ -762,6 +763,8 @@ export default function AdminInvoiceEditPage() {
             )}
           </div>
         </div>
+
+        <InvoiceTrail invoiceId={id} refreshKey={JSON.stringify(invoice)} />
 
         <ResendNotice
           invoice={invoice}

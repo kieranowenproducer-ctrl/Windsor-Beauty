@@ -75,10 +75,10 @@ export default function CampaignsOverviewTab({
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-stone-50">
-                          <th className="text-left text-[8px] tracking-wider uppercase text-stone-300 px-5 py-2">Campaign</th>
-                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 px-4 py-2">Scans</th>
-                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 px-4 py-2">Orders</th>
-                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 px-4 py-2">Revenue</th>
+                          <th className="text-left text-[8px] tracking-wider uppercase text-stone-500 px-5 py-2">Campaign</th>
+                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 px-4 py-2">Scans</th>
+                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 px-4 py-2">Orders</th>
+                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 px-4 py-2">Revenue</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -107,10 +107,10 @@ export default function CampaignsOverviewTab({
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-stone-50">
-                          <th className="text-left text-[8px] tracking-wider uppercase text-stone-300 px-5 py-2">Campaign</th>
-                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 px-4 py-2">Scans</th>
-                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 px-4 py-2">Orders</th>
-                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-300 px-4 py-2">Conv.</th>
+                          <th className="text-left text-[8px] tracking-wider uppercase text-stone-500 px-5 py-2">Campaign</th>
+                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 px-4 py-2">Scans</th>
+                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 px-4 py-2">Orders</th>
+                          <th className="text-right text-[8px] tracking-wider uppercase text-stone-500 px-4 py-2">Conv.</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -134,7 +134,7 @@ export default function CampaignsOverviewTab({
                       </tbody>
                     </table>
                     {rankedCampaigns.filter(c => (stats[c.id]?.total_scans ?? 0) > 0).length === 0 && (
-                      <p className="text-xs text-stone-300 text-center py-6">No scan data yet</p>
+                      <p className="text-xs text-stone-500 text-center py-6">No scan data yet</p>
                     )}
                   </div>
                 </div>

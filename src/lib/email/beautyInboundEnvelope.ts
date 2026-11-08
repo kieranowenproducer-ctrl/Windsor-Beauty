@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL } from './contactAddress';
 export const BEAUTY_CAPTURE = 'windsor-beauty@ilkaik.resend.app';
 const GLOW_CAPTURE = 'windsor-glow@ilkaik.resend.app';
 
@@ -5,6 +6,7 @@ export const BEAUTY_INBOUND_MAILBOXES = new Set([
   ...['info', 'sales', 'accounts'].flatMap(local =>
     [`${local}@windsorbeauty.is`, `${local}@windsorbeauty.co.uk`]),
   'orders@windsorbeauty.is', 'beautiful@windsorbeauty.is',
+  BEAUTY_CONTACT_EMAIL,
 ]);
 // Current extra aliases are proved in the preserved Zoho alias receipts; no legacy equivalents are inferred.
 const glowMailboxes = new Set([

@@ -103,7 +103,7 @@ export default function ImageUploadField({ value, onChange, fallbackSrc, fallbac
               onError={handleImageError}
             />
           ) : (
-            <span className="text-[7px] tracking-wider uppercase text-stone-300 text-center px-1">No photo</span>
+            <span className="text-[7px] tracking-wider uppercase text-stone-500 text-center px-1">No photo</span>
           )}
           {uploading && (
             <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
@@ -140,7 +140,7 @@ export default function ImageUploadField({ value, onChange, fallbackSrc, fallbac
             <button
               type="button"
               onClick={() => onChange(undefined)}
-              className="ml-1 sm:ml-2 p-2.5 sm:p-0 text-[9px] tracking-wider uppercase text-stone-300 hover:text-red-400 transition-colors"
+              className="ml-1 sm:ml-2 p-2.5 sm:p-0 text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-700 transition-colors"
             >
               Remove
             </button>
@@ -151,7 +151,7 @@ export default function ImageUploadField({ value, onChange, fallbackSrc, fallbac
             </p>
           )}
           {!previewSrc && fallbackHint && (
-            <p className="text-[9px] text-stone-300 mt-1.5 leading-relaxed">{fallbackHint}</p>
+            <p className="text-[9px] text-stone-500 mt-1.5 leading-relaxed">{fallbackHint}</p>
           )}
           {justUploaded && <p className="text-[9px] text-green-600 mt-1.5">Uploaded.</p>}
           {error && <p className="text-[9px] text-red-500 mt-1.5">{error}</p>}

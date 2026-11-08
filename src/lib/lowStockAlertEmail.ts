@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { sendEmail } from '@/lib/email/send';
@@ -6,7 +7,7 @@ import { sendEmail } from '@/lib/email/send';
 // ops mail goes out from alerts@, never from the customer-facing addresses,
 // per the 31 July 2026 deliverability audit.
 const FROM_ADDRESS = 'Windsor Beauty Ops <alerts@windsorbeauty.is>';
-const TO_ADDRESS = 'sales@windsorbeauty.is';
+const TO_ADDRESS = BEAUTY_CONTACT_EMAIL;
 
 const SITE_URL = beautyOperationalAddress(process.env.NEXT_PUBLIC_SITE_URL) || 'https://www.windsorbeauty.is';
 

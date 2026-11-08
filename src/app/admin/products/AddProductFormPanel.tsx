@@ -26,6 +26,9 @@ interface Props {
   uploadingCount: number;
   addError: string;
   addSaving: boolean;
+  addDraftNotice: string;
+  addDraftStorageFailed: boolean;
+  discardAddDraft: () => void;
   submitAddProduct: (e: FormEvent) => void;
   resetAddForm: () => void;
 }
@@ -34,7 +37,7 @@ export default function AddProductFormPanel({
   showAddForm, addForm, setAddForm, setAddSlugTouched, allCategories,
   updateAddName, updateVariant, addVariantRow, removeVariantRow,
   handleUploadingChange, uploadingCount, addError, addSaving,
-  submitAddProduct, resetAddForm,
+  submitAddProduct, resetAddForm, addDraftNotice, addDraftStorageFailed, discardAddDraft,
 }: Props) {
   return (
     <>
@@ -42,6 +45,9 @@ export default function AddProductFormPanel({
           {showAddForm && (
             <div className="bg-white border border-gold-200 p-5 mb-6">
               <h2 className="text-sm font-semibold text-stone-700 mb-4">New Product</h2>
+              <p className="text-xs text-stone-500 mb-3">This draft stays in this browser. Create Product publishes it to the shop.</p>
+              {addDraftNotice && <p role="status" className="text-xs text-stone-600 mb-3">{addDraftNotice}</p>}
+              {addDraftStorageFailed && <p role="alert" className="text-xs text-amber-800 mb-3">Browser storage is unavailable. Keep this page open and copy your work before leaving.</p>}
               <form onSubmit={submitAddProduct} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -158,7 +164,7 @@ export default function AddProductFormPanel({
                     placeholder="e.g. mounjaro, monjaro, weight loss jab"
                     className="w-full border border-stone-200 px-2 py-1.5 text-xs focus:border-gold-400 outline-none"
                   />
-                  <p className="text-[9px] text-stone-300 mt-1">
+                  <p className="text-[9px] text-stone-500 mt-1">
                     Extra search terms. Not shown on the shop, but matched by shop search alongside the name, brand, description and size.
                   </p>
                 </div>
@@ -212,10 +218,12 @@ export default function AddProductFormPanel({
                   <button
                     type="button"
                     onClick={resetAddForm}
+                    disabled={addSaving}
                     className="border border-stone-200 text-stone-500 text-[9px] tracking-wider uppercase px-4 py-2 hover:border-gold-300 transition-colors"
                   >
-                    Cancel
+                    Close
                   </button>
+                  <button type="button" disabled={addSaving} onClick={discardAddDraft} className="text-stone-600 underline text-xs px-3 py-2 disabled:opacity-50">Discard draft</button>
                 </div>
               </form>
             </div>

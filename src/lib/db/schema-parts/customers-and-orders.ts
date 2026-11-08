@@ -204,6 +204,11 @@ export async function ensureCustomersAndOrders(db: ReturnType<typeof requireDb>)
   // order, and NULL means "address it to the customer", exactly as before.
   await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_recipient TEXT`;
   await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS royal_mail_order_id TEXT`;
+  await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS royal_mail_dispatch_lease_token TEXT`;
+  await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS royal_mail_dispatch_lease_until TIMESTAMPTZ`;
+  await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS royal_mail_printed_on TIMESTAMPTZ`;
+  await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS royal_mail_shipped_on TIMESTAMPTZ`;
+  await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS royal_mail_checked_at TIMESTAMPTZ`;
   await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS parcel_weight_grams INTEGER`;
   await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_email_sent_at TIMESTAMPTZ`;
 

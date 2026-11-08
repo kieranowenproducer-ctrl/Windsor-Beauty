@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import type { OrderItemRecord } from '@/lib/db';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
@@ -5,7 +6,7 @@ import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 import { displayOrderItems } from '@/lib/orderTrialDisplay';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 
 export interface OrderConfirmationParams {
   to: string;
@@ -246,7 +247,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
 
             <p style="margin:0;font-size:12px;color:#a8a29e;line-height:1.6">
               Any questions, just reply to this email, or contact
-              <a href="mailto:sales@windsorbeauty.is" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.is</a>
+              <a href="mailto:${BEAUTY_CONTACT_EMAIL}" style="color:#A9695D;text-decoration:none">${BEAUTY_CONTACT_EMAIL}</a>
               and include your order reference <strong style="color:#78716c">${escapeHtml(params.orderNumber)}</strong>.
             </p>
           </td>
@@ -268,7 +269,7 @@ export function buildOrderConfirmationEmail(params: OrderConfirmationParams): { 
     (glowCard ? `Beauty Card\n${glowCard.headline}. ${glowCard.explanation}\n${glowCard.progress}\n\n` : '') +
     `Delivery to: ${params.shippingAddress}\n\n` +
     `We will send you a tracking number once your order has been dispatched.\n\n` +
-    `Any questions, just reply to this email, or contact sales@windsorbeauty.is and include your order reference ${params.orderNumber}.`;
+    `Any questions, just reply to this email, or contact ${BEAUTY_CONTACT_EMAIL} and include your order reference ${params.orderNumber}.`;
 
   return { subject, text, html };
 }

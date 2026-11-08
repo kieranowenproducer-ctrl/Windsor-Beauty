@@ -1,4 +1,5 @@
 'use client';
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -45,7 +46,7 @@ export default function ResumePaymentPage() {
               </a>
             </>
           ) : (
-            <p className="bg-gold-50 border border-gold-200 p-4 text-sm text-gold-700">The original payment page is unavailable. Please contact sales@windsorbeauty.is and quote {payment.orderNumber}.</p>
+            <p className="bg-gold-50 border border-gold-200 p-4 text-sm text-gold-700">The original payment page is unavailable. Please contact {BEAUTY_CONTACT_EMAIL} and quote {payment.orderNumber}.</p>
           )}
         </div>
       )}

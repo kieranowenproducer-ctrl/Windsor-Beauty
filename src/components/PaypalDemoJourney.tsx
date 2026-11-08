@@ -59,7 +59,7 @@ export default function PaypalDemoJourney({ paymentUrl, initiallyConfirmed = fal
             >
               Pay now with PayPal · £{DEMO_TOTAL.toFixed(2)}
             </button>
-            <p className="mt-3 text-center text-[10px] text-stone-400">You will go straight to PayPal. No extra payment page.</p>
+            <p className="mt-3 text-center text-[10px] text-stone-500">You will go straight to PayPal. No extra payment page.</p>
           </section>
 
           <aside className="h-fit border border-stone-200 bg-white p-6">
@@ -73,7 +73,7 @@ export default function PaypalDemoJourney({ paymentUrl, initiallyConfirmed = fal
               <span className="text-sm font-semibold text-stone-700">Total</span>
               <span className="font-serif text-3xl text-[#8b6a2d]">£{DEMO_TOTAL.toFixed(2)}</span>
             </div>
-            <p className="mt-6 border-t border-stone-100 pt-5 text-[10px] leading-relaxed text-stone-400">PayPal receives the total and order reference WB-DEMO. It does not receive any product name.</p>
+            <p className="mt-6 border-t border-stone-100 pt-5 text-[10px] leading-relaxed text-stone-500">PayPal receives the total and order reference WB-DEMO. It does not receive any product name.</p>
           </aside>
         </div>
       </div>

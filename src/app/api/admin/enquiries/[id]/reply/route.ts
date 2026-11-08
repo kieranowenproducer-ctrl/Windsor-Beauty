@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { buildEnquiryReplyEmail } from '@/lib/enquiryEmails';
 import { NextResponse } from 'next/server';
@@ -24,8 +25,8 @@ export const dynamic = 'force-dynamic';
 // to, rather than in sales. Changed from sales@ on task #96 (2026-07-29).
 // Both are overridable from the environment: set ENQUIRY_REPLY_TO to a genuine
 // no-reply address if replies should be refused outright.
-const FROM_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_FROM) || 'Windsor Beauty <info@windsorbeauty.is>';
-const REPLY_TO_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_TO) || 'info@windsorbeauty.is';
+const FROM_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_FROM) || BEAUTY_CONTACT_FROM;
+const REPLY_TO_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_TO) || BEAUTY_CONTACT_EMAIL;
 
 export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;

@@ -50,7 +50,7 @@ export default function CampaignFormModal({
               </h2>
               <button
                 onClick={() => setShowCreate(false)}
-                className="text-stone-300 hover:text-stone-500 transition-colors text-lg leading-none"
+                className="text-stone-500 hover:text-stone-500 transition-colors text-lg leading-none"
               >
                 &times;
               </button>
@@ -156,7 +156,7 @@ export default function CampaignFormModal({
                     />
                   )}
                   {destinationPreset !== 'custom' && (
-                    <p className="text-[8px] text-stone-300 mt-1 font-mono truncate">{form.destination_url}</p>
+                    <p className="text-[8px] text-stone-500 mt-1 font-mono truncate">{form.destination_url}</p>
                   )}
                 </div>
 

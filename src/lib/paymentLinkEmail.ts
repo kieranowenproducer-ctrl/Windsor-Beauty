@@ -1,9 +1,10 @@
+import { BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 
 // Sends a customer their bank payment link again (task d0d5effb).
 //

@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { sendEmail } from '@/lib/email/send';
@@ -5,7 +6,7 @@ import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in shippingEmail , same verified
 // windsorbeauty.co.uk sending domain, distinct display name for account mail.
-const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 
 export function isPasswordResetEmailConfigured() {
   return Boolean(process.env.RESEND_API_KEY_BEAUTY_IS?.trim());

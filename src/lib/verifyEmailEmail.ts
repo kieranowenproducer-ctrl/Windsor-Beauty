@@ -1,13 +1,14 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { EMAIL_VERIFICATION_TOKEN_HOURS } from '@/lib/auth';
 import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
 // Mirrors the FROM_ADDRESS pattern used in passwordResetEmail/membershipWelcomeEmail.
-const FROM_ADDRESS = 'Windsor Beauty <accounts@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 // A monitored inbox , a transactional sender with no working reply path is a
 // negative engagement signal to Gmail/Outlook and strands confused customers.
-const REPLY_TO = 'sales@windsorbeauty.is';
+const REPLY_TO = BEAUTY_CONTACT_EMAIL;
 
 export function isVerifyEmailConfigured() {
   return Boolean(process.env.RESEND_API_KEY_BEAUTY_IS?.trim());

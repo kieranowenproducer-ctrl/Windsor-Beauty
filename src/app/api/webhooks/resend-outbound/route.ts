@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import { verifyWebhookSignature } from '@/lib/replyCapture';
 import { updateCustomerEmailDelivery } from '@/lib/db/customerEmails';
 import { markInvitationEmailFailedByProvider } from '@/lib/affiliates';
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
   }
   const signedTo=Array.isArray(event.data.to)&&event.data.to.length===1&&typeof event.data.to[0]==='string'?bareEmail(event.data.to[0]):null;
   const configuredArchive=getEnquiryReplyArchiveAddress();
-  const recognised=(address:string)=>/^(?:info|sales|accounts|orders|beautiful)@windsorbeauty\.(?:is|co\.uk)$/.test(address)||(configuredArchive!==null&&address===bareEmail(configuredArchive));
+  const recognised=(address:string)=>address===BEAUTY_CONTACT_EMAIL||/^(?:info|sales|accounts|orders|beautiful)@windsorbeauty\.(?:is|co\.uk)$/.test(address)||(configuredArchive!==null&&address===bareEmail(configuredArchive));
   if(signedTo===null&&(from==='alerts@windsorbeauty.is'||(Array.isArray(event.data.to)&&event.data.to.some(value=>typeof value==='string'&&recognised(bareEmail(value))))))return NextResponse.json({error:'Beauty staff recipient envelope is ambiguous.'},{status:503});
   const isArchive=signedTo!==null&&recognised(signedTo);
   // Legacy signed archive events cannot substitute for customer delivery.
@@ -75,7 +76,7 @@ export async function POST(request: Request) {
       const source=await beautySentSource(event.data.email_id);
       const fetched=nativeOpsEnvelope??await retrieveBeautySentEnvelope(event.data.email_id);
       const archive=source?getEnquiryReplyArchiveAddress(source.customer):null;
-      const isPublicSender=['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`);
+      const isPublicSender=from===BEAUTY_CONTACT_EMAIL||['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`);
       const isOps=from==='alerts@windsorbeauty.is'&&!source;
       if(!fetched||(!isPublicSender&&!isOps)||(source&&(fetched.customerTo!==source.customer||fetched.from!==source.from))||
         (event.data.message_id!==undefined&&normaliseMessageId(event.data.message_id)!==normaliseMessageId(fetched.messageId))||
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
       if(['bounced','failed','complained','suppressed'].includes(status))await markInvitationEmailFailedByProvider(event.data.email_id).catch(()=>false);
       return NextResponse.json({ok:true,matched});
     }catch{return NextResponse.json({error:'Exact Beauty archive metadata needs reconciliation.'},{status:503});}
-    if(['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`))try{
+    if(from===BEAUTY_CONTACT_EMAIL||['info','sales','accounts'].some(local=>from===`${local}@windsorbeauty.is`))try{
       if(event.data.reply_to && event.data.reply_to.length>1)throw new Error('Ambiguous Beauty Reply-To.');
       const to=event.data.to;
       const metadata=event.data.message_id && Array.isArray(to)&&to.length===1 && Array.isArray(event.data.reply_to)&&event.data.reply_to.length===1
@@ -103,7 +104,7 @@ export async function POST(request: Request) {
       if(!metadata)return NextResponse.json({error:'Exact Beauty SMTP metadata is pending.'},{status:503});
       if(event.data.message_id && normaliseMessageId(event.data.message_id)!==normaliseMessageId(metadata.messageId))throw new Error('Provider SMTP identity mismatch.');
       if(metadata.from!==from)throw new Error('Provider sender mismatch.');
-      if(!['info','sales','accounts','orders','beautiful'].some(local=>metadata.replyTo===`${local}@windsorbeauty.is`))throw new Error('Provider Reply-To is not an approved Beauty public mailbox.');
+      if(metadata.replyTo!==BEAUTY_CONTACT_EMAIL&&!['info','sales','accounts','orders','beautiful'].some(local=>metadata.replyTo===`${local}@windsorbeauty.is`))throw new Error('Provider Reply-To is not an approved Beauty public mailbox.');
       if(Array.isArray(to) && (to.length!==1 || bareEmail(to[0])!==metadata.customerTo))throw new Error('Provider recipient mismatch.');
       if(event.data.reply_to?.length===1 && bareEmail(event.data.reply_to[0])!==metadata.replyTo)throw new Error('Provider Reply-To mismatch.');
       await recordVerifiedBeautySmtpMetadata({providerId:event.data.email_id,...metadata});

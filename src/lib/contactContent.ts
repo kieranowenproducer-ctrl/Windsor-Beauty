@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_LABEL, beautyPublicContactAddress } from './email/contactAddress';
 // Default copy for the Contact page (src/app/contact/page.tsx), and the shape
 // of the admin-editable override stored as JSON in site_content.body for the
 // 'contact' key. Mirrors aboutContent.ts.
@@ -34,9 +35,7 @@ export const DEFAULT_CONTACT_CONTENT: ContactContent = {
     { value: 'other', label: 'Other' },
   ],
   emails: [
-    { email: 'info@windsorbeauty.is', label: 'General enquiries' },
-    { email: 'sales@windsorbeauty.is', label: 'Sales, orders & product enquiries' },
-    { email: 'beautiful@windsorbeauty.is', label: 'Customer support & brand enquiries' },
+    { email: BEAUTY_CONTACT_EMAIL, label: BEAUTY_CONTACT_LABEL },
   ],
 };
 
@@ -67,11 +66,12 @@ export function parseContactContent(row: ContactContentSource | null): ContactCo
       ? parsed.emails
           .map((e: unknown) => {
             const entry = e as { email?: unknown; label?: unknown } | null;
-            const email = typeof entry?.email === 'string' ? entry.email.trim() : '';
+            const email = typeof entry?.email === 'string' ? beautyPublicContactAddress(entry.email) : '';
             const label = typeof entry?.label === 'string' ? entry.label.trim() : '';
-            return email ? { email, label } : null;
+            return email ? { email, label: email === BEAUTY_CONTACT_EMAIL ? BEAUTY_CONTACT_LABEL : label } : null;
           })
           .filter((e: ContactEmail | null): e is ContactEmail => e !== null)
+          .filter((e: ContactEmail, index: number, rows: ContactEmail[]) => rows.findIndex(row => row.email.toLowerCase() === e.email.toLowerCase()) === index)
       : [];
 
     return {

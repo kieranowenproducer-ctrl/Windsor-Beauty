@@ -335,7 +335,7 @@ export default function TopProductsPanel() {
                             <span className="block text-xs font-semibold text-stone-800">{formatWholeNumber(product.units)} sold</span>
                             <span className="block text-[9px] text-stone-500">&pound;{formatMoney(product.revenue)}</span>
                           </span>
-                          <span className={`shrink-0 text-stone-300 text-[10px] transition-transform ${isOpen ? 'rotate-90' : ''}`}>›</span>
+                          <span className={`shrink-0 text-stone-500 text-[10px] transition-transform ${isOpen ? 'rotate-90' : ''}`}>›</span>
                         </button>
 
                         {isOpen && (

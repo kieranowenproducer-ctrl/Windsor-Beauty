@@ -84,7 +84,7 @@ export default function PolicyFieldsList({
                       <button
                         onClick={() => handleReset(field.key)}
                         disabled={saving === field.key}
-                        className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-400 transition-colors disabled:opacity-50"
+                        className="text-[10px] tracking-[0.15em] uppercase text-stone-500 hover:text-red-700 transition-colors disabled:opacity-50"
                       >
                         Reset {field.label} to Default
                       </button>

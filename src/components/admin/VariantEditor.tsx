@@ -69,7 +69,7 @@ export default function VariantEditor({ variants, onChange, onAdd, onRemove, onU
                 type="button"
                 onClick={() => onRemove(i)}
                 disabled={variants.length <= 1}
-                className="p-2 -m-2 text-[9px] tracking-wider uppercase text-stone-300 hover:text-red-400 transition-colors disabled:opacity-30"
+                className="p-2 -m-2 text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-700 transition-colors disabled:opacity-30"
               >
                 Remove
               </button>

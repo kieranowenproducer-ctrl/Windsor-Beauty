@@ -1,4 +1,5 @@
 'use client';
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 
 // Customer-facing invoice payment page — the destination of the single
 // "Review & Pay" button in every invoice email. Exempt from the coming-soon
@@ -67,7 +68,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
         if (!r.ok || !data?.invoice) {
           setLoadError(
             r.status === 404
-              ? 'We could not find this invoice. Please use the link from your email, or contact us at sales@windsorbeauty.is.'
+              ? `We could not find this invoice. Please use the link from your email, or contact us at ${BEAUTY_CONTACT_EMAIL}.`
               : 'Something went wrong loading your invoice. Please try again shortly.'
           );
           return;
@@ -207,7 +208,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
               <div className="px-6 sm:px-8 py-8 text-center">
                 <p className="text-sm text-stone-500 leading-relaxed">
                   This invoice has been cancelled and no payment is due. If you believe this is a
-                  mistake, please contact us at sales@windsorbeauty.is.
+                  mistake, please contact us at {BEAUTY_CONTACT_EMAIL}.
                 </p>
               </div>
             ) : (
@@ -269,7 +270,7 @@ export default function PayInvoicePage(props: { params: Promise<{ token: string 
                   {!payment?.fenaUrl && !payment?.paypalUrl && (
                     <p className="text-sm text-stone-500 text-center leading-relaxed">
                       Online payment is not available for this invoice. Please reply to your invoice
-                      email or contact sales@windsorbeauty.is to arrange payment.
+                      email or contact {BEAUTY_CONTACT_EMAIL} to arrange payment.
                     </p>
                   )}
                 </div>

@@ -1,10 +1,11 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { emailDocument, escapeHtml } from '@/lib/email/shared';
 import { SUPPORT_REPLY_TO } from './email/supportAddress';
 import { UK_DELIVERY } from './shippingWindows';
 import { sendEmail } from '@/lib/email/send';
 import { emailGreeting } from './email/greeting';
 
-const FROM_ADDRESS = 'Windsor Beauty <orders@windsorbeauty.is>';
+const FROM_ADDRESS = BEAUTY_CONTACT_FROM;
 
 export function isShippingEmailConfigured() {
   return Boolean(process.env.RESEND_API_KEY_BEAUTY_IS?.trim());
@@ -88,7 +89,7 @@ export function buildShippingConfirmationEmail(
 
             <p style="margin:0;font-size:13px;color:#57534e;line-height:1.6">
               You can also view this order any time from your <a href="https://www.windsorbeauty.is/account" style="color:#A9695D;text-decoration:none">Windsor Beauty account</a>.
-              Questions? Contact us at <a href="mailto:sales@windsorbeauty.is" style="color:#A9695D;text-decoration:none">sales@windsorbeauty.is</a>.
+              Questions? Contact us at <a href="mailto:${BEAUTY_CONTACT_EMAIL}" style="color:#A9695D;text-decoration:none">${BEAUTY_CONTACT_EMAIL}</a>.
             </p>
           </td>
         </tr>`;
@@ -107,7 +108,7 @@ export function buildShippingConfirmationEmail(
       `Tracking number: ${params.trackingNumber}\n` +
       `Track your parcel: ${url}\n\n` +
       `You can also view this order any time from your Windsor Beauty account at windsorbeauty.is/account.\n\n` +
-      `Questions? sales@windsorbeauty.is`,
+      `Questions? ${BEAUTY_CONTACT_EMAIL}`,
     html,
   };
 }

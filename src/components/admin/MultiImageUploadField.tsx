@@ -159,7 +159,7 @@ export default function MultiImageUploadField({ value, onChange, endpoint, label
                 <button
                   type="button"
                   onClick={() => remove(i)}
-                  className="p-2.5 -m-0.5 sm:p-0 sm:m-0 text-[9px] tracking-wider uppercase text-stone-300 hover:text-red-400 transition-colors"
+                  className="p-2.5 -m-0.5 sm:p-0 sm:m-0 text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-700 transition-colors"
                 >
                   Remove
                 </button>

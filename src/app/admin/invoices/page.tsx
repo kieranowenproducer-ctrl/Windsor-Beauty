@@ -557,7 +557,7 @@ export default function AdminInvoicesPage() {
                             <span className="font-mono text-[11px] text-stone-600">{row.tracking_number}</span>
                           )
                         ) : (
-                          <span className="text-stone-300">-</span>
+                          <span className="text-stone-500">-</span>
                         )}
                       </td>
                       <td className="px-6 py-3 text-right" onClick={(e) => e.stopPropagation()}>

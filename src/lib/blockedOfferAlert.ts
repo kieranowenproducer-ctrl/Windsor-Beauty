@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import { listRecentAutomationFailures } from '@/lib/db';
 import { reportAutomationFailure } from '@/lib/automationFailure';
 import { stillHeldAfterRecheck } from '@/lib/db/openingOfferProtection';
@@ -23,7 +24,7 @@ export const BLOCKED_OFFER_CATEGORY = 'welcome_offer_blocked';
  */
 export const BLOCKED_OFFER_CUSTOMER_MESSAGE =
   'We need to check this code before it can be used. We have been told and will be in touch by email, '
-  + 'so there is nothing you need to do. If you would rather not wait, email sales@windsorbeauty.is.';
+  + `so there is nothing you need to do. If you would rather not wait, email ${BEAUTY_CONTACT_EMAIL}.`;
 
 /** How long one customer's blocked code counts as already reported. */
 const REPEAT_WINDOW_HOURS = 6;

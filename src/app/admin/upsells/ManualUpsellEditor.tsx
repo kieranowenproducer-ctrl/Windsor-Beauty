@@ -96,7 +96,7 @@ export default function ManualUpsellEditor({
                       onClick={() => selectTriggerProduct(p.slug)}
                       className="block w-full text-left px-3 py-2 text-xs text-stone-600 hover:bg-gold-50 transition-colors border-b border-stone-50 last:border-b-0"
                     >
-                      {p.name} <span className="text-stone-300">({p.slug})</span>
+                      {p.name} <span className="text-stone-500">({p.slug})</span>
                     </button>
                   ))}
                 </div>
@@ -173,7 +173,7 @@ export default function ManualUpsellEditor({
                           onClick={() => addToSelected(p.slug)}
                           className="block w-full text-left px-3 py-2 text-xs text-stone-600 hover:bg-gold-50 transition-colors border-b border-stone-50 last:border-b-0"
                         >
-                          + {p.name} <span className="text-stone-300">({p.slug})</span>
+                          + {p.name} <span className="text-stone-500">({p.slug})</span>
                         </button>
                       ))}
                     </div>
@@ -189,16 +189,16 @@ export default function ManualUpsellEditor({
                       {selectedDetails.map((d, i) => (
                         <li key={d.slug} className="flex items-center justify-between gap-3 border border-stone-100 px-3 py-2">
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-[10px] text-stone-300 tabular-nums">{i + 1}.</span>
+                            <span className="text-[10px] text-stone-500 tabular-nums">{i + 1}.</span>
                             <span className="text-xs text-stone-700 truncate">{d.name}</span>
                             {!d.willDisplay && (
                               <span className="shrink-0 px-1.5 py-0.5 text-[8px] tracking-wider uppercase bg-red-50 text-red-500">{d.reason}</span>
                             )}
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <button type="button" onClick={() => moveSelected(i, -1)} disabled={i === 0} className="text-stone-300 hover:text-gold-700 disabled:opacity-30 transition-colors" aria-label="Move up">&uarr;</button>
-                            <button type="button" onClick={() => moveSelected(i, 1)} disabled={i === selectedDetails.length - 1} className="text-stone-300 hover:text-gold-700 disabled:opacity-30 transition-colors" aria-label="Move down">&darr;</button>
-                            <button type="button" onClick={() => removeFromSelected(d.slug)} className="text-[9px] tracking-wider uppercase text-stone-300 hover:text-red-400 transition-colors">Remove</button>
+                            <button type="button" onClick={() => moveSelected(i, -1)} disabled={i === 0} className="text-stone-500 hover:text-gold-700 disabled:opacity-30 transition-colors" aria-label="Move up">&uarr;</button>
+                            <button type="button" onClick={() => moveSelected(i, 1)} disabled={i === selectedDetails.length - 1} className="text-stone-500 hover:text-gold-700 disabled:opacity-30 transition-colors" aria-label="Move down">&darr;</button>
+                            <button type="button" onClick={() => removeFromSelected(d.slug)} className="text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-700 transition-colors">Remove</button>
                           </div>
                         </li>
                       ))}
@@ -277,7 +277,7 @@ export default function ManualUpsellEditor({
                       </span>
                       <span className="flex items-center gap-3 shrink-0">
                         <button type="button" onClick={() => selectTriggerProduct(o.trigger_handle)} className="text-[9px] tracking-wider uppercase text-gold-700 hover:text-gold-700 transition-colors">Edit</button>
-                        <button type="button" onClick={() => handleEditorClear(o.trigger_handle)} className="text-[9px] tracking-wider uppercase text-stone-300 hover:text-red-400 transition-colors">Clear</button>
+                        <button type="button" onClick={() => handleEditorClear(o.trigger_handle)} className="text-[9px] tracking-wider uppercase text-stone-500 hover:text-red-700 transition-colors">Clear</button>
                       </span>
                     </li>
                   ))}

@@ -1,7 +1,8 @@
-/** Kieran chose one staff alert to info, alongside the dashboard pop-up.
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
+/** One staff alert goes to Suite, alongside the dashboard pop-up.
  * Legacy ENQUIRY_ALERT_TO lists must not add sales or other inbox copies. */
 export function enquiryAlertRecipients(): string[] {
-  return ['info@windsorbeauty.is'];
+  return [BEAUTY_CONTACT_EMAIL];
 }
 
 /** A packing or money problem needs prompt human attention, not an automatic answer. */

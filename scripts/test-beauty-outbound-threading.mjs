@@ -6,6 +6,7 @@ import vm from 'node:vm';
 import ts from 'typescript';
 import * as capture from '../src/lib/replyCapture.ts';
 import {normaliseMessageId} from '../src/lib/email/threadReferences.ts';
+import * as contactAddress from '../src/lib/email/contactAddress.ts';
 function load(file,modules,env={},fetch){const result={exports:{}};const compiled=ts.transpileModule(readFileSync(new URL('../'+file,import.meta.url),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;vm.runInNewContext(compiled,{exports:result.exports,module:result,require:name=>{if(!(name in modules))throw Error(`Unexpected ${name}`);return modules[name];},process:{env},console,AbortSignal,URL,fetch});return result.exports;}
 const key=Buffer.from('synthetic-outbound-signature-only');const secret=`whsec_${key.toString('base64')}`;
 const legacy='whsec_'+Buffer.from('synthetic-legacy').toString('base64');
@@ -13,13 +14,13 @@ const provider='00000000-0000-4000-8000-000000000001';
 function harness(env={},fetch,source=null){const calls={metadata:[],delivery:0,invitation:0,reads:0,producerChecks:0};
   const mockedFetch=async(...args)=>{calls.reads++;if(!fetch)throw Error('Unexpected API read');return fetch(...args);};
   const operational=load('src/lib/operationalAddress.ts',{},env);
-  const alerts=load('src/lib/email/enquiryAlerts.ts',{'@/lib/operationalAddress':operational},env);
+  const alerts=load('src/lib/email/enquiryAlerts.ts',{'@/lib/operationalAddress':operational,'@/lib/email/contactAddress':contactAddress},env);
   const archive=load('src/lib/email/archive.ts',{'@/lib/operationalAddress':operational},env);
   const delivery=load('src/lib/email/enquiryReplyDelivery.ts',{'@/lib/operationalAddress':operational,'./archive':archive},env);
   const metadata=load('src/lib/email/beautySentMetadata.ts',{'./threadReferences':{normaliseMessageId}},env,mockedFetch);
   const native=load('src/lib/email/beautyNativeContactAlerts.ts',{'./beautySentMetadata':metadata,'./threadReferences':{normaliseMessageId},'./enquiryAlerts':alerts},env,mockedFetch);
   const route=load('src/app/api/webhooks/resend-outbound/route.ts',{'next/server':{NextResponse:{json:(body,opts={})=>new Response(JSON.stringify(body),{status:opts.status||200})}},'@/lib/replyCapture':capture,
-    '@/lib/db/customerEmails':{updateCustomerEmailDelivery:async()=>{calls.delivery++;return true;}},'@/lib/affiliates':{markInvitationEmailFailedByProvider:async()=>{calls.invitation++;}},
+    '@/lib/email/contactAddress':contactAddress,'@/lib/db/customerEmails':{updateCustomerEmailDelivery:async()=>{calls.delivery++;return true;}},'@/lib/affiliates':{markInvitationEmailFailedByProvider:async()=>{calls.invitation++;}},
     '@/lib/db/beautyEmailThreads':{recordVerifiedBeautySmtpMetadata:async input=>{calls.metadata.push(input);},beautySentSource:async()=>source,beautyHasEnquiryReplyProducer:async()=>{calls.producerChecks++;return false;}},'@/lib/email/beautyNativeContactAlerts':native,'@/lib/email/enquiryReplyDelivery':delivery,'@/lib/email/beautySentMetadata':metadata,'@/lib/email/threadReferences':{normaliseMessageId}},
     {RESEND_OUTBOUND_WEBHOOK_SECRET_BEAUTY_IS:secret,RESEND_OUTBOUND_WEBHOOK_SECRET:legacy,...env});return {calls,route};}
 const event=(data={})=>({type:'email.sent',data:{email_id:provider,from:'Info <info@windsorbeauty.is>',to:['member@example.invalid'],reply_to:['info@windsorbeauty.is'],message_id:'<exact@smtp.invalid>',...data}});
@@ -101,4 +102,23 @@ test('new native module is actually evaluated: exact internal contact is inert, 
   if(!conflict)assert.equal((await result.json()).ignoredNativeContactAlert,true);
   assert.equal(h.calls.reads,1);assert.equal(h.calls.metadata.length+h.calls.delivery+h.calls.invitation,0);assert.equal(h.calls.producerChecks,conflict?0:1);
  }
+});
+
+test('Suite customer replies record exact SMTP ownership and reject foreign Suite identities',async()=>{
+ const data={from:'Windsor Beauty <suite@windsorbeauty.is>',reply_to:['suite@windsorbeauty.is']};
+ const h=harness();assert.equal((await h.route.POST(request(event(data)))).status,200);assert.equal(h.calls.metadata.length,1);assert.equal(h.calls.metadata[0].from,'suite@windsorbeauty.is');assert.equal(h.calls.metadata[0].replyTo,'suite@windsorbeauty.is');assert.equal(h.calls.delivery,1);
+ for(const change of [{from:'suite@windsorglow.is'},{reply_to:['suite@windsorglow.is']},{reply_to:['suite@windsorbeauty.is','info@windsorbeauty.is']}]){
+  const bad=harness();await bad.route.POST(request(event({...data,...change})));assert.equal(bad.calls.metadata.length+bad.calls.delivery,0);
+ }
+});
+
+test('Suite and historical Info native notifications retain exact signed and fetched recipient agreement',async()=>{
+ const env={BEAUTY_ENQUIRY_SMTP_METADATA_GET_ENABLED:'true',RESEND_INBOUND_API_KEY_BEAUTY_IS:'synthetic-receiving'};
+ for(const to of ['suite@windsorbeauty.is','info@windsorbeauty.is']){
+  const value=event({from:'enquiries@windsorbeauty.is',to:[to],reply_to:['owner@example.invalid'],subject:'Website enquiry: Order Enquiry, WB-TEST123, Offline Owner'});
+  const h=harness(env,async()=>Response.json({...value.data,id:provider}));const result=await h.route.POST(request(value));assert.equal(result.status,200);assert.equal((await result.json()).ignoredNativeContactAlert,true);assert.equal(h.calls.metadata.length+h.calls.delivery+h.calls.invitation,0);
+  const conflict=harness(env,async()=>Response.json({...value.data,id:provider,to:[to==='suite@windsorbeauty.is'?'info@windsorbeauty.is':'suite@windsorbeauty.is']}));assert.equal((await conflict.route.POST(request(value))).status,503);assert.equal(conflict.calls.metadata.length+conflict.calls.delivery,0);
+ }
+ const both=event({from:'enquiries@windsorbeauty.is',to:['suite@windsorbeauty.is','info@windsorbeauty.is'],reply_to:['owner@example.invalid'],subject:'Website enquiry: Order Enquiry, Offline Owner'});
+ const bad=harness(env);assert.equal((await bad.route.POST(request(both))).status,503);assert.equal(bad.calls.reads+bad.calls.metadata.length+bad.calls.delivery,0);
 });

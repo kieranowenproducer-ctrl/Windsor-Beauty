@@ -378,7 +378,7 @@ export default function AdminCertificatesPage() {
               <input type="checkbox" checked={warningsOnly} onChange={e => setWarningsOnly(e.target.checked)} className="accent-gold-500" />
               Warnings only
             </label>
-            <span className="text-[10px] text-stone-300 tracking-wider ml-auto">{filtered.length} of {rows.length} products</span>
+            <span className="text-[10px] text-stone-500 tracking-wider ml-auto">{filtered.length} of {rows.length} products</span>
           </div>
           </div>
 
@@ -423,7 +423,7 @@ export default function AdminCertificatesPage() {
               )}
               <button
                 onClick={() => setCheckResult(null)}
-                className="mt-2 text-[9px] tracking-[0.15em] uppercase text-stone-300 hover:text-stone-500 transition-colors"
+                className="mt-2 text-[9px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-500 transition-colors"
               >
                 Dismiss
               </button>
@@ -453,7 +453,7 @@ export default function AdminCertificatesPage() {
               )}
               <button
                 onClick={() => setImportResult(null)}
-                className="mt-2 text-[9px] tracking-[0.15em] uppercase text-stone-300 hover:text-stone-500 transition-colors"
+                className="mt-2 text-[9px] tracking-[0.15em] uppercase text-stone-500 hover:text-stone-500 transition-colors"
               >
                 Dismiss
               </button>
@@ -462,7 +462,7 @@ export default function AdminCertificatesPage() {
 
           {!overridesLoaded ? (
             <div className="flex items-center justify-center py-24">
-              <svg className="w-6 h-6 text-gold-400 animate-spin" viewBox="0 0 24 24" fill="none">
+              <svg className="w-6 h-6 text-gold-700 animate-spin" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" strokeOpacity="0.25" />
                 <path d="M21 12a9 9 0 01-9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
@@ -489,12 +489,12 @@ export default function AdminCertificatesPage() {
                       <tr key={row.product.id} className="border-b border-stone-50 hover:bg-stone-50/50 transition-colors">
                         <td className="px-4 py-3">
                           <div className="text-xs font-medium text-stone-700">{row.product.name}</div>
-                          <div className="text-[9px] text-stone-300">{row.product.slug}</div>
+                          <div className="text-[9px] text-stone-500">{row.product.slug}</div>
                         </td>
-                        <td className="px-4 py-3 text-xs text-stone-500">{row.product.brand ?? <span className="text-stone-300">-</span>}</td>
+                        <td className="px-4 py-3 text-xs text-stone-500">{row.product.brand ?? <span className="text-stone-500">-</span>}</td>
                         <td className="px-4 py-3 text-xs text-stone-500">{row.format}</td>
                         <td className="px-4 py-3 text-xs text-stone-500 max-w-[220px] truncate" title={row.firstCert?.storage || row.product.storage || ''}>
-                          {row.firstCert?.storage || row.product.storage || <span className="text-stone-300">-</span>}
+                          {row.firstCert?.storage || row.product.storage || <span className="text-stone-500">-</span>}
                         </td>
                         <td className="px-4 py-3 align-top">
                           <span
@@ -511,11 +511,11 @@ export default function AdminCertificatesPage() {
                           )}
                         </td>
                         <td className="px-4 py-3 text-[10px] text-stone-500">
-                          {row.updatedAt ? new Date(row.updatedAt).toLocaleDateString('en-GB') : <span className="text-stone-300">-</span>}
+                          {row.updatedAt ? new Date(row.updatedAt).toLocaleDateString('en-GB') : <span className="text-stone-500">-</span>}
                         </td>
                         <td className="px-4 py-3 align-top">
                           {row.warnings.length === 0 && row.issues.length === 0 ? (
-                            <span className="text-[9px] text-stone-300">None</span>
+                            <span className="text-[9px] text-stone-500">None</span>
                           ) : (
                             <div className="space-y-1.5 max-w-[430px]">
                               {row.warnings.length > 0 && (

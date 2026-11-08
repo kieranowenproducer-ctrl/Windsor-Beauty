@@ -32,7 +32,7 @@ const configuredShared = await import('../src/lib/email/shared.ts?configured-old
 assert.match(configuredShared.emailFooterHtml(), /Windsor Beauty, windsorbeauty\.is/);
 assert.match(configuredShared.EMAIL_ICON_BASE, /^https:\/\/www\.windsorbeauty\.is\//);
 delete process.env.NEXT_PUBLIC_SITE_URL;
-assert.equal(SUPPORT_REPLY_TO, 'info@windsorbeauty.is');
+assert.equal(SUPPORT_REPLY_TO, 'suite@windsorbeauty.is');
 for (const row of DEFAULT_CONTACT_CONTENT.emails) assert.match(row.email, /@windsorbeauty\.is$/);
 for (const row of DEFAULT_FOOTER_CONTENT.emails) assert.match(row.address, /@windsorbeauty\.is$/);
 for (const sender of Object.values(ADMIN_SENDERS)) { assert.match(sender.address, /@windsorbeauty\.is$/); assert.match(sender.replyTo, /@windsorbeauty\.is$/); }

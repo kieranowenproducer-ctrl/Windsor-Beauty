@@ -570,7 +570,7 @@ export default function AdminDiscountCodesPage() {
                                 onClick={() => toggleActive(row)}
                                 disabled={toggleId === row.id}
                                 className={`p-2 -m-2 text-[10px] tracking-[0.15em] uppercase transition-colors disabled:opacity-50 ${
-                                  row.active ? 'text-stone-500 hover:text-red-400' : 'text-gold-700 hover:text-gold-700'
+                                  row.active ? 'text-stone-500 hover:text-red-700' : 'text-gold-700 hover:text-gold-700'
                                 }`}
                               >
                                 {toggleId === row.id ? 'Saving…' : row.active ? 'Deactivate' : 'Activate'}

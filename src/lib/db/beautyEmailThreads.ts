@@ -1,10 +1,11 @@
 import { createHash } from 'crypto';
+import { BEAUTY_CONTACT_EMAIL } from '@/lib/email/contactAddress';
 import { requireDb } from './client';
 import { type EnquiryRow } from './enquiries';
 import { exactBeautyThread, normaliseMessageId } from '@/lib/email/threadReferences';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const PUBLIC = new Set(['info', 'sales', 'accounts'].map(local => `${local}@windsorbeauty.is`));
+const PUBLIC = new Set([BEAUTY_CONTACT_EMAIL, ...['info', 'sales', 'accounts'].map(local => `${local}@windsorbeauty.is`)]);
 const REPLY_MAILBOXES = new Set([...Array.from(PUBLIC),'orders@windsorbeauty.is','beautiful@windsorbeauty.is']);
 let ready = false;
 async function ensure(): Promise<void> {

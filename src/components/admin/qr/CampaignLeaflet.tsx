@@ -384,7 +384,7 @@ export default function CampaignLeaflet({ trackingUrl, slug, campaignName, partn
               setFields(reset);
               saveFields(campaignId, reset);
             }}
-            className="text-[9px] tracking-[0.18em] uppercase text-stone-300 hover:text-stone-500 transition-colors ml-auto"
+            className="text-[9px] tracking-[0.18em] uppercase text-stone-500 hover:text-stone-500 transition-colors ml-auto"
           >
             Reset to Defaults
           </button>

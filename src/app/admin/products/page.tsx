@@ -39,6 +39,7 @@ import ProductCardList from './ProductCardList';
 import ProductTable from './ProductTable';
 import RetiredProductsPanel from './RetiredProductsPanel';
 import EditProductDrawer from './EditProductDrawer';
+import { readProductDraft, writeProductDraft, clearSavedProductDraft, sameProductVersion, type EditorSnapshot } from './productEditorDraft';
 import {
   exportProductHandlesCsv, sortProducts,
   HIDDEN_CHOICE, type ProductSortOption, type ProductVisibilityChoice,
@@ -135,6 +136,33 @@ function AdminProductsPageContent() {
   // Save changes and is undone by Cancel — one field that acted immediately
   // would be the surprising one.
   const [editHidden, setEditHidden] = useState(false);
+  const [draftNotice, setDraftNotice] = useState('');
+  const [draftStorageFailed, setDraftStorageFailed] = useState(false);
+  const [editBaseline, setEditBaseline] = useState('');
+  const draftBaseRef = useRef<Product | null>(null);
+  const draftOwnerRef = useRef('');
+  const editGenerationRef = useRef(0);
+  useEffect(() => {
+    // A duplicated tab inherits sessionStorage, so use a new document owner.
+    // Reload recovery finds the latest saved copy without sharing its write key.
+    draftOwnerRef.current = crypto.randomUUID();
+  }, []);
+  const editorSnapshot = useMemo<EditorSnapshot>(() => ({ editForm, editVariants, editShipping, editKeywordsInput, certDrafts, certFormat, editStorageInstructions, editHidden }),
+    [editForm, editVariants, editShipping, editKeywordsInput, certDrafts, certFormat, editStorageInstructions, editHidden]);
+  const editorSnapshotRef = useRef(editorSnapshot);
+  editorSnapshotRef.current = editorSnapshot;
+  useEffect(() => {
+    const base = draftBaseRef.current;
+    if (!editingId || !base || base.slug !== editorSnapshot.editForm.slug || JSON.stringify(editorSnapshot) === editBaseline) return;
+    try { setDraftStorageFailed(!writeProductDraft(localStorage, draftOwnerRef.current, base, editorSnapshot)); }
+    catch { setDraftStorageFailed(true); }
+  }, [editingId, editorSnapshot, editBaseline]);
+  useEffect(() => {
+    if (!editingId || JSON.stringify(editorSnapshot) === editBaseline) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [editingId, editorSnapshot, editBaseline]);
   // Counts in-flight image uploads across every ImageUploadField/
   // MultiImageUploadField in the edit drawer and the add-product form (main
   // photo, certificate photo/pages, every variant photo). Saving while an
@@ -211,6 +239,9 @@ function AdminProductsPageContent() {
     setAddSlugTouched,
     addSaving,
     addError,
+    addDraftNotice,
+    addDraftStorageFailed,
+    discardAddDraft,
     updateAddName,
     updateVariant,
     addVariantRow,
@@ -683,7 +714,8 @@ function AdminProductsPageContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- this opens the editor once, when a deep link arrives and the data it needs has loaded. editCertificateFor is redefined every render, so including it would reopen the editor continuously and throw away what the user was typing.
   }, [deepLinkHandled, overridesLoaded, products, searchParams]);
 
-  function startEdit(p: Product) {
+  function startEdit(p: Product, restore = true, rawBase: Product = overrides[p.slug] ?? p) {
+    ++editGenerationRef.current;
     setEditingId(p.id);
     setEditHidden(hiddenSlugs.has(p.slug));
     // One-time, display-only HTML-to-lite-markdown conversion for legacy
@@ -719,7 +751,53 @@ function AdminProductsPageContent() {
     setCertFormatState(format);
     setCertFormatChanged([]);
     setEditStorageInstructions(storageInstructionsToDraft(p.storageInstructions));
+    const saved: EditorSnapshot = {
+      editForm: { ...p, availability: p.availability ?? 'available', newIn: p.newIn ?? false, fullDescription, fullDescriptionFormat: 'markdown' },
+      editVariants: sortVariantsByStrength(p.variants).map(v => ({ dosage: v.dosage, price: String(v.price), enabled: v.enabled !== false, image: v.image || '', shipping: shippingToDraft(v.shipping) })),
+      editShipping: shippingToDraft(p.shipping), editKeywordsInput: (p.keywords ?? []).join(', '), certDrafts: drafts,
+      certFormat: format, editStorageInstructions: storageInstructionsToDraft(p.storageInstructions), editHidden: hiddenSlugs.has(p.slug),
+    };
+    let stored = null;
+    try { if (restore) stored = readProductDraft(localStorage, p.slug, draftOwnerRef.current); } catch { /* Storage is optional. */ }
+    draftBaseRef.current = stored?.baseProduct ?? rawBase;
+    setEditBaseline(JSON.stringify(saved));
+    setDraftStorageFailed(false);
+    setDraftNotice(stored ? sameProductVersion(stored.baseProduct, rawBase)
+      ? 'Your unsaved changes from this browser have been restored. Save changes to publish them.'
+      : 'An older draft was restored. The saved product has changed. Copy anything you need, then reload the saved version before applying your changes.' : '');
+    if (stored) applyEditorSnapshot(stored.snapshot);
     setEditError('');
+  }
+
+  function applyEditorSnapshot(snapshot: EditorSnapshot) {
+    setEditForm(snapshot.editForm); setEditVariants(snapshot.editVariants); setEditShipping(snapshot.editShipping);
+    setEditKeywordsInput(snapshot.editKeywordsInput); setCertDrafts(snapshot.certDrafts); setCertFormatState(snapshot.certFormat);
+    setEditStorageInstructions(snapshot.editStorageInstructions); setEditHidden(snapshot.editHidden);
+  }
+
+  async function closeEditor() {
+    const base = draftBaseRef.current;
+    const snapshot = editorSnapshotRef.current;
+    if (base && JSON.stringify(snapshot) !== editBaseline) {
+      let kept = false;
+      try { kept = writeProductDraft(localStorage, draftOwnerRef.current, base, snapshot); } catch { /* Ask before losing work. */ }
+      if (!kept && !await confirm({ title: 'Close without keeping these changes?', body: 'Browser storage is unavailable. Keep this editor open and copy your changes, or close and discard them.', confirmLabel: 'Discard and close', cancelLabel: 'Keep editing', tone: 'danger' })) return;
+    }
+    setEditingId(null);
+  }
+
+  async function reloadSavedProduct() {
+    if (!editingProduct || savingEdit) return;
+    if (!await confirm({ title: 'Reload the saved product?', body: 'Copy anything you need first. This replaces the fields in this window with the saved version.', confirmLabel: 'Reload saved version', cancelLabel: 'Keep editing', tone: 'danger' })) return;
+    try {
+      const response = await fetch('/api/admin/products/catalogue', { cache: 'no-store' });
+      const data = await response.json();
+      const fresh = data?.overrides?.[editingProduct.slug] as Product | undefined;
+      if (!response.ok || !fresh) throw new Error('The saved product could not be loaded. Your draft is kept.');
+      try { clearSavedProductDraft(localStorage, editingProduct.slug, draftOwnerRef.current, JSON.stringify(editorSnapshotRef.current)); } catch { /* Keep the copy if storage fails. */ }
+      setOverrides(data.overrides);
+      startEdit(fresh, false, fresh);
+    } catch (error) { setEditError(error instanceof Error ? error.message : 'The saved product could not be loaded.'); }
   }
 
   function toggleHiddenSpec(key: SpecRowKey) {
@@ -796,7 +874,11 @@ function AdminProductsPageContent() {
   }
 
   async function saveEdit() {
-    if (!editingId) return;
+    if (!editingId || savingEdit) return;
+    const submittedSnapshot = JSON.stringify(editorSnapshotRef.current);
+    const savingGeneration = editGenerationRef.current;
+    const expectedProduct = draftBaseRef.current;
+    if (!expectedProduct) return;
     const original = products.find(p => p.id === editingId);
     if (!original) return;
     if (uploadingCount > 0) {
@@ -846,12 +928,17 @@ function AdminProductsPageContent() {
       const res = await fetch(`/api/admin/products/catalogue/${encodeURIComponent(merged.slug)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product: merged }),
+        body: JSON.stringify({ product: merged, expectedProduct }),
       });
       const data = await res.json().catch(() => null);
       if (res.status === 401) throw new Error(SESSION_EXPIRED_MESSAGE);
       if (!res.ok) throw new Error(data?.error || 'Could not save changes.');
       setOverrides(prev => ({ ...prev, [data.product.slug]: data.product as Product }));
+      if (editGenerationRef.current === savingGeneration) {
+        draftBaseRef.current = data.product as Product;
+        try { setDraftStorageFailed(!writeProductDraft(localStorage, draftOwnerRef.current, data.product as Product, editorSnapshotRef.current)); }
+        catch { setDraftStorageFailed(true); }
+      }
       // Hiding lives outside the product record, so it is a second write. It
       // runs only when the choice actually changed, and after the product
       // saved — a product that failed to save should not quietly change what
@@ -860,9 +947,14 @@ function AdminProductsPageContent() {
         await applyHidden(merged, editHidden);
         noteVisibility(merged, editHidden);
       }
-      setEditingId(null);
+      try { clearSavedProductDraft(localStorage, merged.slug, draftOwnerRef.current, submittedSnapshot); } catch { /* Keep the copy if storage fails. */ }
+      if (editGenerationRef.current === savingGeneration) {
+        setEditBaseline(submittedSnapshot);
+        if (JSON.stringify(editorSnapshotRef.current) === submittedSnapshot) setEditingId(null);
+        else setDraftNotice('Saved the submitted changes. Newer typing is still in this window; save again when ready.');
+      }
     } catch (err) {
-      setEditError(err instanceof Error ? err.message : 'Could not save changes.');
+      if (editGenerationRef.current === savingGeneration) setEditError(err instanceof Error ? err.message : 'Could not save changes.');
     } finally {
       setSavingEdit(false);
     }
@@ -971,6 +1063,9 @@ function AdminProductsPageContent() {
             uploadingCount={uploadingCount}
             addError={addError}
             addSaving={addSaving}
+            addDraftNotice={addDraftNotice}
+            addDraftStorageFailed={addDraftStorageFailed}
+            discardAddDraft={discardAddDraft}
             submitAddProduct={submitAddProduct}
             resetAddForm={resetAddForm}
           />
@@ -1067,7 +1162,10 @@ function AdminProductsPageContent() {
           <EditProductDrawer
             editingId={editingId}
             editingProduct={editingProduct}
-            setEditingId={setEditingId}
+            setEditingId={value => { if (value === null) void closeEditor(); else setEditingId(value); }}
+            draftNotice={draftNotice}
+            draftStorageFailed={draftStorageFailed}
+            reloadSavedProduct={reloadSavedProduct}
             certPreviewOpen={certPreviewOpen}
             setCertPreviewOpen={setCertPreviewOpen}
             editForm={editForm}
@@ -1113,9 +1211,9 @@ function AdminProductsPageContent() {
           {/* This note used to say "There is no separate Delete" while a Delete button sat on
               every row three lines above it. Both cannot be true, and the reader is left to
               guess which. It now says what each of the two buttons really does. */}
-          <p className="text-[9px] text-stone-300 mt-4">
-            Note: every change made here - Live/Hidden status, stock numbers, edited details and newly created products -
-            is saved to the database and takes effect on the live site immediately. To take a product off the shop use
+          <p className="text-[9px] text-stone-500 mt-4">
+            Live/Hidden and stock changes take effect when saved. Product editor drafts stay in this browser until you press Save Changes.
+            New products take effect when created. To take a product off the shop use
             &ldquo;Disable&rdquo;, which can always be switched back on without losing anything. &ldquo;Undo Edits&rdquo; on a
             built-in product throws away your changes and puts the original back; it does not remove the product.
             &ldquo;Delete&rdquo; only appears on products you created yourself, and that one really does remove it.

@@ -31,7 +31,7 @@ function harness(content, env = {}, threadRows=[]) {
     '@/lib/email/beautyInboundEnvelope':envelope,
     '@/lib/email/threadReferences':threads,
     '@/lib/replyCapture': capture,
-    '@/lib/email/send': { sendEmail: async (payload) => { assert.deepEqual(payload.to, ['info@windsorbeauty.is']); calls.alerts++; return { ok: true }; } },
+    '@/lib/email/send': { sendEmail: async (payload) => { assert.deepEqual(payload.to, ['suite@windsorbeauty.is']); calls.alerts++; return { ok: true }; } },
     '@/lib/email/enquiryAlerts': alerts,
     '@/lib/email/inboundRouting': routing,
   };
@@ -251,6 +251,19 @@ test('native provider ID sender SMTP and top-level recipient contradictions hold
 test('closed established native aliases preserve original mailbox, unknown legacy aliases stay held',async()=>{
   for(const mailbox of ['sales@windsorbeauty.is','accounts@windsorbeauty.co.uk','orders@windsorbeauty.is','beautiful@windsorbeauty.is']){const h=harness({...fixture('customer@example.invalid',{to:mailbox,'x-zohomail-delivered-to':mailbox}),received_for:['windsor-beauty@ilkaik.resend.app',mailbox]});assert.equal((await h.route(h.request())).status,200);assert.deepEqual(h.calls.originalMailboxes,[mailbox]);}
   const h=harness({...nativeFixture(),received_for:['windsor-beauty@ilkaik.resend.app','orders@windsorbeauty.co.uk']});assert.equal((await h.route(h.request())).status,503);assert.equal(h.calls.fetched+effects(h),0);
+});
+
+test('Suite accepts dedicated Beauty envelopes and exact replies, while old and foreign aliases stay isolated',async()=>{
+ const mailbox='suite@windsorbeauty.is';
+ const content={...fixture(undefined,{to:mailbox,'x-zohomail-delivered-to':mailbox}),received_for:['windsor-beauty@ilkaik.resend.app',mailbox]};
+ const direct=harness(content);assert.equal((await direct.route(direct.request())).status,200);assert.equal(direct.calls.cases,1);assert.deepEqual(direct.calls.originalMailboxes,[mailbox]);
+ const reply={...content,headers:{...content.headers,'in-reply-to':'<suite-parent@smtp.invalid>'}};
+ for(const [owner,parentMailbox,expected]of [[content.from,mailbox,200],['foreign@example.invalid',mailbox,503],[content.from,'info@windsorbeauty.is',503],[content.from,'suite@windsorglow.is',503]]){
+  const h=harness(reply,{},[{id:9,email:owner,smtp_message_id:'suite-parent@smtp.invalid',public_mailbox:parentMailbox}]);assert.equal((await h.route(h.request())).status,expected);assert.equal(h.calls.cases,0);assert.equal(h.calls.replyCases.length,expected===200?1:0);
+ }
+ const old=harness({...content,received_for:['windsor-beauty@ilkaik.resend.app','suite@windsorbeauty.co.uk']});assert.equal((await old.route(old.request())).status,503);assert.equal(old.calls.fetched+effects(old),0);
+ const foreign=harness({...content,received_for:['windsor-glow@ilkaik.resend.app',mailbox]});const ignored=await foreign.route(foreign.request());assert.equal(ignored.status,200);assert.equal((await ignored.json()).reason,'other_business_transport');assert.equal(foreign.calls.fetched+effects(foreign),0);
+ const mixed=harness({...content,headers:{to:'suite@windsorglow.is'}});assert.equal((await mixed.route(mixed.request())).status,503);assert.equal(effects(mixed),0);
 });
 
  test('proved current Glow aliases remain foreign transport only, no guessed legacy extra aliases',async()=>{

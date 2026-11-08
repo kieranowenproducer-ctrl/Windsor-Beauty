@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_LABEL, beautyPublicContactAddress } from './email/contactAddress';
 // Default copy for the site footer (src/components/Footer.tsx), and the
 // shape of the admin-editable override stored as JSON in site_content.body
 // for the 'footer-content' key. Mirrors the structured-JSON pattern already
@@ -29,9 +30,7 @@ export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   description:
     'Premium skincare from Windsor Beauty -\nPart of the C&S Holdings Group.\n\nSerums, moisturisers, cleansers and SPF\nfor a simple daily routine.',
   emails: [
-    { address: 'info@windsorbeauty.is', label: 'general enquiries' },
-    { address: 'sales@windsorbeauty.is', label: 'sales & orders' },
-    { address: 'beautiful@windsorbeauty.is', label: 'customer support' },
+    { address: BEAUTY_CONTACT_EMAIL, label: BEAUTY_CONTACT_LABEL },
   ],
   navLinks: [
     { label: 'Shop', href: '/shop' },
@@ -69,13 +68,15 @@ function sanitizeLinks(value: unknown, fallback: FooterLink[]): FooterLink[] {
 
 function sanitizeEmails(value: unknown, fallback: FooterEmail[]): FooterEmail[] {
   if (!Array.isArray(value) || value.length === 0) return fallback;
-  return fallback.map((fb, i) => {
-    const entry = value[i] as { address?: unknown; label?: unknown } | undefined;
-    return {
-      address: typeof entry?.address === 'string' && entry.address.trim() ? entry.address.trim() : fb.address,
-      label: typeof entry?.label === 'string' && entry.label.trim() ? entry.label.trim() : fb.label,
-    };
-  });
+  const emails = value.slice(0, 10).flatMap(item => {
+    const entry = item as { address?: unknown; label?: unknown } | null;
+    const address = typeof entry?.address === 'string' ? beautyPublicContactAddress(entry.address) : '';
+    if (!address) return [];
+    const label = address === BEAUTY_CONTACT_EMAIL ? BEAUTY_CONTACT_LABEL
+      : typeof entry?.label === 'string' ? entry.label.trim() : '';
+    return [{ address, label }];
+  }).filter((email, index, rows) => rows.findIndex(row => row.address.toLowerCase() === email.address.toLowerCase()) === index);
+  return emails.length ? emails : fallback;
 }
 
 interface FooterContentSource {

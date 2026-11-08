@@ -1,3 +1,4 @@
+import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 // Which Windsor Beauty address a one-to-one message from the dashboard goes out from.
 //
@@ -13,9 +14,9 @@ import { beautyOperationalAddress } from '@/lib/operationalAddress';
 // sends live mail from no-reply@, Beautiful@, alerts@ and tasks@, so nothing new needs setting
 // up to add another name on the same domain. Adding a fifth option is one entry below.
 
-export type AdminSenderKey = 'sales' | 'info' | 'support' | 'no-reply';
+export type AdminSenderKey = 'suite' | 'sales' | 'info' | 'support' | 'no-reply';
 
-export const DEFAULT_ADMIN_SENDER: AdminSenderKey = 'sales';
+export const DEFAULT_ADMIN_SENDER: AdminSenderKey = 'suite';
 
 export interface AdminSender {
   key: AdminSenderKey;
@@ -46,13 +47,17 @@ function bareAddress(from: string): string {
 }
 
 export const ADMIN_SENDERS: Record<AdminSenderKey, AdminSender> = {
+  suite: {
+    key: 'suite', from: BEAUTY_CONTACT_FROM, address: BEAUTY_CONTACT_EMAIL, replyTo: BEAUTY_CONTACT_EMAIL,
+    label: 'Suite', hint: 'Customer support and orders. Replies come back to Suite.',
+  },
   sales: {
     key: 'sales',
     from: SALES_FROM,
     address: bareAddress(SALES_FROM),
     replyTo: bareAddress(SALES_FROM),
     label: 'Sales',
-    hint: 'The address published on the website. Their reply comes back to sales.',
+    hint: 'Existing Sales address. Replies come back to Sales.',
   },
   info: {
     key: 'info',
@@ -85,6 +90,7 @@ export const ADMIN_SENDERS: Record<AdminSenderKey, AdminSender> = {
 
 /** Everything the dashboard needs to draw the dropdown, in the order it should appear. */
 export const ADMIN_SENDER_OPTIONS: AdminSender[] = [
+  ADMIN_SENDERS.suite,
   ADMIN_SENDERS.sales,
   ADMIN_SENDERS.info,
   ADMIN_SENDERS.support,

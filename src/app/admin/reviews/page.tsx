@@ -419,9 +419,10 @@ export default function AdminReviewsPage() {
                           type="button"
                           onClick={() => setAddDraft(d => ({ ...d, rating: n }))}
                           aria-label={`${n} star${n === 1 ? '' : 's'}`}
-                          className={`text-xl transition-colors ${n <= addDraft.rating ? 'text-gold-400' : 'text-stone-200'} hover:text-gold-300`}
+                          aria-pressed={n <= addDraft.rating}
+                          className="text-xl text-gold-700 transition-colors hover:text-gold-800"
                         >
-                          ★
+                          {n <= addDraft.rating ? '★' : '☆'}
                         </button>
                       ))}
                       <span className="text-[10px] text-stone-500 ml-2">{addDraft.rating}/5</span>
@@ -502,9 +503,9 @@ export default function AdminReviewsPage() {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-1 text-gold-400 text-xs mb-1">
+                      <div className="flex items-center gap-1 text-gold-700 text-xs mb-1" aria-label={`${row.rating} out of 5 stars`}>
                         {'★'.repeat(row.rating)}
-                        <span className="text-stone-200">{'★'.repeat(5 - row.rating)}</span>
+                        <span>{'☆'.repeat(5 - row.rating)}</span>
                       </div>
                       <p className="text-[10px] text-stone-500 mb-1">{formatDate(row.created_at)}</p>
                       <p className="text-[10px] text-stone-500">
@@ -539,9 +540,11 @@ export default function AdminReviewsPage() {
                                 key={n}
                                 type="button"
                                 onClick={() => setEditDraft(d => d && ({ ...d, rating: n }))}
-                                className={`text-xl transition-colors ${n <= editDraft.rating ? 'text-gold-400' : 'text-stone-200'} hover:text-gold-300`}
+                                aria-label={`${n} star${n === 1 ? '' : 's'}`}
+                                aria-pressed={n <= editDraft.rating}
+                                className="text-xl text-gold-700 transition-colors hover:text-gold-800"
                               >
-                                ★
+                                {n <= editDraft.rating ? '★' : '☆'}
                               </button>
                             ))}
                             <span className="text-[10px] text-stone-500 ml-2">{editDraft.rating}/5</span>
@@ -690,7 +693,7 @@ export default function AdminReviewsPage() {
                         This review always stays on the main Reviews page. Map it to products to also show it on those product pages.
                       </p>
                       {linksLoading === row.id ? (
-                        <p className="text-[10px] text-stone-300 mb-2">Loading…</p>
+                        <p className="text-[10px] text-stone-500 mb-2">Loading…</p>
                       ) : (
                         <ProductPicker
                           products={products}
