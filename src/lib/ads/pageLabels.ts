@@ -1,6 +1,7 @@
 import { isDbConfigured, requireDb } from '@/lib/db/client';
 import { ALL_CATEGORIES, PRODUCTS } from '@/data/products';
 import { INTERNAL_SLUG } from '@/lib/slugAliases';
+import { productAddressOwners } from '@/lib/db/productAddresses';
 import { categorySlug } from '@/lib/categoryUrls';
 
 // The real names behind the addresses in the after-the-click tables.
@@ -31,9 +32,10 @@ export async function resolvePageNames(paths: Iterable<string>): Promise<Record<
 
   // The catalogue first: it needs no database and covers every listed product.
   const stillMissing: string[] = [];
+  const addresses=isDbConfigured()?await productAddressOwners().catch(()=>new Map<string,string>()):new Map<string,string>();
   for (const path of productPaths) {
     const urlSlug = path.slice('/shop/'.length);
-    const slug = INTERNAL_SLUG[urlSlug] ?? urlSlug;
+    const slug = addresses.get(urlSlug) ?? INTERNAL_SLUG[urlSlug] ?? urlSlug;
     const name = NAMES_BY_SLUG.get(slug);
     if (name) names[path] = name;
     else stillMissing.push(slug);
@@ -51,7 +53,7 @@ export async function resolvePageNames(paths: Iterable<string>): Promise<Record<
         if (!name) continue;
         for (const path of productPaths) {
           const urlSlug = path.slice('/shop/'.length);
-          if ((INTERNAL_SLUG[urlSlug] ?? urlSlug) === row.slug) names[path] = name;
+          if ((addresses.get(urlSlug) ?? INTERNAL_SLUG[urlSlug] ?? urlSlug) === row.slug) names[path] = name;
         }
       }
     } catch {

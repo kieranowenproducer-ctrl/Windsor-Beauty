@@ -1,3 +1,6 @@
+import { createHash } from 'node:crypto';
+import { hasAdminReadAccess } from '@/lib/adminReadAccess';
+import { readBeautyReplyDraft, clearSentBeautyReplyDraft, recordBeautyDraftReply } from '@/lib/db/beautyEnquiryDrafts';
 import { BEAUTY_CONTACT_EMAIL, BEAUTY_CONTACT_FROM } from '@/lib/email/contactAddress';
 import { beautyOperationalAddress } from '@/lib/operationalAddress';
 import { buildEnquiryReplyEmail } from '@/lib/enquiryEmails';
@@ -29,6 +32,8 @@ const FROM_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_FROM) ||
 const REPLY_TO_ADDRESS = beautyOperationalAddress(process.env.ENQUIRY_REPLY_TO) || BEAUTY_CONTACT_EMAIL;
 
 export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+  if (!hasAdminReadAccess(request)) return NextResponse.json({error:'Unauthorized'},{status:401});
+  if(request.headers.get('origin')!==new URL(request.url).origin) return NextResponse.json({error:'Reload this page before sending.'},{status:403});
   const params = await props.params;
   if (!process.env.RESEND_API_KEY_BEAUTY_IS?.trim()) {
     return NextResponse.json({ error: 'Email sending is not configured.' }, { status: 503 });
@@ -54,6 +59,15 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
   const enquiry = await findEnquiryById(id);
   if (!enquiry) {
     return NextResponse.json({ error: 'Enquiry not found.' }, { status: 404 });
+  }
+
+  // New composer saves first. Do not send an old tab's reply over newer saved work.
+  const draftRevision = body?.draftRevision;
+  if (draftRevision !== undefined) {
+    if (!Number.isSafeInteger(draftRevision) || draftRevision < 1 || !Number.isSafeInteger(body?.baseReplyId)) return NextResponse.json({error:'Reload the saved draft before sending.'},{status:400});
+    const current=await readBeautyReplyDraft(id).catch(()=>null);
+    const payload=current?.payload as {message?:string;format?:string} | null;
+    if (!current || Number(current.revision)!==draftRevision || Number(current.latest_reply_id)!==body.baseReplyId || payload?.message?.trim()!==message || payload?.format!==format) return NextResponse.json({error:'The saved draft or conversation changed. Reload the saved draft and check the latest messages before sending.'},{status:409});
   }
 
   if (format === 'order') {
@@ -108,12 +122,16 @@ to: enquiry.email,
 bcc: archiveAddress ?? undefined,
 replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
 ...buildEnquiryReplyEmail({ subject, standardText, originalMessage: enquiry.message, addAutomaticGreeting, automaticGreeting, message, quotedHtml })
-});
+}, {idempotencyKey: 'beauty-enquiry-'+createHash('sha256').update(JSON.stringify([id,body?.baseReplyId??null,enquiry.email,FROM_ADDRESS,REPLY_TO_ADDRESS,archiveAddress,format,message])).digest('hex')});
 
     if (error) {
       console.error('[admin/enquiries/reply] Resend error:', error);
       return NextResponse.json({ error: 'The reply could not be sent. Please try again shortly.' }, { status: 502 });
     }
+
+    // Clear only this exact saved revision after provider acceptance, even if later
+    // thread recording fails. Late saves cannot resurrect the sent text.
+    const draftCleared = draftRevision === undefined ? true : await clearSentBeautyReplyDraft(id,draftRevision).then(value=>value!==undefined).catch(()=>false);
 
     // Sending and saving are separate systems. Once Resend has accepted the
     // email, never report it as unsent just because the later database write
@@ -121,7 +139,9 @@ replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
     // duplicate the customer email. The provider ID and IONOS copy remain the
     // recovery trail in that unusual case.
     try {
-      const reply = await recordEnquiryReply({
+      const reply = draftRevision !== undefined && providerId
+        ? await recordBeautyDraftReply(id,sentMessage,FROM_ADDRESS,providerId,body.baseReplyId)
+        : await recordEnquiryReply({
         enquiryId: id,
         body: sentMessage,
         fromAddress: FROM_ADDRESS,
@@ -131,6 +151,7 @@ replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
 
       return NextResponse.json({
         success: true,
+        draftCleared,
         reply,
         sentTo: enquiry.email,
         archivedTo: archiveAddress,
@@ -145,6 +166,7 @@ replyTo: getReplyCaptureAddress() ?? REPLY_TO_ADDRESS,
       });
       return NextResponse.json({
         success: true,
+        draftCleared,
         sentTo: enquiry.email,
         archivedTo: archiveAddress,
         recorded: false,

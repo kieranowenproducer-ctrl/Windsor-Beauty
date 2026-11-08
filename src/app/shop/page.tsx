@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { permanentRedirect } from 'next/navigation';
 import { categoriesWithProducts, loadShopServerData, visibleProducts } from '@/lib/shopServerData';
 import { categoryFromSlug, categorySlug, categoryUrl } from '@/lib/categoryUrls';
-import { shopUrl } from '@/lib/slugAliases';
+import { productHref } from '@/lib/productAddress';
 import { SITE_URL } from '../robots';
 import ShopClient from './ShopClient';
 import { bundleAsProduct } from '@/lib/hairCareBundle';
@@ -59,7 +59,7 @@ function itemListJsonLd(products: ReturnType<typeof visibleProducts>) {
       '@type': 'ListItem',
       position: index + 1,
       name: product.name,
-      url: `${SITE_URL}${shopUrl(product.slug)}`,
+      url: `${SITE_URL}${productHref(product)}`,
     })),
   };
 }

@@ -43,6 +43,7 @@ const ADMIN_NAV_GROUPS: NavGroup[] = [
     { label: 'System Health', href: '/admin/system-health' },
     { label: 'Shipping Settings', href: '/admin/bulk-weights' },
     { label: 'Nav Links', href: '/admin/nav-links' },
+    { label: 'Security and login', href: '/admin/security' },
   ]},
 ];
 

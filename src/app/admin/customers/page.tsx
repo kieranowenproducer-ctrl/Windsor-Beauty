@@ -13,6 +13,7 @@ import CustomersTable from './CustomersTable';
 import CustomerDetailPanel from './CustomerDetailPanel';
 import DuplicateAccountsPanel from './DuplicateAccountsPanel';
 import type { DuplicateFinding } from '@/lib/db/duplicateAccounts';
+import type { IgnoredPair } from '@/lib/db/securityReviews';
 import { useConfirm } from '@/components/admin/ConfirmProvider';
 import {
   emptyDraft,
@@ -36,41 +37,21 @@ export default function AdminCustomersPage() {
   const [duplicateChecking, setDuplicateChecking] = useState(false);
   const [duplicateChecked, setDuplicateChecked] = useState(false);
   const [duplicateCheckFailed, setDuplicateCheckFailed] = useState(false);
-  const [allowingId, setAllowingId] = useState<number | null>(null);
-  const [allowError, setAllowError] = useState('');
-
-  /**
-   * Mark one flagged account as genuine (task ce609555).
-   *
-   * It posts to the welcome-offer check Kieran built on 16 September rather than recording the
-   * decision somewhere new, so this list, the dashboard and the individual customer panel all read
-   * one record of who has been cleared. Approving there also releases the 10% that was being held,
-   * which is why the panel says so next to the button.
-   *
-   * The list is re-run afterwards rather than the row being hidden locally: that way what is on
-   * screen is what the server actually thinks, and a failed save cannot leave a row looking dealt
-   * with when it is not.
-   */
-  async function allowDuplicateAsAuthentic(customerId: number) {
-    setAllowingId(customerId);
-    setAllowError('');
+  const [ignoredPairs, setIgnoredPairs] = useState<IgnoredPair[]>([]);
+  const [ignoringKey, setIgnoringKey] = useState<string | null>(null);
+  const [ignoreError, setIgnoreError] = useState('');
+  async function setPairIgnored(customerId: number, otherCustomerId: number, undo: boolean) {
+    if (ignoringKey) return;
+    if (!await confirm({title: undo ? 'Stop ignoring this pair?' : 'Ignore this pair?', body: undo ? 'These accounts can appear in future reviews again.' : 'Only this pair will be hidden from future second-account findings. No account or discount changes.'})) return;
+    setIgnoringKey(`${Math.min(customerId, otherCustomerId)}:${Math.max(customerId, otherCustomerId)}`);
+    setIgnoreError('');
     try {
-      const res = await fetch(`/api/admin/customers/${customerId}/opening-offer-check`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'approve' }),
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok || data?.error) {
-        throw new Error(typeof data?.error === 'string' ? data.error : 'It could not be saved.');
-      }
+      const response = await fetch('/api/admin/duplicate-accounts/ignore', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({customerId, otherCustomerId, undo})});
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.error || 'The pair could not be saved.');
       await runDuplicateCheck();
-      loadCustomers();
-    } catch (err) {
-      setAllowError(err instanceof Error ? err.message : 'It could not be saved. Please try again.');
-    } finally {
-      setAllowingId(null);
-    }
+    } catch (error) { setIgnoreError(error instanceof Error ? error.message : 'The pair could not be saved.'); }
+    finally { setIgnoringKey(null); }
   }
 
   /**
@@ -88,6 +69,7 @@ export default function AdminCustomersPage() {
           throw new Error(typeof data?.error === 'string' ? data.error : 'no answer');
         }
         setDuplicateFindings(data.findings);
+        setIgnoredPairs(Array.isArray(data.ignored) ? data.ignored : []);
         setDuplicateChecked(true);
       })
       .catch(() => {
@@ -672,9 +654,11 @@ export default function AdminCustomersPage() {
             checked={duplicateChecked}
             failed={duplicateCheckFailed}
             findings={duplicateFindings}
-            onAllow={allowDuplicateAsAuthentic}
-            allowingId={allowingId}
-            allowError={allowError}
+            ignored={ignoredPairs}
+            onIgnore={(a,b) => void setPairIgnored(a,b,false)}
+            onStopIgnoring={(a,b) => void setPairIgnored(a,b,true)}
+            ignoringKey={ignoringKey}
+            ignoreError={ignoreError}
           />
 
           <ResendVerificationPanel

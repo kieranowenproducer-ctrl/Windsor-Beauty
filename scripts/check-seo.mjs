@@ -37,6 +37,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ALL_CATEGORIES, PRODUCTS } from '@/data/products';
 import { PRETTY_SLUG, shopUrl } from '@/lib/slugAliases';
+import { productHref } from '@/lib/productAddress';
 import { SITE_URL } from '@/app/robots';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -91,9 +92,9 @@ function checkSource() {
     + 'indexed as two different pages selling the same thing.');
 
   const sitemap = read('src/app/sitemap.ts');
-  ok(/shopUrl\(/.test(sitemap),
+  ok(/productHref\(product\)/.test(sitemap),
     'sitemap.ts builds product URLs from the internal slug while the site links the pretty one, '
-    + 'so it advertises addresses nothing on the site links to. Use shopUrl().');
+    + 'so it advertises addresses nothing on the site links to. Use productHref(product).');
 
   /* The pretty-slug redirects live in next.config.js, which is CommonJS and cannot import the
    * TypeScript that defines the pairs. Two lists, no compiler between them, so this is the only
@@ -215,10 +216,10 @@ function jsonLdBlocks(html) {
 }
 
 async function checkProductPage(product) {
-  const url = `${BASE}${shopUrl(product.slug)}`;
+  const url = `${BASE}${productHref(product)}`;
   /* The address the page must claim as its own is the LIVE one, whatever host we happen to be
    * fetching from. A canonical pointing at localhost would be the fault, not the check. */
-  const canonicalShouldBe = `${SITE_URL}${shopUrl(product.slug)}`;
+  const canonicalShouldBe = `${SITE_URL}${productHref(product)}`;
   const { status, html } = await get(url);
   if (!ok(status === 200, `${url} answered ${status}, not 200.`)) return;
 

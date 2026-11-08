@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { PRODUCTS } from '@/data/products';
 import AdminSidebar from '@/components/admin/AdminSidebar';
@@ -46,6 +46,7 @@ type ActivityEvent =
       paymentConfirmedAt: string | null;
       orderNumber: string;
       customerName: string;
+      customerId: number | null;
       email: string;
       total: string;
       status: string;
@@ -351,6 +352,32 @@ export default function AdminDashboard() {
   // problems in one list, each row expandable into its detail.
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
   const [activityLoading, setActivityLoading] = useState(true);
+  const [activityCursor, setActivityCursor] = useState<string | null>(null);
+  const [activityError, setActivityError] = useState('');
+  const [statsError, setStatsError] = useState('');
+  const activityRequest = useRef(0);
+  const activityBusy = useRef(false);
+  async function loadActivity(more = false) {
+    if (activityBusy.current) return;
+    const serial = ++activityRequest.current;
+    activityBusy.current = true;
+    setActivityLoading(true); setActivityError('');
+    try {
+      const query = more && activityCursor ? `?cursor=${encodeURIComponent(activityCursor)}` : '';
+      const response = await fetch(`/api/admin/activity${query}`, {cache:'no-store'});
+      const data = await response.json();
+      if (!response.ok || !Array.isArray(data.events)) throw new Error('Could not load activity. Please try again.');
+      if (serial !== activityRequest.current) return;
+      setActivity(current => more
+        ? Array.from(new Map([...current, ...data.events].map((item, i) => [activityKey(item, i), item])).values())
+        : data.events);
+      setActivityCursor(data.nextCursor ?? null);
+    } catch {
+      if (serial === activityRequest.current) setActivityError('Could not load activity. Please try again.');
+    } finally {
+      if (serial === activityRequest.current) {activityBusy.current=false; setActivityLoading(false);}
+    }
+  }
   const [expandedActivity, setExpandedActivity] = useState<string | null>(null);
 
   // Clearing a red "Problem" row (task f95367d6). Eight copies of a fault that
@@ -553,7 +580,10 @@ export default function AdminDashboard() {
       try {
         const res = await fetch('/api/admin/stats');
         const data = await res.json();
+        if (!res.ok || typeof data.totalOrders !== 'number') throw new Error();
         if (!cancelled) setStats(data);
+      } catch {
+        if (!cancelled) setStatsError('Dashboard figures could not be loaded. Refresh this page to try again.');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -590,12 +620,14 @@ export default function AdminDashboard() {
 
     refreshLowStock();
 
-    fetch('/api/admin/activity')
-      .then(res => res.json())
+    fetch('/api/admin/activity', {cache:'no-store'})
+      .then(async res => { if (!res.ok) throw new Error(); return res.json(); })
       .then(data => {
-        if (!cancelled && Array.isArray(data.events)) setActivity(data.events);
+        if (!cancelled && Array.isArray(data.events)) {
+          setActivity(data.events); setActivityCursor(data.nextCursor ?? null);
+        }
       })
-      .catch(() => {})
+      .catch(() => { if (!cancelled) setActivityError('Could not load activity. Please try again.'); })
       .finally(() => { if (!cancelled) setActivityLoading(false); });
 
     return () => { cancelled = true; };
@@ -963,7 +995,7 @@ export default function AdminDashboard() {
             ].map(({ label, value, note, accent, href }) => (
               <Link key={label} href={href} className={`block bg-white border p-5 cursor-pointer hover:border-gold-300 transition-colors ${accent ? 'border-gold-300' : 'border-stone-200'}`}>
                 <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
-                <div className={`text-2xl font-semibold mb-1 ${accent ? 'text-gold-700' : 'text-stone-800'}`}>{loading ? '-' : value}</div>
+                <div className={`text-2xl font-semibold mb-1 ${accent ? 'text-gold-700' : 'text-stone-800'}`}>{loading || statsError ? '-' : value}</div>
                 <div className="text-[9px] text-stone-500">{note}</div>
               </Link>
             ))}
@@ -974,8 +1006,8 @@ export default function AdminDashboard() {
               the row stays one line rather than dropping a single box onto a line of its own. */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
             {[
-              { label: 'Revenue - All Time', value: `£${formatMoney(stats.revenue)}`, note: 'Confirmed payments only', href: '/admin/revenue', accent: false },
-              { label: 'Revenue - This Month', value: `£${formatMoney(stats.thisMonthRevenue)}`, note: new Date().toLocaleString('en-GB', { month: 'long', year: 'numeric' }), href: '/admin/revenue?period=this_month', accent: false },
+              { label: 'Revenue - All Time', value: `£${formatMoney(stats.revenue)}`, note: 'Confirmed payments, excluding PayPal fee', href: '/admin/revenue', accent: false },
+              { label: 'Revenue - This Month', value: `£${formatMoney(stats.thisMonthRevenue)}`, note: new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', month: 'long', year: 'numeric' }), href: '/admin/revenue?period=this_month', accent: false },
               { label: 'Customer Accounts', value: formatWholeNumber(stats.customerCount), note: 'Registered on the website', href: '/admin/customers', accent: false },
               /* Kieran, 9 September: show a separate box for new clients from the preceding day.
                  It gold-borders itself on a
@@ -994,7 +1026,7 @@ export default function AdminDashboard() {
             ].map(({ label, value, note, href, accent }) => (
               <Link key={label} href={href} className={`block bg-white border p-5 cursor-pointer hover:border-gold-300 transition-colors ${accent ? 'border-gold-300' : 'border-stone-200'}`}>
                 <div className="text-[9px] tracking-[0.18em] uppercase text-stone-500 mb-2">{label}</div>
-                <div className="text-2xl font-semibold text-stone-800 mb-1">{loading ? '-' : value}</div>
+                <div className="text-2xl font-semibold text-stone-800 mb-1">{loading || statsError ? '-' : value}</div>
                 <div className="text-[9px] text-stone-500">{note}</div>
               </Link>
             ))}
@@ -1012,7 +1044,7 @@ export default function AdminDashboard() {
           <div className="mb-10">
             <h2 className="text-xs tracking-[0.18em] uppercase text-stone-500 font-semibold mb-1">Latest Activity</h2>
             <p className="text-[10px] text-stone-500 mb-4">
-              Orders, payments, new customers and anything that went wrong, newest first. Press a row for the detail.
+              Unpaid orders, parcels still to send and open problems stay first. Other activity follows, newest first. Press a row for details.
             </p>
             {/* What the coloured squares on the order rows mean (task 41a3910f). */}
             <OrderStageKey className="mb-4" />
@@ -1031,7 +1063,9 @@ export default function AdminDashboard() {
             {deleteIssueError && (
               <p className="text-[11px] text-red-700 font-semibold mb-3">{deleteIssueError}</p>
             )}
-            {activityLoading ? (
+            <button type="button" onClick={() => loadActivity()} disabled={activityLoading} className="mb-4 rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-700 disabled:opacity-50">Refresh activity</button>
+            {activityError && <p role="alert" className="mb-3 text-xs text-red-700">{activityError}</p>}
+            {activityLoading && activity.length === 0 ? (
               <p className="text-xs text-stone-500">Loading…</p>
             ) : activity.length === 0 ? (
               <p className="text-xs text-stone-500">Nothing yet. Payments, registrations and any problems will appear here as they happen.</p>
@@ -1292,6 +1326,8 @@ export default function AdminDashboard() {
                                 <Link href={`/admin/orders?search=${encodeURIComponent(event.orderNumber)}`} className="inline-block text-[9px] tracking-[0.18em] uppercase border border-stone-300 text-stone-600 px-3 py-1.5 hover:border-gold-400 hover:text-gold-700 transition-colors">
                                   {event.paymentConfirmedAt ? 'Open order' : 'Open payment attempt'}
                                 </Link>
+                                {event.customerId && <Link href={`/admin/customers/${event.customerId}`} className="inline-block rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-700">Open customer</Link>}
+                                {['paid', 'awaiting_dispatch', 'processing', 'exported'].includes(event.status) && <Link href={`/admin/orders?search=${encodeURIComponent(event.orderNumber)}`} className="inline-block rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-700">Review delivery and dispatch</Link>}
                                 {/* The same tick as the row, in words, with what it does NOT
                                     do said out loud (task 535c24f9). */}
                                 {event.clearable && (
@@ -1367,6 +1403,9 @@ export default function AdminDashboard() {
               </div>
             )}
           </div>
+
+          {activityCursor && <button type="button" onClick={() => loadActivity(true)} disabled={activityLoading} className="mb-8 rounded-lg border border-stone-300 bg-white px-4 py-2 text-xs text-stone-700 disabled:opacity-50">{activityLoading ? 'Loading activity...' : 'Load more activity'}</button>}
+          <p className="mb-8 text-xs text-stone-500">All orders remain in <Link href="/admin/orders" className="underline">Orders</Link>. Refresh to include activity received while this list was open.</p>
 
           {/* Date Range Stats */}
           <div className="mb-10">

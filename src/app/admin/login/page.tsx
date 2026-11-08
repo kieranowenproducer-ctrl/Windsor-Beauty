@@ -1,8 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import PasskeyButton from '@/components/account/PasskeyButton';
 
 export default function AdminLoginPage() {
+  const [passkeysEnabled,setPasskeysEnabled]=useState(false);
+  useEffect(()=>{let active=true;fetch('/api/admin/passkeys/available',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(active)setPasskeysEnabled(data?.enabled===true);}).catch(()=>{});return()=>{active=false;};},[]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -106,6 +109,7 @@ export default function AdminLoginPage() {
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
+          {passkeysEnabled && <div className="mt-4 border-t border-stone-200 pt-4"><PasskeyButton scope="admin" rememberMe={rememberMe} onSuccess={()=>{window.location.href='/admin/dashboard';}} className="min-h-11 w-full rounded-full border border-stone-300 bg-white px-4 text-sm text-stone-800"/></div>}
         </div>
 
         <p className="text-center text-[9px] text-stone-500 mt-4">

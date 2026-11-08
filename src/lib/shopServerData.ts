@@ -6,7 +6,8 @@ import {
 } from '@/data/products';
 import { DEFAULT_SITE_SALE, siteSaleConfigFromPromotion, type SiteSaleConfig } from '@/lib/siteSale';
 import { categorySlug } from '@/lib/categoryUrls';
-import { PRETTY_SLUG, shopUrl } from '@/lib/slugAliases';
+import { shopUrl } from '@/lib/slugAliases';
+import { resolveProductAddress } from '@/lib/productAddress';
 import { makeHairCareBundle, type HairCareBundle } from '@/lib/hairCareBundle';
 import {
   getActivePercentagePromotion, getHiddenProductSlugs, getProductSoldCounts, getProductStockMap,
@@ -176,8 +177,7 @@ export const loadShopServerData = cache(async (): Promise<ShopServerData> => {
  * structured-data block, which is a louder way of publishing it than the shop grid ever was.
  */
 export function productForSlug(data: ShopServerData, urlSlug: string): Product | null {
-  const internal = Object.entries(PRETTY_SLUG).find(([, pretty]) => pretty === urlSlug)?.[0] ?? urlSlug;
-  const product = data.catalogue.find((p) => p.slug === internal);
+  const product = resolveProductAddress(data.catalogue, urlSlug)?.product;
   if (!product || data.hidden.includes(product.slug)) return null;
   return product;
 }

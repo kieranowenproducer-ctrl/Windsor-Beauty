@@ -1,4 +1,7 @@
 import { requireDb } from './client';
+import { activityFor, connectionsBetween, sharedConnectionsAmong, type AccountActivity } from './accountActivity';
+import type { SharedConnectionNote } from './duplicateAccounts';
+import { isApplePrivateRelay } from '@/lib/applePrivateRelay';
 import { sendAutomationAlertEmail } from '@/lib/automationAlertEmail';
 
 export type SecurityReviewStatus = 'pending' | 'legitimate_shared_network' | 'confirmed_duplicate' | 'dismissed';
@@ -35,6 +38,12 @@ export interface SecurityReviewCase {
   decision_note: string | null;
   subject_email?: string | null;
   subject_name?: string | null;
+  /** Name and email for each matched customer number, so the screen never shows a bare number. */
+  matched_accounts?: Array<{ id: number; name: string | null; email: string }>;
+  /** Last login and last activity for the subject and every matched account, keyed by id. */
+  activity?: Record<number, AccountActivity>;
+  /** Per matched account: the connections it shares with the subject, Apple flag and last times. */
+  shared_connections?: Record<number, SharedConnectionNote[]>;
 }
 
 interface CustomerIdentityRow {
@@ -141,7 +150,7 @@ function displayName(row: CustomerIdentityRow): string {
   return `${row.first_name ?? ''} ${row.last_name ?? ''}`.trim() || row.email;
 }
 
-function caseSummary(evidence: SecurityEvidence[]): { band: SecurityEvidenceBand; summary: string } {
+function caseSummary(evidence: SecurityEvidence[], applePrivateRelay = false): { band: SecurityEvidenceBand; summary: string } {
   const identity = new Set(evidence.flatMap(item => item.identityKinds));
   if (identity.size >= 2) {
     return { band: 'priority', summary: `Multiple matching identity details (${Array.from(identity).join(', ')}) need a person to review them.` };
@@ -149,7 +158,12 @@ function caseSummary(evidence: SecurityEvidence[]): { band: SecurityEvidenceBand
   if (identity.size === 1) {
     return { band: 'review', summary: `A matching ${Array.from(identity)[0]} needs a person to review it.` };
   }
-  return { band: 'information', summary: 'Shared IP only — no matching identity information.' };
+  return {
+    band: 'information',
+    summary: applePrivateRelay
+      ? 'Same Apple iPhone Private Relay address only, which thousands of strangers share. No name, email, phone or address matches.'
+      : 'Same internet connection only. No name, email, phone or address matches.',
+  };
 }
 
 async function activeExemptionsFor(customerId: number): Promise<Set<number>> {
@@ -220,7 +234,7 @@ export async function createSecurityReviewCase(params: {
     }
     if (!evidence.length) return { row: null, newlyCreated: false };
 
-    const { band, summary } = caseSummary(evidence);
+    const { band, summary } = caseSummary(evidence, isApplePrivateRelay(ip));
     const matchedIds = evidence.map(item => item.matchedCustomerId).sort((a, b) => a - b);
     const evidenceSignature = evidence.map(item => `${item.matchedCustomerId}:${item.kinds.slice().sort().join('+')}`).sort().join(',');
     const caseType = params.caseType ?? (params.discountCode ? 'discount_abuse' : 'account_similarity');
@@ -273,7 +287,7 @@ export async function createSecurityReviewCase(params: {
 export async function listSecurityReviewCases(limit = 250): Promise<SecurityReviewCase[]> {
   await ensureSecurityReviewTables();
   const db = requireDb();
-  return await db`
+  const cases = await db`
     SELECT c.*, customer.email AS subject_email,
       trim(concat_ws(' ', customer.first_name, customer.last_name)) AS subject_name
     FROM security_review_cases c
@@ -281,47 +295,198 @@ export async function listSecurityReviewCases(limit = 250): Promise<SecurityRevi
     ORDER BY CASE WHEN c.status = 'pending' THEN 0 ELSE 1 END, c.created_at DESC
     LIMIT ${limit}
   ` as unknown as SecurityReviewCase[];
+  return await describeSecurityReviewCases(cases);
 }
 
+/**
+ * Adds what the screen needs to explain each case: names for matched customer numbers, when every
+ * account last logged in, and the shared connections with the Apple flag. Read only, so it can be
+ * run on its own (it is what the screenshots of this page were checked with).
+ */
+export async function describeSecurityReviewCases(cases: SecurityReviewCase[]): Promise<SecurityReviewCase[]> {
+  const db = requireDb();
+  // Names for every matched customer number in one query, so each case can say "Naomi Wye" rather
+  // than "Customer 92". A number that no longer resolves is an account deleted since, and the
+  // screen says so rather than inventing a name.
+  const ids = Array.from(new Set(cases.flatMap(row => (row.matched_customer_ids ?? []).map(Number))));
+  if (ids.length > 0) {
+    const people = await db`
+      SELECT id, email, trim(concat_ws(' ', first_name, last_name)) AS name
+      FROM customers WHERE id = ANY(${ids})
+    ` as unknown as Array<{ id: number; email: string; name: string }>;
+    const byId = new Map(people.map(p => [Number(p.id), { id: Number(p.id), email: p.email, name: p.name || null }]));
+    for (const row of cases) {
+      row.matched_accounts = (row.matched_customer_ids ?? [])
+        .map(id => byId.get(Number(id)))
+        .filter((p): p is { id: number; email: string; name: string | null } => Boolean(p));
+    }
+  }
+
+  // When each account last logged in, and for every internet-connection match, which connection it
+  // was, whether it is one of Apple's iPhone Private Relay addresses, and when each of the two was
+  // last on it (Samuel, 30 September 2026). Two queries for the whole list. If they fail the cases
+  // still show, just without the times.
+  try {
+    const everyone = cases.flatMap(row => [Number(row.subject_customer_id), ...(row.matched_customer_ids ?? []).map(Number)])
+      .filter(id => Number.isInteger(id) && id > 0);
+    const [activity, shared] = await Promise.all([activityFor(everyone), sharedConnectionsAmong(everyone)]);
+    for (const row of cases) {
+      const subjectId = Number(row.subject_customer_id);
+      const record: Record<number, AccountActivity> = {};
+      for (const id of [subjectId, ...(row.matched_customer_ids ?? []).map(Number)]) {
+        const found = activity.get(id);
+        if (found) record[id] = found;
+      }
+      row.activity = record;
+      if (!subjectId) continue;
+      const connections: Record<number, SharedConnectionNote[]> = {};
+      for (const item of row.evidence ?? []) {
+        if (!item.kinds.includes('ip')) continue;
+        connections[item.matchedCustomerId] = connectionsBetween(shared, subjectId, item.matchedCustomerId).map(c => ({
+          ip: c.ip,
+          applePrivateRelay: c.applePrivateRelay,
+          subjectLastSeen: c.visits[subjectId]?.lastSeen ?? null,
+          otherLastSeen: c.visits[item.matchedCustomerId]?.lastSeen ?? null,
+        }));
+      }
+      row.shared_connections = connections;
+    }
+  } catch {
+    // Times and connection detail left off; the cases themselves still show.
+  }
+  return cases;
+}
+
+/** A review and its exemption side effects are one transaction. Serialising decisions
+ * prevents two simultaneous reversals from leaving a stale shared-network exemption. */
 export async function decideSecurityReviewCase(params: {
-  caseId: number;
-  status: SecurityReviewStatus;
-  note: string;
-  actor?: string;
+  caseId: number; status: SecurityReviewStatus; note: string; actor?: string;
+  expectedStatus?: SecurityReviewStatus; expectedUpdatedAt?: string;
 }): Promise<SecurityReviewCase | null> {
   await ensureSecurityReviewTables();
   const db = requireDb();
-  const current = (await db`SELECT * FROM security_review_cases WHERE id = ${params.caseId} LIMIT 1`)[0] as SecurityReviewCase | undefined;
-  if (!current) return null;
   const actor = params.actor?.trim() || 'Windsor Beauty admin';
-  const resolvedAt = params.status === 'pending' ? null : new Date().toISOString();
-  const rows = await db`
-    UPDATE security_review_cases SET status = ${params.status}, decision_note = ${params.note},
-      reviewed_by = ${actor}, resolved_at = ${resolvedAt}, updated_at = now()
-    WHERE id = ${params.caseId} RETURNING *
-  ` as unknown as SecurityReviewCase[];
-  await db`
-    INSERT INTO security_review_decisions (case_id, previous_status, new_status, actor, note)
-    VALUES (${params.caseId}, ${current.status}, ${params.status}, ${actor}, ${params.note})
-  `;
-  if (params.status === 'legitimate_shared_network' && current.subject_customer_id) {
-    for (const matchedId of current.matched_customer_ids ?? []) {
-      const low = Math.min(current.subject_customer_id, matchedId);
-      const high = Math.max(current.subject_customer_id, matchedId);
-      if (low === high) continue;
-      await db`
-        INSERT INTO security_association_exemptions
-          (customer_id_low, customer_id_high, association_kind, note, created_by)
-        VALUES (${low}, ${high}, 'legitimate_shared_network', ${params.note}, ${actor})
-        ON CONFLICT DO NOTHING
-      `;
-    }
-  }
-  return rows[0] ?? null;
+  const result = await db.transaction([
+    db`SET LOCAL lock_timeout = '5s'`,
+    db`LOCK TABLE security_review_cases IN SHARE ROW EXCLUSIVE MODE`,
+    db`WITH previous AS MATERIALIZED (
+      SELECT * FROM security_review_cases WHERE id=${params.caseId}
+        AND (${params.expectedStatus ?? null}::text IS NULL OR status=${params.expectedStatus ?? null})
+        AND (${params.expectedUpdatedAt ?? null}::timestamptz IS NULL OR date_trunc('milliseconds',updated_at)=${params.expectedUpdatedAt ?? null}::timestamptz)
+      FOR UPDATE
+    ), changed AS (
+      UPDATE security_review_cases c SET status=${params.status}, decision_note=${params.note}, reviewed_by=${actor},
+        resolved_at=CASE WHEN ${params.status}='pending' THEN NULL ELSE now() END, updated_at=greatest(date_trunc('milliseconds',clock_timestamp()),date_trunc('milliseconds',c.updated_at)+interval '1 millisecond')
+      FROM previous p WHERE c.id=p.id RETURNING c.*
+    ), recorded AS (
+      INSERT INTO security_review_decisions(case_id,previous_status,new_status,actor,note)
+      SELECT c.id,p.status,c.status,${actor},${params.note} FROM changed c JOIN previous p USING(id)
+    ), pairs AS (
+      SELECT DISTINCT least(p.subject_customer_id,matched.value::int) lo,greatest(p.subject_customer_id,matched.value::int) hi
+      FROM previous p JOIN changed c USING(id),jsonb_array_elements_text(p.matched_customer_ids) matched
+      WHERE p.subject_customer_id IS NOT NULL AND matched.value::int<>p.subject_customer_id
+        AND EXISTS(SELECT 1 FROM customers WHERE id=matched.value::int)
+    ), added AS (
+      INSERT INTO security_association_exemptions(customer_id_low,customer_id_high,association_kind,note,created_by)
+      SELECT lo,hi,'legitimate_shared_network',${params.note},${actor} FROM pairs
+      WHERE ${params.status}='legitimate_shared_network' ON CONFLICT DO NOTHING
+    ), revoked AS (
+      UPDATE security_association_exemptions e SET revoked_at=now() FROM pairs pair
+      WHERE e.customer_id_low=pair.lo AND e.customer_id_high=pair.hi
+        AND e.association_kind='legitimate_shared_network' AND e.revoked_at IS NULL
+        AND ${params.status}<>'legitimate_shared_network'
+        AND EXISTS(SELECT 1 FROM previous WHERE status='legitimate_shared_network')
+        AND NOT EXISTS (
+          SELECT 1 FROM security_review_cases other,jsonb_array_elements_text(other.matched_customer_ids) match
+          WHERE other.id<>${params.caseId} AND other.status='legitimate_shared_network'
+            AND least(other.subject_customer_id,match.value::int)=pair.lo
+            AND greatest(other.subject_customer_id,match.value::int)=pair.hi
+        )
+    ) SELECT * FROM changed`,
+  ]);
+  return result[2][0] as SecurityReviewCase | undefined ?? null;
 }
 
 export async function countPendingSecurityReviews(): Promise<number> {
   await ensureSecurityReviewTables();
   const rows = await requireDb()`SELECT count(*)::int AS count FROM security_review_cases WHERE status = 'pending'`;
   return Number(rows[0]?.count ?? 0);
+}
+
+// IGNORE (Samuel, 10 October 2026): "there should be an ignore button for this, especially when
+// you have issues of people using Apple's system". Pressing Ignore on one pair in the second-
+// accounts list records that pair as not worth raising again. It is a separate kind of exemption
+// from "legitimate / shared network", so undoing a Security Review case never quietly un-ignores
+// a pair, and stopping ignoring a pair never touches a Security Review decision.
+//
+// What it covers is exactly one pair. Ignoring Carolyne against Yvonne says nothing about Carolyne
+// against anybody else, so a genuine second account turning up later is still raised.
+export const IGNORED_PAIR_KIND = 'ignored_second_account';
+
+export interface IgnoredPair {
+  firstId: number;
+  firstLabel: string;
+  secondId: number;
+  secondLabel: string;
+  ignoredAt: string;
+  ignoredBy: string;
+}
+
+function pairIds(a: number, b: number): [number, number] | null {
+  if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b) || a <= 0 || b <= 0 || a > 2147483647 || b > 2147483647 || a === b) return null;
+  return [Math.min(a, b), Math.max(a, b)];
+}
+
+/** Stop raising these two accounts against each other. Pressing it twice changes nothing. */
+export async function ignoreAccountPair(a: number, b: number, actor?: string): Promise<boolean> {
+  const ids = pairIds(a, b);
+  if (!ids) return false;
+  await ensureSecurityReviewTables();
+  const rows=await requireDb()`WITH pair AS (
+    SELECT ${ids[0]}::int lo,${ids[1]}::int hi
+    WHERE EXISTS(SELECT 1 FROM customers WHERE id=${ids[0]}) AND EXISTS(SELECT 1 FROM customers WHERE id=${ids[1]})
+  ), saved AS (
+    INSERT INTO security_association_exemptions(customer_id_low,customer_id_high,association_kind,note,created_by)
+    SELECT lo,hi,${IGNORED_PAIR_KIND},'Ignored from the second-accounts list',${actor?.trim() || 'Windsor Beauty admin'} FROM pair
+    ON CONFLICT DO NOTHING
+  ) SELECT lo FROM pair`;
+  return rows.length===1;
+}
+
+/** Undo an Ignore. Revoked, never deleted, so the history is kept. */
+export async function stopIgnoringAccountPair(a: number, b: number): Promise<boolean> {
+  const ids = pairIds(a, b);
+  if (!ids) return false;
+  await ensureSecurityReviewTables();
+  await requireDb()`
+    UPDATE security_association_exemptions SET revoked_at = now()
+    WHERE customer_id_low = ${ids[0]} AND customer_id_high = ${ids[1]}
+      AND association_kind = ${IGNORED_PAIR_KIND} AND revoked_at IS NULL
+  `;
+  return true;
+}
+
+/** Every pair currently ignored, newest first, with names so the list can be read without ids. */
+export async function listIgnoredAccountPairs(): Promise<IgnoredPair[]> {
+  // No table set-up here: this runs on every check, and a missing table is caught by the caller.
+  const rows = await requireDb()`
+    SELECT e.customer_id_low, e.customer_id_high, e.created_at::text AS created_at, e.created_by,
+           lo.email AS low_email, lo.first_name AS low_first, lo.last_name AS low_last,
+           hi.email AS high_email, hi.first_name AS high_first, hi.last_name AS high_last
+    FROM security_association_exemptions e
+    JOIN customers lo ON lo.id = e.customer_id_low
+    JOIN customers hi ON hi.id = e.customer_id_high
+    WHERE e.association_kind = ${IGNORED_PAIR_KIND} AND e.revoked_at IS NULL
+    ORDER BY e.created_at DESC
+  `;
+  const label = (first: unknown, last: unknown, email: unknown) =>
+    [first, last].map(v => String(v ?? '').trim()).filter(Boolean).join(' ') || String(email ?? '');
+  return rows.map(row => ({
+    firstId: Number(row.customer_id_low),
+    firstLabel: label(row.low_first, row.low_last, row.low_email),
+    secondId: Number(row.customer_id_high),
+    secondLabel: label(row.high_first, row.high_last, row.high_email),
+    ignoredAt: String(row.created_at),
+    ignoredBy: String(row.created_by ?? ''),
+  }));
 }

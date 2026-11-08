@@ -16,6 +16,8 @@ const db = read('src/lib/db.ts');
 const marketing = read('src/lib/db/marketing.ts');
 const visits = read('src/lib/db/siteVisits.ts');
 const activityApi = read('src/app/api/admin/activity/route.ts');
+const activityDb = read('src/lib/db/adminActivity.ts');
+const dashboardStats = read('src/lib/db/adminDashboardStats.ts');
 const dashboard = read('src/app/admin/dashboard/page.tsx');
 const ordersPage = read('src/app/admin/orders/page.tsx');
 const accountApi = read('src/app/api/account/me/route.ts');
@@ -37,9 +39,9 @@ check('later status changes never replace the first confirmation time',
 
 console.log('\nSales and customer figures count paid orders only');
 check('dashboard total requires confirmed payment',
-  db.includes('COUNT(*) FILTER (WHERE payment_confirmed_at IS NOT NULL)::int AS total_orders'));
+  dashboardStats.includes('COUNT(*) FILTER (WHERE payment_confirmed_at IS NOT NULL)::int AS total_orders'));
 check('date reports use the payment date',
-  /COUNT\(\*\) FILTER \([\s\S]{0,120}payment_confirmed_at >=/.test(db));
+  dashboardStats.includes("(payment_confirmed_at AT TIME ZONE 'Europe/London')::date BETWEEN") && dashboardStats.includes('COUNT(*) FILTER (WHERE paid_in_range)'));
 check('customer order count requires confirmed payment',
   db.includes('COUNT(o.id) FILTER (WHERE o.payment_confirmed_at IS NOT NULL)::int AS order_count'));
 check('customer spend requires confirmed payment',
@@ -67,7 +69,7 @@ console.log('\nConversion reports do not treat checkout attempts as purchases');
 check('visitor reports require confirmed payment',
   (visits.match(/o\.payment_confirmed_at IS NOT NULL/g) ?? []).length >= 3);
 check('activity uses the paid time after confirmation',
-  activityApi.includes('at: o.payment_confirmed_at ?? o.created_at'));
+  activityApi.includes('readAdminActivity(cursor)') && activityDb.includes('COALESCE(o.payment_confirmed_at, o.created_at) AS at'));
 
 if (failed) process.exit(1);
 console.log('\nAll paid-order counting checks passed.\n');

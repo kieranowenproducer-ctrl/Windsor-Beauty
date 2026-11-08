@@ -1,5 +1,6 @@
 import { PRODUCTS } from '@/data/products';
 import { INTERNAL_SLUG } from '@/lib/slugAliases';
+import { productAddressOwners } from './productAddresses';
 import { requireDb } from './client';
 
 export interface ProductDemandRow {
@@ -156,6 +157,7 @@ export async function listDemand(days = 30): Promise<DemandReport> {
     db`SELECT slug, data FROM custom_products`,
   ]);
 
+  const addresses = await productAddressOwners();
   const catalogue = new Map(PRODUCTS.map((p) => [p.slug, { name: p.name, categories: p.categories }]));
   for (const row of customRows as { slug: string; data: { name?: string; categories?: string[] } }[]) {
     catalogue.set(row.slug, {
@@ -168,7 +170,7 @@ export async function listDemand(days = 30): Promise<DemandReport> {
 
   const products = (productRows as RawProduct[]).map((row) => {
     const urlSlug = row.path.slice('/shop/'.length);
-    const slug = INTERNAL_SLUG[urlSlug] ?? urlSlug;
+    const slug = addresses.get(urlSlug) ?? INTERNAL_SLUG[urlSlug] ?? urlSlug;
     const product = catalogue.get(slug);
     return {
       slug,
@@ -299,6 +301,7 @@ export async function listDemandTrends(): Promise<DemandTrends> {
     db`SELECT slug, data FROM custom_products`,
   ]);
 
+  const addresses = await productAddressOwners();
   const catalogue = new Map(PRODUCTS.map((product) => [product.slug, { name: product.name, categories: product.categories }]));
   for (const row of customRows as { slug: string; data: { name?: string; categories?: string[] } }[]) {
     catalogue.set(row.slug, {
@@ -334,7 +337,7 @@ export async function listDemandTrends(): Promise<DemandTrends> {
   const periodProducts = new Map<string, Array<{ name: string; categories: string[]; pageViews: number }>>();
   for (const raw of productRows as RawTrendProduct[]) {
     const urlSlug = raw.path.slice('/shop/'.length);
-    const slug = INTERNAL_SLUG[urlSlug] ?? urlSlug;
+    const slug = addresses.get(urlSlug) ?? INTERNAL_SLUG[urlSlug] ?? urlSlug;
     const product = catalogue.get(slug);
     const key = keyOf(raw.period_type, raw.bucket);
     const list = periodProducts.get(key) ?? [];

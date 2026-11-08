@@ -168,6 +168,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Only these staff passkey sign-in actions are public. The handler verifies
+  // the Beauty origin, challenge and credential. Enrollment/removal stay protected.
+  if (['/api/admin/passkeys/available','/api/admin/passkeys/authenticate-options','/api/admin/passkeys/authenticate-verify'].includes(pathname)) return NextResponse.next();
+
   // Protect all /admin pages and /api/admin endpoints — and never apply the
   // coming-soon wall to them, so the admin panel stays reachable regardless
   // of launch-gate state.

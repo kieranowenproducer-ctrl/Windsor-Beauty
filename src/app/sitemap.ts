@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 import type { MetadataRoute } from 'next';
 import { categoryUrl } from '@/lib/categoryUrls';
 import { liveCategories, searchableProducts } from '@/lib/shopServerData';
-import { shopUrl } from '@/lib/slugAliases';
+import { productHref } from '@/lib/productAddress';
 import { SITE_URL } from './robots';
 import { getProductVariantStockMap, listActivePromotionRules } from '@/lib/db';
 import { makeHairCareBundle, bundleAsProduct } from '@/lib/hairCareBundle';
@@ -87,7 +87,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
      * one nothing links to. Settled 10 August 2026: the pretty slug is the canonical address
      * everywhere, and shopUrl is the single place that knows which is which. */
     ...products.map((product) => ({
-      url: `${SITE_URL}${shopUrl(product.slug)}`,
+      url: `${SITE_URL}${productHref(product)}`,
       lastModified: generated,
       changeFrequency: 'weekly' as const,
       priority: 0.8,

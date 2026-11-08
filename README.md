@@ -5,16 +5,18 @@
 > **Related projects:** Windsor Beauty; Glow is a read-only reference for relevant admin tools.
 > **Dependencies:** Beauty-only data and email authority; current project AGENTS.md and the dated handover.
 > **Key decisions:** Preserve current public access, products, prices, payment identities and mailbox history. New local work below is not deployed.
-> **Next steps:** Complete the 8 November local acceptance and mailbox-separation gates before a separately approved website release.
+> **Next steps:** Owner reviews the local admin follow-up before publication. Keep all emails active and Glow/BRIAN paused.
 > **Last updated:** 2026-11-08
 
 Windsor Beauty's online shop and the admin panel that runs it. It was built from the Windsor Glow
 shop in October 2026, so it works the same way, with Windsor Beauty's own brand, products, database
 and settings.
 
-**8 November local checkpoint:** [Current Suite/admin handover](../../../../_Planning-Library/08_technical-architecture/2026-11-08-beauty-suite-admin/README.md) records Suite-aware email source, white input/text contrast, customer search/statistics, invoice history, product draft recovery/stale-save guards, history-only customer merge and pre-dispatch delivery editing. Focused checks and the successor production build passed; served UI review continues. These changes and their additive migrations are not deployed. Do not use the October handover's old holding-screen or mailbox status as current authority.
+**8 November live checkpoint:** Release `467e370` includes Suite email/contact/intake, white controls, customer search/statistics, invoice history, product draft recovery, history-only customer merge and pre-dispatch delivery editing. Its two migrations and website reply acceptance passed. Do not use the October handover's old holding-screen or mailbox status as current authority.
 
-Suite's default sender and permanent exact recipient route to Beauty are working at Zoho/provider level. Primary sign-in change, Glow alias relocation, disabling old blanket forwards and final brand isolation remain. Wholesale and mailbox history must be retained. Website sender/reply environment changes and live website ingestion are separate release gates. Glow/BRIAN's larger work remains paused.
+Suite is primary and Beauty-branded; both Glow Wholesale aliases moved to Info, blanket forwarding is disabled, and all five legacy Beauty aliases now route to Beauty. Owned-address website ingestion/reply tests passed in the earlier milestone. All old addresses and historical mailbox data remain active/preserved.
+
+**Local follow-up, not published:** Dashboard/revenue reporting, saved/paged enquiries, permanent product-link aliases, customer-security comparisons/undo, disabled administrator passkeys and searchable profitability selection. [Candidate review and remaining gates](../../../../_Planning-Library/08_technical-architecture/2026-11-08-beauty-suite-admin/ADMIN-FOLLOWUP-REVIEW.md). Four additive installers require explicit publication review. No live mailbox, payment, shipping or provider change occurred in this follow-up. Glow/BRIAN remains paused.
 
 **Current access:** On 7 October 2026, Kieran confirmed that the public storefront should stay
 accessible as it is. Keep the current live access settings unchanged. The holding-screen

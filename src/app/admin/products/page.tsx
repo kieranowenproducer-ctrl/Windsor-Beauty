@@ -38,6 +38,7 @@ import CertificateAuditPanel from './CertificateAuditPanel';
 import ProductCardList from './ProductCardList';
 import ProductTable from './ProductTable';
 import RetiredProductsPanel from './RetiredProductsPanel';
+import ProductWebAddresses from './ProductWebAddresses';
 import EditProductDrawer from './EditProductDrawer';
 import { readProductDraft, writeProductDraft, clearSavedProductDraft, sameProductVersion, type EditorSnapshot } from './productEditorDraft';
 import {
@@ -1090,6 +1091,7 @@ function AdminProductsPageContent() {
             products={products}
           />
 
+          <ProductWebAddresses onSaved={() => { void fetch('/api/admin/products/catalogue',{cache:'no-store'}).then(response=>response.ok?response.json():null).then(data=>{if(data?.overrides)setOverrides(data.overrides);}).catch(()=>{}); }} />
           <CertificateAuditPanel certAuditOpen={certAuditOpen} certAudit={certAudit} />
 
 

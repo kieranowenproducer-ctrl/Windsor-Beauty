@@ -18,7 +18,7 @@ import UpsellCarousel from '@/components/UpsellCarousel';
 import BackInStockForm from '@/components/BackInStockForm';
 import { DEFAULT_SITE_SALE, effectiveSalePercent, salePrice, type SiteSaleConfig } from '@/lib/siteSale';
 import { markdownLiteToHtml } from '@/lib/markdownLite';
-import { INTERNAL_SLUG, PRETTY_SLUG } from '@/lib/slugAliases';
+import { resolveProductAddress } from '@/lib/productAddress';
 import ProductImage from './ProductImage';
 import AdminProductManager from './AdminProductManager';
 import ProductPrice from './ProductPrice';
@@ -300,17 +300,12 @@ export default function ProductPage({ params, initial }: {
     jumpScrollTo(0);
   }, [params.slug, overridesLoaded]);
 
-  // If someone lands on a product's old internal slug, send them to its pretty
-  // URL so the old name never sits in the address bar (next.config handles a
-  // direct hit; this covers client-side navigation too).
-  useEffect(() => {
-    if (PRETTY_SLUG[params.slug]) router.replace(`/shop/${PRETTY_SLUG[params.slug]}`);
-  }, [params.slug, router]);
-
   const catalogue = useMemo(() => mergeProducts(PRODUCTS, overrides), [overrides]);
-  // A pretty URL slug (e.g. /shop/up389) resolves to its internal product.
-  const realSlug = INTERNAL_SLUG[params.slug] ?? params.slug;
-  const found = catalogue.find(p => p.slug === realSlug);
+  const resolved = resolveProductAddress(catalogue, params.slug);
+  useEffect(() => {
+    if (resolved && resolved.address !== params.slug) router.replace(`/shop/${resolved.address}`);
+  }, [params.slug, resolved?.address, router]);
+  const found = resolved?.product;
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
 

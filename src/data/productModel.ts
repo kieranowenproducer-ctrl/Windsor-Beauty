@@ -141,6 +141,10 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
+  /** Server-owned public address; internal slug remains the stock/order key. */
+  webAddress?: string;
+  /** All retained addresses, supplied by the permanent Beauty address registry. */
+  previousWebAddresses?: string[];
   /** All catalogue categories this product belongs to. categories[0] is treated as the primary label. */
   /** Optional — products can have zero categories (won't appear under any category filter, but still shows under "All"). */
   categories: Category[];

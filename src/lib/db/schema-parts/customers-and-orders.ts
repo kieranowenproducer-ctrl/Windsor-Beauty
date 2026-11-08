@@ -326,6 +326,10 @@ export async function ensureCustomersAndOrders(db: ReturnType<typeof requireDb>)
    */
   await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS checkout_confirmations JSONB`;
 
+  // The dashboard now reads without changing schema. New installations need
+  // the same existing clear/undo column as migrated installations.
+  await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS activity_cleared_at TIMESTAMPTZ`;
+
   // Index for Fena webhook lookups — allows finding an order by the payment ID
   // returned from Fena without a full table scan.
   await db`CREATE INDEX IF NOT EXISTS idx_orders_fena_payment_id ON orders (fena_payment_id) WHERE fena_payment_id IS NOT NULL`;

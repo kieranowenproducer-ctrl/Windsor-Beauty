@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { activeVariants, cardImage, dosageSoldOut, type Product } from '@/data/products';
-import { shopUrl } from '@/lib/slugAliases';
+import { productAddress, productHref } from '@/lib/productAddress';
 import { loadShopServerData, productForSlug } from '@/lib/shopServerData';
 import { SITE_URL } from '../../robots';
 import ProductPageClient from './ProductPageClient';
@@ -61,7 +61,7 @@ export async function generateMetadata(props: ProductPageProps): Promise<Metadat
   /* The PRETTY slug is the canonical address, settled 10 August 2026. next.config.js already
    * redirects each internal slug to its pretty one permanently, and the sitemap now advertises
    * the same address, so one product has exactly one URL everywhere it is named. */
-  const canonical = `${SITE_URL}${shopUrl(product.slug)}`;
+  const canonical = `${SITE_URL}${productHref(product)}`;
 
   return {
     title: `${product.name} | Windsor Beauty`,
@@ -87,7 +87,7 @@ export async function generateMetadata(props: ProductPageProps): Promise<Metadat
  * after admin edits, which is why this page reads the database rather than the static file.
  */
 function productJsonLd(product: Product, data: Awaited<ReturnType<typeof loadShopServerData>>) {
-  const canonical = `${SITE_URL}${shopUrl(product.slug)}`;
+  const canonical = `${SITE_URL}${productHref(product)}`;
   const variantStock = data.variantStock[product.slug];
   const rating = data.reviewStats[product.slug];
 
@@ -137,6 +137,7 @@ export default async function ProductPage(props: ProductPageProps) {
    * page did this already; doing it on the server means a hidden product never has its name,
    * price and structured data served at all. */
   if (!product) notFound();
+  if (params.slug !== productAddress(product)) permanentRedirect(productHref(product));
 
   return (
     <>

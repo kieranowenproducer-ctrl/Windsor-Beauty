@@ -1,6 +1,8 @@
+import { hasAdminReadAccess } from '@/lib/adminReadAccess';
 import { NextResponse } from 'next/server';
 import { isDbConfigured } from '@/lib/db';
 import { countRecent, listDuplicateSignals } from '@/lib/db/duplicateAccounts';
+import { listIgnoredAccountPairs, type IgnoredPair } from '@/lib/db/securityReviews';
 
 // Behind the two "Check for second accounts" buttons, and behind the dashboard's red banner
 // (task c76f31fb).
@@ -14,7 +16,8 @@ import { countRecent, listDuplicateSignals } from '@/lib/db/duplicateAccounts';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (!hasAdminReadAccess(request)) return NextResponse.json({error:'Administrator sign-in required.'},{status:401});
   // A CHECK THAT COULD NOT RUN IS NOT A CLEAN BILL OF HEALTH. This returned a plain count of 0
   // with no database, which every screen reading it would have shown as "nothing to worry about" —
   // found by actually calling it rather than by reading it. Both failures now answer with an error
@@ -28,11 +31,20 @@ export async function GET() {
 
   try {
     const findings = await listDuplicateSignals();
+    // The pairs somebody pressed Ignore on, so each can be un-ignored. A failed read leaves the
+    // list off rather than failing the check: the findings matter more.
+    let ignored: IgnoredPair[] = [];
+    try {
+      ignored = await listIgnoredAccountPairs();
+    } catch {
+      // Left off.
+    }
     // `count` is everything, for the list behind the button. `recentCount` is what the dashboard
     // warning shows, so an old household pairing does not leave a red banner up for ever.
     return NextResponse.json({
       dbConfigured: true,
       findings,
+      ignored,
       count: findings.length,
       recentCount: countRecent(findings),
     });

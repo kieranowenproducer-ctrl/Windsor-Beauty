@@ -1,4 +1,6 @@
 import { requireDb } from './client';
+import { activityFor, isoTime, type AccountActivity } from './accountActivity';
+import { isApplePrivateRelay } from '@/lib/applePrivateRelay';
 
 // Spotting somebody opening a second account to get the 10% welcome discount twice (task c76f31fb).
 //
@@ -68,6 +70,20 @@ export interface MatchedAccount {
   email: string;
   name: string | null;
   createdAt: string;
+  /**
+   * For a same-connection match: which connections the two share, whether each is one of Apple's
+   * iPhone Private Relay addresses, and when each account was last on it (Samuel, 30 Sep 2026).
+   */
+  sharedConnections?: SharedConnectionNote[];
+}
+
+export interface SharedConnectionNote {
+  ip: string;
+  applePrivateRelay: boolean;
+  /** When the account under suspicion was last on it. Null when not known. */
+  subjectLastSeen: string | null;
+  /** When the earlier account was last on it. Null when not known. */
+  otherLastSeen: string | null;
 }
 
 export interface DuplicateFinding {
@@ -90,6 +106,8 @@ export interface DuplicateFinding {
   offerStatus: 'clear' | 'review' | 'approved' | null;
   /** One plain sentence saying what was found. */
   summary: string;
+  /** Last login and last activity for this account and every account it matched, keyed by id. */
+  activity?: Record<number, AccountActivity>;
 }
 
 interface CustomerRow {
@@ -166,6 +184,12 @@ async function offerStatusFor(customerId: number): Promise<'clear' | 'review' | 
   }
 }
 
+/** True when every connection two accounts share is one of Apple's Private Relay addresses. */
+export function isRelayOnlyMatch(account: MatchedAccount): boolean {
+  const shared = account.sharedConnections ?? [];
+  return shared.length > 0 && shared.every(c => c.applePrivateRelay);
+}
+
 /** How many accounts, written the way somebody would say it. */
 function countPhrase(n: number, singular: string, plural: string): string {
   return n === 1 ? `1 ${singular}` : `${n} ${plural}`;
@@ -187,8 +211,15 @@ export function summariseFinding(
   if (sameAddress.length > 0) {
     parts.push(`the same address as ${countPhrase(sameAddress.length, 'another account', 'other accounts')} (${sameAddress.map(a => a.email).join(', ')})`);
   }
-  if (sameConnection.length > 0) {
-    parts.push(`the same internet connection as ${countPhrase(sameConnection.length, 'another account', 'other accounts')} (${sameConnection.map(a => a.email).join(', ')})`);
+  // A match made ONLY through Apple's iPhone Private Relay is named as that, in the sentence itself,
+  // because this sentence is what lands in the email and the red warning.
+  const relayOnly = sameConnection.filter(isRelayOnlyMatch);
+  const ordinary = sameConnection.filter(a => !isRelayOnlyMatch(a));
+  if (ordinary.length > 0) {
+    parts.push(`the same internet connection as ${countPhrase(ordinary.length, 'another account', 'other accounts')} (${ordinary.map(a => a.email).join(', ')})`);
+  }
+  if (relayOnly.length > 0) {
+    parts.push(`the same Apple iPhone Private Relay address as ${countPhrase(relayOnly.length, 'another account', 'other accounts')} (${relayOnly.map(a => a.email).join(', ')}), which thousands of strangers share, so that part proves almost nothing`);
   }
   return `New account ${who} has ${parts.join(', and ')}. Worth checking before they use a second 10% welcome discount.`;
 }
@@ -262,9 +293,11 @@ export async function findDuplicateSignals(customerId: number): Promise<Duplicat
         ORDER BY c.created_at DESC
         LIMIT 25
       `;
+      const relay = isApplePrivateRelay(ipAddress);
+      const shared: SharedConnectionNote = { ip: ipAddress, applePrivateRelay: relay, subjectLastSeen: null, otherLastSeen: null };
       sameConnection = (rows as CustomerRow[])
         .filter((row) => arrivedBefore(row, subject))
-        .map(toMatch);
+        .map((row) => ({ ...toMatch(row), sharedConnections: [shared] }));
     }
 
     // A shared connection on its own only counts once enough accounts are on it, per the threshold
@@ -327,12 +360,13 @@ export async function listDuplicateSignals(limit = 500): Promise<DuplicateFindin
   // when a request arrives with no address headers at all, and every one of those would otherwise
   // look like one enormous shared household.
   const ipRows = (await db`
-    SELECT DISTINCT customer_id, ip_address
+    SELECT customer_id, ip_address, max(created_at)::text AS last_seen
     FROM ip_activity_log
     WHERE customer_id IS NOT NULL
       AND ip_address IS NOT NULL
       AND ip_address <> 'unknown'
-  `) as { customer_id: number; ip_address: string }[];
+    GROUP BY customer_id, ip_address
+  `) as { customer_id: number; ip_address: string; last_seen: string }[];
 
   // Every welcome-offer decision in one go (task ce609555). Approved accounts are left out of the
   // list altogether, which is what "allow as authentic" has to mean; the rest carry their status so
@@ -374,8 +408,10 @@ export async function listDuplicateSignals(limit = 500): Promise<DuplicateFindin
   const byId = new Map<number, CustomerRow>(customers.map((c) => [c.id, c]));
   const ipsFor = new Map<number, string[]>();
   const accountsOnIp = new Map<string, number[]>();
+  const lastOn = new Map<string, string>();
   for (const row of ipRows) {
     if (!byId.has(row.customer_id)) continue;
+    lastOn.set(`${row.customer_id}|${row.ip_address}`, isoTime(row.last_seen) ?? row.last_seen);
     const list = ipsFor.get(row.customer_id) ?? [];
     list.push(row.ip_address);
     ipsFor.set(row.customer_id, list);
@@ -417,7 +453,18 @@ export async function listDuplicateSignals(limit = 500): Promise<DuplicateFindin
     // The threshold counts EVERYBODY on the connection, not only the earlier ones, so it means the
     // same thing here as it does on /admin/ip-addresses.
     const sameConnection = total >= SHARED_CONNECTION_THRESHOLD
-      ? sameConnectionRows.slice(0, 25).map(toMatch)
+      ? sameConnectionRows.slice(0, 25).map((other) => {
+        const theirs = new Set(ipsFor.get(other.id) ?? []);
+        const sharedConnections: SharedConnectionNote[] = (ipsFor.get(customer.id) ?? [])
+          .filter((ip) => theirs.has(ip))
+          .map((ip) => ({
+            ip,
+            applePrivateRelay: isApplePrivateRelay(ip),
+            subjectLastSeen: lastOn.get(`${customer.id}|${ip}`) ?? null,
+            otherLastSeen: lastOn.get(`${other.id}|${ip}`) ?? null,
+          }));
+        return { ...toMatch(other), sharedConnections };
+      })
       : [];
 
     if (sameAddress.length === 0 && sameConnection.length === 0) continue;
@@ -439,6 +486,23 @@ export async function listDuplicateSignals(limit = 500): Promise<DuplicateFindin
       offerStatus,
       summary: summariseFinding(displayName(customer), customer.email, sameAddress, sameConnection),
     });
+  }
+
+  // When everybody named here last logged in and was last seen, in one query for the whole list.
+  // A failure leaves the times off rather than failing the check: the finding matters more.
+  try {
+    const ids = findings.flatMap((f) => [f.customerId, ...f.sameAddress.map((a) => a.id), ...f.sameConnection.map((a) => a.id)]);
+    const activity = await activityFor(ids);
+    for (const finding of findings) {
+      const record: Record<number, AccountActivity> = {};
+      for (const id of [finding.customerId, ...finding.sameAddress.map((a) => a.id), ...finding.sameConnection.map((a) => a.id)]) {
+        const found = activity.get(id);
+        if (found) record[id] = found;
+      }
+      finding.activity = record;
+    }
+  } catch {
+    // Times left off.
   }
 
   // Newest first: an account opened this week matters more than one from March.

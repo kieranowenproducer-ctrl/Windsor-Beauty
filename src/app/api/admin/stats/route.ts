@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getStoreStats, isDbConfigured, listCustomProducts } from '@/lib/db';
+import { isDbConfigured, listCustomProducts } from '@/lib/db';
+import { readAdminDashboardStats } from '@/lib/db/adminDashboardStats';
+import { hasAdminReadAccess } from '@/lib/adminReadAccess';
 import { mergeProducts, PRODUCTS, type Product } from '@/data/products';
 
 export const dynamic = 'force-dynamic';
@@ -10,7 +12,8 @@ async function catalogueCount(): Promise<number> {
   return mergeProducts(PRODUCTS, overrides).length;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (!hasAdminReadAccess(request)) return NextResponse.json({error:'Unauthorized'},{status:401,headers:{'Cache-Control':'private, no-store'}});
   if (!isDbConfigured()) {
     return NextResponse.json({
       dbConfigured: false,
@@ -24,6 +27,10 @@ export async function GET() {
     });
   }
 
-  const [stats, products] = await Promise.all([getStoreStats(), catalogueCount()]);
-  return NextResponse.json({ dbConfigured: true, ...stats, products });
+  try {
+    const [stats, products] = await Promise.all([readAdminDashboardStats(), catalogueCount()]);
+    return NextResponse.json({ dbConfigured: true, ...stats, products },{headers:{'Cache-Control':'private, no-store'}});
+  } catch {
+    return NextResponse.json({error:'Could not load dashboard figures.'},{status:503,headers:{'Cache-Control':'private, no-store'}});
+  }
 }

@@ -1,32 +1,18 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
-import { getStatsForDateRange, isDbConfigured } from '@/lib/db';
-
-export const dynamic = 'force-dynamic';
-
-export async function GET(req: NextRequest) {
-  if (!isDbConfigured()) {
-    return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
-  }
-
-  const { searchParams } = new URL(req.url);
-  const from = searchParams.get('from');
-  const to   = searchParams.get('to');
-
-  if (!from || !to) {
-    return NextResponse.json({ error: 'from and to are required' }, { status: 400 });
-  }
-
-  const fromDate = new Date(from);
-  const toDate   = new Date(to);
-
-  if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
-    return NextResponse.json({ error: 'Invalid date format' }, { status: 400 });
-  }
-
-  // The to date is inclusive. Paid-order figures use the confirmation time;
-  // awaiting-payment figures use the attempt time.
-  toDate.setDate(toDate.getDate() + 1);
-
-  const stats = await getStatsForDateRange(fromDate, toDate);
-  return NextResponse.json(stats);
+import { NextResponse } from 'next/server';
+import { isDbConfigured } from '@/lib/db/client';
+import { readAdminDashboardRange } from '@/lib/db/adminDashboardStats';
+import { hasAdminReadAccess } from '@/lib/adminReadAccess';
+import { accountingExportRange } from '@/lib/accountingExport';
+export const dynamic='force-dynamic';
+const headers={'Cache-Control':'private, no-store'};
+export async function GET(request: Request) {
+  if(!hasAdminReadAccess(request))return NextResponse.json({error:'Unauthorized'},{status:401,headers});
+  let range;
+  try {
+    range=accountingExportRange(new URL(request.url).searchParams);
+    if(!range.from||!range.to)throw new Error();
+  }catch{return NextResponse.json({error:'Choose valid From and To dates.'},{status:400,headers});}
+  if(!isDbConfigured())return NextResponse.json({error:'The sales database is unavailable.'},{status:503,headers});
+  try{return NextResponse.json(await readAdminDashboardRange(range.from,range.to),{headers});}
+  catch{return NextResponse.json({error:'Could not load the figures. Please try again.'},{status:503,headers});}
 }

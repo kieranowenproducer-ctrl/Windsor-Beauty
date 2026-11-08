@@ -3,6 +3,7 @@ import type { Product } from '@/data/products';
 import type { AppliedRuleSummary } from './promotionRules';
 import { buildTrackingUrl } from './royalMail';
 import { sql, isDbConfigured, requireDb } from './db/client';
+import { withProductAddresses } from './db/productAddresses';
 import { CUSTOMER_EVENT_CATEGORIES } from './automationFailureKinds';
 // The Orders row shapes live in ./db/orders.ts now. Imported for use below as
 // well as re-exported further down, because `export type { X } from` publishes
@@ -2034,7 +2035,7 @@ export async function listCustomProducts(): Promise<Record<string, Product>> {
   for (const row of rows as { slug: string; data: Product }[]) {
     map[row.slug] = row.data;
   }
-  return map;
+  return withProductAddresses(map);
 }
 
 // Slug -> ISO timestamp of last edit, for admin views (e.g. the Certificates

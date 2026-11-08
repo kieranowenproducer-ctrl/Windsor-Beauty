@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { isDbConfigured, listCustomProducts, listCustomProductsUpdatedAt, upsertCustomProduct } from '@/lib/db';
+import { isDbConfigured, listCustomProducts, listCustomProductsUpdatedAt } from '@/lib/db';
+import { createProductIfAbsent } from '@/lib/db/productEdit';
 import { mergeProducts, parseProductInput, PRODUCTS, type Product } from '@/data/products';
 
 export const dynamic = 'force-dynamic';
@@ -65,9 +66,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    await upsertCustomProduct(product);
-    return NextResponse.json({ success: true, product });
+    const saved = await createProductIfAbsent(product);
+    return NextResponse.json({ success: true, product: saved });
   } catch (err) {
+    if (err && typeof err === 'object' && 'code' in err && err.code === '23505') {
+      return NextResponse.json({ error: 'This product link is already reserved. Choose a different one.' }, { status: 409 });
+    }
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Failed to save product.' },
       { status: 500 }

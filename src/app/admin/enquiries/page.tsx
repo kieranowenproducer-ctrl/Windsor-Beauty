@@ -5,12 +5,13 @@ import AdminStickyControls from '@/components/admin/AdminStickyControls';
 // Website Enquiries. Every message sent through the contact form, answerable
 // from here so the reply goes out as Windsor Beauty rather than from whichever
 // personal mailbox happened to open the notification email.
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import type { OrderDraftSnapshot } from '@/lib/email/enquiryAutoDraft';
 import type { InboundAttachment } from '@/lib/db/enquiries';
 import { emailGreetingName } from '@/lib/email/greeting';
 import { visibleInboundEmailText } from '@/lib/email/inboundRouting';
+import type { BeautyReplyDraft } from '@/lib/db/beautyEnquiryDrafts';
 import { refreshAdminEnquiryCount } from '@/lib/adminEnquiryPolling';
 
 function withoutEnquiry<T>(values: Record<number, T>, enquiryId: number): Record<number, T> {
@@ -152,6 +153,16 @@ function checkedAt(iso?: string): string | null {
 export default function AdminEnquiriesPage() {
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [nextOffset, setNextOffset] = useState<number | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const loadGeneration = useRef(0);
+  const draftWork = useRef<number | null>(null);
+  const draftOperation = useRef(0);
+  const openIdRef = useRef<number | null>(null);
+  const draftVersions = useRef<Record<number, {revision:number; baseReplyId:number}>>({});
+  const [draftBusyId, setDraftBusyId] = useState<number | null>(null);
+  const [draftReady, setDraftReady] = useState<Record<number, boolean>>({});
+  const draftEditGeneration = useRef<Record<number, number>>({});
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [manualOpen, setManualOpen] = useState(false);
@@ -160,6 +171,7 @@ export default function AdminEnquiriesPage() {
   const [filter, setFilter] = useState<'all' | EnquiryStatus>('all');
   const [source, setSource] = useState<'all' | 'website_form' | 'direct_email'>('all');
   const [openId, setOpenId] = useState<number | null>(null);
+  useEffect(()=>{openIdRef.current=openId;},[openId]);
   const [drafts, setDrafts] = useState<Record<number, string>>({});
   const [draftFormats, setDraftFormats] = useState<Record<number, 'standard' | 'order'>>({});
   const [automatedDrafts, setAutomatedDrafts] = useState<Record<number, AutomatedDraftState>>({});
@@ -174,23 +186,82 @@ export default function AdminEnquiriesPage() {
   const [pasteOpenId, setPasteOpenId] = useState<number | null>(null);
   const [pastedReplies, setPastedReplies] = useState<Record<number, string>>({});
   const [pastingId, setPastingId] = useState<number | null>(null);
-  const load = useCallback(async (quiet = false) => {
-    if (!quiet) setLoading(true);
+  const load = useCallback(async (quiet = false, offset = 0) => {
+    const generation=++loadGeneration.current;
+    if (offset) setLoadingMore(true); else if (!quiet) setLoading(true);
     try {
-      const res = await fetch('/api/admin/enquiries');
-      const data = await res.json().catch(() => null);
-      if (!res.ok) {
-        setError(data?.error || 'Could not load enquiries.');
-        return;
-      }
-      setEnquiries(Array.isArray(data?.enquiries) ? data.enquiries : []);
+      const res=await fetch(`/api/admin/enquiries?offset=${offset}&status=${filter}&source=${source}${openIdRef.current?`&pinned=${openIdRef.current}`:''}`);
+      const data=await res.json().catch(()=>null);
+      if (generation!==loadGeneration.current) return;
+      if (!res.ok) throw new Error(data?.error || 'Could not load enquiries.');
+      const incoming: Enquiry[]=Array.isArray(data.enquiries)?data.enquiries:[];
+      if(data.pinned && !incoming.some(item=>item.id===data.pinned.id)) incoming.push(data.pinned);
+      setEnquiries(prev => {
+        if (!offset) return incoming;
+        const updates = new Map(incoming.map(item => [item.id, item]));
+        const existingIds = new Set(prev.map(item => item.id));
+        return [...prev.map(item => updates.get(item.id) ?? item), ...incoming.filter(item => !existingIds.has(item.id))];
+      });
+      setNextOffset(data.nextOffset ?? null);
       setError('');
-    } catch {
-      setError('Could not load enquiries.');
+    } catch (err) {
+      if (generation===loadGeneration.current) setError(err instanceof Error?err.message:'Could not load enquiries.');
     } finally {
-      if (!quiet) setLoading(false);
+      if (generation===loadGeneration.current) {setLoading(false);setLoadingMore(false);}
     }
-  }, []);
+  }, [filter, source]);
+
+  async function restoreDraft(enquiry: Enquiry, replace = false) {
+    if (draftWork.current !== null || sendingId !== null) return;
+    if (draftReady[enquiry.id] && !replace) return;
+    const generation=draftEditGeneration.current[enquiry.id] ?? 0;
+    if (replace && (drafts[enquiry.id] ?? '').trim() && !window.confirm('Replace your text with the saved draft?')) return;
+    const operation=++draftOperation.current; draftWork.current=operation;
+    setDraftBusyId(enquiry.id);
+    try {
+      const res=await fetch(`/api/admin/enquiries/${enquiry.id}/reply-draft`);
+      const data=await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not load saved draft.');
+      if ((draftEditGeneration.current[enquiry.id] ?? 0)!==generation) return;
+      const saved=data.draft;
+      draftVersions.current[enquiry.id]={revision:Number(saved.revision),baseReplyId:Number(saved.latest_reply_id)};
+      setDraftReady(prev=>({...prev,[enquiry.id]:true}));
+      const payload=saved.payload as BeautyReplyDraft | null;
+      if (payload) {
+        setDrafts(prev=>({...prev,[enquiry.id]:payload.message}));
+        setDraftFormats(prev=>({...prev,[enquiry.id]:payload.format}));
+        if(payload.format==='order' && payload.orderNumber && payload.orderSnapshot) setOrderDrafts(prev=>({...prev,[enquiry.id]:{orderNumber:payload.orderNumber!,snapshot:payload.orderSnapshot as OrderDraftSnapshot}}));
+        else setOrderDrafts(prev=>withoutEnquiry(prev,enquiry.id));
+        setReplyFeedbacks(prev=>({...prev,[enquiry.id]:{tone:Number(saved.base_reply_id)!==Number(saved.latest_reply_id)?'warning':'success',text:Number(saved.base_reply_id)!==Number(saved.latest_reply_id)?'Draft restored. New messages have arrived since it was saved. Read them before sending.':'Saved draft restored.'}}));
+      } else if (replace) {
+        setDrafts(prev=>({...prev,[enquiry.id]:''}));
+        setDraftFormats(prev=>({...prev,[enquiry.id]:'standard'}));
+      } else if (!(drafts[enquiry.id] ?? '').trim()) await prepareAutomatedDraft(enquiry);
+    } catch(err) {setReplyFeedbacks(prev=>({...prev,[enquiry.id]:{tone:'error',text:err instanceof Error?err.message:'Could not load saved draft.'}}));}
+    finally {if(draftWork.current===operation) {draftWork.current=null;setDraftBusyId(null);}}
+  }
+
+  async function saveDraft(enquiry: Enquiry, discard = false) {
+    if(draftWork.current!==null) return null;
+    const version=draftVersions.current[enquiry.id];
+    if (!version) return null;
+    if (discard && !window.confirm('Discard this saved draft? No email will be sent.')) return null;
+    const format=draftFormats[enquiry.id] ?? 'standard';
+    const order=orderDrafts[enquiry.id];
+    const operation=++draftOperation.current; draftWork.current=operation;
+    setDraftBusyId(enquiry.id);
+    try {
+      const res=await fetch(`/api/admin/enquiries/${enquiry.id}/reply-draft`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:version.revision,baseReplyId:version.baseReplyId,payload:discard?null:{message:drafts[enquiry.id]??'',format,orderNumber:order?.orderNumber??null,orderSnapshot:order?.snapshot??null}})});
+      const data=await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not save draft.');
+      const next={revision:Number(data.draft.revision),baseReplyId:version.baseReplyId};
+      draftVersions.current[enquiry.id]=next;
+      if(discard) {setDrafts(prev=>({...prev,[enquiry.id]:''}));setDraftFormats(prev=>({...prev,[enquiry.id]:'standard'}));}
+      setReplyFeedbacks(prev=>({...prev,[enquiry.id]:{tone:'success',text:discard?'Saved draft discarded.':'Draft saved. No email sent.'}}));
+      return next;
+    } catch(err) {setReplyFeedbacks(prev=>({...prev,[enquiry.id]:{tone:'error',text:err instanceof Error?err.message:'Could not save draft.'}})); return null;}
+    finally {if(draftWork.current===operation) {draftWork.current=null;setDraftBusyId(null);}}
+  }
 
   async function addMailboxEmail(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -213,7 +284,7 @@ export default function AdminEnquiriesPage() {
       setSource('direct_email');
       setOpenId(data.enquiry.id);
       setNotice(data.staffAlertAccepted
-        ? 'Email added. Sales and info were sent an alert.'
+        ? 'Email added. The team was sent an alert.'
         : 'Email added. The staff email alert could not be confirmed, so please tell a colleague now.');
       await load(true);
     } catch (error) {
@@ -229,7 +300,7 @@ export default function AdminEnquiriesPage() {
   // A quiet refresh leaves replies being drafted and the open case untouched.
   useEffect(() => {
     const refresh = () => {
-      if (document.visibilityState === 'visible') void load(true);
+      if (document.visibilityState === 'visible' && !loadingMore) void load(true);
     };
     const interval = window.setInterval(refresh, 60_000);
     document.addEventListener('visibilitychange', refresh);
@@ -237,7 +308,7 @@ export default function AdminEnquiriesPage() {
       window.clearInterval(interval);
       document.removeEventListener('visibilitychange', refresh);
     };
-  }, [load]);
+  }, [load, openId, loadingMore]);
 
   useEffect(() => {
     const hasUnsentReply = Object.values(drafts).some(value => value.trim());
@@ -257,6 +328,7 @@ export default function AdminEnquiriesPage() {
     const message = (drafts[enquiry.id] ?? '').trim();
     if (!message) return;
 
+    if (draftBusyId !== null || sendingId !== null) return;
     setSendingId(enquiry.id);
     setReplyFeedbacks(prev => {
       const next = { ...prev };
@@ -264,12 +336,16 @@ export default function AdminEnquiriesPage() {
       return next;
     });
     try {
+      const savedVersion = await saveDraft(enquiry);
+      if (!savedVersion) return;
       const res = await fetch(`/api/admin/enquiries/${enquiry.id}/reply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
           format,
+          draftRevision: savedVersion.revision,
+          baseReplyId: savedVersion.baseReplyId,
           orderNumber: orderDraft?.orderNumber,
           orderSnapshot: orderDraft?.snapshot,
         }),
@@ -297,6 +373,8 @@ export default function AdminEnquiriesPage() {
       }
       refreshAdminEnquiryCount();
       setDrafts(prev => ({ ...prev, [enquiry.id]: '' }));
+      setDraftReady(prev => ({...prev,[enquiry.id]:false}));
+      delete draftVersions.current[enquiry.id];
       setDraftFormats(prev => ({ ...prev, [enquiry.id]: 'standard' }));
       setAutomatedDrafts(prev => {
         const next = { ...prev };
@@ -310,10 +388,10 @@ export default function AdminEnquiriesPage() {
       });
       setPreviewId(null);
       setReplyFeedbacks(prev => ({ ...prev, [enquiry.id]: {
-        tone: data?.recorded === false ? 'warning' : 'success',
+        tone: data?.recorded === false || data?.draftCleared === false ? 'warning' : 'success',
         text: data?.recorded === false
           ? `${data?.warning || 'The email was sent, but the dashboard record could not be saved. Do not send it again.'}${data?.providerMessageId ? ` Reference: ${data.providerMessageId}.` : ''}`
-          : `Email sent to ${data?.sentTo ?? enquiry.email}. Recorded here${data?.archivedTo ? ' and copied privately to the IONOS mailbox' : ''}.`,
+          : `Email sent to ${data?.sentTo ?? enquiry.email}. Recorded here${data?.archivedTo ? ' and copied privately to the IONOS mailbox' : ''}.${data?.draftCleared===false?' The saved draft could not be cleared. Do not send it again.':''}`,
       } }));
       await load();
     } catch {
@@ -327,14 +405,21 @@ export default function AdminEnquiriesPage() {
   }
 
   async function prepareAutomatedDraft(enquiry: Enquiry, refresh = false) {
+    if(refresh && (draftWork.current!==null || sendingId!==null)) return;
+    if(refresh && (drafts[enquiry.id] ?? '').trim() && !window.confirm('Replace your reply with a fresh order draft? Your saved copy will stay unchanged.')) return;
     if (!refresh && automatedDrafts[enquiry.id]) return;
     if ((drafts[enquiry.id] ?? '').trim() && !refresh) return;
 
+    const operation=refresh?++draftOperation.current:null;
+    if(operation!==null) {draftWork.current=operation;setDraftBusyId(enquiry.id);}
+    const generation=(draftEditGeneration.current[enquiry.id] ?? 0)+1;
+    draftEditGeneration.current[enquiry.id]=generation;
     setAutomatedDrafts(prev => ({ ...prev, [enquiry.id]: { status: 'loading' } }));
     setError('');
     try {
       const res = await fetch(`/api/admin/enquiries/${enquiry.id}/draft`, { method: 'POST' });
       const data = await res.json().catch(() => null);
+      if(draftEditGeneration.current[enquiry.id]!==generation) return;
       if (!res.ok || !data?.draft) {
         setAutomatedDrafts(prev => ({ ...prev, [enquiry.id]: { status: 'error', note: data?.error || 'The draft could not be prepared.' } }));
         return;
@@ -375,17 +460,18 @@ export default function AdminEnquiriesPage() {
       });
       setAutomatedDrafts(prev => ({ ...prev, [enquiry.id]: { status: 'manual', source: prepared.source, note: prepared.note } }));
     } catch {
-      setAutomatedDrafts(prev => ({ ...prev, [enquiry.id]: { status: 'error', note: 'The draft could not be prepared.' } }));
-    }
+      if(draftEditGeneration.current[enquiry.id]===generation) setAutomatedDrafts(prev => ({ ...prev, [enquiry.id]: { status: 'error', note: 'The draft could not be prepared.' } }));
+    } finally {if(operation!==null && draftWork.current===operation) {draftWork.current=null;setDraftBusyId(null);}}
   }
 
   function toggleEnquiry(enquiry: Enquiry) {
+    if(draftWork.current!==null || sendingId!==null) return;
     if (openId === enquiry.id) {
       setOpenId(null);
       return;
     }
     setOpenId(enquiry.id);
-    void prepareAutomatedDraft(enquiry);
+    void restoreDraft(enquiry);
   }
 
   /**
@@ -418,7 +504,7 @@ export default function AdminEnquiriesPage() {
       /* The draft on screen was written for the message they sent BEFORE this one, so leaving it
          there would offer an answer to a question they have already been answered. Prepare it
          again against what they have just said. */
-      await prepareAutomatedDraft(enquiry, true);
+      setReplyFeedbacks(prev=>({...prev,[enquiry.id]:{tone:'warning',text:'Customer reply added. Your text is preserved. Load the saved draft and review the latest message before sending.'}}));
     } catch {
       setError('That message could not be saved.');
     } finally {
@@ -512,9 +598,8 @@ export default function AdminEnquiriesPage() {
             </button>
           </div>
           <p className="text-sm text-stone-500 mb-6">
-            Contact form messages appear here. Add emails received in sales
-            or info below until automatic mailbox capture is connected. Replying here sends from
-            {BEAUTY_CONTACT_EMAIL}. Check Suite for customer replies; existing addresses remain active.
+            Contact form messages and Beauty emails appear here. Replies send from{' '}
+            {BEAUTY_CONTACT_EMAIL} and return to the same conversation.
           </p>
 
           <section className="mb-6 border border-stone-200 bg-white p-4">
@@ -524,7 +609,7 @@ export default function AdminEnquiriesPage() {
             </button>
             {manualOpen && (
               <form onSubmit={event => void addMailboxEmail(event)} className="mt-4 space-y-3">
-                <p className="text-xs text-stone-600">Copy the message from sales or info. Adding it sends a staff alert and puts it in this queue.</p>
+                <p className="text-xs text-stone-600">Add only a message missing from this list. This sends a staff alert and adds it to the queue.</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {([['name', 'Customer name'], ['email', 'Customer email'], ['subjectLabel', 'Subject'], ['orderNumber', 'Order number (if known)']] as const).map(([key, label]) => (
                     <label key={key} className="text-xs font-semibold text-stone-700">{label}
@@ -832,7 +917,7 @@ export default function AdminEnquiriesPage() {
                             <button
                               type="button"
                               onClick={() => void prepareAutomatedDraft(enquiry, true)}
-                              disabled={automatedDraft?.status === 'loading'}
+                              disabled={automatedDraft?.status === 'loading' || draftBusyId!==null || sendingId!==null}
                               className="min-h-10 shrink-0 border border-gold-300 bg-white px-4 text-[10px] font-semibold uppercase tracking-[0.15em] text-gold-800 hover:border-gold-500 disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                             >
                               Check again
@@ -847,7 +932,9 @@ export default function AdminEnquiriesPage() {
                              id={`reply-${enquiry.id}`}
                              name={`reply-${enquiry.id}`}
                              value={draft}
-                            onChange={e => setDrafts(prev => ({ ...prev, [enquiry.id]: e.target.value }))}
+                            onChange={e => { draftEditGeneration.current[enquiry.id]=(draftEditGeneration.current[enquiry.id] ?? 0)+1; setDrafts(prev => ({ ...prev, [enquiry.id]: e.target.value })); }}
+                            disabled={draftBusyId===enquiry.id || sendingId===enquiry.id || automatedDrafts[enquiry.id]?.status==='loading'}
+                            maxLength={10000}
                             rows={7}
                              placeholder={`Hi ${emailGreetingName(enquiry.name) || 'there'},`}
                              className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
@@ -894,10 +981,13 @@ export default function AdminEnquiriesPage() {
                       ) : null}
 
                       <div className="flex items-center gap-2 flex-wrap">
+                        <button type="button" onClick={()=>void saveDraft(enquiry)} disabled={draftBusyId!==null || sendingId!==null || !draftReady[enquiry.id]} className="min-h-10 rounded-lg border border-stone-300 bg-white px-4 text-xs text-stone-700 disabled:opacity-40">Save draft</button>
+                        <button type="button" onClick={()=>void restoreDraft(enquiry,true)} disabled={draftBusyId!==null || sendingId!==null} className="min-h-10 rounded-lg border border-stone-300 bg-white px-4 text-xs text-stone-700 disabled:opacity-40">Load saved draft</button>
+                        <button type="button" onClick={()=>void saveDraft(enquiry,true)} disabled={draftBusyId!==null || sendingId!==null || !draftReady[enquiry.id]} className="min-h-10 rounded-lg border border-stone-300 bg-white px-4 text-xs text-stone-700 disabled:opacity-40">Discard draft</button>
                         <button
                           type="button"
                           onClick={() => void sendReply(enquiry)}
-                          disabled={sendingId === enquiry.id || !draft.trim()}
+                          disabled={sendingId !== null || draftBusyId !== null || automatedDrafts[enquiry.id]?.status==='loading' || !draftReady[enquiry.id] || !draft.trim()}
                           className="min-h-10 text-[10px] tracking-[0.15em] uppercase px-4 py-2 bg-stone-800 text-white hover:bg-stone-700 disabled:opacity-40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
                         >
                           {sendingId === enquiry.id
@@ -977,6 +1067,8 @@ export default function AdminEnquiriesPage() {
               );
             })}
           </div>
+          {nextOffset !== null && <button type="button" disabled={loadingMore || loading} onClick={()=>void load(true,nextOffset)} className="mt-4 min-h-11 rounded-lg border border-stone-300 bg-white px-5 text-sm text-stone-700 disabled:opacity-40">{loadingMore?'Loading more…':'Load more enquiries'}</button>}
+          <p className="mt-2 text-xs text-stone-500">{enquiries.length} loaded. Refresh starts at the newest matching messages. Unsent text stays on this page; use Save draft before leaving.</p>
         </div>
       </main>
     </div>

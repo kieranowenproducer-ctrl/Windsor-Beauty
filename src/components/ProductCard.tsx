@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { shopUrl } from '@/lib/slugAliases';
+import { productHref } from '@/lib/productAddress';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, ProductVariant, activeVariants, cardImage, effectiveAvailability, dosageSoldOut, allDosagesSoldOut } from '@/data/products';
@@ -161,7 +161,7 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
           and variant picker sit above it via relative z-10 and keep their own
           behaviour. One anchor per card (image/title are plain elements) keeps
           the HTML valid and accessible. */}
-      <Link href={shopUrl(product.slug)} aria-label={product.name} className="absolute inset-0 z-[1]" />
+      <Link href={productHref(product)} aria-label={product.name} className="absolute inset-0 z-[1]" />
 
       {/* Product image */}
       <div>
@@ -264,7 +264,7 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
             the click and you land at the top of the product page instead. */}
         {reviewStats && reviewStats.count > 0 && (
           <Link
-            href={`${shopUrl(product.slug)}#reviews`}
+            href={`${productHref(product)}#reviews`}
             className="relative z-10 inline-flex items-center gap-1.5 mb-2 self-start group/rating"
             aria-label={`Read ${reviewStats.count} review${reviewStats.count === 1 ? '' : 's'} of ${product.name}`}
           >
@@ -323,7 +323,7 @@ export default function ProductCard({ product, stock, reviewStats, saleConfig, i
               {outOfStock ? 'Sold Out' : comingSoon || priceTbc ? 'Coming Soon' : 'Add'}
             </button>
             <Link
-              href={shopUrl(product.slug)}
+              href={productHref(product)}
               className="text-[8px] tracking-[0.14em] uppercase text-stone-500 border border-stone-200 hover:border-gold-300 hover:text-gold-800 px-3 py-1.5 transition-colors"
             >
               View

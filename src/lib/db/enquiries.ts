@@ -151,7 +151,7 @@ export async function isInboundAttachmentRecorded(emailId: string, attachmentId:
 
 // One query for the whole inbox: replies are aggregated per enquiry so the
 // admin page can render a thread without an extra request per row.
-export async function listEnquiries(limit = 200): Promise<EnquiryWithReplies[]> {
+export async function listEnquiries(limit = 200, offset = 0, status = 'all', source = 'all', pinnedId: number | null = null): Promise<EnquiryWithReplies[]> {
   const db = requireDb();
   const rows = await db`
     SELECT e.*,
@@ -166,6 +166,9 @@ export async function listEnquiries(limit = 200): Promise<EnquiryWithReplies[]> 
         '[]'::json
       ) AS notes
     FROM enquiries e
+    WHERE (${pinnedId}::integer IS NULL OR e.id=${pinnedId})
+      AND (${status} = 'all' OR e.status = ${status})
+      AND (${source} = 'all' OR (${source} = 'direct_email' AND e.source IN ('direct_email','manual_email')) OR e.source = ${source})
     ORDER BY
       /* Anything flagged for attention floats, then anything urgent, then newest first. A
          customer who said something that needs a person should not be three screens down
@@ -173,8 +176,9 @@ export async function listEnquiries(limit = 200): Promise<EnquiryWithReplies[]> 
       CASE WHEN e.status = 'closed' THEN 1 ELSE 0 END,
       CASE WHEN e.attention_flag IS NOT NULL THEN 0 ELSE 1 END,
       CASE e.priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 ELSE 2 END,
-      e.created_at DESC
-    LIMIT ${limit}
+      GREATEST(e.created_at, COALESCE((SELECT max(r.created_at) FROM enquiry_replies r WHERE r.enquiry_id=e.id), e.created_at)) DESC,
+      e.id DESC
+    LIMIT ${limit} OFFSET ${offset}
   `;
   return rows as EnquiryWithReplies[];
 }

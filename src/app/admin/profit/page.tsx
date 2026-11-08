@@ -302,7 +302,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
   const [shipping, setShipping] = useState('');
   const [adhoc, setAdhoc] = useState('');
   const [updateInventory, setUpdateInventory] = useState(false);
-  const [lines, setLines] = useState<Array<{ key: string; qty: string; blockCost: string }>>([{ key: '', qty: '10', blockCost: '' }]);
+  const [lines, setLines] = useState<Array<{ key: string; qty: string; blockCost: string; search: string }>>([{ key: '', qty: '10', blockCost: '', search: '' }]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
 
@@ -312,7 +312,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
   // variants that no longer exist on the shop.)
   const options = variants.map((v) => ({ value: keyOf(v.slug, v.dosage), label: `${v.name} ${v.dosage}` }));
 
-  function setLine(i: number, patch: Partial<{ key: string; qty: string; blockCost: string }>) {
+  function setLine(i: number, patch: Partial<{ key: string; qty: string; blockCost: string; search: string }>) {
     setLines((prev) => prev.map((l, idx) => (idx === i ? { ...l, ...patch } : l)));
   }
   async function submit() {
@@ -335,7 +335,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
         setMsg(added > 0
           ? `Saved. Costs updated and ${added} unit${added === 1 ? '' : 's'} added to stock.`
           : 'Saved. Costs updated.');
-        setSupplier(''); setDate(''); setShipping(''); setAdhoc(''); setUpdateInventory(false); setLines([{ key: '', qty: '10', blockCost: '' }]); onSaved();
+        setSupplier(''); setDate(''); setShipping(''); setAdhoc(''); setUpdateInventory(false); setLines([{ key: '', qty: '10', blockCost: '', search: '' }]); onSaved();
       }
       else setMsg(data.error || 'Failed to save.');
     } finally { setSaving(false); }
@@ -358,9 +358,10 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
           {lines.map((l, i) => (
             <tr key={i}>
               <td className="py-1">
-                <select value={l.key} onChange={(e) => setLine(i, { key: e.target.value })} className="w-full border border-stone-200 px-2 py-1 text-xs">
+                <input type="search" aria-label={`Find product for purchase line ${i+1}`} value={l.search} onChange={e=>setLine(i,{search:e.target.value})} placeholder="Find a product or size" className="mb-1 w-full rounded border border-stone-300 bg-white px-2 py-2 text-xs" />
+                <select aria-label={`Product for purchase line ${i+1}`} value={l.key} onChange={(e) => setLine(i, { key: e.target.value })} className="w-full border border-stone-200 px-2 py-1 text-xs">
                   <option value="">Select a product…</option>
-                  {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  {options.filter(o => o.value===l.key || o.label.toLowerCase().includes(l.search.trim().toLowerCase())).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </td>
               <td className="py-1"><input inputMode="numeric" value={l.qty} onChange={(e) => setLine(i, { qty: e.target.value })} className="w-20 border border-stone-200 px-2 py-1 text-xs tabular-nums" /></td>
@@ -371,7 +372,7 @@ function BulkPurchaseForm({ onSaved, variants }: { onSaved: () => void; variants
         </tbody>
       </table>
       <div className="flex items-center gap-3 mt-2">
-        <button onClick={() => setLines((p) => [...p, { key: '', qty: '10', blockCost: '' }])} className="text-[10px] uppercase tracking-wider text-stone-500 hover:text-gold-700">+ Add product</button>
+        <button onClick={() => setLines((p) => [...p, { key: '', qty: '10', blockCost: '', search: '' }])} className="text-[10px] uppercase tracking-wider text-stone-500 hover:text-gold-700">+ Add product</button>
         <button onClick={submit} disabled={saving} className="text-[10px] uppercase tracking-wider bg-gold-700 text-white px-4 py-1.5 hover:bg-gold-800 disabled:opacity-50">{saving ? 'Saving…' : 'Record purchase'}</button>
         {msg && <span className="text-[10px] text-stone-500">{msg}</span>}
       </div>

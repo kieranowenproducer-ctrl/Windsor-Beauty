@@ -62,7 +62,8 @@ try {
   await pg.exec("INSERT INTO product_variant_stock(slug,dosage,quantity) VALUES ('cream','50ml',5); INSERT INTO product_visibility(slug,hidden) VALUES ('cream',false)");
   const stockBefore = JSON.stringify((await pg.query('SELECT * FROM product_variant_stock')).rows);
   const visibilityBefore = JSON.stringify((await pg.query('SELECT * FROM product_visibility')).rows);
-  const writer = load('src/lib/db/productEdit.ts', { './client': client });
+  const addressHelpers = load('src/lib/productAddress.ts', { '@/lib/slugAliases': load('src/lib/slugAliases.ts') });
+  const writer = load('src/lib/db/productEdit.ts', { './client': client, '@/lib/productAddress': addressHelpers });
   const changed = input.parseProductInput({ ...base, name: 'Updated Cream' });
   check(await writer.updateProductIfUnchanged(changed, base), true, 'current version saved atomically');
   check(await writer.updateProductIfUnchanged({ ...changed, name: 'Stale overwrite' }, base), false, 'late old window cannot overwrite current product');

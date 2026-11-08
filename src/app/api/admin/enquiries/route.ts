@@ -1,3 +1,4 @@
+import { hasAdminReadAccess } from '@/lib/adminReadAccess';
 import { NextResponse } from 'next/server';
 import { ensureSchema, isDbConfigured, logAutomationFailure } from '@/lib/db';
 import { createEnquiry, listEnquiries, type EnquiryPriority } from '@/lib/db/enquiries';
@@ -9,25 +10,20 @@ export const dynamic = 'force-dynamic';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export async function GET() {
-  if (!isDbConfigured()) {
-    return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
-  }
-
+export async function GET(request: Request) {
+  const headers = { 'Cache-Control': 'private, no-store' };
+  if (!hasAdminReadAccess(request)) return NextResponse.json({error:'Unauthorized'},{status:401,headers});
+  const params=new URL(request.url).searchParams;
+  const raw=params.get('offset') ?? '0';
+  const pinned=params.has('pinned')?Number(params.get('pinned')):null;
+  if(pinned!==null && (!Number.isSafeInteger(pinned)||pinned<1)) return NextResponse.json({error:'Invalid enquiry.'},{status:400,headers});
+  const offset=Number(raw), status=params.get('status') ?? 'all', source=params.get('source') ?? 'all';
+  if (!/^\d+$/.test(raw)||!Number.isSafeInteger(offset)||offset>2147483447||!['all','new','replied','closed'].includes(status)||!['all','website_form','direct_email'].includes(source)) return NextResponse.json({error:'Invalid enquiry filter.'},{status:400,headers});
+  if (!isDbConfigured()) return NextResponse.json({error:'Database not configured.'},{status:503,headers});
   try {
-    return NextResponse.json({ enquiries: await listEnquiries() });
-  } catch {
-    // Same self-healing pattern as /api/admin/qr-campaigns: the first call
-    // after this feature ships runs before the tables exist, so create them
-    // and retry once rather than making anyone run a migration by hand.
-    try {
-      await ensureSchema();
-      return NextResponse.json({ enquiries: await listEnquiries() });
-    } catch (err) {
-      console.error('[admin/enquiries] GET failed after ensureSchema:', err);
-      return NextResponse.json({ error: 'Could not load enquiries.' }, { status: 500 });
-    }
-  }
+    const [rows,pinnedRows]=await Promise.all([listEnquiries(201,offset,status,source),pinned===null?Promise.resolve([]):listEnquiries(1,0,status,source,pinned)]);
+    return NextResponse.json({enquiries:rows.slice(0,200),nextOffset:rows.length>200?offset+200:null,pinned:pinnedRows[0]??null},{headers});
+  } catch { return NextResponse.json({error:'Could not load enquiries.'},{status:503,headers}); }
 }
 
 // Log an enquiry that did not come through the contact form — someone who
